@@ -20,8 +20,8 @@
     <string name="history_description">최근에 확인한 질문을 다시 살펴보세요.</string>
     <string name="settings_title">설정</string>
     <string name="settings_description">서비스 이용 환경과 개인 정보를 관리해요.</string>
-    <string name="auth_title">선배에게 묻는\n가장 솔직한 학교 이야기</string>
-    <string name="auth_description">재학생, 신입생, 입학 희망자를 위한 AI 선배 챗봇이에요.</string>
+    <string name="auth_title">선배에게 묻는\n가장 솔직한\n학교 이야기</string>
+    <string name="auth_description">재학생, 신입생, 입학 희망자를 위한 AI 선배 챗봇. 실제 선배들의 경험으로 답해드려요.</string>
     <string name="auth_swipe">로그인 창을 올려 학교 이메일로 시작해요.</string>
     <string name="login">로그인</string>
     <string name="signup">회원가입</string>
@@ -78,6 +78,7 @@
     <string name="open">열기</string>
     <string name="logout_description">앱 설정과 도움말을 관리해요.</string>
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
+    <string name="login_guide_subtitle">학교 이메일로 로그인하세요.</string>
     <string name="signup_subtitle">학교 이메일로 간단히 시작하세요.</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>

@@ -1,8 +1,9 @@
 package com.example.hopes.feature.auth.presentation
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,36 +11,49 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
 import com.example.hopes.core.designsystem.component.HopesLightLogo
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesSurfaceCard
-import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
+import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
+import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
+import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
 @Composable
@@ -92,82 +106,73 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
     val sheetTopOffset = remember { Animatable(684f) }
     val animationScope = rememberCoroutineScope()
     val guideDensity = LocalDensity.current
+    val extendedColors = LocalHopesExtendedColors.current
 
     FigmaPhoneScreen {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
-        Image(
-            painter = painterResource(R.drawable.login_guide_background),
-            contentDescription = null,
-            modifier = Modifier.width(402.dp).height(874.dp),
-            contentScale = ContentScale.Crop,
-        )
-        Column(modifier = Modifier.offset(x = 32.dp, y = 76.dp).width(338.dp)) {
-            HopesLightLogo()
-        }
-        Column(modifier = Modifier.offset(x = 32.dp, y = 286.dp).width(318.dp)) {
-            Text(
-                text = stringResource(R.string.auth_title),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.headlineLarge,
-            )
+            AuthBackground()
+            FigmaAuthBrandHeader(modifier = Modifier.offset(x = 32.dp, y = 76.dp))
+            AuthHeroCopy()
 
-            Spacer(modifier = Modifier.height(22.dp))
+            if (sheetTopOffset.value > 520f) {
+                SwipeHint(extendedColors = extendedColors)
+            }
 
-            Text(
-                text = stringResource(R.string.auth_description),
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
-                style = MaterialTheme.typography.bodyLarge,
-            )
-
-        }
-        if (sheetTopOffset.value > 520f) {
-            Text(text = "위로 스와이프하기", modifier = Modifier.offset(y = 621.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
-            Text(text = stringResource(R.string.auth_swipe), modifier = Modifier.offset(y = 651.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyMedium)
-        }
-        // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 로그인 시트를 확장한다.
-        HopesSurfaceCard(
-            modifier = Modifier
-                .offset(y = sheetTopOffset.value.dp)
-                .width(402.dp)
-                .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
-                .pointerInput(guideDensity) {
-                    detectDragGestures(
-                        onDrag = { change, dragAmount ->
-                            change.consume()
-                            animationScope.launch {
-                                sheetTopOffset.snapTo(
-                                    (sheetTopOffset.value + with(guideDensity) {
-                                        dragAmount.y.toDp().value
-                                    }).coerceIn(372f, 684f),
-                                )
-                            }
-                        },
-                        onDragEnd = {
-                            animationScope.launch {
-                                if (sheetTopOffset.value < 540f) {
-                                    sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
-                                    onNavigateLogin()
-                                } else {
-                                    sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
+            // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 시트를 확장한다.
+            FigmaAuthSheet(
+                modifier = Modifier
+                    .offset(y = sheetTopOffset.value.dp)
+                    .width(402.dp)
+                    .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
+                    .pointerInput(guideDensity) {
+                        detectDragGestures(
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                animationScope.launch {
+                                    sheetTopOffset.snapTo(
+                                        (sheetTopOffset.value + with(guideDensity) {
+                                            dragAmount.y.toDp().value
+                                        }).coerceIn(372f, 684f),
+                                    )
                                 }
-                            }
-                        },
-                    )
-                },
-        ) {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                Box(
-                    modifier = Modifier
-                        .width(86.dp)
-                        .height(5.dp)
-                        .background(MaterialTheme.colorScheme.outline, RoundedCornerShape(3.dp)),
+                            },
+                            onDragEnd = {
+                                animationScope.launch {
+                                    if (sheetTopOffset.value < 540f) {
+                                        sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
+                                        onNavigateLogin()
+                                    } else {
+                                        sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
+                                    }
+                                }
+                            },
+                        )
+                    },
+                shadowElevation = 12.dp,
+            ) {
+                Spacer(modifier = Modifier.height(20.dp))
+
+                AuthSheetHandle()
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                Text(
+                    text = stringResource(R.string.login),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = stringResource(R.string.login_guide_subtitle),
+                    color = extendedColors.authSubtitle,
+                    style = TextStyle(fontSize = 12.sp),
                 )
             }
-            Spacer(modifier = Modifier.height(38.dp))
-            Text(text = stringResource(R.string.login), style = MaterialTheme.typography.headlineMedium)
-            Text(text = stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
-            TextButton(onClick = onNavigateLogin) { Text(text = stringResource(R.string.login)) }
-        }
         }
     }
 }
@@ -186,28 +191,22 @@ private fun LoginSheetScreen(
     val sheetTopOffset = remember { Animatable(372f) }
     val animationScope = rememberCoroutineScope()
     val loginDensity = LocalDensity.current
+    val extendedColors = LocalHopesExtendedColors.current
 
     FigmaPhoneScreen {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
-            Image(
-                painter = painterResource(R.drawable.login_guide_background),
-                contentDescription = null,
-                modifier = Modifier.width(402.dp).height(874.dp),
-                contentScale = ContentScale.Crop,
-            )
+            Box(modifier = Modifier.blur(8.dp)) {
+                AuthBackground()
+                FigmaAuthBrandHeader(modifier = Modifier.offset(x = 32.dp, y = 76.dp))
+                AuthHeroCopy()
+            }
             Box(
                 modifier = Modifier
                     .width(402.dp)
-                    .height(372.dp)
-                    .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.12f)),
+                    .height(397.dp)
+                    .background(extendedColors.authBackdropScrim),
             )
-            Column(modifier = Modifier.offset(x = 32.dp, y = 76.dp).width(338.dp)) {
-                HopesLightLogo()
-            }
-            Column(modifier = Modifier.offset(x = 32.dp, y = 286.dp).width(318.dp)) {
-                Text(text = stringResource(R.string.auth_title), color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.headlineLarge)
-            }
-            HopesSurfaceCard(
+            FigmaAuthSheet(
                 modifier = Modifier
                     .offset(y = sheetTopOffset.value.dp)
                     .width(402.dp)
@@ -236,22 +235,224 @@ private fun LoginSheetScreen(
                             },
                         )
                     },
+                shadowElevation = 14.dp,
             ) {
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    Box(modifier = Modifier.width(86.dp).height(5.dp).background(MaterialTheme.colorScheme.outline, RoundedCornerShape(3.dp)))
-                }
-                Spacer(modifier = Modifier.height(28.dp))
-                Text(text = stringResource(R.string.login), style = MaterialTheme.typography.headlineMedium)
-                Text(text = stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedTextField(value = emailText, onValueChange = onEmailChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.email)) }, singleLine = true)
-                OutlinedTextField(value = passwordText, onValueChange = onPasswordChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.password)) }, singleLine = true)
-                HopesPrimaryButton(text = stringResource(R.string.login), onClick = onLoginClick)
-                TextButton(onClick = onNavigateSignup, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = stringResource(R.string.no_account), textAlign = TextAlign.Center)
-                }
+                FigmaLoginSheetContent(
+                    emailText = emailText,
+                    passwordText = passwordText,
+                    onEmailChange = onEmailChange,
+                    onPasswordChange = onPasswordChange,
+                    onLoginClick = onLoginClick,
+                    onNavigateSignup = onNavigateSignup,
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun AuthBackground() {
+    Image(
+        painter = painterResource(R.drawable.login_guide_background),
+        contentDescription = null,
+        modifier = Modifier
+            .width(402.dp)
+            .height(874.dp),
+        contentScale = ContentScale.Crop,
+    )
+}
+
+@Composable
+private fun AuthHeroCopy() {
+    val extendedColors = LocalHopesExtendedColors.current
+
+    Column(modifier = Modifier.offset(x = 32.dp, y = 286.dp).width(318.dp)) {
+        Text(
+            text = stringResource(R.string.auth_title),
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = TextStyle(
+                fontSize = 31.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 39.sp,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(13.dp))
+
+        Text(
+            text = stringResource(R.string.auth_description),
+            color = extendedColors.authDescription,
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 24.sp,
+            ),
+        )
+    }
+}
+
+@Composable
+private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedColors) {
+    Image(
+        painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
+        contentDescription = null,
+        modifier = Modifier
+            .offset(x = 181.dp, y = 581.dp)
+            .width(22.dp)
+            .height(39.dp)
+            .rotate(90f),
+    )
+    Image(
+        painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
+        contentDescription = null,
+        modifier = Modifier
+            .offset(x = 181.dp, y = 563.dp)
+            .width(22.dp)
+            .height(39.dp)
+            .rotate(90f),
+    )
+    Text(
+        text = "위로 스와이프하기",
+        modifier = Modifier
+            .offset(y = 621.dp)
+            .fillMaxWidth(),
+        color = MaterialTheme.colorScheme.onPrimary,
+        textAlign = TextAlign.Center,
+        style = TextStyle(
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+        ),
+    )
+    Text(
+        text = stringResource(R.string.auth_swipe),
+        modifier = Modifier
+            .offset(y = 651.dp)
+            .fillMaxWidth(),
+        color = extendedColors.authDescription,
+        textAlign = TextAlign.Center,
+        style = TextStyle(fontSize = 12.sp),
+    )
+}
+
+@Composable
+private fun AuthSheetHandle() {
+    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .width(86.dp)
+                .height(5.dp)
+                .background(
+                    color = LocalHopesExtendedColors.current.authHandle,
+                    shape = RoundedCornerShape(3.dp),
+                ),
+        )
+    }
+}
+
+@Composable
+private fun FigmaLoginSheetContent(
+    emailText: String,
+    passwordText: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    onNavigateSignup: () -> Unit,
+) {
+    val extendedColors = LocalHopesExtendedColors.current
+    val accountPrompt = stringResource(R.string.no_account)
+    val signupText = stringResource(R.string.signup)
+    val accountPromptAnnotated = AnnotatedString.Builder().apply {
+        append(accountPrompt.removeSuffix(signupText))
+        withStyle(
+            SpanStyle(
+                color = MaterialTheme.colorScheme.primary,
+                textDecoration = TextDecoration.Underline,
+            ),
+        ) {
+            append(signupText)
+        }
+    }.toAnnotatedString()
+
+    Box(modifier = Modifier.height(502.dp).fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .offset(x = 126.dp, y = 20.dp)
+                .width(86.dp),
+        ) {
+            AuthSheetHandle()
+        }
+        Text(
+            text = stringResource(R.string.login),
+            modifier = Modifier.offset(y = 68.dp),
+            color = MaterialTheme.colorScheme.onSurface,
+            style = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold),
+        )
+        Text(
+            text = stringResource(R.string.login_subtitle),
+            modifier = Modifier.offset(y = 108.dp),
+            color = extendedColors.authFieldHint,
+            style = TextStyle(fontSize = 14.sp, lineHeight = 20.sp),
+        )
+        AuthFieldLabel(labelRes = R.string.email, modifier = Modifier.offset(y = 162.dp))
+        FigmaAuthTextField(
+            value = emailText,
+            onValueChange = onEmailChange,
+            labelRes = R.string.email,
+            modifier = Modifier.offset(y = 183.dp),
+        )
+        AuthFieldLabel(labelRes = R.string.password, modifier = Modifier.offset(y = 238.dp))
+        FigmaAuthTextField(
+            value = passwordText,
+            onValueChange = onPasswordChange,
+            labelRes = R.string.password,
+            isPassword = true,
+            modifier = Modifier.offset(y = 261.dp),
+        )
+        FigmaLoginButton(
+            onClick = onLoginClick,
+            modifier = Modifier.offset(y = 355.dp),
+        )
+        Text(
+            text = accountPromptAnnotated,
+            modifier = Modifier
+                .offset(y = 422.dp)
+                .fillMaxWidth()
+                .clickable(onClick = onNavigateSignup),
+            color = extendedColors.authFieldHint,
+            textAlign = TextAlign.Center,
+            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+        )
+    }
+}
+
+@Composable
+private fun AuthFieldLabel(labelRes: Int, modifier: Modifier = Modifier) {
+    Text(
+        text = stringResource(labelRes),
+        modifier = modifier,
+        color = MaterialTheme.colorScheme.onSurface,
+        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
+    )
+}
+
+@Composable
+private fun FigmaLoginButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(46.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(AppRadius.Button),
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.login),
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+        )
     }
 }
 

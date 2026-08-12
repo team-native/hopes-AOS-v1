@@ -27,7 +27,7 @@ fun HopesSurfaceCard(
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
     ) {
         Column(
-            modifier = Modifier.padding(AppSpacing.Item),
+            modifier = Modifier.padding(16.dp),
             content = content,
         )
     }

@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +33,7 @@ import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesLightLogo
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesSurfaceCard
+import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
 
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
 @Composable
@@ -83,31 +87,25 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    FigmaPhoneScreen {
+        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
         Image(
             painter = painterResource(R.drawable.login_guide_background),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.width(402.dp).height(874.dp),
             contentScale = ContentScale.Crop,
         )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .widthIn(max = 402.dp)
-                .align(Alignment.TopCenter)
-                .padding(horizontal = 32.dp, vertical = 52.dp),
-        ) {
+        Column(modifier = Modifier.offset(x = 32.dp, y = 76.dp).width(338.dp)) {
             HopesLightLogo()
-
-            Spacer(modifier = Modifier.height(92.dp))
-
+        }
+        Column(modifier = Modifier.offset(x = 32.dp, y = 286.dp).width(318.dp)) {
             Text(
                 text = stringResource(R.string.auth_title),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.headlineLarge,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(22.dp))
 
             Text(
                 text = stringResource(R.string.auth_description),
@@ -115,24 +113,15 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                 style = MaterialTheme.typography.bodyLarge,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            HopesSurfaceCard(
-                modifier = Modifier,
-            ) {
-                Text(
-                    text = stringResource(R.string.login),
-                    style = MaterialTheme.typography.headlineMedium,
-                )
-                Text(
-                    text = stringResource(R.string.auth_swipe),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                TextButton(onClick = onNavigateLogin) {
-                    Text(text = stringResource(R.string.login))
-                }
-            }
+        }
+        Text(text = "위로 스와이프하기", modifier = Modifier.offset(y = 621.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
+        Text(text = stringResource(R.string.auth_swipe), modifier = Modifier.offset(y = 651.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyMedium)
+        HopesSurfaceCard(modifier = Modifier.offset(y = 684.dp).width(402.dp).height(190.dp)) {
+            Spacer(modifier = Modifier.height(38.dp))
+            Text(text = stringResource(R.string.login), style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
+            TextButton(onClick = onNavigateLogin) { Text(text = stringResource(R.string.login)) }
+        }
         }
     }
 }

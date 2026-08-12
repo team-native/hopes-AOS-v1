@@ -18,7 +18,12 @@ import com.example.hopes.navigation.HopesDestination
 
 /** 설정 안내 항목을 화면에 조합한다. */
 @Composable
-fun SettingsScreenContent(onNavigate: (HopesDestination) -> Unit) {
+fun SettingsScreenContent(
+    onNavigate: (HopesDestination) -> Unit,
+    onNavigateToMyPage: () -> Unit,
+    onNavigateToPersonalSettings: () -> Unit,
+    onNavigateToContact: () -> Unit,
+) {
     HopesScaffold(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
@@ -42,9 +47,10 @@ fun SettingsScreenContent(onNavigate: (HopesDestination) -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            stringArrayResource(R.array.settings_items).forEach { item ->
-                SettingsItem(text = item)
-            }
+            SettingsItem(text = stringResource(R.string.my_page), onClick = onNavigateToMyPage)
+            SettingsItem(text = stringResource(R.string.personal_settings), onClick = onNavigateToPersonalSettings)
+            SettingsItem(text = stringResource(R.string.contact), onClick = onNavigateToContact)
+            SettingsItem(text = stringResource(R.string.dark_mode), onClick = {})
         }
     }
 }

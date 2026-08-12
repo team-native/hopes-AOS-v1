@@ -21,7 +21,14 @@ fun HopesBottomNavigation(
     onNavigate: (HopesDestination) -> Unit,
 ) {
     NavigationBar {
-        HopesDestination.entries.forEach { destination ->
+        HopesDestination.entries
+            .filter { destination ->
+                destination == HopesDestination.Home ||
+                    destination == HopesDestination.Chat ||
+                    destination == HopesDestination.History ||
+                    destination == HopesDestination.Settings
+            }
+            .forEach { destination ->
             NavigationBarItem(
                 selected = selectedDestination == destination,
                 onClick = { onNavigate(destination) },
@@ -44,6 +51,7 @@ private fun HopesDestination.icon() = when (this) {
     HopesDestination.Chat -> Icons.Outlined.ChatBubbleOutline
     HopesDestination.History -> Icons.Outlined.History
     HopesDestination.Settings -> Icons.Outlined.Settings
+    else -> Icons.Outlined.Home
 }
 
 private fun HopesDestination.labelResourceId() = when (this) {
@@ -51,4 +59,5 @@ private fun HopesDestination.labelResourceId() = when (this) {
     HopesDestination.Chat -> R.string.navigation_chat
     HopesDestination.History -> R.string.navigation_history
     HopesDestination.Settings -> R.string.navigation_settings
+    else -> R.string.navigation_home
 }

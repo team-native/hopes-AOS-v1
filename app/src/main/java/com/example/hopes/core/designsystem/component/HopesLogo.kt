@@ -54,3 +54,40 @@ fun HopesLogo() {
         }
     }
 }
+
+/** 밝은 배경 위에서 사용하는 브랜드 로고를 제공한다. */
+@Composable
+fun HopesLightLogo() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(AppIconSize.Logo)
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(AppRadius.Logo),
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = stringResource(R.string.logo_mark),
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+        Column {
+            Text(
+                text = stringResource(R.string.app_name),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Text(
+                text = stringResource(R.string.school_name),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}

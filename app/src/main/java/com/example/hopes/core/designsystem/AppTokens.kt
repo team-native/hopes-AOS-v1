@@ -9,12 +9,16 @@ object AppSpacing {
     val Section = 24.dp
     val Item = 12.dp
     val Compact = 8.dp
+    val Small = 4.dp
+    val Large = 32.dp
 }
 
 object AppRadius {
     val Card = 20.dp
     val Button = 14.dp
     val Logo = 14.dp
+    val Field = 14.dp
+    val Sheet = 28.dp
 }
 
 object AppIconSize {

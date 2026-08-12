@@ -6,6 +6,16 @@ import com.example.hopes.navigation.HopesDestination
 
 /** 설정 목록 콘텐츠를 화면 단위로 제공한다. */
 @Composable
-fun SettingsScreen(onNavigate: (HopesDestination) -> Unit) {
-    SettingsScreenContent(onNavigate = onNavigate)
+fun SettingsScreen(
+    onNavigate: (HopesDestination) -> Unit,
+    onNavigateToMyPage: () -> Unit,
+    onNavigateToPersonalSettings: () -> Unit,
+    onNavigateToContact: () -> Unit,
+) {
+    SettingsScreenContent(
+        onNavigate = onNavigate,
+        onNavigateToMyPage = onNavigateToMyPage,
+        onNavigateToPersonalSettings = onNavigateToPersonalSettings,
+        onNavigateToContact = onNavigateToContact,
+    )
 }

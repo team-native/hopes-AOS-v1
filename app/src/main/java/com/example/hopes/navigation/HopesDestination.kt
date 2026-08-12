@@ -8,4 +8,8 @@ enum class HopesDestination(
     Chat("chat"),
     History("history"),
     Settings("settings"),
+    MyPage("my_page"),
+    PersonalSettings("personal_settings"),
+    Contact("contact"),
+    ChatDetail("chat_detail"),
 }

@@ -5,6 +5,16 @@ import com.example.hopes.navigation.HopesDestination
 
 /** 설정 화면에 앱 탐색 콜백을 제공한다. */
 @Composable
-fun SettingsRoute(onNavigate: (HopesDestination) -> Unit) {
-    SettingsScreen(onNavigate = onNavigate)
+fun SettingsRoute(
+    onNavigate: (HopesDestination) -> Unit,
+    onNavigateToMyPage: () -> Unit,
+    onNavigateToPersonalSettings: () -> Unit,
+    onNavigateToContact: () -> Unit,
+) {
+    SettingsScreen(
+        onNavigate = onNavigate,
+        onNavigateToMyPage = onNavigateToMyPage,
+        onNavigateToPersonalSettings = onNavigateToPersonalSettings,
+        onNavigateToContact = onNavigateToContact,
+    )
 }

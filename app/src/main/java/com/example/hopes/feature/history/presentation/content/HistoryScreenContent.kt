@@ -3,10 +3,12 @@ package com.example.hopes.feature.history.presentation.content
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +22,12 @@ import com.example.hopes.navigation.HopesDestination
 
 /** 지난 질문을 카드 목록으로 조합한다. */
 @Composable
-fun HistoryScreenContent(onNavigate: (HopesDestination) -> Unit) {
+fun HistoryScreenContent(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onQuestionClick: () -> Unit,
+    onNavigate: (HopesDestination) -> Unit,
+) {
     HopesScaffold(
         selectedDestination = HopesDestination.History,
         onNavigate = onNavigate,
@@ -45,9 +52,17 @@ fun HistoryScreenContent(onNavigate: (HopesDestination) -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            stringArrayResource(R.array.history_questions).forEach { question ->
-                HistoryItem(question = question)
-            }
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(text = stringResource(R.string.history_search)) },
+            )
+            stringArrayResource(R.array.history_questions)
+                .filter { question -> question.contains(searchQuery, ignoreCase = true) }
+                .forEach { question ->
+                    HistoryItem(question = question, onClick = onQuestionClick)
+                }
         }
     }
 }

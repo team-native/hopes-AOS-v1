@@ -2,6 +2,7 @@ package com.example.hopes.feature.auth.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -505,20 +506,119 @@ private fun AuthFormScreen(
 
 @Composable
 private fun OnboardingContent(onStartChat: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(painter = painterResource(R.drawable.login_guide_background), contentDescription = null, modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
-        Column(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 32.dp, vertical = 52.dp),
-            verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
-        ) {
-            HopesLightLogo()
-            Spacer(modifier = Modifier.height(48.dp))
-            Text(text = stringResource(R.string.onboarding_title), color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.headlineLarge)
-            Text(text = stringResource(R.string.onboarding_description), color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f), style = MaterialTheme.typography.bodyLarge)
-            HopesSurfaceCard { Text(text = stringResource(R.string.onboarding_tip_one)) }
-            HopesSurfaceCard { Text(text = stringResource(R.string.onboarding_tip_two)) }
-            Spacer(modifier = Modifier.weight(1f))
-            HopesPrimaryButton(text = stringResource(R.string.start_chat), onClick = onStartChat)
+    val extendedColors = LocalHopesExtendedColors.current
+
+    FigmaPhoneScreen {
+        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
+            AuthBackground()
+            FigmaAuthBrandHeader(modifier = Modifier.offset(x = 32.dp, y = 76.dp))
+            Text(
+                text = stringResource(R.string.onboarding_title),
+                modifier = Modifier.offset(x = 32.dp, y = 220.dp).width(318.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = TextStyle(
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 43.sp,
+                ),
+            )
+            Text(
+                text = stringResource(R.string.onboarding_description),
+                modifier = Modifier.offset(x = 32.dp, y = 330.dp).width(306.dp),
+                color = extendedColors.authDescription,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 26.sp,
+                ),
+            )
+            OnboardingTipCard(
+                index = 1,
+                topText = stringResource(R.string.onboarding_tip_one_top),
+                bottomText = stringResource(R.string.onboarding_tip_one_bottom),
+                modifier = Modifier.offset(x = 32.dp, y = 450.dp),
+            )
+            OnboardingTipCard(
+                index = 2,
+                topText = stringResource(R.string.onboarding_tip_two_top),
+                bottomText = stringResource(R.string.onboarding_tip_two_bottom),
+                modifier = Modifier.offset(x = 32.dp, y = 543.dp),
+            )
+            Box(
+                modifier = Modifier
+                    .offset(x = 32.dp, y = 706.dp)
+                    .width(338.dp)
+                    .height(46.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(AppRadius.Button),
+                    )
+                    .clickable(onClick = onStartChat),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.start_chat),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun OnboardingTipCard(
+    index: Int,
+    topText: String,
+    bottomText: String,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .width(338.dp)
+            .height(78.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(18.dp),
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = RoundedCornerShape(18.dp),
+            ),
+    ) {
+        Box(
+            modifier = Modifier
+                .offset(x = 14.dp, y = 14.dp)
+                .width(24.dp)
+                .height(24.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(12.dp),
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = index.toString(),
+                color = MaterialTheme.colorScheme.primary,
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
+            )
+        }
+        Text(
+            text = topText,
+            modifier = Modifier.offset(x = 50.dp, y = 13.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.SemiBold),
+        )
+        Text(
+            text = bottomText,
+            modifier = Modifier.offset(x = 47.dp, y = 39.dp).width(260.dp),
+            color = MaterialTheme.colorScheme.onSurface,
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                lineHeight = 20.sp,
+            ),
+        )
     }
 }

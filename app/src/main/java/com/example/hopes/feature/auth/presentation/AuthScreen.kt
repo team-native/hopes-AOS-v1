@@ -59,23 +59,19 @@ fun AuthScreen(
     onSignupClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
+    onDismissLogin: () -> Unit,
     onStartChat: () -> Unit,
 ) {
     when (authStep) {
         AuthStep.Guide -> AuthGuideContent(onNavigateLogin = onNavigateLogin)
-        AuthStep.Login -> AuthFormScreen(
-            title = stringResource(R.string.login),
-            subtitle = stringResource(R.string.login_subtitle),
+        AuthStep.Login -> LoginSheetScreen(
             emailText = emailText,
             passwordText = passwordText,
-            nameText = null,
-            actionText = stringResource(R.string.login),
-            footerText = stringResource(R.string.no_account),
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
-            onNameChange = {},
-            onActionClick = onLoginClick,
-            onFooterClick = onNavigateSignup,
+            onLoginClick = onLoginClick,
+            onNavigateSignup = onNavigateSignup,
+            onDismissLogin = onDismissLogin,
         )
         AuthStep.SignUp -> AuthFormScreen(
             title = stringResource(R.string.signup),
@@ -172,6 +168,84 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             Text(text = stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
             TextButton(onClick = onNavigateLogin) { Text(text = stringResource(R.string.login)) }
         }
+        }
+    }
+}
+
+/** 피그마 02처럼 배경 위에 고정된 로그인 시트를 표시하고 아래 스와이프로 닫는다. */
+@Composable
+private fun LoginSheetScreen(
+    emailText: String,
+    passwordText: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    onNavigateSignup: () -> Unit,
+    onDismissLogin: () -> Unit,
+) {
+    val sheetTopOffset = remember { Animatable(372f) }
+    val animationScope = rememberCoroutineScope()
+
+    FigmaPhoneScreen {
+        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
+            Image(
+                painter = painterResource(R.drawable.login_guide_background),
+                contentDescription = null,
+                modifier = Modifier.width(402.dp).height(874.dp),
+                contentScale = ContentScale.Crop,
+            )
+            Box(
+                modifier = Modifier
+                    .width(402.dp)
+                    .height(372.dp)
+                    .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.12f)),
+            )
+            Column(modifier = Modifier.offset(x = 32.dp, y = 76.dp).width(338.dp)) {
+                HopesLightLogo()
+            }
+            Column(modifier = Modifier.offset(x = 32.dp, y = 286.dp).width(318.dp)) {
+                Text(text = stringResource(R.string.auth_title), color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.headlineLarge)
+            }
+            HopesSurfaceCard(
+                modifier = Modifier
+                    .offset { IntOffset(0, sheetTopOffset.value.roundToInt()) }
+                    .width(402.dp)
+                    .height(502.dp)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDrag = { change, dragAmount ->
+                                change.consume()
+                                animationScope.launch {
+                                    sheetTopOffset.snapTo((sheetTopOffset.value + dragAmount.y).coerceIn(372f, 684f))
+                                }
+                            },
+                            onDragEnd = {
+                                animationScope.launch {
+                                    if (sheetTopOffset.value > 520f) {
+                                        sheetTopOffset.animateTo(684f, tween(180))
+                                        onDismissLogin()
+                                    } else {
+                                        sheetTopOffset.animateTo(372f, tween(180))
+                                    }
+                                }
+                            },
+                        )
+                    },
+            ) {
+                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier.width(86.dp).height(5.dp).background(MaterialTheme.colorScheme.outline, RoundedCornerShape(3.dp)))
+                }
+                Spacer(modifier = Modifier.height(28.dp))
+                Text(text = stringResource(R.string.login), style = MaterialTheme.typography.headlineMedium)
+                Text(text = stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(value = emailText, onValueChange = onEmailChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.email)) }, singleLine = true)
+                OutlinedTextField(value = passwordText, onValueChange = onPasswordChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.password)) }, singleLine = true)
+                HopesPrimaryButton(text = stringResource(R.string.login), onClick = onLoginClick)
+                TextButton(onClick = onNavigateSignup, modifier = Modifier.fillMaxWidth()) {
+                    Text(text = stringResource(R.string.no_account), textAlign = TextAlign.Center)
+                }
+            }
         }
     }
 }

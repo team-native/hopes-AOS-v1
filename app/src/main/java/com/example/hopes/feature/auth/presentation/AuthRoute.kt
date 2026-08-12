@@ -34,6 +34,7 @@ fun AuthRoute(onAuthenticated: () -> Unit) {
         },
         onNavigateSignup = { authStep = AuthStep.SignUp },
         onNavigateLogin = { authStep = AuthStep.Login },
+        onDismissLogin = { authStep = AuthStep.Guide },
         onStartChat = onAuthenticated,
     )
 }

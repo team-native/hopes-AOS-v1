@@ -11,9 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +19,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.animation.core.Animatable
@@ -127,11 +124,12 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             Text(text = "위로 스와이프하기", modifier = Modifier.offset(y = 621.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
             Text(text = stringResource(R.string.auth_swipe), modifier = Modifier.offset(y = 651.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyMedium)
         }
+        // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 로그인 시트를 확장한다.
         HopesSurfaceCard(
             modifier = Modifier
                 .offset { IntOffset(x = 0, y = sheetTopOffset.value.roundToInt()) }
                 .width(402.dp)
-                .height(502.dp)
+                .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
                 .pointerInput(Unit) {
                     detectDragGestures(
                         onDrag = { change, dragAmount ->

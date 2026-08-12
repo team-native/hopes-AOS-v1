@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">hopes</string>
+    <string name="logo_mark">h</string>
+    <string name="school_name">광주소프트웨어마이스터고</string>
+    <string name="navigation_home">홈</string>
+    <string name="navigation_chat">채팅</string>
+    <string name="navigation_history">기록</string>
+    <string name="navigation_settings">설정</string>
+    <string name="home_title">선배에게 묻는\n가장 솔직한 학교 이야기</string>
+    <string name="home_description">재학생과 입학 희망자를 위한 AI 선배 챗봇이에요. 실제 선배들의 경험을 바탕으로 궁금한 점을 함께 정리해요.</string>
+    <string name="home_start_chat">질문 시작하기</string>
+    <string name="home_tip_title">더 좋은 답변을 받는 방법</string>
+    <string name="home_tip_description">학년, 관심 전공, 현재 상황을 함께 적으면 더 구체적인 답변을 받을 수 있어요.</string>
+    <string name="chat_title">새 대화</string>
+    <string name="chat_description">광주소프트웨어마이스터고 선배에게 편하게 질문해 보세요.</string>
+    <string name="chat_input_label">선배에게 메시지 보내기</string>
+    <string name="chat_send">전송</string>
+    <string name="chat_demo_answer">UI 데모 답변입니다. 실제 답변 기능은 서버 연동이 완료된 뒤 제공됩니다.</string>
+    <string name="history_title">지난 대화</string>
+    <string name="history_description">최근에 확인한 질문을 다시 살펴보세요.</string>
+    <string name="settings_title">설정</string>
+    <string name="settings_description">서비스 이용 환경과 개인 정보를 관리해요.</string>
+    <string-array name="chat_suggestions">
+        <item>기숙사 하루 일과가 어떻게 돼?</item>
+        <item>입학하려면 무엇을 준비해야 해?</item>
+        <item>전공 선택은 어떻게 하면 좋을까?</item>
+    </string-array>
+    <string-array name="history_questions">
+        <item>기숙사 하루 일과가 어떻게 돼?</item>
+        <item>전공 선택은 어떻게 하면 좋을까?</item>
+        <item>입학하려면 무엇을 준비해야 해?</item>
+    </string-array>
+    <string-array name="settings_items">
+        <item>개인 설정</item>
+        <item>알림 설정</item>
+        <item>문의하기</item>
+    </string-array>
+</resources>

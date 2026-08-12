@@ -57,6 +57,26 @@
     <string name="history_previous">이전</string>
     <string name="settings_personal_description">시스템 프롬프트 관리</string>
     <string name="settings_contact_description">gsm-chatbot@gsm.hs.kr</string>
+    <string name="home_onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
+    <string name="home_onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
+    <string name="home_tip_one">“기숙사 어때” 보단,\n“1학년 기숙사 평일 루틴 알려줘”</string>
+    <string name="home_tip_two">질문 전에,\n입학 / 전공 / 학교생활 중 카테고리를 골라요.</string>
+    <string name="chat_welcome">무엇이 궁금한가요?</string>
+    <string name="chat_welcome_description">선배들의 실제 경험을 바탕으로 답해드려요.</string>
+    <string name="chat_new_message">선배에게 메시지 보내기</string>
+    <string name="chat_additional_question">추가 질문 입력</string>
+    <string name="chat_save">저장</string>
+    <string name="chat_answer_label">선배 답변 · 실제 경험 기반</string>
+    <string name="chat_detail_answer">평일은 저녁 식사 후 자습, 점호 순서로 흘러가요. 처음엔 빠듯하지만 일주일 정도 지나면 개인 루틴이 잡혀요.</string>
+    <string name="my_page_account">계정 정보 (수정 불가)</string>
+    <string name="my_page_email">이메일: s26055@gsm.hs.kr</string>
+    <string name="my_page_major">전공: 인공지능소프트웨어과</string>
+    <string name="profile_placeholder">예: 프론트엔드에 관심 많은 8기 학생이에요.</string>
+    <string name="prompt_placeholder">예: 답변은 항상 3문장 이내로 짧게 해줘.</string>
+    <string name="contact_placeholder">예: 답변이 너무 짧게 나와요.</string>
+    <string name="contact_email_info">이메일 문의: gsm-chatbot@gsm.hs.kr</string>
+    <string name="open">열기</string>
+    <string name="logout_description">앱 설정과 도움말을 관리해요.</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>
         <item>입학하려면 무엇을 준비해야 해?</item>

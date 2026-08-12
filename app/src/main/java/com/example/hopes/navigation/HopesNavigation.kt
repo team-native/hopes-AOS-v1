@@ -49,10 +49,10 @@ fun HopesNavigation() {
                 onNavigateToContact = { hopesNavController.navigate(HopesDestination.Contact.route) },
             )
         }
-        composable(HopesDestination.MyPage.route) { DemoDetailScreen(title = "마이페이지") { hopesNavController.popBackStack() } }
-        composable(HopesDestination.PersonalSettings.route) { DemoDetailScreen(title = "개인 설정") { hopesNavController.popBackStack() } }
-        composable(HopesDestination.Contact.route) { DemoDetailScreen(title = "문의하기") { hopesNavController.popBackStack() } }
-        composable(HopesDestination.ChatDetail.route) { DemoDetailScreen(title = "기숙사 생활") { hopesNavController.popBackStack() } }
+        composable(HopesDestination.MyPage.route) { DemoDetailScreen(destination = HopesDestination.MyPage, onBackClick = hopesNavController::popBackStack) }
+        composable(HopesDestination.PersonalSettings.route) { DemoDetailScreen(destination = HopesDestination.PersonalSettings, onBackClick = hopesNavController::popBackStack) }
+        composable(HopesDestination.Contact.route) { DemoDetailScreen(destination = HopesDestination.Contact, onBackClick = hopesNavController::popBackStack) }
+        composable(HopesDestination.ChatDetail.route) { DemoDetailScreen(destination = HopesDestination.ChatDetail, onBackClick = hopesNavController::popBackStack) }
     }
 }
 

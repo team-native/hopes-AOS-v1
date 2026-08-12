@@ -47,10 +47,10 @@ fun SettingsScreenContent(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            SettingsItem(text = stringResource(R.string.my_page), onClick = onNavigateToMyPage)
-            SettingsItem(text = stringResource(R.string.personal_settings), onClick = onNavigateToPersonalSettings)
-            SettingsItem(text = stringResource(R.string.contact), onClick = onNavigateToContact)
-            SettingsItem(text = stringResource(R.string.dark_mode), onClick = {})
+            SettingsItem(text = stringResource(R.string.my_page), description = stringResource(R.string.profile), onClick = onNavigateToMyPage)
+            SettingsItem(text = stringResource(R.string.personal_settings), description = stringResource(R.string.settings_personal_description), onClick = onNavigateToPersonalSettings)
+            SettingsItem(text = stringResource(R.string.contact), description = stringResource(R.string.settings_contact_description), onClick = onNavigateToContact)
+            SettingsItem(text = stringResource(R.string.dark_mode), description = stringResource(R.string.settings_description), onClick = {})
         }
     }
 }

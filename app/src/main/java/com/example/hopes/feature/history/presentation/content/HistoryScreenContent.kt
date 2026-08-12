@@ -29,7 +29,7 @@ import com.example.hopes.navigation.HopesDestination
 fun HistoryScreenContent(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     FigmaAppFrame(
@@ -128,7 +128,7 @@ private fun HistorySearchField(
 @Composable
 private fun HistoryQuestionGroups(
     searchQuery: String,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
     val recentQuestions = listOf(
         "기숙사 하루 일과가 어떻게 돼?",
@@ -166,7 +166,7 @@ private fun HistoryGroup(
     questions: List<String>,
     itemStartTop: Int,
     searchQuery: String,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
 ) {
     Text(
         text = title,
@@ -182,7 +182,7 @@ private fun HistoryGroup(
                 modifier = Modifier
                     .offset(x = 24.dp, y = (itemStartTop + (index * 46)).dp)
                     .width(280.dp)
-                    .clickable(onClick = onQuestionClick),
+                    .clickable { onQuestionClick(question) },
                 color = if (titleTop == 282 && index == 0) {
                     MaterialTheme.colorScheme.onSurface
                 } else {

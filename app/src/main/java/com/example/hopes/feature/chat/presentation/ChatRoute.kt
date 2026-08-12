@@ -9,21 +9,30 @@ import com.example.hopes.navigation.HopesDestination
 
 /** 채팅 입력 상태를 소유하고 화면 이벤트를 처리한다. */
 @Composable
-fun ChatRoute(onNavigate: (HopesDestination) -> Unit) {
+fun ChatRoute(
+    onNavigate: (HopesDestination) -> Unit,
+    onNavigateToChatDetail: (String) -> Unit,
+) {
     var questionText by rememberSaveable { mutableStateOf("") }
-    var submittedQuestion by rememberSaveable { mutableStateOf<String?>(null) }
 
     ChatScreen(
         questionText = questionText,
-        submittedQuestion = submittedQuestion,
         onEvent = { event ->
             when (event) {
                 is ChatScreenEvent.QuestionChanged -> questionText = event.question
                 ChatScreenEvent.QuestionSubmitted -> {
-                    submittedQuestion = questionText.trim().takeIf(String::isNotEmpty)
-                    questionText = ""
+                    questionText.trim()
+                        .takeIf(String::isNotEmpty)
+                        ?.let { question ->
+                            questionText = ""
+                            onNavigateToChatDetail(question)
+                        }
                 }
-                is ChatScreenEvent.SuggestionSelected -> questionText = event.question
+                is ChatScreenEvent.SuggestionSelected -> {
+                    questionText = ""
+                    onNavigateToChatDetail(event.question)
+                }
+                ChatScreenEvent.NewChatClicked -> questionText = ""
             }
         },
         onNavigate = onNavigate,

@@ -12,6 +12,8 @@ data class HopesExtendedColors(
     val authFieldBorder: Color,
     val authFieldHint: Color,
     val authHandle: Color,
+    val signupGradientStart: Color,
+    val signupGradientEnd: Color,
     val authSubtitle: Color,
 )
 
@@ -25,6 +27,8 @@ internal val lightHopesExtendedColors = HopesExtendedColors(
     authFieldBorder = Color(0xFFD9D9D9),
     authFieldHint = Color(0xFF6B7A94),
     authHandle = Color(0xFFD1DEED),
+    signupGradientStart = Color(0xFF2EA1ED),
+    signupGradientEnd = Color(0xFF0D6BC7),
     authSubtitle = Color(0xFF718096),
 )
 
@@ -34,5 +38,7 @@ internal val darkHopesExtendedColors = HopesExtendedColors(
     authFieldBorder = Color(0xFF596878),
     authFieldHint = Color(0xFFB3C2D6),
     authHandle = Color(0xFF8FA8C2),
+    signupGradientStart = Color(0xFF2EA1ED),
+    signupGradientEnd = Color(0xFF0D6BC7),
     authSubtitle = Color(0xFFB3C2D6),
 )

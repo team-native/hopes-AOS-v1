@@ -8,12 +8,16 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun SettingsScreen(
     onNavigate: (HopesDestination) -> Unit,
+    isDarkModeEnabled: Boolean,
+    onDarkModeChange: (Boolean) -> Unit,
     onNavigateToMyPage: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
 ) {
     SettingsScreenContent(
         onNavigate = onNavigate,
+        isDarkModeEnabled = isDarkModeEnabled,
+        onDarkModeChange = onDarkModeChange,
         onNavigateToMyPage = onNavigateToMyPage,
         onNavigateToPersonalSettings = onNavigateToPersonalSettings,
         onNavigateToContact = onNavigateToContact,

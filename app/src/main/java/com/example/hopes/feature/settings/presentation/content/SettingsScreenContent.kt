@@ -11,10 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,12 +27,12 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun SettingsScreenContent(
     onNavigate: (HopesDestination) -> Unit,
+    isDarkModeEnabled: Boolean,
+    onDarkModeChange: (Boolean) -> Unit,
     onNavigateToMyPage: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
 ) {
-    var isDarkModeEnabled by rememberSaveable { mutableStateOf(false) }
-
     FigmaAppFrame(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
@@ -67,7 +63,7 @@ fun SettingsScreenContent(
         FigmaDarkModeRow(
             isEnabled = isDarkModeEnabled,
             modifier = Modifier.offset(x = 39.dp, y = 307.dp),
-            onToggle = { isDarkModeEnabled = !isDarkModeEnabled },
+            onToggle = { onDarkModeChange(!isDarkModeEnabled) },
         )
         Box(
             modifier = Modifier

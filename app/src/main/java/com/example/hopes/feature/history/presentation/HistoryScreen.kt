@@ -9,7 +9,7 @@ import com.example.hopes.navigation.HopesDestination
 fun HistoryScreen(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    onQuestionClick: () -> Unit,
+    onQuestionClick: (String) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     HistoryScreenContent(

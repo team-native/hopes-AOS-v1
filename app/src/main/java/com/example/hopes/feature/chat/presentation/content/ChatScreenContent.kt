@@ -33,33 +33,29 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun ChatScreenContent(
     questionText: String,
-    submittedQuestion: String?,
     onQuestionChange: (String) -> Unit,
     onSuggestionClick: (String) -> Unit,
     onSubmitClick: () -> Unit,
+    onNewChatClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     FigmaAppFrame(
         selectedDestination = HopesDestination.Chat,
         onNavigate = onNavigate,
     ) {
-        ChatHomeHeader()
+        ChatHomeHeader(onNewChatClick = onNewChatClick)
         ChatWelcome()
         ChatSuggestionList(onSuggestionClick = onSuggestionClick)
-        if (submittedQuestion == null) {
-            FigmaChatComposer(
-                value = questionText,
-                onValueChange = onQuestionChange,
-                onSubmitClick = onSubmitClick,
-            )
-        } else {
-            ChatSubmittedPreview(question = submittedQuestion)
-        }
+        FigmaChatComposer(
+            value = questionText,
+            onValueChange = onQuestionChange,
+            onSubmitClick = onSubmitClick,
+        )
     }
 }
 
 @Composable
-private fun ChatHomeHeader() {
+private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
     FigmaBrandHeader(modifier = Modifier.offset(x = 24.dp, y = 68.dp))
     Box(
         modifier = Modifier
@@ -67,7 +63,8 @@ private fun ChatHomeHeader() {
             .width(70.dp)
             .height(39.dp)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp)),
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+            .clickable(onClick = onNewChatClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -208,14 +205,4 @@ private fun FigmaChatComposer(
             )
         }
     }
-}
-
-@Composable
-private fun ChatSubmittedPreview(question: String) {
-    Text(
-        text = question,
-        modifier = Modifier.offset(x = 24.dp, y = 728.dp).width(354.dp),
-        color = MaterialTheme.colorScheme.primary,
-        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
-    )
 }

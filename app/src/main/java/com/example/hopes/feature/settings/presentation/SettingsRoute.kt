@@ -7,12 +7,16 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun SettingsRoute(
     onNavigate: (HopesDestination) -> Unit,
+    isDarkModeEnabled: Boolean,
+    onDarkModeChange: (Boolean) -> Unit,
     onNavigateToMyPage: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
 ) {
     SettingsScreen(
         onNavigate = onNavigate,
+        isDarkModeEnabled = isDarkModeEnabled,
+        onDarkModeChange = onDarkModeChange,
         onNavigateToMyPage = onNavigateToMyPage,
         onNavigateToPersonalSettings = onNavigateToPersonalSettings,
         onNavigateToContact = onNavigateToContact,

@@ -32,11 +32,16 @@ import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 @Composable
 fun DemoDetailScreen(
     destination: HopesDestination,
+    question: String = "",
     onBackClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     when (destination) {
-        HopesDestination.ChatDetail -> FigmaChatDetailScreen(onBackClick = onBackClick, onNavigate = onNavigate)
+        HopesDestination.ChatDetail -> FigmaChatDetailScreen(
+            question = question,
+            onBackClick = onBackClick,
+            onNavigate = onNavigate,
+        )
         HopesDestination.MyPage -> FigmaMyPageScreen(onBackClick = onBackClick, onNavigate = onNavigate)
         HopesDestination.PersonalSettings -> FigmaPersonalSettingsScreen(onBackClick = onBackClick, onNavigate = onNavigate)
         HopesDestination.Contact -> FigmaContactScreen(onBackClick = onBackClick, onNavigate = onNavigate)
@@ -45,7 +50,11 @@ fun DemoDetailScreen(
 }
 
 @Composable
-private fun FigmaChatDetailScreen(onBackClick: () -> Unit, onNavigate: (HopesDestination) -> Unit) {
+private fun FigmaChatDetailScreen(
+    question: String,
+    onBackClick: () -> Unit,
+    onNavigate: (HopesDestination) -> Unit,
+) {
     var replyText by rememberSaveable { mutableStateOf("") }
     FigmaAppFrame(
         selectedDestination = HopesDestination.Chat,
@@ -58,7 +67,7 @@ private fun FigmaChatDetailScreen(onBackClick: () -> Unit, onNavigate: (HopesDes
             actionText = stringResource(R.string.chat_save),
         )
         FigmaBubble(
-            text = "기숙사 하루 일과가 어떻게 돼?",
+            text = question.ifBlank { stringResource(R.string.chat_detail_title) },
             modifier = Modifier.offset(x = 113.dp, y = 150.dp),
             isUser = true,
         )
@@ -112,7 +121,7 @@ private fun FigmaPersonalSettingsScreen(onBackClick: () -> Unit, onNavigate: (Ho
             Text(text = stringResource(R.string.personal_settings), modifier = Modifier.offset(x = 24.dp, y = 32.dp), style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
             FigmaFieldLabel(text = stringResource(R.string.system_prompt) + " (AI 응답 생성 시 반영됩니다)", modifier = Modifier.offset(x = 24.dp, y = 80.dp))
             FigmaTextArea(value = promptText, onValueChange = { promptText = it }, hint = stringResource(R.string.prompt_placeholder), height = 210, modifier = Modifier.offset(x = 24.dp, y = 112.dp))
-            FigmaPrimaryButton(text = "프롬프트 저장", modifier = Modifier.offset(x = 230.dp, y = 341.dp).width(100.dp).height(46.dp)) {}
+            FigmaPrimaryButton(text = stringResource(R.string.prompt_save), modifier = Modifier.offset(x = 230.dp, y = 341.dp).width(100.dp).height(46.dp)) {}
         }
     }
 }

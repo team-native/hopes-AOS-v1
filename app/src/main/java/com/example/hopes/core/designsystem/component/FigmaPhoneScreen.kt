@@ -1,24 +1,52 @@
 package com.example.hopes.core.designsystem.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import kotlin.math.min
 
-/** 402×874 Figma iPhone 프레임을 실제 화면 폭에 비례해 표시한다. */
+/** 반응형 Figma 뷰포트의 실제 렌더링 정보를 제공한다. */
+data class FigmaViewportMetrics(
+    val scale: Float,
+)
+
+/**
+ * 402×874 Figma iPhone 프레임을 실제 Android 화면에 비례해 표시한다.
+ * 배경과 오버레이는 전체 화면을 차지해 기기 비율이 달라도 빈 공간이 보이지 않는다.
+ */
 @Composable
-fun FigmaPhoneScreen(content: @Composable () -> Unit) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        val scale = maxWidth.value / FIGMA_PHONE_WIDTH
+fun FigmaPhoneScreen(
+    background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
-                .then(Modifier)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        )
+    },
+    overlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        val scale = min(
+            maxWidth.value / FIGMA_PHONE_WIDTH,
+            maxHeight.value / FIGMA_PHONE_HEIGHT,
+        )
+        val viewportMetrics = FigmaViewportMetrics(scale = scale)
+
+        background()
+
+        Box(
+            modifier = Modifier
                 .width(402.dp)
                 .height(874.dp)
                 .graphicsLayer(
@@ -30,7 +58,10 @@ fun FigmaPhoneScreen(content: @Composable () -> Unit) {
         ) {
             content()
         }
+
+        overlay(viewportMetrics)
     }
 }
 
 const val FIGMA_PHONE_WIDTH = 402f
+const val FIGMA_PHONE_HEIGHT = 874f

@@ -84,8 +84,11 @@
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
     <string name="login_guide_subtitle">학교 이메일로 로그인하세요.</string>
     <string name="signup_subtitle">학교 이메일로 간단히 시작하세요.</string>
+    <string name="signup_hero_title">학교 이메일로\n간단히 시작하기</string>
     <string name="signup_email_hint">s20000@gsm.hs.kr</string>
     <string name="signup_name_hint">임서하</string>
+    <string name="auth_swipe_title">위로 스와이프하기</string>
+    <string name="prompt_save">프롬프트 저장</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>
         <item>입학하려면 뭘 준비해야 해?</item>

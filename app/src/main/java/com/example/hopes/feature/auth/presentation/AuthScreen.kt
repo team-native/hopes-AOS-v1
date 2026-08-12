@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -112,9 +111,12 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
 
-    FigmaPhoneScreen {
+    FigmaPhoneScreen(
+        background = {
+            AuthBackground(modifier = Modifier.fillMaxSize())
+        },
+    ) {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
-            AuthBackground()
             FigmaAuthBrandHeader(modifier = Modifier.offset(x = 32.dp, y = 76.dp))
             AuthHeroCopy()
 
@@ -197,7 +199,11 @@ private fun LoginSheetScreen(
     val loginDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
 
-    FigmaPhoneScreen {
+    FigmaPhoneScreen(
+        background = {
+            AuthBackground(modifier = Modifier.fillMaxSize())
+        },
+    ) {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
             Box(modifier = Modifier.blur(8.dp)) {
                 AuthBackground()
@@ -255,13 +261,11 @@ private fun LoginSheetScreen(
 }
 
 @Composable
-private fun AuthBackground() {
+private fun AuthBackground(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(R.drawable.login_guide_background),
         contentDescription = null,
-        modifier = Modifier
-            .width(402.dp)
-            .height(874.dp),
+        modifier = modifier,
         contentScale = ContentScale.Crop,
     )
 }
@@ -316,7 +320,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
             .rotate(90f),
     )
     Text(
-        text = "위로 스와이프하기",
+        text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
             .offset(y = 621.dp)
             .fillMaxWidth(),
@@ -484,14 +488,21 @@ private fun AuthFormScreen(
                 modifier = Modifier
                     .width(402.dp)
                     .height(250.dp)
-                    .background(Brush.verticalGradient(listOf(Color(0xFF2EA1ED), Color(0xFF0D6BC7)))),
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(
+                                extendedColors.signupGradientStart,
+                                extendedColors.signupGradientEnd,
+                            ),
+                        ),
+                    ),
             )
             FigmaBrandHeader(
                 modifier = Modifier.offset(x = 32.dp, y = 76.dp),
                 isOnBlueBackground = true,
             )
             Text(
-                text = "학교 이메일로\n간단히 시작하기",
+                text = stringResource(R.string.signup_hero_title),
                 modifier = Modifier.offset(x = 32.dp, y = 154.dp).width(260.dp),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
@@ -573,9 +584,12 @@ private fun FigmaSignupField(
 private fun OnboardingContent(onStartChat: () -> Unit) {
     val extendedColors = LocalHopesExtendedColors.current
 
-    FigmaPhoneScreen {
+    FigmaPhoneScreen(
+        background = {
+            AuthBackground(modifier = Modifier.fillMaxSize())
+        },
+    ) {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
-            AuthBackground()
             FigmaAuthBrandHeader(modifier = Modifier.offset(x = 32.dp, y = 76.dp))
             Text(
                 text = stringResource(R.string.onboarding_title),

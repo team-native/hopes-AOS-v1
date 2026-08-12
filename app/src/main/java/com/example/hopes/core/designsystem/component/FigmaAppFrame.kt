@@ -3,16 +3,20 @@ package com.example.hopes.core.designsystem.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,20 +31,45 @@ import com.example.hopes.navigation.HopesDestination
 fun FigmaAppFrame(
     selectedDestination: HopesDestination,
     onNavigate: (HopesDestination) -> Unit,
+    background: @Composable BoxScope.() -> Unit = {},
+    contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
     content: @Composable () -> Unit,
 ) {
-    FigmaPhoneScreen {
+    FigmaPhoneScreen(
+        background = background,
+        overlay = { viewportMetrics ->
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .width((FIGMA_PHONE_WIDTH * viewportMetrics.scale).dp)
+                    .height((FIGMA_TAB_BAR_HEIGHT * viewportMetrics.scale).dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(FIGMA_PHONE_WIDTH.dp)
+                        .height(FIGMA_TAB_BAR_HEIGHT.dp)
+                        .graphicsLayer(
+                            scaleX = viewportMetrics.scale,
+                            scaleY = viewportMetrics.scale,
+                            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 1f),
+                        ),
+                ) {
+                    FigmaBottomNavigation(
+                        selectedDestination = selectedDestination,
+                        onNavigate = onNavigate,
+                    )
+                }
+            }
+        },
+    ) {
         Box(
             modifier = Modifier
                 .width(402.dp)
                 .height(874.dp)
-                .background(MaterialTheme.colorScheme.background),
+                .background(contentBackgroundColor),
         ) {
             content()
-            FigmaBottomNavigation(
-                selectedDestination = selectedDestination,
-                onNavigate = onNavigate,
-            )
         }
     }
 }
@@ -60,9 +89,8 @@ fun FigmaBottomNavigation(
 
     Box(
         modifier = Modifier
-            .offset(y = 790.dp)
             .width(402.dp)
-            .height(84.dp)
+            .height(FIGMA_TAB_BAR_HEIGHT.dp)
             .background(MaterialTheme.colorScheme.surface),
     ) {
         destinations.forEachIndexed { index, destination ->
@@ -112,18 +140,10 @@ fun FigmaBottomNavigation(
                 )
             }
         }
-        Box(
-            modifier = Modifier
-                .offset(x = 133.dp, y = 68.dp)
-                .width(136.dp)
-                .height(5.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    shape = RoundedCornerShape(3.dp),
-                ),
-        )
     }
 }
+
+private const val FIGMA_TAB_BAR_HEIGHT = 60f
 
 private fun HopesDestination.labelResourceId() = when (this) {
     HopesDestination.Home -> R.string.navigation_home

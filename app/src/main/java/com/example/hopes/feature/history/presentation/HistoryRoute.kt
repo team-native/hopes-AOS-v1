@@ -11,7 +11,7 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun HistoryRoute(
     onNavigate: (HopesDestination) -> Unit,
-    onNavigateToChatDetail: () -> Unit,
+    onNavigateToChatDetail: (String) -> Unit,
 ) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
     HistoryScreen(

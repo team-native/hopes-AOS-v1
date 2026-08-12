@@ -49,10 +49,10 @@ fun HopesNavigation() {
                 onNavigateToContact = { hopesNavController.navigate(HopesDestination.Contact.route) },
             )
         }
-        composable(HopesDestination.MyPage.route) { DemoDetailScreen(destination = HopesDestination.MyPage, onBackClick = hopesNavController::popBackStack) }
-        composable(HopesDestination.PersonalSettings.route) { DemoDetailScreen(destination = HopesDestination.PersonalSettings, onBackClick = hopesNavController::popBackStack) }
-        composable(HopesDestination.Contact.route) { DemoDetailScreen(destination = HopesDestination.Contact, onBackClick = hopesNavController::popBackStack) }
-        composable(HopesDestination.ChatDetail.route) { DemoDetailScreen(destination = HopesDestination.ChatDetail, onBackClick = hopesNavController::popBackStack) }
+        composable(HopesDestination.MyPage.route) { DemoDetailScreen(HopesDestination.MyPage, hopesNavController::popBackStack, hopesNavController::navigateTo) }
+        composable(HopesDestination.PersonalSettings.route) { DemoDetailScreen(HopesDestination.PersonalSettings, hopesNavController::popBackStack, hopesNavController::navigateTo) }
+        composable(HopesDestination.Contact.route) { DemoDetailScreen(HopesDestination.Contact, hopesNavController::popBackStack, hopesNavController::navigateTo) }
+        composable(HopesDestination.ChatDetail.route) { DemoDetailScreen(HopesDestination.ChatDetail, hopesNavController::popBackStack, hopesNavController::navigateTo) }
     }
 }
 

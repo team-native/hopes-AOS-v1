@@ -31,7 +31,7 @@
     <string name="department">과</string>
     <string name="generation">기수</string>
     <string name="no_account">계정이 없으신가요? 회원가입</string>
-    <string name="has_account">계정이 있으신가요? 로그인</string>
+    <string name="has_account">계정이 없으신가요? 로그인</string>
     <string name="onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
     <string name="onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
     <string name="start_chat">채팅 시작하기</string>
@@ -84,10 +84,13 @@
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
     <string name="login_guide_subtitle">학교 이메일로 로그인하세요.</string>
     <string name="signup_subtitle">학교 이메일로 간단히 시작하세요.</string>
+    <string name="signup_email_hint">s20000@gsm.hs.kr</string>
+    <string name="signup_name_hint">임서하</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>
-        <item>입학하려면 무엇을 준비해야 해?</item>
-        <item>전공 선택은 어떻게 하면 좋을까?</item>
+        <item>입학하려면 뭘 준비해야 해?</item>
+        <item>전공 선택은 어떻게 하는 게 좋아?</item>
+        <item>후배한테 해주고 싶은 조언 있어?</item>
     </string-array>
     <string-array name="history_questions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>

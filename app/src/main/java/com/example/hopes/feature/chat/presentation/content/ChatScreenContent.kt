@@ -1,24 +1,35 @@
 package com.example.hopes.feature.chat.presentation.content
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
-import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.HopesScaffold
-import com.example.hopes.core.designsystem.component.HopesLogoMark
-import com.example.hopes.feature.chat.presentation.component.ChatAnswerCard
-import com.example.hopes.feature.chat.presentation.component.ChatComposer
-import com.example.hopes.feature.chat.presentation.component.ChatHeader
-import com.example.hopes.feature.chat.presentation.component.ChatSuggestions
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.hopes.R
+import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.navigation.HopesDestination
 
-/** 채팅 헤더, 추천 질문, 답변, 입력창을 하나의 화면으로 조합한다. */
+/** 피그마 05 채팅 홈 프레임을 로컬 질문 상태와 함께 표시한다. */
 @Composable
 fun ChatScreenContent(
     questionText: String,
@@ -28,32 +39,183 @@ fun ChatScreenContent(
     onSubmitClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
-    HopesScaffold(
+    FigmaAppFrame(
         selectedDestination = HopesDestination.Chat,
         onNavigate = onNavigate,
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(
-                    horizontal = AppSpacing.ScreenHorizontal,
-                    vertical = AppSpacing.ScreenVertical,
-                )
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
-        ) {
-            ChatHeader()
-            HopesLogoMark(modifier = Modifier.align(Alignment.CenterHorizontally))
-            ChatSuggestions(onSuggestionClick = onSuggestionClick)
-            submittedQuestion?.let { question ->
-                ChatAnswerCard(question = question)
-            }
-            ChatComposer(
-                questionText = questionText,
-                onQuestionChange = onQuestionChange,
+    ) {
+        ChatHomeHeader()
+        ChatWelcome()
+        ChatSuggestionList(onSuggestionClick = onSuggestionClick)
+        if (submittedQuestion == null) {
+            FigmaChatComposer(
+                value = questionText,
+                onValueChange = onQuestionChange,
                 onSubmitClick = onSubmitClick,
+            )
+        } else {
+            ChatSubmittedPreview(question = submittedQuestion)
+        }
+    }
+}
+
+@Composable
+private fun ChatHomeHeader() {
+    FigmaBrandHeader(modifier = Modifier.offset(x = 24.dp, y = 68.dp))
+    Box(
+        modifier = Modifier
+            .offset(x = 308.dp, y = 66.dp)
+            .width(70.dp)
+            .height(39.dp)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.new_chat),
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+        )
+    }
+}
+
+@Composable
+private fun ChatWelcome() {
+    Box(
+        modifier = Modifier
+            .offset(x = 164.dp, y = 184.dp)
+            .size(74.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp)),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.logo_mark),
+            color = MaterialTheme.colorScheme.primary,
+            style = TextStyle(fontSize = 40.sp, fontWeight = FontWeight.Bold),
+        )
+    }
+    Text(
+        text = stringResource(R.string.chat_welcome),
+        modifier = Modifier.offset(y = 288.dp).fillMaxWidth(),
+        textAlign = TextAlign.Center,
+        style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
+    )
+    Text(
+        text = stringResource(R.string.chat_welcome_description),
+        modifier = Modifier.offset(y = 332.dp).fillMaxWidth(),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+        style = TextStyle(fontSize = 14.sp),
+    )
+}
+
+@Composable
+private fun ChatSuggestionList(onSuggestionClick: (String) -> Unit) {
+    val suggestionTexts = stringArrayResource(R.array.chat_suggestions)
+    val symbols = listOf("⌂", "◇", "<>", "□")
+    suggestionTexts.forEachIndexed { index, question ->
+        val topOffset = 396 + (index * 76)
+        FigmaSuggestionCard(
+            question = question,
+            symbol = symbols.getOrElse(index) { "□" },
+            modifier = Modifier.offset(x = 24.dp, y = topOffset.dp),
+            onClick = { onSuggestionClick(question) },
+        )
+    }
+}
+
+@Composable
+private fun FigmaSuggestionCard(
+    question: String,
+    symbol: String,
+    modifier: Modifier,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .width(354.dp)
+            .height(70.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp))
+            .clickable(onClick = onClick),
+    ) {
+        Box(
+            modifier = Modifier
+                .offset(x = 16.dp, y = 15.dp)
+                .size(38.dp)
+                .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(12.dp)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = symbol,
+                color = MaterialTheme.colorScheme.primary,
+                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold),
+            )
+        }
+        Text(
+            text = question,
+            modifier = Modifier.offset(x = 68.dp, y = 22.dp).width(266.dp),
+            style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp),
+        )
+    }
+}
+
+@Composable
+private fun FigmaChatComposer(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSubmitClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .offset(x = 24.dp, y = 728.dp)
+            .width(354.dp)
+            .height(52.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+    ) {
+        if (value.isEmpty()) {
+            Text(
+                text = stringResource(R.string.chat_new_message),
+                modifier = Modifier.offset(x = 14.dp, y = 17.dp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = TextStyle(fontSize = 14.sp),
+            )
+        }
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .offset(x = 14.dp, y = 10.dp)
+                .width(276.dp)
+                .height(32.dp),
+            singleLine = true,
+            textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 14.sp,
+            ),
+        )
+        Box(
+            modifier = Modifier
+                .offset(x = 306.dp, y = 11.dp)
+                .size(30.dp)
+                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
+                .clickable(onClick = onSubmitClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = "↑",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
             )
         }
     }
+}
+
+@Composable
+private fun ChatSubmittedPreview(question: String) {
+    Text(
+        text = question,
+        modifier = Modifier.offset(x = 24.dp, y = 728.dp).width(354.dp),
+        color = MaterialTheme.colorScheme.primary,
+        style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+    )
 }

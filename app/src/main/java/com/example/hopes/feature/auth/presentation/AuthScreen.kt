@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -39,6 +42,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
@@ -48,6 +53,8 @@ import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
+import com.example.hopes.core.designsystem.component.FigmaBottomNavigation
+import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.core.designsystem.component.HopesLightLogo
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesSurfaceCard
@@ -85,13 +92,9 @@ fun AuthScreen(
             onDismissLogin = onDismissLogin,
         )
         AuthStep.SignUp -> AuthFormScreen(
-            title = stringResource(R.string.signup),
-            subtitle = stringResource(R.string.signup_subtitle),
             emailText = emailText,
             passwordText = passwordText,
             nameText = nameText,
-            actionText = stringResource(R.string.signup),
-            footerText = stringResource(R.string.has_account),
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
             onNameChange = onNameChange,
@@ -459,48 +462,110 @@ private fun FigmaLoginButton(onClick: () -> Unit, modifier: Modifier = Modifier)
 
 @Composable
 private fun AuthFormScreen(
-    title: String,
-    subtitle: String,
     emailText: String,
     passwordText: String,
     nameText: String?,
-    actionText: String,
-    footerText: String,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
     onActionClick: () -> Unit,
     onFooterClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-    ) {
+    val extendedColors = LocalHopesExtendedColors.current
+
+    FigmaPhoneScreen {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-                .background(MaterialTheme.colorScheme.primary),
+                .width(402.dp)
+                .height(874.dp)
+                .background(MaterialTheme.colorScheme.background),
         ) {
-            Column(modifier = Modifier.padding(horizontal = 32.dp, vertical = 52.dp)) {
-                HopesLightLogo()
-                Spacer(modifier = Modifier.height(28.dp))
-                Text(text = title, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.headlineMedium)
-                Text(text = subtitle, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyMedium)
+            Box(
+                modifier = Modifier
+                    .width(402.dp)
+                    .height(250.dp)
+                    .background(Brush.verticalGradient(listOf(Color(0xFF2EA1ED), Color(0xFF0D6BC7)))),
+            )
+            FigmaBrandHeader(
+                modifier = Modifier.offset(x = 32.dp, y = 76.dp),
+                isOnBlueBackground = true,
+            )
+            Text(
+                text = "학교 이메일로\n간단히 시작하기",
+                modifier = Modifier.offset(x = 32.dp, y = 154.dp).width(260.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
+            )
+            Box(
+                modifier = Modifier
+                    .offset(x = 24.dp, y = 276.dp)
+                    .width(354.dp)
+                    .height(386.dp)
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+            ) {
+                val fieldOffsets = listOf(49, 117, 185, 254, 316)
+                val labels = listOf(R.string.email, R.string.name, R.string.department, R.string.generation, R.string.password)
+                labels.forEachIndexed { index, labelRes ->
+                    Text(
+                        text = stringResource(labelRes),
+                        modifier = Modifier.offset(x = 24.dp, y = (fieldOffsets[index] - 20).dp),
+                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
+                    )
+                }
+                FigmaSignupField(stringResource(R.string.signup_email_hint), emailText, onEmailChange, Modifier.offset(x = 17.dp, y = 49.dp))
+                FigmaSignupField(stringResource(R.string.signup_name_hint), nameText.orEmpty(), onNameChange, Modifier.offset(x = 17.dp, y = 117.dp))
+                FigmaSignupField("AI", "AI", {}, Modifier.offset(x = 17.dp, y = 185.dp), hasDropDown = true)
+                FigmaSignupField("10기", "10기", {}, Modifier.offset(x = 17.dp, y = 254.dp))
+                FigmaSignupField(stringResource(R.string.password), passwordText, onPasswordChange, Modifier.offset(x = 17.dp, y = 316.dp), isPassword = true)
             }
+            Box(
+                modifier = Modifier.offset(x = 24.dp, y = 704.dp).width(354.dp).height(46.dp)
+                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp)).clickable(onClick = onActionClick),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(stringResource(R.string.signup), color = MaterialTheme.colorScheme.onPrimary, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold))
+            }
+            Text(
+                text = stringResource(R.string.has_account),
+                modifier = Modifier.offset(y = 760.dp).fillMaxWidth().clickable(onClick = onFooterClick),
+                color = extendedColors.authFieldHint,
+                textAlign = TextAlign.Center,
+                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+            )
+            FigmaBottomNavigation(
+                selectedDestination = com.example.hopes.navigation.HopesDestination.Home,
+                onNavigate = {},
+            )
         }
-        HopesSurfaceCard(modifier = Modifier.padding(horizontal = 24.dp, vertical = 26.dp)) {
-            OutlinedTextField(value = emailText, onValueChange = onEmailChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.email)) }, singleLine = true)
-            OutlinedTextField(value = passwordText, onValueChange = onPasswordChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.password)) }, singleLine = true)
-            if (nameText != null) {
-                OutlinedTextField(value = nameText, onValueChange = onNameChange, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.name)) }, singleLine = true)
-                OutlinedTextField(value = "AI", onValueChange = {}, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.department)) }, singleLine = true)
-                OutlinedTextField(value = "10기", onValueChange = {}, modifier = Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.generation)) }, singleLine = true)
-            }
-            HopesPrimaryButton(text = actionText, onClick = onActionClick)
-            TextButton(onClick = onFooterClick, modifier = Modifier.fillMaxWidth()) {
-                Text(text = footerText, textAlign = TextAlign.Center)
-            }
-        }
+    }
+}
+
+/** 피그마 03 회원가입 카드의 319×43dp 입력 행이다. */
+@Composable
+private fun FigmaSignupField(
+    hint: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier,
+    isPassword: Boolean = false,
+    hasDropDown: Boolean = false,
+) {
+    val extendedColors = LocalHopesExtendedColors.current
+    Box(
+        modifier = modifier.width(319.dp).height(43.dp)
+            .border(1.dp, extendedColors.authFieldBorder, RoundedCornerShape(14.dp)),
+    ) {
+        if (value.isEmpty()) Text(hint, Modifier.offset(x = 12.dp, y = 11.dp), color = extendedColors.authFieldHint, style = TextStyle(fontSize = 15.sp))
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.offset(x = 12.dp, y = 10.dp).width(270.dp).height(24.dp),
+            singleLine = true,
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp),
+            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+        )
+        if (hasDropDown) Text("⌄", Modifier.offset(x = 289.dp, y = 9.dp), color = extendedColors.authFieldHint, style = TextStyle(fontSize = 20.sp))
     }
 }
 

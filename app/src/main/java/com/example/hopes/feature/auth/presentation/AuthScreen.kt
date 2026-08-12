@@ -1,6 +1,7 @@
 package com.example.hopes.feature.auth.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,13 +21,22 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
@@ -87,6 +97,9 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
+    val sheetTopOffset = remember { Animatable(684f) }
+    val animationScope = rememberCoroutineScope()
+
     FigmaPhoneScreen {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
         Image(
@@ -114,9 +127,46 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             )
 
         }
-        Text(text = "위로 스와이프하기", modifier = Modifier.offset(y = 621.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
-        Text(text = stringResource(R.string.auth_swipe), modifier = Modifier.offset(y = 651.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyMedium)
-        HopesSurfaceCard(modifier = Modifier.offset(y = 684.dp).width(402.dp).height(190.dp)) {
+        if (sheetTopOffset.value > 520f) {
+            Text(text = "위로 스와이프하기", modifier = Modifier.offset(y = 621.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.auth_swipe), modifier = Modifier.offset(y = 651.dp).fillMaxWidth(), textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f), style = MaterialTheme.typography.bodyMedium)
+        }
+        HopesSurfaceCard(
+            modifier = Modifier
+                .offset { IntOffset(x = 0, y = sheetTopOffset.value.roundToInt()) }
+                .width(402.dp)
+                .height(502.dp)
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            animationScope.launch {
+                                sheetTopOffset.snapTo(
+                                    (sheetTopOffset.value + dragAmount.y).coerceIn(372f, 684f),
+                                )
+                            }
+                        },
+                        onDragEnd = {
+                            animationScope.launch {
+                                if (sheetTopOffset.value < 540f) {
+                                    sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
+                                    onNavigateLogin()
+                                } else {
+                                    sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
+                                }
+                            }
+                        },
+                    )
+                },
+        ) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Box(
+                    modifier = Modifier
+                        .width(86.dp)
+                        .height(5.dp)
+                        .background(MaterialTheme.colorScheme.outline, RoundedCornerShape(3.dp)),
+                )
+            }
             Spacer(modifier = Modifier.height(38.dp))
             Text(text = stringResource(R.string.login), style = MaterialTheme.typography.headlineMedium)
             Text(text = stringResource(R.string.login_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)

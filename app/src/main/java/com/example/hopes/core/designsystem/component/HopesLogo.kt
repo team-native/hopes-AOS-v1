@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
@@ -89,5 +90,25 @@ fun HopesLightLogo() {
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
+    }
+}
+
+/** 피그마의 채팅 시작 화면에서 사용하는 중앙 브랜드 마크다. */
+@Composable
+fun HopesLogoMark(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(74.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(AppRadius.Card),
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.logo_mark),
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.headlineLarge,
+        )
     }
 }

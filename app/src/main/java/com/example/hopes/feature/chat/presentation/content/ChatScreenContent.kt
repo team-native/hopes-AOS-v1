@@ -8,8 +8,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesScaffold
+import com.example.hopes.core.designsystem.component.HopesLogoMark
 import com.example.hopes.feature.chat.presentation.component.ChatAnswerCard
 import com.example.hopes.feature.chat.presentation.component.ChatComposer
 import com.example.hopes.feature.chat.presentation.component.ChatHeader
@@ -42,6 +44,7 @@ fun ChatScreenContent(
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
         ) {
             ChatHeader()
+            HopesLogoMark(modifier = Modifier.align(Alignment.CenterHorizontally))
             ChatSuggestions(onSuggestionClick = onSuggestionClick)
             submittedQuestion?.let { question ->
                 ChatAnswerCard(question = question)

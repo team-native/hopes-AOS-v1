@@ -58,6 +58,11 @@ fun HistoryScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = stringResource(R.string.history_search)) },
             )
+            Text(
+                text = stringResource(R.string.history_recent),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.labelMedium,
+            )
             stringArrayResource(R.array.history_questions)
                 .filter { question -> question.contains(searchQuery, ignoreCase = true) }
                 .forEach { question ->

@@ -53,6 +53,10 @@
     <string name="onboarding_tip_two">2. 입학 / 전공 / 학교생활 중 관심 있는 주제를 골라요.</string>
     <string name="back">뒤로가기</string>
     <string name="detail_notice">입력한 내용은 이 데모 화면에서만 유지됩니다.</string>
+    <string name="history_recent">지난 7일</string>
+    <string name="history_previous">이전</string>
+    <string name="settings_personal_description">시스템 프롬프트 관리</string>
+    <string name="settings_contact_description">gsm-chatbot@gsm.hs.kr</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>
         <item>입학하려면 무엇을 준비해야 해?</item>

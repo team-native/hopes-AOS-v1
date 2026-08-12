@@ -26,13 +26,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
@@ -92,6 +91,7 @@ fun AuthScreen(
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
     val sheetTopOffset = remember { Animatable(684f) }
     val animationScope = rememberCoroutineScope()
+    val guideDensity = LocalDensity.current
 
     FigmaPhoneScreen {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
@@ -127,16 +127,18 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
         // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 로그인 시트를 확장한다.
         HopesSurfaceCard(
             modifier = Modifier
-                .offset { IntOffset(x = 0, y = sheetTopOffset.value.roundToInt()) }
+                .offset(y = sheetTopOffset.value.dp)
                 .width(402.dp)
                 .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
-                .pointerInput(Unit) {
+                .pointerInput(guideDensity) {
                     detectDragGestures(
                         onDrag = { change, dragAmount ->
                             change.consume()
                             animationScope.launch {
                                 sheetTopOffset.snapTo(
-                                    (sheetTopOffset.value + dragAmount.y).coerceIn(372f, 684f),
+                                    (sheetTopOffset.value + with(guideDensity) {
+                                        dragAmount.y.toDp().value
+                                    }).coerceIn(372f, 684f),
                                 )
                             }
                         },
@@ -183,6 +185,7 @@ private fun LoginSheetScreen(
 ) {
     val sheetTopOffset = remember { Animatable(372f) }
     val animationScope = rememberCoroutineScope()
+    val loginDensity = LocalDensity.current
 
     FigmaPhoneScreen {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
@@ -206,15 +209,19 @@ private fun LoginSheetScreen(
             }
             HopesSurfaceCard(
                 modifier = Modifier
-                    .offset { IntOffset(0, sheetTopOffset.value.roundToInt()) }
+                    .offset(y = sheetTopOffset.value.dp)
                     .width(402.dp)
                     .height(502.dp)
-                    .pointerInput(Unit) {
+                    .pointerInput(loginDensity) {
                         detectDragGestures(
                             onDrag = { change, dragAmount ->
                                 change.consume()
                                 animationScope.launch {
-                                    sheetTopOffset.snapTo((sheetTopOffset.value + dragAmount.y).coerceIn(372f, 684f))
+                                    sheetTopOffset.snapTo(
+                                        (sheetTopOffset.value + with(loginDensity) {
+                                            dragAmount.y.toDp().value
+                                        }).coerceIn(372f, 684f),
+                                    )
                                 }
                             },
                             onDragEnd = {

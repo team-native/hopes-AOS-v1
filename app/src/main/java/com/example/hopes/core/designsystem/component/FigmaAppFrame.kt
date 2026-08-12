@@ -1,11 +1,15 @@
 package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -17,7 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,34 +43,50 @@ fun FigmaAppFrame(
     onNavigate: (HopesDestination) -> Unit,
     background: @Composable BoxScope.() -> Unit = {},
     contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
+    imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
+    val density = LocalDensity.current
+    val isImeVisible = WindowInsets.ime.getBottom(density) > 0
+
     FigmaPhoneScreen(
-        background = background,
-        overlay = { viewportMetrics ->
+        background = {
+            // 디자인 캔버스 바깥도 실제 화면 배경으로 채워 빈 띠가 생기지 않게 한다.
             Box(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .navigationBarsPadding()
-                    .width((FIGMA_PHONE_WIDTH * viewportMetrics.scale).dp)
-                    .height((FIGMA_TAB_BAR_HEIGHT * viewportMetrics.scale).dp),
-            ) {
+                    .fillMaxSize()
+                    .background(contentBackgroundColor),
+            )
+            background()
+        },
+        overlay = { viewportMetrics ->
+            if (!isImeVisible) {
                 Box(
                     modifier = Modifier
-                        .width(FIGMA_PHONE_WIDTH.dp)
-                        .height(FIGMA_TAB_BAR_HEIGHT.dp)
-                        .graphicsLayer(
-                            scaleX = viewportMetrics.scale,
-                            scaleY = viewportMetrics.scale,
-                            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 1f),
-                        ),
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                        .width((FIGMA_PHONE_WIDTH * viewportMetrics.scale).dp)
+                        .height((FIGMA_TAB_BAR_HEIGHT * viewportMetrics.scale).dp),
                 ) {
-                    FigmaBottomNavigation(
-                        selectedDestination = selectedDestination,
-                        onNavigate = onNavigate,
-                    )
+                    Box(
+                        modifier = Modifier
+                            .width(FIGMA_PHONE_WIDTH.dp)
+                            .height(FIGMA_TAB_BAR_HEIGHT.dp)
+                            .graphicsLayer(
+                                scaleX = viewportMetrics.scale,
+                                scaleY = viewportMetrics.scale,
+                                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 1f),
+                            ),
+                    ) {
+                        FigmaBottomNavigation(
+                            selectedDestination = selectedDestination,
+                            onNavigate = onNavigate,
+                        )
+                    }
                 }
             }
+
+            imeOverlay(viewportMetrics)
         },
     ) {
         Box(
@@ -74,7 +100,10 @@ fun FigmaAppFrame(
     }
 }
 
-/** 피그마의 84dp 하단 탭 바와 활성 지시자를 제공한다. */
+/**
+ * 피그마의 하단 탭 중 앱이 담당하는 60dp 영역을 제공한다.
+ * 남은 24dp는 실제 Android 제스처 내비게이션 영역이 같은 위치를 담당한다.
+ */
 @Composable
 fun FigmaBottomNavigation(
     selectedDestination: HopesDestination,
@@ -91,16 +120,24 @@ fun FigmaBottomNavigation(
         modifier = Modifier
             .width(402.dp)
             .height(FIGMA_TAB_BAR_HEIGHT.dp)
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outline),
     ) {
         destinations.forEachIndexed { index, destination ->
             val centerX = 55 + (index * 88)
             val isSelected = destination == selectedDestination
+            val destinationLabel = stringResource(destination.labelResourceId())
             Box(
                 modifier = Modifier
                     .offset(x = (centerX - 30).dp, y = 12.dp)
                     .width(60.dp)
                     .height(48.dp)
+                    // 원본의 60×30 시각 pill은 유지하면서 탭 전체를 접근 가능한 터치 영역으로 제공한다.
+                    .semantics {
+                        role = Role.Tab
+                        contentDescription = destinationLabel
+                        selected = isSelected
+                    }
                     .clickable { onNavigate(destination) },
                 contentAlignment = Alignment.TopCenter,
             ) {

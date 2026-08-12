@@ -7,9 +7,16 @@ enum class HopesDestination(
     Home("home"),
     Chat("chat"),
     History("history"),
+    Alerts("alerts"),
     Settings("settings"),
+    AppSettings("app_settings"),
     MyPage("my_page"),
     PersonalSettings("personal_settings"),
     Contact("contact"),
-    ChatDetail("chat_detail"),
+    ChatDetail("chat_detail/{$CHAT_DETAIL_ARGUMENT}"),
 }
+
+const val CHAT_DETAIL_ARGUMENT = "conversationId"
+
+/** 대화 식별자를 경로에 포함해 상세 화면이 선택된 대화를 정확히 복원하게 한다. */
+fun chatDetailRoute(conversationId: String): String = "chat_detail/$conversationId"

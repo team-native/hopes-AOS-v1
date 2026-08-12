@@ -19,11 +19,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.component.figmaLoginLogoShadow
+import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 인증 화면의 42dp 브랜드 헤더다. */
 @Composable
-fun FigmaAuthBrandHeader(modifier: Modifier = Modifier) {
+fun FigmaAuthBrandHeader(
+    modifier: Modifier = Modifier,
+    logoShadowStyle: FigmaAuthLogoShadowStyle = FigmaAuthLogoShadowStyle.Raised,
+) {
     val extendedColors = LocalHopesExtendedColors.current
 
     Box(
@@ -34,6 +39,13 @@ fun FigmaAuthBrandHeader(modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .size(42.dp)
+                .then(
+                    if (logoShadowStyle == FigmaAuthLogoShadowStyle.Login) {
+                        Modifier.figmaLoginLogoShadow(RoundedCornerShape(AppRadius.Logo))
+                    } else {
+                        Modifier.figmaRaisedShadow(RoundedCornerShape(AppRadius.Logo))
+                    },
+                )
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(AppRadius.Logo),
@@ -53,8 +65,7 @@ fun FigmaAuthBrandHeader(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.app_name),
             modifier = Modifier
-                .align(Alignment.TopStart)
-                .offset(x = 54.dp),
+                .offset(x = 54.dp, y = 4.dp),
             color = MaterialTheme.colorScheme.onPrimary,
             style = TextStyle(
                 fontSize = 17.sp,
@@ -65,13 +76,18 @@ fun FigmaAuthBrandHeader(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.school_name),
             modifier = Modifier
-                .align(Alignment.BottomStart)
-                .offset(x = 54.dp),
-            color = extendedColors.authDescription,
+                .offset(x = 54.dp, y = 25.dp),
+            color = extendedColors.brandSubtitleOnBlue,
             style = TextStyle(
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Medium,
             ),
         )
     }
+}
+
+/** 인증 화면별 브랜드 로고에 사용되는 Figma 그림자 규격이다. */
+enum class FigmaAuthLogoShadowStyle {
+    Raised,
+    Login,
 }

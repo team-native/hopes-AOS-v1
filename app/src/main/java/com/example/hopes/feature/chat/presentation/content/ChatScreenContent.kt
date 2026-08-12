@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,8 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
+import com.example.hopes.core.designsystem.component.FigmaViewportMetrics
+import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.navigation.HopesDestination
 
 /** 피그마 05 채팅 홈 프레임을 로컬 질문 상태와 함께 표시한다. */
@@ -39,24 +50,39 @@ fun ChatScreenContent(
     onNewChatClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
+    val density = LocalDensity.current
+    val isImeVisible = WindowInsets.ime.getBottom(density) > 0
+
     FigmaAppFrame(
         selectedDestination = HopesDestination.Chat,
         onNavigate = onNavigate,
+        imeOverlay = { viewportMetrics ->
+            if (isImeVisible) {
+                FigmaImeChatComposer(
+                    viewportMetrics = viewportMetrics,
+                    value = questionText,
+                    onValueChange = onQuestionChange,
+                    onSubmitClick = onSubmitClick,
+                )
+            }
+        },
     ) {
         ChatHomeHeader(onNewChatClick = onNewChatClick)
         ChatWelcome()
         ChatSuggestionList(onSuggestionClick = onSuggestionClick)
-        FigmaChatComposer(
-            value = questionText,
-            onValueChange = onQuestionChange,
-            onSubmitClick = onSubmitClick,
-        )
+        if (!isImeVisible) {
+            FigmaChatComposer(
+                value = questionText,
+                onValueChange = onQuestionChange,
+                onSubmitClick = onSubmitClick,
+            )
+        }
     }
 }
 
 @Composable
 private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
-    FigmaBrandHeader(modifier = Modifier.offset(x = 24.dp, y = 68.dp))
+    FigmaBrandHeader(modifier = Modifier.offset(x = 24.dp, y = 72.dp))
     Box(
         modifier = Modifier
             .offset(x = 308.dp, y = 66.dp)
@@ -80,6 +106,7 @@ private fun ChatWelcome() {
         modifier = Modifier
             .offset(x = 164.dp, y = 184.dp)
             .size(74.dp)
+            .figmaRaisedShadow(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp)),
         contentAlignment = Alignment.Center,
     ) {
@@ -91,13 +118,13 @@ private fun ChatWelcome() {
     }
     Text(
         text = stringResource(R.string.chat_welcome),
-        modifier = Modifier.offset(y = 288.dp).fillMaxWidth(),
+        modifier = Modifier.offset(x = 42.dp, y = 288.dp).width(318.dp),
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
     )
     Text(
         text = stringResource(R.string.chat_welcome_description),
-        modifier = Modifier.offset(y = 332.dp).fillMaxWidth(),
+        modifier = Modifier.offset(x = 42.dp, y = 332.dp).width(318.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 14.sp),
@@ -130,6 +157,7 @@ private fun FigmaSuggestionCard(
         modifier = modifier
             .width(354.dp)
             .height(70.dp)
+            .figmaRaisedShadow(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp))
             .clickable(onClick = onClick),
@@ -161,11 +189,62 @@ private fun FigmaChatComposer(
     onValueChange: (String) -> Unit,
     onSubmitClick: () -> Unit,
 ) {
+    FigmaChatComposerSurface(
+        value = value,
+        onValueChange = onValueChange,
+        onSubmitClick = onSubmitClick,
+        modifier = Modifier.offset(x = 24.dp, y = 728.dp),
+    )
+}
+
+/** 키보드가 열린 동안 전체 화면을 축소하지 않고 입력창만 키보드 위에 고정한다. */
+@Composable
+private fun androidx.compose.foundation.layout.BoxScope.FigmaImeChatComposer(
+    viewportMetrics: FigmaViewportMetrics,
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSubmitClick: () -> Unit,
+) {
     Box(
         modifier = Modifier
-            .offset(x = 24.dp, y = 728.dp)
+            .align(Alignment.BottomCenter)
+            .imePadding()
+            .width((354f * viewportMetrics.scale).dp)
+            .height((52f * viewportMetrics.scale).dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .width(354.dp)
+                .height(52.dp)
+                .graphicsLayer(
+                    scaleX = viewportMetrics.scale,
+                    scaleY = viewportMetrics.scale,
+                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0f, 1f),
+                ),
+        ) {
+            FigmaChatComposerSurface(
+                value = value,
+                onValueChange = onValueChange,
+                onSubmitClick = onSubmitClick,
+            )
+        }
+    }
+}
+
+@Composable
+private fun FigmaChatComposerSurface(
+    value: String,
+    onValueChange: (String) -> Unit,
+    onSubmitClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val sendDescription = stringResource(R.string.chat_send)
+
+    Box(
+        modifier = modifier
             .width(354.dp)
             .height(52.dp)
+            .figmaRaisedShadow(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
     ) {
@@ -194,7 +273,12 @@ private fun FigmaChatComposer(
             modifier = Modifier
                 .offset(x = 306.dp, y = 11.dp)
                 .size(30.dp)
+                .figmaRaisedShadow(RoundedCornerShape(14.dp))
                 .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
+                .semantics {
+                    role = Role.Button
+                    contentDescription = sendDescription
+                }
                 .clickable(onClick = onSubmitClick),
             contentAlignment = Alignment.Center,
         ) {

@@ -9,15 +9,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.component.figmaSheetShadow
+import com.example.hopes.core.designsystem.component.figmaPeekSheetShadow
 
 /** 피그마 인증 화면의 상단 모서리만 둥근 하단 시트다. */
 @Composable
 fun FigmaAuthSheet(
     modifier: Modifier = Modifier,
-    shadowElevation: Dp,
+    isPeekSheet: Boolean,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val sheetShape = RoundedCornerShape(
@@ -28,10 +28,12 @@ fun FigmaAuthSheet(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = shadowElevation,
-                shape = sheetShape,
-                clip = false,
+            .then(
+                if (isPeekSheet) {
+                    Modifier.figmaPeekSheetShadow(sheetShape)
+                } else {
+                    Modifier.figmaSheetShadow(sheetShape)
+                },
             ),
         color = MaterialTheme.colorScheme.surface,
         shape = sheetShape,

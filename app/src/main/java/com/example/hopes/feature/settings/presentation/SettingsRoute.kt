@@ -9,16 +9,18 @@ fun SettingsRoute(
     onNavigate: (HopesDestination) -> Unit,
     isDarkModeEnabled: Boolean,
     onDarkModeChange: (Boolean) -> Unit,
-    onNavigateToMyPage: () -> Unit,
+    onBackClick: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     SettingsScreen(
         onNavigate = onNavigate,
         isDarkModeEnabled = isDarkModeEnabled,
         onDarkModeChange = onDarkModeChange,
-        onNavigateToMyPage = onNavigateToMyPage,
+        onBackClick = onBackClick,
         onNavigateToPersonalSettings = onNavigateToPersonalSettings,
         onNavigateToContact = onNavigateToContact,
+        onLogout = onLogout,
     )
 }

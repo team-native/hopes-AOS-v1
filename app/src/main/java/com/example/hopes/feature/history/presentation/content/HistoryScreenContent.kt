@@ -16,18 +16,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.navigation.DemoConversation
 import com.example.hopes.navigation.HopesDestination
 
 /** 피그마 08 지난 대화 프레임의 검색·기간별 목록을 표시한다. */
 @Composable
 fun HistoryScreenContent(
     searchQuery: String,
+    conversations: List<DemoConversation>,
     onSearchQueryChange: (String) -> Unit,
     onQuestionClick: (String) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
@@ -44,6 +47,7 @@ fun HistoryScreenContent(
         )
         HistoryQuestionGroups(
             searchQuery = searchQuery,
+            conversations = conversations,
             onQuestionClick = onQuestionClick,
         )
     }
@@ -77,7 +81,10 @@ private fun HistoryNewChatButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "+  ${stringResource(R.string.new_chat)} 시작",
+            text = stringResource(
+                R.string.history_start_new_chat,
+                stringResource(R.string.new_chat),
+            ),
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
         )
     }
@@ -118,9 +125,9 @@ private fun HistorySearchField(
             ),
         )
         Text(
-            text = "⌕",
-            modifier = Modifier.offset(x = 326.dp, y = 10.dp),
-            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
+            text = stringResource(R.string.history_search_symbol),
+            modifier = Modifier.offset(x = 329.dp, y = 12.dp),
+            style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.SemiBold),
         )
     }
 }
@@ -128,19 +135,20 @@ private fun HistorySearchField(
 @Composable
 private fun HistoryQuestionGroups(
     searchQuery: String,
+    conversations: List<DemoConversation>,
     onQuestionClick: (String) -> Unit,
 ) {
-    val recentQuestions = listOf(
-        "기숙사 하루 일과가 어떻게 돼?",
-        "전공 선택은 어떻게 하는 게 좋...",
-        "여기랑 대덕중에 누가 더 좋음",
-    )
-    val previousQuestions = listOf(
-        "입학하려면 뭘 준비해야 해?",
-        "과랑 전공이랑 뭐가 다름",
-        "후배한테 해주고 싶은 조언 있어?",
-        "가장 예쁜 사람 누구?",
-    )
+    val figmaRecentQuestions = stringArrayResource(R.array.history_recent_questions).toList()
+    // 채팅에서 새로 만든 로컬 대화를 피그마 기본 목록 위에 반영한다.
+    val recentQuestions = (conversations.map(DemoConversation::question) + figmaRecentQuestions)
+        .distinct()
+    val previousQuestions = stringArrayResource(R.array.history_previous_questions).toList()
+    val visibleRecentQuestionCount = recentQuestions.count { question ->
+        question.contains(searchQuery, ignoreCase = true)
+    }
+    // 기본 Figma 3개 항목에서는 y=482를 그대로 유지하고, 새 대화가 늘어난 만큼만 다음 그룹을 민다.
+    val previousGroupShift = (visibleRecentQuestionCount - figmaRecentQuestions.size)
+        .coerceAtLeast(0) * 46
     HistoryGroup(
         title = stringResource(R.string.history_recent),
         titleTop = 282,
@@ -151,9 +159,9 @@ private fun HistoryQuestionGroups(
     )
     HistoryGroup(
         title = stringResource(R.string.history_previous),
-        titleTop = 482,
+        titleTop = 482 + previousGroupShift,
         questions = previousQuestions,
-        itemStartTop = 524,
+        itemStartTop = 524 + previousGroupShift,
         searchQuery = searchQuery,
         onQuestionClick = onQuestionClick,
     )

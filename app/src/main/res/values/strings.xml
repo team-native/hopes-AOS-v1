@@ -17,15 +17,17 @@
     <string name="chat_send">전송</string>
     <string name="chat_demo_answer">UI 데모 답변입니다. 실제 답변 기능은 서버 연동이 완료된 뒤 제공됩니다.</string>
     <string name="history_title">지난 대화</string>
-    <string name="history_description">최근에 확인한 질문을 다시 살펴보세요.</string>
+    <string name="history_description">웹사이트 구성을 리스트로 정리했어요.</string>
     <string name="settings_title">설정</string>
     <string name="settings_description">서비스 이용 환경과 개인 정보를 관리해요.</string>
+    <string name="dark_mode_description">시스템 설정에 맞춰 전환</string>
     <string name="auth_title">선배에게 묻는\n가장 솔직한\n학교 이야기</string>
     <string name="auth_description">재학생, 신입생, 입학 희망자를 위한 AI 선배 챗봇. 실제 선배들의 경험으로 답해드려요.</string>
     <string name="auth_swipe">로그인 창을 올려 학교 이메일로 시작해요.</string>
     <string name="login">로그인</string>
     <string name="signup">회원가입</string>
     <string name="email">학교 이메일</string>
+    <string name="auth_email">이메일</string>
     <string name="password">비밀번호</string>
     <string name="name">이름</string>
     <string name="department">과</string>
@@ -38,6 +40,8 @@
     <string name="new_chat">새 대화</string>
     <string name="chat_detail_title">기숙사 생활</string>
     <string name="history_search">지난 대화 검색</string>
+    <string name="history_start_new_chat">+  %1$s 시작</string>
+    <string name="history_search_symbol">⌕</string>
     <string name="my_page">마이페이지</string>
     <string name="profile">프로필</string>
     <string name="introduction">자기소개</string>
@@ -66,7 +70,7 @@
     <string name="home_tip_one">“기숙사 어때” 보단,\n“1학년 기숙사 평일 루틴 알려줘”</string>
     <string name="home_tip_two">질문 전에,\n입학 / 전공 / 학교생활 중 카테고리를 골라요.</string>
     <string name="chat_welcome">무엇이 궁금한가요?</string>
-    <string name="chat_welcome_description">선배들의 실제 경험을 바탕으로 답해드려요.</string>
+    <string name="chat_welcome_description">광주소프트웨어마이스터고 선배에게 편하게 물어보세요.</string>
     <string name="chat_new_message">선배에게 메시지 보내기</string>
     <string name="chat_additional_question">추가 질문 입력</string>
     <string name="chat_save">저장</string>
@@ -76,9 +80,15 @@
     <string name="my_page_email">이메일: s26055@gsm.hs.kr</string>
     <string name="my_page_major">전공: 인공지능소프트웨어과</string>
     <string name="profile_placeholder">예: 프론트엔드에 관심 많은 8기 학생이에요.</string>
+    <string name="profile_personalization_label">자기소개 (AI 응답 개인화에 활용됩니다)</string>
     <string name="prompt_placeholder">예: 답변은 항상 3문장 이내로 짧게 해줘.</string>
     <string name="contact_placeholder">예: 답변이 너무 짧게 나와요.</string>
     <string name="contact_email_info">이메일 문의: gsm-chatbot@gsm.hs.kr</string>
+    <string name="personal_settings_subtitle">AI 답변 스타일을 관리해요.</string>
+    <string name="contact_subtitle">서비스 오류나 개선 의견을 보내요.</string>
+    <string name="system_prompt_description">시스템 프롬프트 (AI 응답 생성 시 반영됩니다)</string>
+    <string name="saved">저장됨</string>
+    <string name="sent">전송됨</string>
     <string name="open">열기</string>
     <string name="logout_description">앱 설정과 도움말을 관리해요.</string>
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
@@ -87,8 +97,29 @@
     <string name="signup_hero_title">학교 이메일로\n간단히 시작하기</string>
     <string name="signup_email_hint">s20000@gsm.hs.kr</string>
     <string name="signup_name_hint">임서하</string>
+    <string name="signup_department_value">AI</string>
+    <string name="signup_generation_value">10기</string>
+    <string name="signup_dropdown_symbol">⌄</string>
     <string name="auth_swipe_title">위로 스와이프하기</string>
     <string name="prompt_save">프롬프트 저장</string>
+    <string name="alert_title">알림</string>
+    <string name="alert_description">새 답변과 공지 알림을 확인해요.</string>
+    <string name="edit">편집</string>
+    <string name="done">완료</string>
+    <string name="open_alerts">알림 화면 열기</string>
+    <string name="alert_answer_arrived_title">새 답변 도착</string>
+    <string name="alert_answer_arrived_description">기숙사 질문에 선배 답변이 도착했어요.</string>
+    <string name="alert_answer_arrived_question">기숙사 하루 일과가 어떻게 돼?</string>
+    <string name="alert_profile_saved_title">프로필 저장 완료</string>
+    <string name="alert_profile_saved_description">개인화 정보가 반영됐어요.</string>
+    <string name="alert_admission_title">입학 안내 업데이트</string>
+    <string name="alert_admission_description">면접 준비 질문이 추가됐어요.</string>
+    <string name="alert_system_title">시스템 공지</string>
+    <string name="alert_system_description">답변 데이터 업데이트 완료</string>
+    <string name="view">보기</string>
+    <string name="confirm">확인</string>
+    <string name="read_all">모두 읽음 처리</string>
+    <string name="read_all_completed">모두 읽음 처리됨</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>
         <item>입학하려면 뭘 준비해야 해?</item>
@@ -99,6 +130,17 @@
         <item>기숙사 하루 일과가 어떻게 돼?</item>
         <item>전공 선택은 어떻게 하면 좋을까?</item>
         <item>입학하려면 무엇을 준비해야 해?</item>
+    </string-array>
+    <string-array name="history_recent_questions">
+        <item>기숙사 하루 일과가 어떻게 돼?</item>
+        <item>전공 선택은 어떻게 하는 게 좋...</item>
+        <item>여기랑 대덕중에 누가 더 좋음</item>
+    </string-array>
+    <string-array name="history_previous_questions">
+        <item>입학하려면 뭘 준비해야 해?</item>
+        <item>과랑 전공이랑 뭐가 다름</item>
+        <item>후배한테 해주고 싶은 조언 있어?</item>
+        <item>가장 예쁜 사람 누구?</item>
     </string-array>
     <string-array name="settings_items">
         <item>개인 설정</item>

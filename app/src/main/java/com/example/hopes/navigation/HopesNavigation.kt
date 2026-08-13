@@ -13,7 +13,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.hopes.feature.alert.presentation.AlertRoute
 import com.example.hopes.feature.auth.presentation.AuthRoute
 import com.example.hopes.feature.chat.presentation.ChatRoute
 import com.example.hopes.feature.detail.presentation.DetailRoute
@@ -202,12 +201,6 @@ fun HopesNavigation(
         composable(HopesDestination.History.route) {
             HistoryRoute(
                 conversations = conversations,
-                onNavigate = hopesNavController::navigateToTopLevel,
-                onNavigateToChatDetail = ::navigateToConversation,
-            )
-        }
-        composable(HopesDestination.Alerts.route) {
-            AlertRoute(
                 onNavigate = hopesNavController::navigateToTopLevel,
                 onNavigateToChatDetail = ::navigateToConversation,
             )

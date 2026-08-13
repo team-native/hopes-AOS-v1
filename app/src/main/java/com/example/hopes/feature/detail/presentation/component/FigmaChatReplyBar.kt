@@ -1,12 +1,13 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -47,7 +48,7 @@ fun FigmaChatReplyBar(
         FigmaDetailPrimaryButton(
             text = stringResource(R.string.chat_send),
             modifier = Modifier
-                .offset(x = 320.dp, y = 16.dp)
+                .padding(start = 320.dp, top = 16.dp)
                 .width(58.dp)
                 .height(44.dp),
             onClick = onSubmitClick,
@@ -100,7 +101,7 @@ private fun FigmaChatReplyInput(
 
     Box(
         modifier = Modifier
-            .offset(x = 24.dp, y = 16.dp)
+            .padding(start = 24.dp, top = 16.dp)
             .width(282.dp)
             .height(44.dp)
             .background(
@@ -112,7 +113,7 @@ private fun FigmaChatReplyInput(
         if (value.isEmpty()) {
             Text(
                 text = stringResource(R.string.chat_additional_question),
-                modifier = Modifier.offset(x = 20.dp, y = 14.dp),
+                modifier = Modifier.padding(start = 20.dp, top = 14.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 14.sp),
             )
@@ -121,7 +122,7 @@ private fun FigmaChatReplyInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .offset(x = 20.dp, y = 10.dp)
+                .padding(start = 20.dp, top = 10.dp)
                 .width(244.dp)
                 .height(24.dp),
             singleLine = true,

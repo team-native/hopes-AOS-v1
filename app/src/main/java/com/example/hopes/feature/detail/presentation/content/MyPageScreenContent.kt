@@ -1,7 +1,8 @@
 package com.example.hopes.feature.detail.presentation.content
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -48,7 +49,7 @@ fun MyPageScreenContent(
                 stringResource(R.string.save)
             },
             modifier = Modifier
-                .offset(x = 18.dp, y = 694.dp)
+                .padding(start = 18.dp, top = 694.dp)
                 .width(96.dp)
                 .height(44.dp),
             onClick = { onEvent(DetailScreenEvent.ProfileSaveClicked) },

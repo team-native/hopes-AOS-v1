@@ -1,10 +1,11 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -49,7 +50,7 @@ fun FigmaDetailThinInput(
         if (value.isEmpty()) {
             Text(
                 text = hint,
-                modifier = Modifier.offset(x = 16.dp, y = 10.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 10.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 15.sp),
             )
@@ -58,7 +59,7 @@ fun FigmaDetailThinInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .offset(x = 16.dp, y = 9.dp)
+                .padding(start = 16.dp, top = 9.dp)
                 .width(274.dp)
                 .height(24.dp),
             singleLine = true,
@@ -81,7 +82,7 @@ fun FigmaDetailContactEmailInput(
 
     Box(
         modifier = Modifier
-            .offset(x = 18.dp, y = 67.dp)
+            .padding(start = 18.dp, top = 67.dp)
             .width(332.dp)
             .height(40.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
@@ -90,7 +91,7 @@ fun FigmaDetailContactEmailInput(
         if (value.isEmpty()) {
             Text(
                 text = hint,
-                modifier = Modifier.offset(x = 16.dp, y = 10.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 10.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 15.sp),
             )
@@ -99,7 +100,7 @@ fun FigmaDetailContactEmailInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .offset(x = 16.dp, y = 9.dp)
+                .padding(start = 16.dp, top = 9.dp)
                 .width(300.dp)
                 .height(24.dp),
             singleLine = true,
@@ -131,7 +132,7 @@ fun FigmaDetailTextArea(
             Text(
                 text = hint,
                 modifier = Modifier
-                    .offset(x = 16.dp, y = 18.dp)
+                    .padding(start = 16.dp, top = 18.dp)
                     .width(260.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 15.sp, lineHeight = 22.sp),
@@ -141,7 +142,7 @@ fun FigmaDetailTextArea(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .offset(x = 16.dp, y = 14.dp)
+                .padding(start = 16.dp, top = 14.dp)
                 .width(274.dp)
                 .height((height - 28).dp),
             textStyle = TextStyle(

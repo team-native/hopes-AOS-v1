@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.navigationBars
@@ -139,7 +138,7 @@ fun FigmaBottomNavigation(
             val destinationLabel = stringResource(destination.labelResourceId())
             Box(
                 modifier = Modifier
-                    .offset(x = (centerX - 30).dp, y = 12.dp)
+                    .padding(start = (centerX - 30).dp, top = 12.dp)
                     .width(60.dp)
                     .height(48.dp)
                     // 원본의 60×30 시각 pill은 유지하면서 탭 전체를 접근 가능한 터치 영역으로 제공한다.
@@ -170,7 +169,7 @@ fun FigmaBottomNavigation(
                             R.string.navigation_unselected_symbol
                         },
                     ),
-                    modifier = Modifier.offset(y = 5.dp),
+                    modifier = Modifier.padding(top = 5.dp),
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.primary
                     } else {
@@ -181,7 +180,7 @@ fun FigmaBottomNavigation(
                 Text(
                     text = stringResource(destination.labelResourceId()),
                     modifier = Modifier
-                        .offset(y = 27.dp)
+                        .padding(top = 27.dp)
                         .fillMaxWidth(),
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.primary

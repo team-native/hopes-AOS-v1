@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -82,10 +81,10 @@ fun ChatScreenContent(
 
 @Composable
 private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
-    FigmaBrandHeader(modifier = Modifier.offset(x = 24.dp, y = 72.dp))
+    FigmaBrandHeader(modifier = Modifier.padding(start = 24.dp, top = 72.dp))
     Box(
         modifier = Modifier
-            .offset(x = 308.dp, y = 66.dp)
+            .padding(start = 308.dp, top = 66.dp)
             .width(70.dp)
             .height(39.dp)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
@@ -104,7 +103,7 @@ private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
 private fun ChatWelcome() {
     Box(
         modifier = Modifier
-            .offset(x = 164.dp, y = 184.dp)
+            .padding(start = 164.dp, top = 184.dp)
             .size(74.dp)
             .figmaRaisedShadow(RoundedCornerShape(18.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp)),
@@ -118,13 +117,13 @@ private fun ChatWelcome() {
     }
     Text(
         text = stringResource(R.string.chat_welcome),
-        modifier = Modifier.offset(x = 42.dp, y = 288.dp).width(318.dp),
+        modifier = Modifier.padding(start = 42.dp, top = 288.dp).width(318.dp),
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
     )
     Text(
         text = stringResource(R.string.chat_welcome_description),
-        modifier = Modifier.offset(x = 42.dp, y = 332.dp).width(318.dp),
+        modifier = Modifier.padding(start = 42.dp, top = 332.dp).width(318.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 14.sp),
@@ -142,7 +141,7 @@ private fun ChatSuggestionList(onSuggestionClick: (String) -> Unit) {
             symbol = symbols.getOrElse(index) {
                 stringResource(R.string.chat_suggestion_marker)
             },
-            modifier = Modifier.offset(x = 24.dp, y = topOffset.dp),
+            modifier = Modifier.padding(start = 24.dp, top = topOffset.dp),
             onClick = { onSuggestionClick(question) },
         )
     }
@@ -166,7 +165,7 @@ private fun FigmaSuggestionCard(
     ) {
         Box(
             modifier = Modifier
-                .offset(x = 16.dp, y = 15.dp)
+                .padding(start = 16.dp, top = 15.dp)
                 .size(38.dp)
                 .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center,
@@ -179,7 +178,7 @@ private fun FigmaSuggestionCard(
         }
         Text(
             text = question,
-            modifier = Modifier.offset(x = 68.dp, y = 22.dp).width(266.dp),
+            modifier = Modifier.padding(start = 68.dp, top = 22.dp).width(266.dp),
             style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp),
         )
     }
@@ -195,7 +194,7 @@ private fun FigmaChatComposer(
         value = value,
         onValueChange = onValueChange,
         onSubmitClick = onSubmitClick,
-        modifier = Modifier.offset(x = 24.dp, y = 728.dp),
+        modifier = Modifier.padding(start = 24.dp, top = 728.dp),
     )
 }
 
@@ -253,7 +252,7 @@ private fun FigmaChatComposerSurface(
         if (value.isEmpty()) {
             Text(
                 text = stringResource(R.string.chat_new_message),
-                modifier = Modifier.offset(x = 14.dp, y = 17.dp),
+                modifier = Modifier.padding(start = 14.dp, top = 17.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 14.sp),
             )
@@ -262,7 +261,7 @@ private fun FigmaChatComposerSurface(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .offset(x = 14.dp, y = 10.dp)
+                .padding(start = 14.dp, top = 10.dp)
                 .width(276.dp)
                 .height(32.dp),
             singleLine = true,
@@ -273,7 +272,7 @@ private fun FigmaChatComposerSurface(
         )
         Box(
             modifier = Modifier
-                .offset(x = 306.dp, y = 11.dp)
+                .padding(start = 306.dp, top = 11.dp)
                 .size(30.dp)
                 .figmaRaisedShadow(RoundedCornerShape(14.dp))
                 .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))

@@ -1,10 +1,11 @@
 package com.example.hopes.core.designsystem.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,7 +66,7 @@ fun FigmaBrandHeader(
         ) {
             Text(
                 text = stringResource(R.string.logo_mark),
-                modifier = Modifier.fillMaxSize().offset(y = 1.dp),
+                modifier = Modifier.fillMaxSize().padding(top = 1.dp),
                 color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
                 style = TextStyle(
@@ -77,7 +78,7 @@ fun FigmaBrandHeader(
 
         Text(
             text = stringResource(R.string.app_name),
-            modifier = Modifier.offset(x = 54.dp, y = 4.dp),
+            modifier = Modifier.padding(start = 54.dp, top = 4.dp),
             color = titleColor,
             style = TextStyle(
                 fontSize = 17.sp,
@@ -87,7 +88,7 @@ fun FigmaBrandHeader(
 
         Text(
             text = stringResource(R.string.school_name),
-            modifier = Modifier.offset(x = 54.dp, y = 25.dp),
+            modifier = Modifier.padding(start = 54.dp, top = 25.dp),
             color = subtitleColor,
             style = TextStyle(
                 fontSize = 11.sp,

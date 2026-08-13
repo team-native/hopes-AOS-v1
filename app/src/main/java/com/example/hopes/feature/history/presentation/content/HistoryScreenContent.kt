@@ -1,12 +1,13 @@
 package com.example.hopes.feature.history.presentation.content
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -57,12 +58,12 @@ fun HistoryScreenContent(
 private fun HistoryTitle() {
     Text(
         text = stringResource(R.string.history_title),
-        modifier = Modifier.offset(x = 24.dp, y = 76.dp),
+        modifier = Modifier.padding(start = 24.dp, top = 76.dp),
         style = TextStyle(fontSize = 27.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp),
     )
     Text(
         text = stringResource(R.string.history_description),
-        modifier = Modifier.offset(x = 24.dp, y = 111.dp).width(276.dp),
+        modifier = Modifier.padding(start = 24.dp, top = 111.dp).width(276.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
     )
@@ -72,7 +73,7 @@ private fun HistoryTitle() {
 private fun HistoryNewChatButton(onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .offset(x = 24.dp, y = 144.dp)
+            .padding(start = 24.dp, top = 144.dp)
             .width(354.dp)
             .height(48.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
@@ -97,7 +98,7 @@ private fun HistorySearchField(
 ) {
     Box(
         modifier = Modifier
-            .offset(x = 24.dp, y = 208.dp)
+            .padding(start = 24.dp, top = 208.dp)
             .width(354.dp)
             .height(41.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
@@ -106,7 +107,7 @@ private fun HistorySearchField(
         if (value.isEmpty()) {
             Text(
                 text = stringResource(R.string.history_search),
-                modifier = Modifier.offset(x = 20.dp, y = 13.dp),
+                modifier = Modifier.padding(start = 20.dp, top = 13.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 14.sp),
             )
@@ -115,7 +116,7 @@ private fun HistorySearchField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .offset(x = 20.dp, y = 8.dp)
+                .padding(start = 20.dp, top = 8.dp)
                 .width(288.dp)
                 .height(28.dp),
             singleLine = true,
@@ -126,7 +127,7 @@ private fun HistorySearchField(
         )
         Text(
             text = stringResource(R.string.history_search_symbol),
-            modifier = Modifier.offset(x = 329.dp, y = 12.dp),
+            modifier = Modifier.padding(start = 329.dp, top = 12.dp),
             style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.SemiBold),
         )
     }
@@ -178,7 +179,7 @@ private fun HistoryGroup(
 ) {
     Text(
         text = title,
-        modifier = Modifier.offset(x = 24.dp, y = titleTop.dp),
+        modifier = Modifier.padding(start = 24.dp, top = titleTop.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Bold),
     )
@@ -188,7 +189,7 @@ private fun HistoryGroup(
             Text(
                 text = question,
                 modifier = Modifier
-                    .offset(x = 24.dp, y = (itemStartTop + (index * 46)).dp)
+                    .padding(start = 24.dp, top = (itemStartTop + (index * 46)).dp)
                     .width(280.dp)
                     .clickable { onQuestionClick(question) },
                 color = if (titleTop == 282 && index == 0) {

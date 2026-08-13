@@ -1,11 +1,12 @@
 package com.example.hopes.feature.alert.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +29,7 @@ fun AlertHeader(
 ) {
     Text(
         text = stringResource(R.string.alert_title),
-        modifier = Modifier.offset(x = 24.dp, y = 76.dp),
+        modifier = Modifier.padding(start = 24.dp, top = 76.dp),
         color = MaterialTheme.colorScheme.onSurface,
         style = TextStyle(
             fontSize = 27.sp,
@@ -39,7 +40,7 @@ fun AlertHeader(
     Text(
         text = stringResource(R.string.alert_description),
         modifier = Modifier
-            .offset(x = 24.dp, y = 111.dp)
+            .padding(start = 24.dp, top = 111.dp)
             .width(260.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = TextStyle(
@@ -49,7 +50,7 @@ fun AlertHeader(
     )
     Box(
         modifier = Modifier
-            .offset(x = 324.dp, y = 76.dp)
+            .padding(start = 324.dp, top = 76.dp)
             .width(54.dp)
             .height(36.dp)
             .background(

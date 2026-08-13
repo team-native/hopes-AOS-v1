@@ -1,11 +1,12 @@
 package com.example.hopes.feature.settings.presentation.content
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -49,35 +50,35 @@ fun SettingsScreenContent(
         FigmaSettingsBackButton(onClick = onBackClick)
         Text(
             text = stringResource(R.string.settings_title),
-            modifier = Modifier.offset(x = 68.dp, y = 74.dp),
+            modifier = Modifier.padding(start = 68.dp, top = 74.dp),
             style = TextStyle(fontSize = 27.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp),
         )
         Text(
             text = stringResource(R.string.logout_description),
-            modifier = Modifier.offset(x = 74.dp, y = 115.dp),
+            modifier = Modifier.padding(start = 74.dp, top = 115.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )
         FigmaSettingsRow(
             title = stringResource(R.string.personal_settings),
             description = stringResource(R.string.settings_personal_description),
-            modifier = Modifier.offset(x = 37.dp, y = 150.dp),
+            modifier = Modifier.padding(start = 37.dp, top = 150.dp),
             onClick = onNavigateToPersonalSettings,
         )
         FigmaSettingsRow(
             title = stringResource(R.string.contact),
             description = stringResource(R.string.settings_contact_description),
-            modifier = Modifier.offset(x = 37.dp, y = 217.dp),
+            modifier = Modifier.padding(start = 37.dp, top = 217.dp),
             onClick = onNavigateToContact,
         )
         FigmaDarkModeRow(
             isEnabled = isDarkModeEnabled,
-            modifier = Modifier.offset(x = 39.dp, y = 307.dp),
+            modifier = Modifier.padding(start = 39.dp, top = 307.dp),
             onToggle = { onDarkModeChange(!isDarkModeEnabled) },
         )
         Box(
             modifier = Modifier
-                .offset(x = 29.dp, y = 397.dp)
+                .padding(start = 29.dp, top = 397.dp)
                 .width(330.dp)
                 .height(45.dp)
                 .background(
@@ -104,7 +105,7 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
-            .offset(x = 10.dp, y = 76.dp)
+            .padding(start = 10.dp, top = 76.dp)
             .width(38.dp)
             .height(38.dp)
             .figmaSubtleShadow(RoundedCornerShape(13.dp))
@@ -119,7 +120,7 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
     ) {
         Text(
             text = stringResource(R.string.back_symbol),
-            modifier = Modifier.offset(y = (-1).dp),
+            modifier = Modifier.padding(top = (-1).dp),
             color = MaterialTheme.colorScheme.primary,
             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
         )
@@ -143,18 +144,18 @@ private fun FigmaSettingsRow(
     ) {
         Text(
             text = title,
-            modifier = Modifier.offset(x = 20.dp, y = 13.dp),
+            modifier = Modifier.padding(start = 20.dp, top = 13.dp),
             style = TextStyle(fontSize = 15.sp, fontWeight = FontWeight.SemiBold),
         )
         Text(
             text = description,
-            modifier = Modifier.offset(x = 20.dp, y = 36.dp),
+            modifier = Modifier.padding(start = 20.dp, top = 36.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 12.sp),
         )
         Box(
             modifier = Modifier
-                .offset(x = 256.dp, y = 16.dp)
+                .padding(start = 256.dp, top = 16.dp)
                 .width(48.dp)
                 .height(32.dp)
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
@@ -189,18 +190,18 @@ private fun FigmaDarkModeRow(
     ) {
         Text(
             text = stringResource(R.string.dark_mode),
-            modifier = Modifier.offset(x = 20.dp, y = 13.dp),
+            modifier = Modifier.padding(start = 20.dp, top = 13.dp),
             style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold),
         )
         Text(
             text = stringResource(R.string.dark_mode_description),
-            modifier = Modifier.offset(x = 20.dp, y = 38.dp),
+            modifier = Modifier.padding(start = 20.dp, top = 38.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 12.sp),
         )
         Box(
             modifier = Modifier
-                .offset(x = 257.dp, y = 19.dp)
+                .padding(start = 257.dp, top = 19.dp)
                 .width(44.dp)
                 .height(25.dp)
                 .background(
@@ -214,7 +215,7 @@ private fun FigmaDarkModeRow(
         ) {
             Box(
                 modifier = Modifier
-                    .offset(x = if (isEnabled) 12.dp else 3.dp, y = 3.dp)
+                    .padding(start = if (isEnabled) 12.dp else 3.dp, top = 3.dp)
                     .width(29.dp)
                     .height(19.dp)
                     .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(50.dp)),

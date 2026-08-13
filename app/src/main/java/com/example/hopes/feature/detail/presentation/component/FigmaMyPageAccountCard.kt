@@ -1,7 +1,8 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,23 +18,23 @@ import com.example.hopes.R
 fun FigmaMyPageAccountCard() {
     FigmaDetailCard(
         modifier = Modifier
-            .offset(x = 12.dp, y = 194.dp)
+            .padding(start = 12.dp, top = 194.dp)
             .height(128.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {
         Text(
             text = stringResource(R.string.my_page_account),
-            modifier = Modifier.offset(x = 24.dp, y = 26.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 26.dp),
             style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
         )
         Text(
             text = stringResource(R.string.my_page_email),
-            modifier = Modifier.offset(x = 24.dp, y = 63.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 63.dp),
             style = TextStyle(fontSize = 13.sp),
         )
         Text(
             text = stringResource(R.string.my_page_major),
-            modifier = Modifier.offset(x = 24.dp, y = 87.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 87.dp),
             style = TextStyle(fontSize = 13.sp),
         )
     }

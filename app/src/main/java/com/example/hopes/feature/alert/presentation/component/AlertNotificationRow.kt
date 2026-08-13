@@ -1,11 +1,12 @@
 package com.example.hopes.feature.alert.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -51,7 +52,7 @@ fun AlertNotificationRow(
     ) {
         Text(
             text = stringResource(notification.titleRes),
-            modifier = Modifier.offset(x = 20.dp, y = 16.dp),
+            modifier = Modifier.padding(start = 20.dp, top = 16.dp),
             color = MaterialTheme.colorScheme.onSurface,
             style = TextStyle(
                 fontSize = 15.sp,
@@ -61,14 +62,14 @@ fun AlertNotificationRow(
         Text(
             text = stringResource(notification.descriptionRes),
             modifier = Modifier
-                .offset(x = 20.dp, y = 41.dp)
+                .padding(start = 20.dp, top = 41.dp)
                 .width(210.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 12.sp),
         )
         Box(
             modifier = Modifier
-                .offset(x = 278.dp, y = 20.dp)
+                .padding(start = 278.dp, top = 20.dp)
                 .width(56.dp)
                 .height(32.dp)
                 .background(

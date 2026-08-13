@@ -1,8 +1,9 @@
 package com.example.hopes.feature.detail.presentation.content
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -60,19 +61,19 @@ fun ChatDetailScreenContent(
             text = conversation?.question.orEmpty().ifBlank {
                 stringResource(R.string.chat_detail_title)
             },
-            modifier = Modifier.offset(x = 113.dp, y = 150.dp),
+            modifier = Modifier.padding(start = 113.dp, top = 150.dp),
             isUser = true,
         )
         FigmaChatDetailBubble(
             text = stringResource(R.string.chat_detail_answer),
-            modifier = Modifier.offset(x = 24.dp, y = 232.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 232.dp),
             isUser = false,
         )
         // 전송한 추가 질문은 초기 Figma 레이아웃 아래의 빈 대화 영역에 로컬로 누적한다.
         conversation?.replies?.forEachIndexed { replyIndex, submittedReply ->
             FigmaChatDetailBubble(
                 text = submittedReply,
-                modifier = Modifier.offset(x = 113.dp, y = (368 + (replyIndex * 70)).dp),
+                modifier = Modifier.padding(start = 113.dp, top = (368 + (replyIndex * 70)).dp),
                 isUser = true,
             )
         }
@@ -81,7 +82,7 @@ fun ChatDetailScreenContent(
                 value = conversation?.replyDraft.orEmpty(),
                 onValueChange = { onEvent(DetailScreenEvent.ReplyChanged(it)) },
                 onSubmitClick = { onEvent(DetailScreenEvent.ReplySubmitted) },
-                modifier = Modifier.offset(y = 716.dp),
+                modifier = Modifier.padding(top = 716.dp),
             )
         }
     }

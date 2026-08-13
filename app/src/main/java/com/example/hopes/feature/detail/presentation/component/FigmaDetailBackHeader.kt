@@ -1,11 +1,12 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -36,12 +37,12 @@ fun FigmaDetailBackHeader(
     backOffsetX: Int = 18,
 ) {
     FigmaDetailBackButton(
-        modifier = Modifier.offset(x = backOffsetX.dp, y = 74.dp),
+        modifier = Modifier.padding(start = backOffsetX.dp, top = 74.dp),
         onBackClick = onBackClick,
     )
     Text(
         text = title,
-        modifier = Modifier.offset(x = 74.dp, y = 76.dp),
+        modifier = Modifier.padding(start = 74.dp, top = 76.dp),
         style = TextStyle(
             fontSize = 27.sp,
             fontWeight = FontWeight.Bold,
@@ -50,14 +51,14 @@ fun FigmaDetailBackHeader(
     )
     Text(
         text = subtitle,
-        modifier = Modifier.offset(x = 74.dp, y = 111.dp),
+        modifier = Modifier.padding(start = 74.dp, top = 111.dp),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
     )
     if (actionText != null && onActionClick != null) {
         FigmaDetailTopAction(
             text = actionText,
-            modifier = Modifier.offset(x = 324.dp, y = 76.dp),
+            modifier = Modifier.padding(start = 324.dp, top = 76.dp),
             onClick = onActionClick,
         )
     }
@@ -87,7 +88,7 @@ private fun FigmaDetailBackButton(
     ) {
         Text(
             text = stringResource(R.string.back_symbol),
-            modifier = Modifier.offset(y = (-1).dp),
+            modifier = Modifier.padding(top = (-1).dp),
             color = MaterialTheme.colorScheme.primary,
             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
         )

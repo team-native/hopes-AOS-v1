@@ -14,13 +14,13 @@ import com.example.hopes.core.designsystem.component.HopesLogo
 
 /** 채팅 화면의 제목과 이용 안내를 표시한다. */
 @Composable
-fun ChatHeader() {
+fun ChatHeader(onNewChatClick: () -> Unit) {
     Row(
         modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         HopesLogo()
-        TextButton(onClick = {}) {
+        TextButton(onClick = onNewChatClick) {
             Text(text = stringResource(R.string.new_chat))
         }
     }

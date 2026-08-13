@@ -1,38 +1,29 @@
 package com.example.hopes.feature.detail.presentation.content
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
-import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesScaffold
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailUiState
-import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
-import com.example.hopes.feature.detail.presentation.component.FigmaPersonalSettingsFormCard
 import com.example.hopes.navigation.HopesDestination
 
-/** 피그마 13 개인 설정의 시스템 프롬프트 입력 영역을 구성한다. */
 @Composable
-fun PersonalSettingsScreenContent(
-    uiState: DetailUiState,
-    onEvent: (DetailScreenEvent) -> Unit,
-    onNavigate: (HopesDestination) -> Unit,
-) {
-    FigmaAppFrame(
-        selectedDestination = HopesDestination.Settings,
-        onNavigate = onNavigate,
-    ) {
-        FigmaDetailBackHeader(
-            title = stringResource(R.string.personal_settings),
-            subtitle = stringResource(R.string.personal_settings_subtitle),
-            onBackClick = { onEvent(DetailScreenEvent.BackClicked) },
-        )
-        FigmaPersonalSettingsFormCard(
-            personalPrompt = uiState.personalPrompt,
-            isPromptSaved = uiState.isPromptSaved,
-            onPersonalPromptChange = {
-                onEvent(DetailScreenEvent.PersonalPromptChanged(it))
-            },
-            onSaveClick = { onEvent(DetailScreenEvent.PersonalPromptSaveClicked) },
-        )
+fun PersonalSettingsScreenContent(uiState: DetailUiState, onEvent: (DetailScreenEvent) -> Unit, onNavigate: (HopesDestination) -> Unit) {
+    HopesScaffold(HopesDestination.Settings, onNavigate) { innerPadding ->
+        Column(Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = AppSpacing.ScreenHorizontal)) {
+            Text(stringResource(R.string.personal_settings))
+            OutlinedTextField(uiState.personalPrompt, { onEvent(DetailScreenEvent.PersonalPromptChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.system_prompt_description)) })
+            Button(onClick = { onEvent(DetailScreenEvent.PersonalPromptSaveClicked) }) { Text(stringResource(if (uiState.isPromptSaved) R.string.saved else R.string.prompt_save)) }
+        }
     }
 }

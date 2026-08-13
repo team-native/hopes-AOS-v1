@@ -20,10 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,8 +39,6 @@ fun HomeScreenContent(
     onNavigate: (HopesDestination) -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
-    val alertDescription = stringResource(R.string.open_alerts)
-
     FigmaAppFrame(
         selectedDestination = HopesDestination.Home,
         onNavigate = onNavigate,
@@ -62,18 +56,6 @@ fun HomeScreenContent(
             modifier = Modifier.padding(start = 32.dp, top = 76.dp),
             isOnBlueBackground = true,
             logoShadow = FigmaBrandLogoShadow.Subtle,
-        )
-        // 원본 레이아웃을 바꾸지 않고 브랜드 영역에서 알림 데모 화면을 열 수 있게 한다.
-        Box(
-            modifier = Modifier
-                .padding(start = 32.dp, top = 76.dp)
-                .width(250.dp)
-                .height(42.dp)
-                .semantics {
-                    role = Role.Button
-                    contentDescription = alertDescription
-                }
-                .clickable { onNavigate(HopesDestination.Alerts) },
         )
         Text(
             text = stringResource(R.string.onboarding_title),

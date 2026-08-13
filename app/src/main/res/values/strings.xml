@@ -111,24 +111,6 @@
     <string name="signup_dropdown_symbol">⌄</string>
     <string name="auth_swipe_title">위로 스와이프하기</string>
     <string name="prompt_save">프롬프트 저장</string>
-    <string name="alert_title">알림</string>
-    <string name="alert_description">새 답변과 공지 알림을 확인해요.</string>
-    <string name="edit">편집</string>
-    <string name="done">완료</string>
-    <string name="open_alerts">알림 화면 열기</string>
-    <string name="alert_answer_arrived_title">새 답변 도착</string>
-    <string name="alert_answer_arrived_description">기숙사 질문에 선배 답변이 도착했어요.</string>
-    <string name="alert_answer_arrived_question">기숙사 하루 일과가 어떻게 돼?</string>
-    <string name="alert_profile_saved_title">프로필 저장 완료</string>
-    <string name="alert_profile_saved_description">개인화 정보가 반영됐어요.</string>
-    <string name="alert_admission_title">입학 안내 업데이트</string>
-    <string name="alert_admission_description">면접 준비 질문이 추가됐어요.</string>
-    <string name="alert_system_title">시스템 공지</string>
-    <string name="alert_system_description">답변 데이터 업데이트 완료</string>
-    <string name="view">보기</string>
-    <string name="confirm">확인</string>
-    <string name="read_all">모두 읽음 처리</string>
-    <string name="read_all_completed">모두 읽음 처리됨</string>
     <string-array name="chat_suggestions">
         <item>기숙사 하루 일과가 어떻게 돼?</item>
         <item>입학하려면 뭘 준비해야 해?</item>

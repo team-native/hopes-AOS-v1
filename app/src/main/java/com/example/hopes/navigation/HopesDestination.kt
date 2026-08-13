@@ -7,7 +7,6 @@ enum class HopesDestination(
     Home("home"),
     Chat("chat"),
     History("history"),
-    Alerts("alerts"),
     Settings("settings"),
     AppSettings("app_settings"),
     MyPage("my_page"),

@@ -26,6 +26,7 @@ data class FigmaViewportMetrics(
  */
 @Composable
 fun FigmaPhoneScreen(
+    modifier: Modifier = Modifier,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -36,7 +37,10 @@ fun FigmaPhoneScreen(
     overlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+    BoxWithConstraints(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
+    ) {
         val scale = min(
             maxWidth.value / FIGMA_PHONE_WIDTH,
             maxHeight.value / FIGMA_PHONE_HEIGHT,

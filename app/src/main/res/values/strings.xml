@@ -15,6 +15,17 @@
     <string name="chat_description">광주소프트웨어마이스터고 선배에게 편하게 질문해 보세요.</string>
     <string name="chat_input_label">선배에게 메시지 보내기</string>
     <string name="chat_send">전송</string>
+    <string name="chat_suggestion_marker">•</string>
+    <string name="chat_send_symbol">↑</string>
+    <string name="navigation_selected_symbol">●</string>
+    <string name="navigation_unselected_symbol">○</string>
+    <string name="back_symbol">‹</string>
+    <string-array name="chat_suggestion_symbols">
+        <item>⌂</item>
+        <item>◇</item>
+        <item>&lt;&gt;</item>
+        <item>□</item>
+    </string-array>
     <string name="chat_demo_answer">UI 데모 답변입니다. 실제 답변 기능은 서버 연동이 완료된 뒤 제공됩니다.</string>
     <string name="history_title">지난 대화</string>
     <string name="history_description">웹사이트 구성을 리스트로 정리했어요.</string>

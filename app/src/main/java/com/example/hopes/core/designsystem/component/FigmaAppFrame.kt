@@ -163,7 +163,13 @@ fun FigmaBottomNavigation(
                     )
                 }
                 Text(
-                    text = if (isSelected) "●" else "○",
+                    text = stringResource(
+                        if (isSelected) {
+                            R.string.navigation_selected_symbol
+                        } else {
+                            R.string.navigation_unselected_symbol
+                        },
+                    ),
                     modifier = Modifier.offset(y = 5.dp),
                     color = if (isSelected) {
                         MaterialTheme.colorScheme.primary

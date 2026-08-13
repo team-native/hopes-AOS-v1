@@ -1,8 +1,0 @@
-package com.example.hopes.domain.repository
-
-import com.example.hopes.core.network.NetworkResult
-import com.example.hopes.data.api.*
-
-interface AuthRepository { suspend fun login(username: String, password: String): NetworkResult<TokenResponseDto>; suspend fun signUp(request: SignupRequestDto): NetworkResult<TokenResponseDto>; suspend fun sendSignupCode(email: String): NetworkResult<MessageEnvelopeDto>; suspend fun confirmSignupCode(email: String, code: String): NetworkResult<MessageEnvelopeDto>; suspend fun requestPasswordReset(email: String): NetworkResult<MessageEnvelopeDto>; suspend fun resetPassword(request: PasswordResetRequestDto): NetworkResult<MessageEnvelopeDto> }
-interface ChatRepository { suspend fun getMain(keyword: String?, page: Int, size: Int): NetworkResult<MainResponseDto>; suspend fun getChat(id: Long, page: Int, size: Int): NetworkResult<ChatResponseDto>; suspend fun createChat(title: String?): NetworkResult<ChatResponseDto>; suspend fun sendMessage(id: Long, content: String): NetworkResult<ChatResponseDto> }
-interface SettingsRepository { suspend fun logout(): NetworkResult<MessageEnvelopeDto>; suspend fun updateTheme(theme: String): NetworkResult<ThemeResponseDto>; suspend fun getProfile(): NetworkResult<UserResponseDto>; suspend fun updateProfile(request: MyPageUpdateRequestDto): NetworkResult<UserResponseDto>; suspend fun getSettings(): NetworkResult<SettingMainResponseDto>; suspend fun updateSettings(request: SettingUpdateRequestDto): NetworkResult<SettingMainResponseDto>; suspend fun submitInquiry(content: String): NetworkResult<MessageEnvelopeDto> }

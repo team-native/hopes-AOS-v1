@@ -1,10 +1,9 @@
 package com.example.hopes.feature.chat.presentation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.navigation.HopesDestination
 
 /** 채팅 입력 상태를 소유하고 화면 이벤트를 처리한다. */
@@ -12,29 +11,21 @@ import com.example.hopes.navigation.HopesDestination
 fun ChatRoute(
     onNavigate: (HopesDestination) -> Unit,
     onNavigateToChatDetail: (String) -> Unit,
+    viewModel: ChatViewModel = hiltViewModel(),
 ) {
-    var questionText by rememberSaveable { mutableStateOf("") }
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(viewModel) {
+        viewModel.effect.collect { effect ->
+            if (effect is ChatEffect.ChatCreated) {
+                onNavigateToChatDetail(effect.question)
+            }
+        }
+    }
 
     ChatScreen(
-        questionText = questionText,
-        onEvent = { event ->
-            when (event) {
-                is ChatScreenEvent.QuestionChanged -> questionText = event.question
-                ChatScreenEvent.QuestionSubmitted -> {
-                    questionText.trim()
-                        .takeIf(String::isNotEmpty)
-                        ?.let { question ->
-                            questionText = ""
-                            onNavigateToChatDetail(question)
-                        }
-                }
-                is ChatScreenEvent.SuggestionSelected -> {
-                    questionText = ""
-                    onNavigateToChatDetail(event.question)
-                }
-                ChatScreenEvent.NewChatClicked -> questionText = ""
-            }
-        },
+        questionText = uiState.value.questionText,
+        onEvent = viewModel::onEvent,
         onNavigate = onNavigate,
     )
 }

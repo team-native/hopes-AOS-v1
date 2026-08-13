@@ -20,15 +20,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -41,11 +32,18 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://ssh.gsmsv.site:25105/\"")
-            buildConfigField("boolean", "ENABLE_NETWORK_LOG", "true")
+            buildConfigField("boolean", "ENABLE_LOG", "true")
+            buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
         }
         release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             buildConfigField("String", "BASE_URL", "\"http://ssh.gsmsv.site:25105/\"")
-            buildConfigField("boolean", "ENABLE_NETWORK_LOG", "false")
+            buildConfigField("boolean", "ENABLE_LOG", "false")
+            buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
         }
     }
 }
@@ -61,8 +59,11 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.retrofit.kotlinx.serialization)
     implementation(libs.okhttp.logging)

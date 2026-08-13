@@ -1,0 +1,75 @@
+package com.example.hopes.core.designsystem.component
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.History
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.example.hopes.R
+import com.example.hopes.navigation.HopesDestination
+
+/** 최상위 네 화면으로 이동하는 공통 하단 탐색 바다. */
+@Composable
+fun HopesBottomNavigation(
+    selectedDestination: HopesDestination,
+    onNavigate: (HopesDestination) -> Unit,
+) {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+    ) {
+        HopesDestination.entries
+            .filter { destination ->
+                destination == HopesDestination.Home ||
+                    destination == HopesDestination.Chat ||
+                    destination == HopesDestination.History ||
+                    destination == HopesDestination.Settings
+            }
+            .forEach { destination ->
+            NavigationBarItem(
+                selected = selectedDestination == destination,
+                onClick = { onNavigate(destination) },
+                icon = {
+                    Icon(
+                        imageVector = destination.icon(),
+                        contentDescription = null,
+                    )
+                },
+                label = {
+                    Text(text = stringResource(destination.labelResourceId()))
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                ),
+            )
+        }
+    }
+}
+
+private fun HopesDestination.icon() = when (this) {
+    HopesDestination.Home -> Icons.Outlined.Home
+    HopesDestination.Chat -> Icons.Outlined.ChatBubbleOutline
+    HopesDestination.History -> Icons.Outlined.History
+    HopesDestination.Settings -> Icons.Outlined.Settings
+    else -> Icons.Outlined.Home
+}
+
+private fun HopesDestination.labelResourceId() = when (this) {
+    HopesDestination.Home -> R.string.navigation_home
+    HopesDestination.Chat -> R.string.navigation_chat
+    HopesDestination.History -> R.string.navigation_history
+    HopesDestination.Settings -> R.string.navigation_settings
+    else -> R.string.navigation_home
+}

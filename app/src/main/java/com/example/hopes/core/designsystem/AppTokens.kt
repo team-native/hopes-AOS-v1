@@ -4,9 +4,7 @@ import androidx.compose.ui.unit.dp
 
 /** UI 데모에서 반복되는 여백, 모서리, 아이콘 크기를 일관되게 제공한다. */
 object AppSpacing {
-    /** 402dp Figma 화면에서 콘텐츠를 좌우 16dp로 정렬하는 공통 여백이다. */
-    val ScreenHorizontal = 16.dp
-    val ScreenContentWidth = 370.dp
+    val ScreenHorizontal = 24.dp
     val ScreenVertical = 20.dp
     val Section = 24.dp
     val Item = 12.dp

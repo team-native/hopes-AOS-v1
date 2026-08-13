@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.component.figmaPhoneFrameWidth
 import com.example.hopes.core.designsystem.component.FigmaViewportMetrics
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
@@ -36,7 +37,7 @@ fun FigmaChatReplyBar(
 ) {
     Box(
         modifier = modifier
-            .width(402.dp)
+            .width(figmaPhoneFrameWidth)
             .height(74.dp)
             .background(MaterialTheme.colorScheme.surface)
             .border(1.dp, MaterialTheme.colorScheme.outline),
@@ -73,7 +74,7 @@ fun BoxScope.FigmaImeChatReplyBar(
     ) {
         Box(
             modifier = Modifier
-                .width(402.dp)
+                .width(figmaPhoneFrameWidth)
                 .height(74.dp)
                 .graphicsLayer(
                     scaleX = viewportMetrics.scale,

@@ -14,7 +14,6 @@ interface AuthApiService {
     @POST("api/signup") suspend fun signUp(@Body body: SignupRequestDto): Response<TokenResponseDto>
     @POST("api/login") suspend fun login(@Body body: LoginRequestDto): Response<TokenResponseDto>
     @POST("api/signup/email-verifications") suspend fun sendSignupVerification(@Body body: EmailRequestDto): Response<MessageEnvelopeDto>
-    @POST("api/signup/email-verifications/confirm") suspend fun confirmSignupVerification(@Body body: EmailCodeRequestDto): Response<MessageEnvelopeDto>
     @POST("api/password/request") suspend fun requestPasswordReset(@Body body: EmailRequestDto): Response<MessageEnvelopeDto>
     @POST("api/password/reset") suspend fun resetPassword(@Body body: PasswordResetRequestDto): Response<MessageEnvelopeDto>
 }
@@ -36,7 +35,6 @@ interface SettingsApiService {
 @Serializable data class TokenResponseDto(@SerialName("accessToken") val accessToken: String, @SerialName("tokenType") val tokenType: String)
 @Serializable data class MessageEnvelopeDto(@SerialName("message") val message: String)
 @Serializable data class EmailRequestDto(@SerialName("email") val email: String)
-@Serializable data class EmailCodeRequestDto(@SerialName("email") val email: String, @SerialName("code") val code: String)
 @Serializable data class LoginRequestDto(@SerialName("username") val username: String, @SerialName("password") val password: String)
 @Serializable data class SignupRequestDto(@SerialName("email") val email: String, @SerialName("username") val username: String, @SerialName("password") val password: String, @SerialName("passwordConfirm") val passwordConfirm: String, @SerialName("verificationCode") val verificationCode: String, @SerialName("gender") val gender: String? = null, @SerialName("major") val major: String? = null, @SerialName("cohort") val cohort: Int? = null)
 @Serializable data class PasswordResetRequestDto(@SerialName("email") val email: String, @SerialName("code") val code: String, @SerialName("password") val password: String, @SerialName("passwordConfirm") val passwordConfirm: String)

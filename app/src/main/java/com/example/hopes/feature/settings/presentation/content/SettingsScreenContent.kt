@@ -1,6 +1,7 @@
 package com.example.hopes.feature.settings.presentation.content
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -120,12 +121,14 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
     ) {
         Text(
             text = stringResource(R.string.back_symbol),
-            modifier = Modifier.padding(top = (-1).dp),
+            modifier = Modifier.offset(y = SETTINGS_BACK_SYMBOL_VERTICAL_OFFSET),
             color = MaterialTheme.colorScheme.primary,
             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
         )
     }
 }
+
+private val SETTINGS_BACK_SYMBOL_VERTICAL_OFFSET = (-1).dp
 
 @Composable
 private fun FigmaSettingsRow(

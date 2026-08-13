@@ -6,6 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,21 +52,30 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.annotation.StringRes
 import kotlinx.coroutines.launch
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppAnimationDuration
+import com.example.hopes.core.designsystem.AppBlurRadius
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
+import com.example.hopes.core.designsystem.component.FIGMA_PHONE_HEIGHT
+import com.example.hopes.core.designsystem.component.figmaPhoneFrameHeight
+import com.example.hopes.core.designsystem.component.figmaPhoneFrameWidth
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.HopesLightLogo
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesSurfaceCard
+import com.example.hopes.core.designsystem.component.overlay.dialogBackdropBlur
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthLogoShadowStyle
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
+import com.example.hopes.feature.auth.presentation.component.FigmaSignupSelectionField
+import com.example.hopes.feature.auth.presentation.component.SignupVerificationCodeField
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
@@ -73,11 +85,22 @@ fun AuthScreen(
     emailText: String,
     passwordText: String,
     nameText: String,
+    departmentText: String,
+    generationText: String,
+    verificationCode: String,
+    signupValidation: SignupValidationUiState,
+    isLoading: Boolean,
+    requestError: AuthRequestError?,
+    isSelectionDialogVisible: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
+    onVerificationCodeChange: (String) -> Unit,
+    onDepartmentClick: () -> Unit,
+    onGenerationClick: () -> Unit,
     onLoginClick: () -> Unit,
     onSignupClick: () -> Unit,
+    onSendVerificationCode: () -> Unit,
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
     onDismissLogin: () -> Unit,
@@ -97,9 +120,20 @@ fun AuthScreen(
             emailText = emailText,
             passwordText = passwordText,
             nameText = nameText,
+            departmentText = departmentText,
+            generationText = generationText,
+            verificationCode = verificationCode,
+            signupValidation = signupValidation,
+            isLoading = isLoading,
+            requestError = requestError,
+            isSelectionDialogVisible = isSelectionDialogVisible,
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
             onNameChange = onNameChange,
+            onDepartmentClick = onDepartmentClick,
+            onGenerationClick = onGenerationClick,
+            onVerificationCodeChange = onVerificationCodeChange,
+            onSendVerificationCode = onSendVerificationCode,
             onActionClick = onSignupClick,
             onFooterClick = onNavigateLogin,
         )
@@ -108,7 +142,7 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
-    val sheetTopOffset = remember { Animatable(684f) }
+    val sheetTopOffset = remember { Animatable(AUTH_SHEET_COLLAPSED_TOP) }
     val animationScope = rememberCoroutineScope()
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
@@ -118,11 +152,11 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
+        Box(modifier = Modifier.width(figmaPhoneFrameWidth).height(figmaPhoneFrameHeight)) {
             FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 76.dp))
             AuthHeroCopy()
 
-            if (sheetTopOffset.value > 520f) {
+            if (sheetTopOffset.value > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
                 SwipeHint(extendedColors = extendedColors)
             }
 
@@ -130,8 +164,12 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             FigmaAuthSheet(
                 modifier = Modifier
                     .padding(top = sheetTopOffset.value.dp)
-                    .width(402.dp)
-                    .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
+                    .width(figmaPhoneFrameWidth)
+                    .height(
+                        (FIGMA_PHONE_HEIGHT - sheetTopOffset.value)
+                            .coerceAtLeast(AUTH_SHEET_PEEK_HEIGHT)
+                            .dp,
+                    )
                     .pointerInput(guideDensity) {
                         detectDragGestures(
                             onDrag = { change, dragAmount ->
@@ -140,17 +178,26 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                                     sheetTopOffset.snapTo(
                                         (sheetTopOffset.value + with(guideDensity) {
                                             dragAmount.y.toDp().value
-                                        }).coerceIn(372f, 684f),
+                                        }).coerceIn(
+                                            AUTH_SHEET_EXPANDED_TOP,
+                                            AUTH_SHEET_COLLAPSED_TOP,
+                                        ),
                                     )
                                 }
                             },
                             onDragEnd = {
                                 animationScope.launch {
-                                    if (sheetTopOffset.value < 540f) {
-                                        sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
+                                    if (sheetTopOffset.value < AUTH_SHEET_OPEN_THRESHOLD) {
+                                        sheetTopOffset.animateTo(
+                                            AUTH_SHEET_EXPANDED_TOP,
+                                            tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
+                                        )
                                         onNavigateLogin()
                                     } else {
-                                        sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
+                                        sheetTopOffset.animateTo(
+                                            AUTH_SHEET_COLLAPSED_TOP,
+                                            tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
+                                        )
                                     }
                                 }
                             },
@@ -196,12 +243,12 @@ private fun LoginSheetScreen(
     onNavigateSignup: () -> Unit,
     onDismissLogin: () -> Unit,
 ) {
-    val sheetTopOffset = remember { Animatable(372f) }
+    val sheetTopOffset = remember { Animatable(AUTH_SHEET_EXPANDED_TOP) }
     val animationScope = rememberCoroutineScope()
     val loginDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
     val isImeVisible = WindowInsets.ime.getBottom(loginDensity) > 0
-    val keyboardLift = if (isImeVisible) 126.dp else 0.dp
+    val keyboardLift = if (isImeVisible) LOGIN_KEYBOARD_LIFT else 0.dp
 
     FigmaPhoneScreen(
         background = {
@@ -209,7 +256,7 @@ private fun LoginSheetScreen(
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
+        Box(modifier = Modifier.width(figmaPhoneFrameWidth).height(figmaPhoneFrameHeight)) {
             Box(modifier = Modifier.blur(8.dp)) {
                 FigmaAuthBrandHeader(
                     modifier = Modifier.padding(start = 32.dp, top = 76.dp),
@@ -219,15 +266,15 @@ private fun LoginSheetScreen(
             }
             Box(
                 modifier = Modifier
-                    .width(402.dp)
-                    .height(397.dp)
+                    .width(figmaPhoneFrameWidth)
+                    .height(LOGIN_BACKDROP_HEIGHT)
                     .background(extendedColors.authBackdropScrim),
             )
             FigmaAuthSheet(
                 modifier = Modifier
                     .padding(top = sheetTopOffset.value.dp - keyboardLift)
-                    .width(402.dp)
-                    .height(502.dp)
+                    .width(figmaPhoneFrameWidth)
+                    .height(LOGIN_SHEET_HEIGHT)
                     .pointerInput(loginDensity) {
                         detectDragGestures(
                             onDrag = { change, dragAmount ->
@@ -236,17 +283,26 @@ private fun LoginSheetScreen(
                                     sheetTopOffset.snapTo(
                                         (sheetTopOffset.value + with(loginDensity) {
                                             dragAmount.y.toDp().value
-                                        }).coerceIn(372f, 684f),
+                                        }).coerceIn(
+                                            AUTH_SHEET_EXPANDED_TOP,
+                                            AUTH_SHEET_COLLAPSED_TOP,
+                                        ),
                                     )
                                 }
                             },
                             onDragEnd = {
                                 animationScope.launch {
-                                    if (sheetTopOffset.value > 520f) {
-                                        sheetTopOffset.animateTo(684f, tween(180))
+                                    if (sheetTopOffset.value > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
+                                        sheetTopOffset.animateTo(
+                                            AUTH_SHEET_COLLAPSED_TOP,
+                                            tween(AppAnimationDuration.SheetTransitionMillis),
+                                        )
                                         onDismissLogin()
                                     } else {
-                                        sheetTopOffset.animateTo(372f, tween(180))
+                                        sheetTopOffset.animateTo(
+                                            AUTH_SHEET_EXPANDED_TOP,
+                                            tween(AppAnimationDuration.SheetTransitionMillis),
+                                        )
                                     }
                                 }
                             },
@@ -389,7 +445,7 @@ private fun FigmaLoginSheetContent(
         }
     }.toAnnotatedString()
 
-    Box(modifier = Modifier.height(502.dp).fillMaxWidth()) {
+    Box(modifier = Modifier.height(LOGIN_SHEET_HEIGHT).fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .padding(start = 126.dp, top = 20.dp)
@@ -488,35 +544,50 @@ private fun AuthFormScreen(
     emailText: String,
     passwordText: String,
     nameText: String?,
+    departmentText: String,
+    generationText: String,
+    verificationCode: String,
+    signupValidation: SignupValidationUiState,
+    isLoading: Boolean,
+    requestError: AuthRequestError?,
+    isSelectionDialogVisible: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
+    onDepartmentClick: () -> Unit,
+    onGenerationClick: () -> Unit,
+    onVerificationCodeChange: (String) -> Unit,
+    onSendVerificationCode: () -> Unit,
     onActionClick: () -> Unit,
     onFooterClick: () -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
     val signupDensity = LocalDensity.current
     val isImeVisible = WindowInsets.ime.getBottom(signupDensity) > 0
-    val keyboardLift = if (isImeVisible) (-120).dp else 0.dp
-    val isSignupEnabled = emailText.isNotBlank() && passwordText.isNotBlank() && !nameText.isNullOrBlank()
+    val keyboardLift = if (isImeVisible) SIGN_UP_KEYBOARD_LIFT else 0.dp
+    val isSignupEnabled = !isLoading
     val signupEmailHint = stringResource(R.string.signup_email_hint)
     val signupNameHint = stringResource(R.string.signup_name_hint)
-    val signupDepartmentValue = stringResource(R.string.signup_department_value)
-    val signupGenerationValue = stringResource(R.string.signup_generation_value)
+    val signupGenerationHint = stringResource(R.string.signup_generation_hint)
 
     // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
     FigmaPhoneScreen {
         Box(
             modifier = Modifier
-                .width(402.dp)
-                .height(874.dp)
-                .background(MaterialTheme.colorScheme.background),
+                .width(figmaPhoneFrameWidth)
+                .height(figmaPhoneFrameHeight)
+                .background(MaterialTheme.colorScheme.background)
+                .dialogBackdropBlur(
+                    isEnabled = isSelectionDialogVisible,
+                    blurRadius = AppBlurRadius.DialogBackground,
+                ),
         ) {
         // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
-        Box(modifier = Modifier.padding(top = keyboardLift)) {
+        // 음수 padding은 Compose 예외를 발생시키므로 위치 이동에는 offset을 사용한다.
+        Box(modifier = Modifier.offset(y = keyboardLift)) {
             Box(
                 modifier = Modifier
-                    .width(402.dp)
+                    .width(figmaPhoneFrameWidth)
                     .height(250.dp)
                     .background(
                         Brush.verticalGradient(
@@ -549,14 +620,23 @@ private fun AuthFormScreen(
                     emailText = emailText,
                     passwordText = passwordText,
                     nameText = nameText.orEmpty(),
+                    departmentText = departmentText,
+                    generationText = generationText,
+                    verificationCode = verificationCode,
+                    signupValidation = signupValidation,
+                    isLoading = isLoading,
+                    requestError = requestError,
                     emailHint = signupEmailHint,
                     nameHint = signupNameHint,
-                    departmentValue = signupDepartmentValue,
-                    generationValue = signupGenerationValue,
+                    generationHint = signupGenerationHint,
                     isSignupEnabled = isSignupEnabled,
                     onEmailChange = onEmailChange,
                     onPasswordChange = onPasswordChange,
                     onNameChange = onNameChange,
+                    onDepartmentClick = onDepartmentClick,
+                    onGenerationClick = onGenerationClick,
+                    onVerificationCodeChange = onVerificationCodeChange,
+                    onSendVerificationCode = onSendVerificationCode,
                     onSignupClick = onActionClick,
                 )
                 Spacer(modifier = Modifier.height(42.dp))
@@ -577,23 +657,68 @@ private fun AuthFormScreen(
     }
 }
 
-/** 회원가입 카드의 다섯 입력 행을 같은 세로 비율로 배치한다. */
+private const val AUTH_SHEET_EXPANDED_TOP = 372f
+private const val AUTH_SHEET_COLLAPSED_TOP = 684f
+private const val AUTH_SHEET_OPEN_THRESHOLD = 540f
+private const val AUTH_SHEET_SWIPE_HINT_THRESHOLD = 520f
+private const val AUTH_SHEET_PEEK_HEIGHT = 190f
+private val LOGIN_KEYBOARD_LIFT = 126.dp
+private val LOGIN_BACKDROP_HEIGHT = 397.dp
+private val LOGIN_SHEET_HEIGHT = 502.dp
+private val SIGN_UP_KEYBOARD_LIFT = (-120).dp
+
+/** 회원가입 카드의 입력 항목을 지연 목록으로 배치한다. */
 @Composable
 private fun SignupFormCard(
     modifier: Modifier,
     emailText: String,
     passwordText: String,
     nameText: String,
+    departmentText: String,
+    generationText: String,
+    verificationCode: String,
+    signupValidation: SignupValidationUiState,
+    isLoading: Boolean,
+    requestError: AuthRequestError?,
     emailHint: String,
     nameHint: String,
-    departmentValue: String,
-    generationValue: String,
+    generationHint: String,
     isSignupEnabled: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
+    onDepartmentClick: () -> Unit,
+    onGenerationClick: () -> Unit,
+    onVerificationCodeChange: (String) -> Unit,
+    onSendVerificationCode: () -> Unit,
     onSignupClick: () -> Unit,
 ) {
+    val emailErrorMessage = signupValidation.emailError
+        ?.takeIf { signupValidation.isEmailTouched }
+        ?.let { error ->
+        stringResource(error.messageRes())
+    }
+    val nameErrorMessage = signupValidation.nameError
+        ?.takeIf { signupValidation.isNameTouched }
+        ?.let { error ->
+        stringResource(error.messageRes())
+    }
+    val generationErrorMessage = signupValidation.generationError
+        ?.takeIf { signupValidation.isGenerationTouched }
+        ?.let { error ->
+        stringResource(error.messageRes())
+    }
+    val passwordErrorMessage = signupValidation.passwordError
+        ?.takeIf { signupValidation.isPasswordTouched }
+        ?.let { error ->
+        stringResource(error.messageRes())
+    }
+    val verificationCodeErrorMessage = signupValidation.verificationCodeError
+        ?.takeIf { signupValidation.isVerificationCodeTouched }
+        ?.let { error ->
+            stringResource(error.messageRes())
+        }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -601,67 +726,108 @@ private fun SignupFormCard(
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 29.dp, bottom = 27.dp),
         ) {
+            item {
+            if (requestError == AuthRequestError.SendVerificationCodeFailed) {
+                Text(
+                    text = stringResource(R.string.verification_error_send),
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 8.dp),
+                    color = MaterialTheme.colorScheme.error,
+                    style = TextStyle(fontSize = 11.sp, lineHeight = 14.sp),
+                )
+            }
+
+            if (requestError == AuthRequestError.SignUpFailed) {
+                Text(
+                    text = stringResource(R.string.verification_error_signup),
+                    modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 8.dp),
+                    color = MaterialTheme.colorScheme.error,
+                    style = TextStyle(fontSize = 11.sp, lineHeight = 14.sp),
+                )
+            }
+            }
+
+            item {
             SignupFormFieldGroup(
                 labelRes = R.string.email,
-                modifier = Modifier.weight(1f),
+                errorMessage = emailErrorMessage,
             ) {
                 FigmaSignupField(
                     hint = emailHint,
                     value = emailText,
                     onValueChange = onEmailChange,
-                    isSampleValue = emailText == emailHint,
+                    isError = emailErrorMessage != null,
                 )
             }
+            }
+            item {
+            SignupFormFieldGroup(
+                labelRes = R.string.verification_code,
+                errorMessage = verificationCodeErrorMessage,
+            ) {
+                SignupVerificationCodeField(
+                    value = verificationCode,
+                    isSending = isLoading,
+                    onValueChange = onVerificationCodeChange,
+                    onSendClick = onSendVerificationCode,
+                )
+            }
+            }
+            item {
             SignupFormFieldGroup(
                 labelRes = R.string.name,
-                modifier = Modifier.weight(1f),
+                errorMessage = nameErrorMessage,
             ) {
                 FigmaSignupField(
                     hint = nameHint,
                     value = nameText,
                     onValueChange = onNameChange,
-                    isSampleValue = nameText == nameHint,
+                    isError = nameErrorMessage != null,
                 )
             }
+            }
+            item {
             SignupFormFieldGroup(
                 labelRes = R.string.department,
-                modifier = Modifier.weight(1f),
             ) {
-                FigmaSignupField(
-                    hint = departmentValue,
-                    value = departmentValue,
-                    onValueChange = {},
-                    hasDropDown = true,
-                    isSampleValue = true,
+                FigmaSignupSelectionField(
+                    selectedValue = departmentText,
+                    placeholder = stringResource(R.string.signup_department_hint),
+                    onClick = onDepartmentClick,
                 )
             }
+            }
+            item {
             SignupFormFieldGroup(
                 labelRes = R.string.generation,
-                modifier = Modifier.weight(1f),
+                errorMessage = generationErrorMessage,
             ) {
-                FigmaSignupField(
-                    hint = generationValue,
-                    value = generationValue,
-                    onValueChange = {},
-                    isSampleValue = true,
+                FigmaSignupSelectionField(
+                    selectedValue = generationText,
+                    placeholder = generationHint,
+                    isError = generationErrorMessage != null,
+                    onClick = onGenerationClick,
                 )
             }
+            }
+            item {
             SignupFormFieldGroup(
                 labelRes = R.string.password,
-                modifier = Modifier.weight(1f),
+                errorMessage = passwordErrorMessage,
             ) {
                 FigmaSignupField(
                     hint = stringResource(R.string.password),
                     value = passwordText,
                     onValueChange = onPasswordChange,
                     isPassword = true,
+                    isError = passwordErrorMessage != null,
                     onImeAction = if (isSignupEnabled) onSignupClick else null,
                 )
+            }
             }
         }
     }
@@ -671,17 +837,31 @@ private fun SignupFormCard(
 @Composable
 private fun SignupFormFieldGroup(
     labelRes: Int,
-    modifier: Modifier,
+    errorMessage: String? = null,
     field: @Composable () -> Unit,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 66.dp),
+    ) {
         Text(
             text = stringResource(labelRes),
             modifier = Modifier.padding(start = 24.dp, end = 24.dp),
             style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(6.dp))
+
         field()
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                modifier = Modifier.padding(start = 24.dp, top = 4.dp, end = 24.dp),
+                color = MaterialTheme.colorScheme.error,
+                style = TextStyle(fontSize = 11.sp, lineHeight = 14.sp),
+            )
+        }
     }
 }
 
@@ -707,7 +887,7 @@ private fun SignupActionButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = stringResource(R.string.signup),
+            text = stringResource(R.string.signup_submit),
             color = MaterialTheme.colorScheme.onPrimary,
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
         )
@@ -722,8 +902,7 @@ private fun FigmaSignupField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
-    hasDropDown: Boolean = false,
-    isSampleValue: Boolean = false,
+    isError: Boolean = false,
     onImeAction: (() -> Unit)? = null,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
@@ -737,12 +916,21 @@ private fun FigmaSignupField(
             modifier = Modifier
                 .weight(1f)
                 .height(43.dp)
-                .border(1.dp, extendedColors.authFieldBorder, RoundedCornerShape(14.dp)),
+                .border(
+                    width = 1.dp,
+                    color = if (isError) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        extendedColors.authFieldBorder
+                    },
+                    shape = RoundedCornerShape(14.dp),
+                ),
+            contentAlignment = Alignment.CenterStart,
         ) {
             if (value.isEmpty()) {
                 Text(
                     text = hint,
-                    modifier = Modifier.padding(start = 12.dp, top = 11.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp),
                     color = extendedColors.authFieldHint,
                     style = TextStyle(fontSize = 15.sp),
                 )
@@ -751,17 +939,12 @@ private fun FigmaSignupField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier
-                    .padding(top = 10.dp)
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = if (hasDropDown) 40.dp else 12.dp)
-                    .height(24.dp),
+                    .padding(horizontal = 12.dp)
+                    .align(Alignment.CenterStart),
                 singleLine = true,
                 textStyle = TextStyle(
-                    color = if (isSampleValue) {
-                        extendedColors.authFieldHint
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
                 ),
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
@@ -776,16 +959,17 @@ private fun FigmaSignupField(
                 ),
                 visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             )
-            if (hasDropDown) {
-                Text(
-                    text = stringResource(R.string.signup_dropdown_symbol),
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 13.dp),
-                    color = extendedColors.authFieldHint,
-                    style = TextStyle(fontSize = 20.sp),
-                )
-            }
         }
+    }
+}
+
+@StringRes
+private fun SignupInputError.messageRes(): Int {
+    return when (this) {
+        SignupInputError.InvalidSchoolEmail -> R.string.signup_error_email
+        SignupInputError.InvalidUsername -> R.string.signup_error_name
+        SignupInputError.GenerationRequired -> R.string.signup_error_generation
+        SignupInputError.InvalidPassword -> R.string.signup_error_password
+        SignupInputError.InvalidVerificationCode -> R.string.signup_error_verification_code
     }
 }

@@ -6,7 +6,6 @@ import com.example.hopes.data.mapper.toDomain
 import com.example.hopes.data.mapper.toDto
 import com.example.hopes.data.api.ContentRequestDto
 import com.example.hopes.data.api.CreateChatRequestDto
-import com.example.hopes.data.api.EmailCodeRequestDto
 import com.example.hopes.data.api.EmailRequestDto
 import com.example.hopes.data.api.LoginRequestDto
 import com.example.hopes.data.api.SendMessageRequestDto
@@ -71,10 +70,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun sendSignupCode(email: String): AppResult<Unit> {
         return authRemoteDataSource.sendSignupCode(EmailRequestDto(email)).toAppResult { Unit }
-    }
-
-    override suspend fun confirmSignupCode(email: String, code: String): AppResult<Unit> {
-        return authRemoteDataSource.confirmSignupCode(EmailCodeRequestDto(email, code)).toAppResult { Unit }
     }
 
     override suspend fun requestPasswordReset(email: String): AppResult<Unit> {

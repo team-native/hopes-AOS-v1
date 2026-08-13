@@ -7,7 +7,6 @@ import com.example.hopes.data.api.ChatApiService
 import com.example.hopes.data.api.ChatResponseDto
 import com.example.hopes.data.api.ContentRequestDto
 import com.example.hopes.data.api.CreateChatRequestDto
-import com.example.hopes.data.api.EmailCodeRequestDto
 import com.example.hopes.data.api.EmailRequestDto
 import com.example.hopes.data.api.LoginRequestDto
 import com.example.hopes.data.api.MainResponseDto
@@ -30,7 +29,6 @@ interface AuthRemoteDataSource {
     suspend fun login(body: LoginRequestDto): NetworkResult<TokenResponseDto>
     suspend fun signUp(body: SignupRequestDto): NetworkResult<TokenResponseDto>
     suspend fun sendSignupCode(body: EmailRequestDto): NetworkResult<MessageEnvelopeDto>
-    suspend fun confirmSignupCode(body: EmailCodeRequestDto): NetworkResult<MessageEnvelopeDto>
     suspend fun requestPasswordReset(body: EmailRequestDto): NetworkResult<MessageEnvelopeDto>
     suspend fun resetPassword(body: PasswordResetRequestDto): NetworkResult<MessageEnvelopeDto>
 }
@@ -55,12 +53,6 @@ class AuthRemoteDataSourceImpl @Inject constructor(
     override suspend fun sendSignupCode(body: EmailRequestDto): NetworkResult<MessageEnvelopeDto> {
         return apiExecutor.execute {
             authApiService.sendSignupVerification(body)
-        }
-    }
-
-    override suspend fun confirmSignupCode(body: EmailCodeRequestDto): NetworkResult<MessageEnvelopeDto> {
-        return apiExecutor.execute {
-            authApiService.confirmSignupVerification(body)
         }
     }
 

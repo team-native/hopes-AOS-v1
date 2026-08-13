@@ -82,6 +82,8 @@ fun AuthScreen(
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
     onDismissLogin: () -> Unit,
+    loginErrorText: String?,
+    isLoginLoading: Boolean,
 ) {
     when (authStep) {
         AuthStep.Guide -> AuthGuideContent(onNavigateLogin = onNavigateLogin)
@@ -93,6 +95,8 @@ fun AuthScreen(
             onLoginClick = onLoginClick,
             onNavigateSignup = onNavigateSignup,
             onDismissLogin = onDismissLogin,
+            loginErrorText = loginErrorText,
+            isLoginLoading = isLoginLoading,
         )
         AuthStep.SignUp -> AuthFormScreen(
             emailText = emailText,
@@ -196,6 +200,8 @@ private fun LoginSheetScreen(
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onDismissLogin: () -> Unit,
+    loginErrorText: String?,
+    isLoginLoading: Boolean,
 ) {
     val sheetTopOffset = remember { Animatable(372f) }
     val animationScope = rememberCoroutineScope()
@@ -262,6 +268,8 @@ private fun LoginSheetScreen(
                     onPasswordChange = onPasswordChange,
                     onLoginClick = onLoginClick,
                     onNavigateSignup = onNavigateSignup,
+                    loginErrorText = loginErrorText,
+                    isLoginLoading = isLoginLoading,
                 )
             }
         }
@@ -373,9 +381,11 @@ private fun FigmaLoginSheetContent(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
+    loginErrorText: String?,
+    isLoginLoading: Boolean,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
-    val isLoginEnabled = emailText.isNotBlank() && passwordText.isNotBlank()
+    val isLoginEnabled = emailText.isNotBlank() && passwordText.isNotBlank() && !isLoginLoading
     val accountPrompt = stringResource(R.string.no_account)
     val signupText = stringResource(R.string.signup)
     val accountPromptAnnotated = AnnotatedString.Builder().apply {
@@ -431,6 +441,14 @@ private fun FigmaLoginSheetContent(
             onClick = onLoginClick,
             modifier = Modifier.offset(y = 355.dp),
         )
+        if (loginErrorText != null) {
+            Text(
+                text = loginErrorText,
+                modifier = Modifier.offset(y = 325.dp),
+                color = MaterialTheme.colorScheme.error,
+                style = TextStyle(fontSize = 12.sp),
+            )
+        }
         Text(
             text = accountPromptAnnotated,
             modifier = Modifier

@@ -92,6 +92,12 @@
     <string name="open">열기</string>
     <string name="logout_description">앱 설정과 도움말을 관리해요.</string>
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
+    <string name="signup_unavailable">회원가입은 준비 중입니다.</string>
+    <string name="login_error_invalid_credentials">이메일 또는 비밀번호를 확인해 주세요.</string>
+    <string name="login_error_validation">이메일과 비밀번호를 입력해 주세요.</string>
+    <string name="login_error_rate_limited">로그인 시도가 너무 많습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="login_error_network">네트워크 연결을 확인해 주세요.</string>
+    <string name="login_error_unknown">로그인에 실패했습니다. 다시 시도해 주세요.</string>
     <string name="login_guide_subtitle">학교 이메일로 로그인하세요.</string>
     <string name="signup_subtitle">학교 이메일로 간단히 시작하세요.</string>
     <string name="signup_hero_title">학교 이메일로\n간단히 시작하기</string>

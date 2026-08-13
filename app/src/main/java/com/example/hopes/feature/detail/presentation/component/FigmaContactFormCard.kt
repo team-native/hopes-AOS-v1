@@ -1,7 +1,8 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,13 +26,13 @@ fun FigmaContactFormCard(
 ) {
     FigmaDetailCard(
         modifier = Modifier
-            .offset(x = 24.dp, y = 156.dp)
+            .padding(start = 24.dp, top = 156.dp)
             .height(420.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {
         FigmaDetailFieldLabel(
             text = stringResource(R.string.email),
-            modifier = Modifier.offset(x = 24.dp, y = 42.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 42.dp),
         )
         FigmaDetailContactEmailInput(
             value = contactEmail,
@@ -40,14 +41,14 @@ fun FigmaContactFormCard(
         )
         FigmaDetailFieldLabel(
             text = stringResource(R.string.contact_content),
-            modifier = Modifier.offset(x = 24.dp, y = 136.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 136.dp),
         )
         FigmaDetailTextArea(
             value = contactMessage,
             onValueChange = onContactMessageChange,
             hint = stringResource(R.string.contact_placeholder),
             height = 154,
-            modifier = Modifier.offset(x = 24.dp, y = 160.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 160.dp),
         )
         FigmaDetailPrimaryButton(
             text = if (isContactSent) {
@@ -56,7 +57,7 @@ fun FigmaContactFormCard(
                 stringResource(R.string.send_contact)
             },
             modifier = Modifier
-                .offset(x = 24.dp, y = 344.dp)
+                .padding(start = 24.dp, top = 344.dp)
                 .width(306.dp)
                 .height(48.dp),
             onClick = onSendClick,

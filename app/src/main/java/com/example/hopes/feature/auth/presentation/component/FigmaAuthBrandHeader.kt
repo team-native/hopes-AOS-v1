@@ -1,9 +1,10 @@
 package com.example.hopes.feature.auth.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,7 +66,7 @@ fun FigmaAuthBrandHeader(
         Text(
             text = stringResource(R.string.app_name),
             modifier = Modifier
-                .offset(x = 54.dp, y = 4.dp),
+                .padding(start = 54.dp, top = 4.dp),
             color = MaterialTheme.colorScheme.onPrimary,
             style = TextStyle(
                 fontSize = 17.sp,
@@ -76,7 +77,7 @@ fun FigmaAuthBrandHeader(
         Text(
             text = stringResource(R.string.school_name),
             modifier = Modifier
-                .offset(x = 54.dp, y = 25.dp),
+                .padding(start = 54.dp, top = 25.dp),
             color = extendedColors.brandSubtitleOnBlue,
             style = TextStyle(
                 fontSize = 11.sp,

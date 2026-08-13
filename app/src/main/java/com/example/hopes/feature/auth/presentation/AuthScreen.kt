@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ime
@@ -124,7 +123,7 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
         },
     ) {
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
-            FigmaAuthBrandHeader(modifier = Modifier.offset(x = 32.dp, y = 76.dp))
+            FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 76.dp))
             AuthHeroCopy()
 
             if (sheetTopOffset.value > 520f) {
@@ -134,7 +133,7 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 시트를 확장한다.
             FigmaAuthSheet(
                 modifier = Modifier
-                    .offset(y = sheetTopOffset.value.dp)
+                    .padding(top = sheetTopOffset.value.dp)
                     .width(402.dp)
                     .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
                     .pointerInput(guideDensity) {
@@ -219,7 +218,7 @@ private fun LoginSheetScreen(
         Box(modifier = Modifier.width(402.dp).height(874.dp)) {
             Box(modifier = Modifier.blur(8.dp)) {
                 FigmaAuthBrandHeader(
-                    modifier = Modifier.offset(x = 32.dp, y = 76.dp),
+                    modifier = Modifier.padding(start = 32.dp, top = 76.dp),
                     logoShadowStyle = FigmaAuthLogoShadowStyle.Login,
                 )
                 AuthHeroCopy()
@@ -232,7 +231,7 @@ private fun LoginSheetScreen(
             )
             FigmaAuthSheet(
                 modifier = Modifier
-                    .offset(y = sheetTopOffset.value.dp - keyboardLift)
+                    .padding(top = sheetTopOffset.value.dp - keyboardLift)
                     .width(402.dp)
                     .height(502.dp)
                     .pointerInput(loginDensity) {
@@ -290,7 +289,7 @@ private fun AuthBackground(modifier: Modifier = Modifier) {
 private fun AuthHeroCopy() {
     val extendedColors = LocalHopesExtendedColors.current
 
-    Column(modifier = Modifier.offset(x = 32.dp, y = 286.dp).width(318.dp)) {
+    Column(modifier = Modifier.padding(start = 32.dp, top = 286.dp).width(318.dp)) {
         Text(
             text = stringResource(R.string.auth_title),
             color = MaterialTheme.colorScheme.onPrimary,
@@ -321,7 +320,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
         contentDescription = null,
         modifier = Modifier
-            .offset(x = 181.dp, y = 581.dp)
+            .padding(start = 181.dp, top = 581.dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -330,7 +329,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
         contentDescription = null,
         modifier = Modifier
-            .offset(x = 181.dp, y = 563.dp)
+            .padding(start = 181.dp, top = 563.dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -338,7 +337,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
-            .offset(y = 621.dp)
+            .padding(top = 621.dp)
             .fillMaxWidth(),
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -350,7 +349,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe),
         modifier = Modifier
-            .offset(y = 651.dp)
+            .padding(top = 651.dp)
             .fillMaxWidth(),
         color = extendedColors.authDescription,
         textAlign = TextAlign.Center,
@@ -403,48 +402,48 @@ private fun FigmaLoginSheetContent(
     Box(modifier = Modifier.height(502.dp).fillMaxWidth()) {
         Box(
             modifier = Modifier
-                .offset(x = 126.dp, y = 20.dp)
+                .padding(start = 126.dp, top = 20.dp)
                 .width(86.dp),
         ) {
             AuthSheetHandle()
         }
         Text(
             text = stringResource(R.string.login),
-            modifier = Modifier.offset(y = 68.dp),
+            modifier = Modifier.padding(top = 68.dp),
             color = MaterialTheme.colorScheme.onSurface,
             style = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold),
         )
         Text(
             text = stringResource(R.string.login_subtitle),
-            modifier = Modifier.offset(y = 108.dp),
+            modifier = Modifier.padding(top = 108.dp),
             color = extendedColors.authFieldHint,
             style = TextStyle(fontSize = 14.sp, lineHeight = 20.sp),
         )
-        AuthFieldLabel(labelRes = R.string.auth_email, modifier = Modifier.offset(y = 162.dp))
+        AuthFieldLabel(labelRes = R.string.auth_email, modifier = Modifier.padding(top = 162.dp))
         FigmaAuthTextField(
             value = emailText,
             onValueChange = onEmailChange,
             labelRes = R.string.auth_email,
-            modifier = Modifier.offset(y = 183.dp),
+            modifier = Modifier.padding(top = 183.dp),
         )
-        AuthFieldLabel(labelRes = R.string.password, modifier = Modifier.offset(y = 238.dp))
+        AuthFieldLabel(labelRes = R.string.password, modifier = Modifier.padding(top = 238.dp))
         FigmaAuthTextField(
             value = passwordText,
             onValueChange = onPasswordChange,
             labelRes = R.string.password,
             isPassword = true,
             onImeAction = if (isLoginEnabled) onLoginClick else null,
-            modifier = Modifier.offset(y = 261.dp),
+            modifier = Modifier.padding(top = 261.dp),
         )
         FigmaLoginButton(
             isEnabled = isLoginEnabled,
             onClick = onLoginClick,
-            modifier = Modifier.offset(y = 355.dp),
+            modifier = Modifier.padding(top = 355.dp),
         )
         if (loginErrorText != null) {
             Text(
                 text = loginErrorText,
-                modifier = Modifier.offset(y = 325.dp),
+                modifier = Modifier.padding(top = 325.dp),
                 color = MaterialTheme.colorScheme.error,
                 style = TextStyle(fontSize = 12.sp),
             )
@@ -452,7 +451,7 @@ private fun FigmaLoginSheetContent(
         Text(
             text = accountPromptAnnotated,
             modifier = Modifier
-                .offset(y = 422.dp)
+                .padding(top = 422.dp)
                 .fillMaxWidth()
                 .clickable(onClick = onNavigateSignup),
             color = extendedColors.authFieldHint,
@@ -532,7 +531,7 @@ private fun AuthFormScreen(
                 .background(MaterialTheme.colorScheme.background),
         ) {
         // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
-        Box(modifier = Modifier.offset(y = keyboardLift)) {
+        Box(modifier = Modifier.padding(top = keyboardLift)) {
             Box(
                 modifier = Modifier
                     .width(402.dp)
@@ -547,19 +546,19 @@ private fun AuthFormScreen(
                     ),
             )
             FigmaBrandHeader(
-                modifier = Modifier.offset(x = 32.dp, y = 76.dp),
+                modifier = Modifier.padding(start = 32.dp, top = 76.dp),
                 isOnBlueBackground = true,
             )
             Text(
                 text = stringResource(R.string.signup_hero_title),
-                modifier = Modifier.offset(x = 32.dp, y = 154.dp).width(260.dp),
+                modifier = Modifier.padding(start = 32.dp, top = 154.dp).width(260.dp),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
             )
             // 헤더와 가입 버튼 사이를 1f로 사용해 카드의 세로 비율을 유지한다.
             Column(
                 modifier = Modifier
-                    .offset(x = 24.dp, y = 276.dp)
+                    .padding(start = 24.dp, top = 276.dp)
                     .width(354.dp)
                     .height(474.dp),
             ) {
@@ -586,7 +585,7 @@ private fun AuthFormScreen(
             }
             Text(
                 text = stringResource(R.string.has_account),
-                modifier = Modifier.offset(y = 760.dp).fillMaxWidth().clickable(onClick = onFooterClick),
+                modifier = Modifier.padding(top = 760.dp).fillMaxWidth().clickable(onClick = onFooterClick),
                 color = extendedColors.authFieldHint,
                 textAlign = TextAlign.Center,
                 style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
@@ -756,7 +755,7 @@ private fun FigmaSignupField(
             if (value.isEmpty()) {
                 Text(
                     text = hint,
-                    modifier = Modifier.offset(x = 12.dp, y = 11.dp),
+                    modifier = Modifier.padding(start = 12.dp, top = 11.dp),
                     color = extendedColors.authFieldHint,
                     style = TextStyle(fontSize = 15.sp),
                 )
@@ -765,7 +764,7 @@ private fun FigmaSignupField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier
-                    .offset(y = 10.dp)
+                    .padding(top = 10.dp)
                     .fillMaxWidth()
                     .padding(start = 12.dp, end = if (hasDropDown) 40.dp else 12.dp)
                     .height(24.dp),

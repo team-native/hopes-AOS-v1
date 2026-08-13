@@ -1,7 +1,8 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,25 +24,25 @@ fun FigmaPersonalSettingsFormCard(
 ) {
     FigmaDetailCard(
         modifier = Modifier
-            .offset(x = 24.dp, y = 158.dp)
+            .padding(start = 24.dp, top = 158.dp)
             .height(408.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {
         Text(
             text = stringResource(R.string.personal_settings),
-            modifier = Modifier.offset(x = 24.dp, y = 32.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 32.dp),
             style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
         )
         FigmaDetailFieldLabel(
             text = stringResource(R.string.system_prompt_description),
-            modifier = Modifier.offset(x = 24.dp, y = 80.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 80.dp),
         )
         FigmaDetailTextArea(
             value = personalPrompt,
             onValueChange = onPersonalPromptChange,
             hint = stringResource(R.string.prompt_placeholder),
             height = 210,
-            modifier = Modifier.offset(x = 24.dp, y = 112.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 112.dp),
         )
         FigmaDetailPrimaryButton(
             text = if (isPromptSaved) {
@@ -50,7 +51,7 @@ fun FigmaPersonalSettingsFormCard(
                 stringResource(R.string.prompt_save)
             },
             modifier = Modifier
-                .offset(x = 230.dp, y = 341.dp)
+                .padding(start = 230.dp, top = 341.dp)
                 .width(100.dp)
                 .height(46.dp),
             onClick = onSaveClick,

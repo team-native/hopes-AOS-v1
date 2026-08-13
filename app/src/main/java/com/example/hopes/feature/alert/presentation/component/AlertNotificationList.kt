@@ -1,7 +1,9 @@
 package com.example.hopes.feature.alert.presentation.component
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.hopes.feature.alert.presentation.AlertNotificationUiModel
@@ -13,15 +15,16 @@ fun AlertNotificationList(
     isReadAll: Boolean,
     onActionClick: (String) -> Unit,
 ) {
-    notifications.forEachIndexed { notificationIndex, notification ->
-        AlertNotificationRow(
-            notification = notification,
-            isReadAll = isReadAll,
-            modifier = Modifier.offset(
-                x = 24.dp,
-                y = (150 + (notificationIndex * 84)).dp,
-            ),
-            onActionClick = { onActionClick(notification.id) },
-        )
+    Column(
+        modifier = Modifier.padding(start = 24.dp, top = 150.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
+    ) {
+        notifications.forEach { notification ->
+            AlertNotificationRow(
+                notification = notification,
+                isReadAll = isReadAll,
+                onActionClick = { onActionClick(notification.id) },
+            )
+        }
     }
 }

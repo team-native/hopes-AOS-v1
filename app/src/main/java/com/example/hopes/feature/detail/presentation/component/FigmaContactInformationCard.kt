@@ -1,7 +1,8 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,14 +19,14 @@ import com.example.hopes.R
 fun FigmaContactInformationCard() {
     FigmaDetailCard(
         modifier = Modifier
-            .offset(x = 24.dp, y = 624.dp)
+            .padding(start = 24.dp, top = 624.dp)
             .height(70.dp),
         shadowStyle = FigmaDetailCardShadow.None,
         shape = RoundedCornerShape(16.dp),
     ) {
         Text(
             text = stringResource(R.string.contact_email_info),
-            modifier = Modifier.offset(x = 24.dp, y = 25.dp),
+            modifier = Modifier.padding(start = 24.dp, top = 25.dp),
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
         )
     }

@@ -1,10 +1,11 @@
 package com.example.hopes.feature.alert.presentation.component
 
+import androidx.compose.foundation.layout.padding
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -30,7 +31,7 @@ fun AlertReadAllButton(
 
     Box(
         modifier = Modifier
-            .offset(x = 24.dp, y = 719.dp)
+            .padding(start = 24.dp, top = 719.dp)
             .width(354.dp)
             .height(48.dp)
             .figmaSubtleShadow(buttonShape)

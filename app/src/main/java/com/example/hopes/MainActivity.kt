@@ -12,7 +12,10 @@ import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import com.example.hopes.navigation.HopesNavigation
 import com.example.hopes.ui.theme.HopesTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+/** Compose Route에서 Hilt ViewModel을 생성할 수 있도록 등록한 Activity 진입점이다. */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

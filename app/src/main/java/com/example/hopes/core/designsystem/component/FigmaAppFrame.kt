@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -35,7 +37,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.navigation.HopesDestination
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 iPhone 17 Pro(402×874) 좌표계를 유지하는 앱 화면 프레임이다. */
 @Composable
@@ -162,21 +166,18 @@ fun FigmaBottomNavigation(
                             ),
                     )
                 }
-                Text(
-                    text = stringResource(
-                        if (isSelected) {
-                            R.string.navigation_selected_symbol
-                        } else {
-                            R.string.navigation_unselected_symbol
-                        },
-                    ),
-                    modifier = Modifier.offset(y = 5.dp),
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
+                Icon(
+                    painter = painterResource(destination.bottomNavigationIconResourceId()),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .offset(y = 3.dp)
+                        .width(AppIconSize.BottomNavigation)
+                        .height(AppIconSize.BottomNavigation),
+                    tint = if (isSelected) {
+                        LocalHopesExtendedColors.current.bottomNavigationSelectedIcon
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
                     },
-                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
                 )
                 Text(
                     text = stringResource(destination.labelResourceId()),

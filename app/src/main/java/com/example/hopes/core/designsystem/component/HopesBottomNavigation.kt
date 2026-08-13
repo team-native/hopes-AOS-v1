@@ -1,10 +1,5 @@
 package com.example.hopes.core.designsystem.component
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -12,9 +7,11 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
 import com.example.hopes.navigation.HopesDestination
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 최상위 네 화면으로 이동하는 공통 하단 탐색 바다. */
 @Composable
@@ -39,7 +36,7 @@ fun HopesBottomNavigation(
                 onClick = { onNavigate(destination) },
                 icon = {
                     Icon(
-                        imageVector = destination.icon(),
+                        painter = painterResource(destination.bottomNavigationIconResourceId()),
                         contentDescription = null,
                     )
                 },
@@ -47,7 +44,7 @@ fun HopesBottomNavigation(
                     Text(text = stringResource(destination.labelResourceId()))
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedIconColor = LocalHopesExtendedColors.current.bottomNavigationSelectedIcon,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
                     indicatorColor = MaterialTheme.colorScheme.primaryContainer,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -56,14 +53,6 @@ fun HopesBottomNavigation(
             )
         }
     }
-}
-
-private fun HopesDestination.icon() = when (this) {
-    HopesDestination.Home -> Icons.Outlined.Home
-    HopesDestination.Chat -> Icons.Outlined.ChatBubbleOutline
-    HopesDestination.History -> Icons.Outlined.History
-    HopesDestination.Settings -> Icons.Outlined.Settings
-    else -> Icons.Outlined.Home
 }
 
 private fun HopesDestination.labelResourceId() = when (this) {

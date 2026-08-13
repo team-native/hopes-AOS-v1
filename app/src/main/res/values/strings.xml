@@ -17,8 +17,6 @@
     <string name="chat_send">전송</string>
     <string name="chat_suggestion_marker">•</string>
     <string name="chat_send_symbol">↑</string>
-    <string name="navigation_selected_symbol">●</string>
-    <string name="navigation_unselected_symbol">○</string>
     <string name="back_symbol">‹</string>
     <string-array name="chat_suggestion_symbols">
         <item>⌂</item>

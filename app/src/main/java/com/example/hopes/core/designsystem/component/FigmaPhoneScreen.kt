@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import kotlin.math.min
 
 /** 반응형 Figma 뷰포트의 실제 렌더링 정보를 제공한다. */
 data class FigmaViewportMetrics(
@@ -21,8 +22,10 @@ data class FigmaViewportMetrics(
 )
 
 /**
- * 402×874 Figma iPhone 프레임을 실제 Android 화면에 비례해 표시한다.
- * 배경과 오버레이는 전체 화면을 차지해 기기 비율이 달라도 빈 공간이 보이지 않는다.
+ * 402×874 Figma iPhone 프레임을 화면 폭에 맞춰 표시한다.
+ *
+ * 높이를 기준으로 축소하지 않아 하단 콘텐츠가 잘리지 않으며, 남는 세로 영역은
+ * 스크롤로 접근한다. 넓은 기기에서는 기준 폭을 넘기지 않고 가운데에 배치한다.
  */
 @Composable
 fun FigmaPhoneScreen(
@@ -41,26 +44,38 @@ fun FigmaPhoneScreen(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
     ) {
-        val scale = min(
-            maxWidth.value / FIGMA_PHONE_WIDTH,
-            maxHeight.value / FIGMA_PHONE_HEIGHT,
-        )
+        val viewportWidth = minOf(maxWidth, FIGMA_PHONE_WIDTH.dp)
+        val scale = viewportWidth.value / FIGMA_PHONE_WIDTH
+        val viewportHeight = (FIGMA_PHONE_HEIGHT * scale).dp
         val viewportMetrics = FigmaViewportMetrics(scale = scale)
 
         background()
 
         Box(
             modifier = Modifier
-                .width(402.dp)
-                .height(874.dp)
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f),
-                ),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter,
         ) {
-            content()
+            Box(
+                modifier = Modifier
+                    .width(viewportWidth)
+                    .height(viewportHeight),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(FIGMA_PHONE_WIDTH.dp)
+                        .height(FIGMA_PHONE_HEIGHT.dp)
+                        .graphicsLayer(
+                            scaleX = scale,
+                            scaleY = scale,
+                            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f),
+                        ),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    content()
+                }
+            }
         }
 
         overlay(viewportMetrics)

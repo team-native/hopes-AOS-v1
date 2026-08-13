@@ -1,14 +1,15 @@
 package com.example.hopes.feature.home.presentation.content
 
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -52,49 +53,64 @@ fun HomeScreenContent(
         },
         contentBackgroundColor = Color.Transparent,
     ) {
-        FigmaBrandHeader(
+        Column(
             modifier = Modifier.padding(start = 32.dp, top = 76.dp),
-            isOnBlueBackground = true,
-            logoShadow = FigmaBrandLogoShadow.Subtle,
-        )
-        Text(
-            text = stringResource(R.string.onboarding_title),
-            modifier = Modifier.padding(start = 32.dp, top = 220.dp).width(318.dp),
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 43.sp),
-        )
-        Text(
-            text = stringResource(R.string.onboarding_description),
-            modifier = Modifier.padding(start = 32.dp, top = 330.dp).width(306.dp),
-            color = extendedColors.authDescription,
-            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, lineHeight = 26.sp),
-        )
-        FigmaHomeTipCard(
-            index = 1,
-            topText = stringResource(R.string.onboarding_tip_one_top),
-            bottomText = stringResource(R.string.onboarding_tip_one_bottom),
-            modifier = Modifier.padding(start = 32.dp, top = 450.dp),
-        )
-        FigmaHomeTipCard(
-            index = 2,
-            topText = stringResource(R.string.onboarding_tip_two_top),
-            bottomText = stringResource(R.string.onboarding_tip_two_bottom),
-            modifier = Modifier.padding(start = 32.dp, top = 543.dp),
-        )
-        Box(
-            modifier = Modifier
-                .padding(start = 32.dp, top = 706.dp)
-                .width(338.dp)
-                .height(46.dp)
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-                .clickable(onClick = onStartChatClick),
-            contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = stringResource(R.string.start_chat),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+            FigmaBrandHeader(
+                isOnBlueBackground = true,
+                logoShadow = FigmaBrandLogoShadow.Subtle,
             )
+
+            Spacer(modifier = Modifier.height(102.dp))
+
+            Text(
+                text = stringResource(R.string.onboarding_title),
+                modifier = Modifier.width(318.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 43.sp),
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(R.string.onboarding_description),
+                modifier = Modifier.width(306.dp),
+                color = extendedColors.authDescription,
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, lineHeight = 26.sp),
+            )
+
+            Spacer(modifier = Modifier.height(68.dp))
+
+            FigmaHomeTipCard(
+                index = 1,
+                topText = stringResource(R.string.onboarding_tip_one_top),
+                bottomText = stringResource(R.string.onboarding_tip_one_bottom),
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            FigmaHomeTipCard(
+                index = 2,
+                topText = stringResource(R.string.onboarding_tip_two_top),
+                bottomText = stringResource(R.string.onboarding_tip_two_bottom),
+            )
+
+            Spacer(modifier = Modifier.height(85.dp))
+
+            Box(
+                modifier = Modifier
+                    .width(338.dp)
+                    .height(46.dp)
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+                    .clickable(onClick = onStartChatClick),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.start_chat),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                )
+            }
         }
     }
 }
@@ -105,12 +121,11 @@ private fun FigmaHomeTipCard(
     index: Int,
     topText: String,
     bottomText: String,
-    modifier: Modifier,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .width(338.dp)
             .height(78.dp)
             .figmaSubtleShadow(RoundedCornerShape(18.dp))

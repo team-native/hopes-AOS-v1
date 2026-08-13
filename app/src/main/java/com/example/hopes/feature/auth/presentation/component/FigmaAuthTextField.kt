@@ -12,9 +12,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -42,12 +47,21 @@ fun FigmaAuthTextField(
     modifier: Modifier = Modifier,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
+    // 비밀번호 원문은 저장하지 않고, 화면 회전 후에도 표시 상태만 유지한다.
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
     val fieldTextStyle = TextStyle(
         color = MaterialTheme.colorScheme.onSurface,
         fontSize = 15.sp,
         fontWeight = FontWeight.Normal,
     )
     val fieldDescription = stringResource(labelRes)
+    val passwordVisibilityDescription = stringResource(
+        if (isPasswordVisible) {
+            R.string.hide_password
+        } else {
+            R.string.show_password
+        },
+    )
 
     Box(
         modifier = modifier
@@ -75,7 +89,7 @@ fun FigmaAuthTextField(
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = if (isPassword) 24.dp else 0.dp)
+                .padding(end = if (isPassword) 40.dp else 0.dp)
                 .semantics { contentDescription = fieldDescription },
             singleLine = true,
             textStyle = fieldTextStyle,
@@ -85,7 +99,7 @@ fun FigmaAuthTextField(
             keyboardActions = KeyboardActions(
                 onDone = { onImeAction?.invoke() },
             ),
-            visualTransformation = if (isPassword) {
+            visualTransformation = if (isPassword && !isPasswordVisible) {
                 PasswordVisualTransformation()
             } else {
                 VisualTransformation.None
@@ -93,13 +107,18 @@ fun FigmaAuthTextField(
         )
 
         if (isPassword) {
-            Image(
-                painter = painterResource(R.drawable.figma_auth_password_eye),
-                contentDescription = null,
+            IconButton(
+                onClick = { isPasswordVisible = !isPasswordVisible },
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .size(width = 16.dp, height = 11.dp),
-            )
+                    .size(40.dp),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.figma_auth_password_eye),
+                    contentDescription = passwordVisibilityDescription,
+                    modifier = Modifier.size(width = 16.dp, height = 11.dp),
+                )
+            }
         }
     }
 }

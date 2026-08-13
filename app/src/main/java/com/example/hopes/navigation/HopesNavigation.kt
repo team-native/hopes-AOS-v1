@@ -1,5 +1,7 @@
 package com.example.hopes.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -177,6 +179,11 @@ fun HopesNavigation(
     NavHost(
         navController = hopesNavController,
         startDestination = AUTH_ROUTE,
+        // 모든 화면 전환을 즉시 반영해 Navigation 기본 애니메이션을 사용하지 않는다.
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
     ) {
         composable(AUTH_ROUTE) {
             AuthRoute(

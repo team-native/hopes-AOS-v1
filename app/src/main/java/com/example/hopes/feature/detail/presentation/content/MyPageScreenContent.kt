@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesScaffold
-import com.example.hopes.core.designsystem.component.HopesSurfaceCard
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailUiState
 import com.example.hopes.navigation.HopesDestination
@@ -24,8 +23,11 @@ fun MyPageScreenContent(uiState: DetailUiState, onEvent: (DetailScreenEvent) -> 
     HopesScaffold(HopesDestination.Settings, onNavigate) { innerPadding ->
         Column(Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = AppSpacing.ScreenHorizontal), verticalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
             Text(stringResource(R.string.my_page))
-            HopesSurfaceCard { Text(stringResource(R.string.my_page_account)); Text(stringResource(R.string.my_page_email)); Text(stringResource(R.string.my_page_major)) }
-            HopesSurfaceCard { Text(stringResource(R.string.profile)); OutlinedTextField(uiState.profileName, { onEvent(DetailScreenEvent.ProfileNameChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.name)) }); OutlinedTextField(uiState.profileIntroduction, { onEvent(DetailScreenEvent.ProfileIntroductionChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.profile_personalization_label)) }); Button(onClick = { onEvent(DetailScreenEvent.ProfileSaveClicked) }) { Text(stringResource(if (uiState.isProfileSaved) R.string.saved else R.string.save)) } }
+            Text(stringResource(R.string.my_page_account))
+            Text(stringResource(R.string.my_page_email))
+            OutlinedTextField(uiState.profileName, { onEvent(DetailScreenEvent.ProfileNameChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.name)) })
+            OutlinedTextField(uiState.profileIntroduction, { onEvent(DetailScreenEvent.ProfileIntroductionChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.profile_personalization_label)) })
+            Button(onClick = { onEvent(DetailScreenEvent.ProfileSaveClicked) }) { Text(stringResource(if (uiState.isProfileSaved) R.string.saved else R.string.save)) }
         }
     }
 }

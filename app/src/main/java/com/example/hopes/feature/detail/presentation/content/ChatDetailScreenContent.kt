@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesScaffold
-import com.example.hopes.core.designsystem.component.HopesSurfaceCard
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailUiState
 import com.example.hopes.navigation.HopesDestination
@@ -23,8 +22,8 @@ fun ChatDetailScreenContent(uiState: DetailUiState, onEvent: (DetailScreenEvent)
     val conversation = uiState.conversation
     HopesScaffold(HopesDestination.Chat, onNavigate) { innerPadding ->
         Column(Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = AppSpacing.ScreenHorizontal)) {
-            HopesSurfaceCard { Text(conversation?.question ?: stringResource(R.string.chat_detail_title)) }
-            HopesSurfaceCard { Text(stringResource(R.string.chat_answer_label)); Text(stringResource(R.string.chat_detail_answer)) }
+            Text(conversation?.question ?: stringResource(R.string.chat_detail_title))
+            Text(stringResource(R.string.chat_detail_answer))
             conversation?.replies?.forEach { Text(it) }
             OutlinedTextField(conversation?.replyDraft.orEmpty(), { onEvent(DetailScreenEvent.ReplyChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.chat_additional_question)) })
             Button(onClick = { onEvent(DetailScreenEvent.ReplySubmitted) }) { Text(stringResource(R.string.chat_send)) }

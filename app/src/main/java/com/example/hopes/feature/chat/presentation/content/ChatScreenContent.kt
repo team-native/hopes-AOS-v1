@@ -3,17 +3,11 @@ package com.example.hopes.feature.chat.presentation.content
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.Alignment
-import androidx.compose.material3.Text
-import androidx.compose.ui.res.stringResource
-import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesScaffold
-import com.example.hopes.core.designsystem.component.HopesLogoMark
 import com.example.hopes.feature.chat.presentation.component.ChatComposer
 import com.example.hopes.feature.chat.presentation.component.ChatHeader
 import com.example.hopes.feature.chat.presentation.component.ChatSuggestions
@@ -41,14 +35,6 @@ fun ChatScreenContent(
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Section),
         ) {
             ChatHeader(onNewChatClick = onNewChatClick)
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                HopesLogoMark()
-                Text(stringResource(R.string.chat_welcome))
-                Text(stringResource(R.string.chat_welcome_description))
-            }
             ChatSuggestions(onSuggestionClick = onSuggestionClick)
             ChatComposer(
                 questionText = questionText,

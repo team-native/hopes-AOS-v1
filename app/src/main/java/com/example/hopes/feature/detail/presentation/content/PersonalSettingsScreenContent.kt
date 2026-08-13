@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesScaffold
-import com.example.hopes.core.designsystem.component.HopesSurfaceCard
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailUiState
 import com.example.hopes.navigation.HopesDestination
@@ -23,7 +22,8 @@ fun PersonalSettingsScreenContent(uiState: DetailUiState, onEvent: (DetailScreen
     HopesScaffold(HopesDestination.Settings, onNavigate) { innerPadding ->
         Column(Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = AppSpacing.ScreenHorizontal)) {
             Text(stringResource(R.string.personal_settings))
-            HopesSurfaceCard { Text(stringResource(R.string.personal_settings_subtitle)); OutlinedTextField(uiState.personalPrompt, { onEvent(DetailScreenEvent.PersonalPromptChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.system_prompt_description)) }); Button(onClick = { onEvent(DetailScreenEvent.PersonalPromptSaveClicked) }) { Text(stringResource(if (uiState.isPromptSaved) R.string.saved else R.string.prompt_save)) } }
+            OutlinedTextField(uiState.personalPrompt, { onEvent(DetailScreenEvent.PersonalPromptChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.system_prompt_description)) })
+            Button(onClick = { onEvent(DetailScreenEvent.PersonalPromptSaveClicked) }) { Text(stringResource(if (uiState.isPromptSaved) R.string.saved else R.string.prompt_save)) }
         }
     }
 }

@@ -31,7 +31,6 @@ fun HomeScreenContent(
         ) {
             HomeHero(onStartChatClick = onStartChatClick)
             HomeTipCard()
-            HomeTipCard()
         }
     }
 }

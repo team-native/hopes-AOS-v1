@@ -7,6 +7,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
@@ -46,7 +47,8 @@ fun HopesBottomNavigation(
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = LocalHopesExtendedColors.current.bottomNavigationSelectedIcon,
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    // 선택 상태는 아이콘과 라벨 색상으로만 구분하고 배경 pill은 표시하지 않는다.
+                    indicatorColor = Color.Transparent,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 ),

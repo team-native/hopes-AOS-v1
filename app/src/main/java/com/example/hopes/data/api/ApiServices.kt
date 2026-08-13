@@ -39,7 +39,7 @@ interface SettingsApiService {
 @Serializable data class EmailCodeRequestDto(@SerialName("email") val email: String, @SerialName("code") val code: String)
 @Serializable data class LoginRequestDto(@SerialName("username") val username: String, @SerialName("password") val password: String)
 @Serializable data class SignupRequestDto(@SerialName("email") val email: String, @SerialName("username") val username: String, @SerialName("password") val password: String, @SerialName("passwordConfirm") val passwordConfirm: String, @SerialName("verificationCode") val verificationCode: String, @SerialName("gender") val gender: String? = null, @SerialName("major") val major: String? = null, @SerialName("cohort") val cohort: Int? = null)
-@Serializable data class PasswordResetRequestDto(@SerialName("email") val email: String, @SerialName("code") val code: String, @SerialName("password") val password: String, @SerialName("passwordConfirm") val passwordConfirm: String)
+@Serializable data class PasswordResetRequestDto(@SerialName("email") val email: String, @SerialName("code") val code: String, @SerialName("newPassword") val newPassword: String)
 @Serializable data class ThemeRequestDto(@SerialName("theme") val theme: String)
 @Serializable data class ThemeResponseDto(@SerialName("theme") val theme: String)
 @Serializable data class ContentRequestDto(@SerialName("content") val content: String)

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -65,8 +64,7 @@ fun FigmaAuthTextField(
 
     Box(
         modifier = modifier
-            // Figma 02 입력 필드의 실제 폭은 332dp이며 로그인 버튼(338dp)보다 6dp 좁다.
-            .width(332.dp)
+            .fillMaxWidth()
             .height(40.dp)
             .border(
                 width = 1.dp,

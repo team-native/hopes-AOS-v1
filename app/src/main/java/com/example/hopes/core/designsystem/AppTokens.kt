@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.dp
 
 /** UI 데모에서 반복되는 여백, 모서리, 아이콘 크기를 일관되게 제공한다. */
 object AppSpacing {
-    val ScreenHorizontal = 24.dp
+    val ScreenHorizontal = 16.dp
     val ScreenVertical = 20.dp
     val Section = 24.dp
     val Item = 12.dp

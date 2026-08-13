@@ -570,8 +570,8 @@ private fun AuthFormScreen(
                     nameText = nameText.orEmpty(),
                     emailHint = signupEmailHint,
                     nameHint = signupNameHint,
-                    departmentValue = signupDepartmentValue,
-                    generationValue = signupGenerationValue,
+                    departmentHint = signupDepartmentValue,
+                    generationHint = signupGenerationValue,
                     isSignupEnabled = isSignupEnabled,
                     onEmailChange = onEmailChange,
                     onPasswordChange = onPasswordChange,
@@ -605,8 +605,8 @@ private fun SignupFormCard(
     nameText: String,
     emailHint: String,
     nameHint: String,
-    departmentValue: String,
-    generationValue: String,
+    departmentHint: String,
+    generationHint: String,
     isSignupEnabled: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
@@ -633,7 +633,6 @@ private fun SignupFormCard(
                     hint = emailHint,
                     value = emailText,
                     onValueChange = onEmailChange,
-                    isSampleValue = emailText == emailHint,
                 )
             }
             SignupFormFieldGroup(
@@ -644,7 +643,6 @@ private fun SignupFormCard(
                     hint = nameHint,
                     value = nameText,
                     onValueChange = onNameChange,
-                    isSampleValue = nameText == nameHint,
                 )
             }
             SignupFormFieldGroup(
@@ -652,11 +650,10 @@ private fun SignupFormCard(
                 modifier = Modifier.weight(1f),
             ) {
                 FigmaSignupField(
-                    hint = departmentValue,
-                    value = departmentValue,
+                    hint = departmentHint,
+                    value = "",
                     onValueChange = {},
                     hasDropDown = true,
-                    isSampleValue = true,
                 )
             }
             SignupFormFieldGroup(
@@ -664,10 +661,9 @@ private fun SignupFormCard(
                 modifier = Modifier.weight(1f),
             ) {
                 FigmaSignupField(
-                    hint = generationValue,
-                    value = generationValue,
+                    hint = generationHint,
+                    value = "",
                     onValueChange = {},
-                    isSampleValue = true,
                 )
             }
             SignupFormFieldGroup(
@@ -742,7 +738,6 @@ private fun FigmaSignupField(
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
     hasDropDown: Boolean = false,
-    isSampleValue: Boolean = false,
     onImeAction: (() -> Unit)? = null,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
@@ -776,11 +771,7 @@ private fun FigmaSignupField(
                     .height(24.dp),
                 singleLine = true,
                 textStyle = TextStyle(
-                    color = if (isSampleValue) {
-                        extendedColors.authFieldHint
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
                 ),
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(

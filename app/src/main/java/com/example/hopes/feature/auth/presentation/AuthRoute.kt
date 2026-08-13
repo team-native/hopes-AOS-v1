@@ -24,8 +24,6 @@ fun AuthRoute(
     var nameText by rememberSaveable { mutableStateOf("") }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val signupEmailSample = stringResource(R.string.signup_email_hint)
-    val signupNameSample = stringResource(R.string.signup_name_hint)
 
     LaunchedEffect(uiState.isAuthenticated) {
         if (uiState.isAuthenticated) {
@@ -46,9 +44,7 @@ fun AuthRoute(
             Toast.makeText(context, R.string.signup_unavailable, Toast.LENGTH_SHORT).show()
         },
         onNavigateSignup = {
-            // 원본 회원가입 프레임의 예시 값을 첫 진입에만 보여 주되, 사용자가 입력한 값은 유지한다.
-            if (uiState.username.isBlank()) viewModel.updateUsername(signupEmailSample)
-            if (nameText.isBlank()) nameText = signupNameSample
+            // 예시 문구는 입력값이 아닌 회원가입 화면의 placeholder로만 표시한다.
             authStep = AuthStep.SignUp
         },
         onNavigateLogin = {

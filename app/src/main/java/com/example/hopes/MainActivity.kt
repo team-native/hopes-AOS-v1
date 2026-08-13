@@ -12,7 +12,10 @@ import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
 import com.example.hopes.navigation.HopesNavigation
 import com.example.hopes.ui.theme.HopesTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+/** Hilt ViewModel을 사용하는 Compose 화면의 Activity 진입점이다. */
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -48,6 +49,9 @@ fun FigmaAppFrame(
 ) {
     val density = LocalDensity.current
     val isImeVisible = WindowInsets.ime.getBottom(density) > 0
+    val navigationBarInset = with(density) {
+        WindowInsets.navigationBars.getBottom(this).toDp()
+    }
 
     FigmaPhoneScreen(
         background = {
@@ -61,17 +65,19 @@ fun FigmaAppFrame(
         },
         overlay = { viewportMetrics ->
             if (!isImeVisible) {
+                // enableEdgeToEdge 환경에서는 바텀바 배경을 시스템 제스처 영역까지 확장한다.
+                // 아이콘·라벨은 Figma 60dp 콘텐츠 영역에만 두어 내비게이션 바 위로 올라간다.
+                val designBottomInset = (navigationBarInset.value / viewportMetrics.scale).dp
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
                         .width((FIGMA_PHONE_WIDTH * viewportMetrics.scale).dp)
-                        .height((FIGMA_TAB_BAR_HEIGHT * viewportMetrics.scale).dp),
+                        .height((FIGMA_TAB_BAR_HEIGHT * viewportMetrics.scale).dp + navigationBarInset),
                 ) {
                     Box(
                         modifier = Modifier
                             .width(FIGMA_PHONE_WIDTH.dp)
-                            .height(FIGMA_TAB_BAR_HEIGHT.dp)
+                            .height(FIGMA_TAB_BAR_HEIGHT.dp + designBottomInset)
                             .graphicsLayer(
                                 scaleX = viewportMetrics.scale,
                                 scaleY = viewportMetrics.scale,
@@ -81,6 +87,7 @@ fun FigmaAppFrame(
                         FigmaBottomNavigation(
                             selectedDestination = selectedDestination,
                             onNavigate = onNavigate,
+                            bottomInset = designBottomInset,
                         )
                     }
                 }
@@ -108,6 +115,7 @@ fun FigmaAppFrame(
 fun FigmaBottomNavigation(
     selectedDestination: HopesDestination,
     onNavigate: (HopesDestination) -> Unit,
+    bottomInset: androidx.compose.ui.unit.Dp = 0.dp,
 ) {
     val destinations = listOf(
         HopesDestination.Home,
@@ -119,9 +127,11 @@ fun FigmaBottomNavigation(
     Box(
         modifier = Modifier
             .width(402.dp)
-            .height(FIGMA_TAB_BAR_HEIGHT.dp)
+            .height(FIGMA_TAB_BAR_HEIGHT.dp + bottomInset)
             .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, MaterialTheme.colorScheme.outline),
+            .border(1.dp, MaterialTheme.colorScheme.outline)
+            // 외부 padding 대신 바텀바 내부 여백으로 제스처 영역을 확보한다.
+            .padding(bottom = bottomInset),
     ) {
         destinations.forEachIndexed { index, destination ->
             val centerX = 55 + (index * 88)

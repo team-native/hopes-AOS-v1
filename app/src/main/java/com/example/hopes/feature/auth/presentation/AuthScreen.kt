@@ -55,7 +55,6 @@ import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
-import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
@@ -506,10 +505,14 @@ private fun AuthFormScreen(
     val signupDepartmentValue = stringResource(R.string.signup_department_value)
     val signupGenerationValue = stringResource(R.string.signup_generation_value)
 
-    FigmaAppFrame(
-        selectedDestination = com.example.hopes.navigation.HopesDestination.Home,
-        onNavigate = {},
-    ) {
+    // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
+    FigmaPhoneScreen {
+        Box(
+            modifier = Modifier
+                .width(402.dp)
+                .height(874.dp)
+                .background(MaterialTheme.colorScheme.background),
+        ) {
         // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
         Box(modifier = Modifier.offset(y = keyboardLift)) {
             Box(
@@ -535,79 +538,33 @@ private fun AuthFormScreen(
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
             )
-            Box(
+            // 헤더와 가입 버튼 사이를 1f로 사용해 카드의 세로 비율을 유지한다.
+            Column(
                 modifier = Modifier
                     .offset(x = 24.dp, y = 276.dp)
                     .width(354.dp)
-                    .height(386.dp)
-                    .figmaRaisedShadow(RoundedCornerShape(18.dp))
-                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+                    .height(474.dp),
             ) {
-                val fieldOffsets = listOf(49, 117, 185, 254, 316)
-                val labels = listOf(R.string.email, R.string.name, R.string.department, R.string.generation, R.string.password)
-                labels.forEachIndexed { index, labelRes ->
-                    Text(
-                        text = stringResource(labelRes),
-                        modifier = Modifier.offset(x = 24.dp, y = (fieldOffsets[index] - 20).dp),
-                        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
-                    )
-                }
-                FigmaSignupField(
-                    hint = signupEmailHint,
-                    value = emailText,
-                    onValueChange = onEmailChange,
-                    modifier = Modifier.offset(y = 49.dp),
-                    isSampleValue = emailText == signupEmailHint,
+                SignupFormCard(
+                    modifier = Modifier.weight(1f),
+                    emailText = emailText,
+                    passwordText = passwordText,
+                    nameText = nameText.orEmpty(),
+                    emailHint = signupEmailHint,
+                    nameHint = signupNameHint,
+                    departmentValue = signupDepartmentValue,
+                    generationValue = signupGenerationValue,
+                    isSignupEnabled = isSignupEnabled,
+                    onEmailChange = onEmailChange,
+                    onPasswordChange = onPasswordChange,
+                    onNameChange = onNameChange,
+                    onSignupClick = onActionClick,
                 )
-                FigmaSignupField(
-                    hint = signupNameHint,
-                    value = nameText.orEmpty(),
-                    onValueChange = onNameChange,
-                    modifier = Modifier.offset(y = 117.dp),
-                    isSampleValue = nameText == signupNameHint,
+                Spacer(modifier = Modifier.height(42.dp))
+                SignupActionButton(
+                    isEnabled = isSignupEnabled,
+                    onClick = onActionClick,
                 )
-                FigmaSignupField(
-                    hint = signupDepartmentValue,
-                    value = signupDepartmentValue,
-                    onValueChange = {},
-                    modifier = Modifier.offset(y = 185.dp),
-                    hasDropDown = true,
-                    isSampleValue = true,
-                )
-                FigmaSignupField(
-                    hint = signupGenerationValue,
-                    value = signupGenerationValue,
-                    onValueChange = {},
-                    modifier = Modifier.offset(y = 254.dp),
-                    isSampleValue = true,
-                )
-                FigmaSignupField(
-                    hint = stringResource(R.string.password),
-                    value = passwordText,
-                    onValueChange = onPasswordChange,
-                    modifier = Modifier.offset(y = 316.dp),
-                    isPassword = true,
-                    onImeAction = if (isSignupEnabled) onActionClick else null,
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .offset(x = 24.dp, y = 704.dp)
-                    .width(354.dp)
-                    .height(46.dp)
-                    .background(
-                        color = if (isSignupEnabled) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
-                        },
-                        shape = RoundedCornerShape(14.dp),
-                    )
-                    .clickable(enabled = isSignupEnabled, onClick = onActionClick),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(stringResource(R.string.signup), color = MaterialTheme.colorScheme.onPrimary, style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold))
             }
             Text(
                 text = stringResource(R.string.has_account),
@@ -617,6 +574,144 @@ private fun AuthFormScreen(
                 style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
             )
         }
+        }
+    }
+}
+
+/** 회원가입 카드의 다섯 입력 행을 같은 세로 비율로 배치한다. */
+@Composable
+private fun SignupFormCard(
+    modifier: Modifier,
+    emailText: String,
+    passwordText: String,
+    nameText: String,
+    emailHint: String,
+    nameHint: String,
+    departmentValue: String,
+    generationValue: String,
+    isSignupEnabled: Boolean,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onNameChange: (String) -> Unit,
+    onSignupClick: () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .figmaRaisedShadow(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 29.dp, bottom = 27.dp),
+        ) {
+            SignupFormFieldGroup(
+                labelRes = R.string.email,
+                modifier = Modifier.weight(1f),
+            ) {
+                FigmaSignupField(
+                    hint = emailHint,
+                    value = emailText,
+                    onValueChange = onEmailChange,
+                    isSampleValue = emailText == emailHint,
+                )
+            }
+            SignupFormFieldGroup(
+                labelRes = R.string.name,
+                modifier = Modifier.weight(1f),
+            ) {
+                FigmaSignupField(
+                    hint = nameHint,
+                    value = nameText,
+                    onValueChange = onNameChange,
+                    isSampleValue = nameText == nameHint,
+                )
+            }
+            SignupFormFieldGroup(
+                labelRes = R.string.department,
+                modifier = Modifier.weight(1f),
+            ) {
+                FigmaSignupField(
+                    hint = departmentValue,
+                    value = departmentValue,
+                    onValueChange = {},
+                    hasDropDown = true,
+                    isSampleValue = true,
+                )
+            }
+            SignupFormFieldGroup(
+                labelRes = R.string.generation,
+                modifier = Modifier.weight(1f),
+            ) {
+                FigmaSignupField(
+                    hint = generationValue,
+                    value = generationValue,
+                    onValueChange = {},
+                    isSampleValue = true,
+                )
+            }
+            SignupFormFieldGroup(
+                labelRes = R.string.password,
+                modifier = Modifier.weight(1f),
+            ) {
+                FigmaSignupField(
+                    hint = stringResource(R.string.password),
+                    value = passwordText,
+                    onValueChange = onPasswordChange,
+                    isPassword = true,
+                    onImeAction = if (isSignupEnabled) onSignupClick else null,
+                )
+            }
+        }
+    }
+}
+
+/** 한 입력 행에서 라벨과 필드를 남은 세로 공간 안에 정렬한다. */
+@Composable
+private fun SignupFormFieldGroup(
+    labelRes: Int,
+    modifier: Modifier,
+    field: @Composable () -> Unit,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(labelRes),
+            modifier = Modifier.padding(start = 24.dp, end = 24.dp),
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        field()
+    }
+}
+
+/** 회원가입 버튼은 카드의 가변 높이와 분리해 항상 하단 기준을 유지한다. */
+@Composable
+private fun SignupActionButton(
+    isEnabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(46.dp)
+            .background(
+                color = if (isEnabled) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+                },
+                shape = RoundedCornerShape(14.dp),
+            )
+            .clickable(enabled = isEnabled, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.signup),
+            color = MaterialTheme.colorScheme.onPrimary,
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+        )
     }
 }
 
@@ -626,7 +721,7 @@ private fun FigmaSignupField(
     hint: String,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     isPassword: Boolean = false,
     hasDropDown: Boolean = false,
     isSampleValue: Boolean = false,

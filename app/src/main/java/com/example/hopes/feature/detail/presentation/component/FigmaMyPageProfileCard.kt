@@ -20,10 +20,10 @@ fun FigmaMyPageProfileCard(
     profileIntroduction: String,
     onProfileNameChange: (String) -> Unit,
     onProfileIntroductionChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
-        modifier = Modifier
-            .padding(start = 12.dp, top = 350.dp)
+        modifier = modifier
             .height(326.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {

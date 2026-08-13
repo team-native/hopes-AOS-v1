@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesScaffold
+import com.example.hopes.core.designsystem.component.HopesSurfaceCard
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailUiState
 import com.example.hopes.navigation.HopesDestination
@@ -22,9 +23,8 @@ fun ContactScreenContent(uiState: DetailUiState, onEvent: (DetailScreenEvent) ->
     HopesScaffold(HopesDestination.Settings, onNavigate) { innerPadding ->
         Column(Modifier.fillMaxSize().padding(innerPadding).padding(horizontal = AppSpacing.ScreenHorizontal)) {
             Text(stringResource(R.string.contact))
-            OutlinedTextField(uiState.contactEmail, { onEvent(DetailScreenEvent.ContactEmailChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.email)) })
-            OutlinedTextField(uiState.contactMessage, { onEvent(DetailScreenEvent.ContactMessageChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.contact_content)) })
-            Button(onClick = { onEvent(DetailScreenEvent.ContactSendClicked) }) { Text(stringResource(if (uiState.isContactSent) R.string.sent else R.string.send_contact)) }
+            HopesSurfaceCard { Text(stringResource(R.string.contact_subtitle)); OutlinedTextField(uiState.contactEmail, { onEvent(DetailScreenEvent.ContactEmailChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.email)) }); OutlinedTextField(uiState.contactMessage, { onEvent(DetailScreenEvent.ContactMessageChanged(it)) }, Modifier.fillMaxWidth(), label = { Text(stringResource(R.string.contact_content)) }); Button(onClick = { onEvent(DetailScreenEvent.ContactSendClicked) }) { Text(stringResource(if (uiState.isContactSent) R.string.sent else R.string.send_contact)) } }
+            Text(stringResource(R.string.contact_email_info))
         }
     }
 }

@@ -2,6 +2,6 @@
 <network-security-config>
     <!-- 개발 서버가 HTTP만 제공하므로 이 호스트에만 평문 통신을 제한한다. -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">ssh.gsmsv.site</domain>
+        <domain includeSubdomains="false">service.gsmsv.site</domain>
     </domain-config>
 </network-security-config>

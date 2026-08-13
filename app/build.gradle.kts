@@ -32,7 +32,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://ssh.gsmsv.site:25105/\"")
+            buildConfigField("String", "BASE_URL", "\"http://service.gsmsv.site:22116/\"")
             buildConfigField("boolean", "ENABLE_LOG", "true")
             buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
         }
@@ -42,7 +42,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            buildConfigField("String", "BASE_URL", "\"http://ssh.gsmsv.site:25105/\"")
+            buildConfigField("String", "BASE_URL", "\"http://service.gsmsv.site:22116/\"")
             buildConfigField("boolean", "ENABLE_LOG", "false")
             buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
         }

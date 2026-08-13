@@ -7,7 +7,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-sealed interface SessionState { data object Unauthenticated : SessionState; data object Authenticated : SessionState }
+sealed interface SessionState {
+    data object Unauthenticated : SessionState
+    data object Authenticated : SessionState
+}
 
 /** 앱 전체의 access token 저장·조회·만료를 단일 책임으로 관리한다. */
 @Singleton

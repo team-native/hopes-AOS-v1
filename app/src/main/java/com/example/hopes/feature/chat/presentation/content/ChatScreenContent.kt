@@ -134,12 +134,14 @@ private fun ChatWelcome() {
 @Composable
 private fun ChatSuggestionList(onSuggestionClick: (String) -> Unit) {
     val suggestionTexts = stringArrayResource(R.array.chat_suggestions)
-    val symbols = listOf("⌂", "◇", "<>", "□")
+    val symbols = stringArrayResource(R.array.chat_suggestion_symbols)
     suggestionTexts.forEachIndexed { index, question ->
         val topOffset = 396 + (index * 76)
         FigmaSuggestionCard(
             question = question,
-            symbol = symbols.getOrElse(index) { "□" },
+            symbol = symbols.getOrElse(index) {
+                stringResource(R.string.chat_suggestion_marker)
+            },
             modifier = Modifier.offset(x = 24.dp, y = topOffset.dp),
             onClick = { onSuggestionClick(question) },
         )
@@ -283,7 +285,7 @@ private fun FigmaChatComposerSurface(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = "↑",
+                text = stringResource(R.string.chat_send_symbol),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
             )

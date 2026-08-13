@@ -86,7 +86,7 @@ private fun FigmaDetailBackButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = "‹",
+            text = stringResource(R.string.back_symbol),
             modifier = Modifier.offset(y = (-1).dp),
             color = MaterialTheme.colorScheme.primary,
             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),

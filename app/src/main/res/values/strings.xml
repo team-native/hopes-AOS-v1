@@ -81,7 +81,6 @@
     <string name="chat_answer_label">선배 답변 · 실제 경험 기반</string>
     <string name="chat_messages_loading">대화를 불러오는 중이에요.</string>
     <string name="chat_messages_error">대화를 불러오지 못했어요. 다시 시도해주세요.</string>
-    <string name="chat_messages_empty">표시할 메시지가 없어요.</string>
     <string name="chat_message_send_error">메시지를 보내지 못했어요. 다시 시도해주세요.</string>
     <string name="history_loading">지난 대화를 불러오는 중이에요.</string>
     <string name="history_error">지난 대화를 불러오지 못했어요. 다시 시도해주세요.</string>

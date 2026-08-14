@@ -75,7 +75,7 @@ private fun ChatMessages(
         when {
             uiState.isLoading -> MessageStateText(R.string.chat_messages_loading)
             uiState.isLoadError -> MessageStateText(R.string.chat_messages_error, onRetryClick)
-            uiState.messages.isEmpty() -> MessageStateText(R.string.chat_messages_empty)
+            uiState.messages.isEmpty() -> Unit
             else -> uiState.messages.forEach { message ->
                 FigmaChatDetailBubble(
                     text = message.content,

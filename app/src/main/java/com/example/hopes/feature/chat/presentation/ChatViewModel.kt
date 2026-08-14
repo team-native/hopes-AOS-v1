@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.CreateChatUseCase
+import com.example.hopes.domain.usecase.SendChatMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +22,7 @@ sealed interface ChatEffect {
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val createChatUseCase: CreateChatUseCase,
+    private val sendChatMessageUseCase: SendChatMessageUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -42,7 +44,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    /** 질문을 제목으로 서버 대화를 생성하고 성공 시 서버 ID로 상세 이동 효과를 발행한다. */
+    /** 질문 제출 시 서버 대화를 생성한 뒤 첫 메시지를 전송하고 성공 시 상세로 이동한다. */
     private fun createChat(question: String) {
         val trimmedQuestion = question.trim()
         if (trimmedQuestion.isEmpty()) {
@@ -53,12 +55,29 @@ class ChatViewModel @Inject constructor(
             updateState { copy(isLoading = true, isCreateChatError = false) }
             when (val result = createChatUseCase(trimmedQuestion)) {
                 is AppResult.Success -> {
-                    updateState { copy(questionText = "", isLoading = false) }
-                    _effect.emit(ChatEffect.ChatCreated(result.value.id))
+                    sendInitialMessage(
+                        chatId = result.value.id,
+                        question = trimmedQuestion,
+                    )
                 }
 
                 else -> updateState { copy(isLoading = false, isCreateChatError = true) }
             }
+        }
+    }
+
+    /** 새 대화에 첫 질문을 서버로 전송해 서버 메시지가 생성된 뒤 상세 화면으로 이동한다. */
+    private suspend fun sendInitialMessage(
+        chatId: Long,
+        question: String,
+    ) {
+        when (sendChatMessageUseCase(chatId, question)) {
+            is AppResult.Success -> {
+                updateState { copy(questionText = "", isLoading = false) }
+                _effect.emit(ChatEffect.ChatCreated(chatId))
+            }
+
+            else -> updateState { copy(isLoading = false, isCreateChatError = true) }
         }
     }
 

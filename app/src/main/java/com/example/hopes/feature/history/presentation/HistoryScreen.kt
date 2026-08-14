@@ -2,23 +2,18 @@ package com.example.hopes.feature.history.presentation
 
 import androidx.compose.runtime.Composable
 import com.example.hopes.feature.history.presentation.content.HistoryScreenContent
-import com.example.hopes.navigation.DemoConversation
 import com.example.hopes.navigation.HopesDestination
 
-/** 기록 목록 콘텐츠를 화면 단위로 제공한다. */
+/** 기록 상태와 단일 화면 이벤트를 콘텐츠로 전달한다. */
 @Composable
 fun HistoryScreen(
-    searchQuery: String,
-    conversations: List<DemoConversation>,
-    onSearchQueryChange: (String) -> Unit,
-    onQuestionClick: (String) -> Unit,
+    uiState: HistoryUiState,
+    onEvent: (HistoryScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     HistoryScreenContent(
-        searchQuery = searchQuery,
-        conversations = conversations,
-        onSearchQueryChange = onSearchQueryChange,
-        onQuestionClick = onQuestionClick,
+        uiState = uiState,
+        onEvent = onEvent,
         onNavigate = onNavigate,
     )
 }

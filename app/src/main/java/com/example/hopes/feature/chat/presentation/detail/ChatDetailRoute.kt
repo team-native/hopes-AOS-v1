@@ -1,24 +1,24 @@
-package com.example.hopes.feature.history.presentation
+package com.example.hopes.feature.chat.presentation.detail
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.navigation.HopesDestination
 
-/** 기록 서버 상태를 수집하고 상세 이동을 연결한다. */
+/** 서버 대화 상세 상태를 수집하고 탐색 이벤트를 연결한다. */
 @Composable
-fun HistoryRoute(
+fun ChatDetailRoute(
+    onBackClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
-    onNavigateToChatDetail: (Long) -> Unit,
-    viewModel: HistoryViewModel = hiltViewModel(),
+    viewModel: ChatDetailViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
-    HistoryScreen(
+    ChatDetailScreen(
         uiState = uiState.value,
         onEvent = { event ->
-            if (event is HistoryScreenEvent.ChatClicked) {
-                onNavigateToChatDetail(event.chatId)
+            if (event == ChatDetailScreenEvent.BackClicked) {
+                onBackClick()
             } else {
                 viewModel.onEvent(event)
             }

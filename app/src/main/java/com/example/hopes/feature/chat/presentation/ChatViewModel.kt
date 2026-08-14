@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 sealed interface ChatEffect {
-    data class ChatCreated(val question: String) : ChatEffect
+    data class ChatCreated(val chatId: Long) : ChatEffect
 }
 
 @HiltViewModel
@@ -28,13 +28,13 @@ class ChatViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<ChatEffect>()
     val effect: SharedFlow<ChatEffect> = _effect.asSharedFlow()
 
-    /** 질문 입력·추천 선택·제출 이벤트를 처리한다. */
+    /** 질문 입력·제출 이벤트를 처리한다. */
     fun onEvent(event: ChatScreenEvent) {
         when (event) {
             is ChatScreenEvent.QuestionChanged -> updateState {
                 copy(questionText = event.question, isCreateChatError = false)
             }
-            is ChatScreenEvent.SuggestionSelected -> createChat(event.question)
+
             ChatScreenEvent.QuestionSubmitted -> createChat(_uiState.value.questionText)
             ChatScreenEvent.NewChatClicked -> updateState {
                 copy(questionText = "", isCreateChatError = false)
@@ -42,7 +42,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    /** 질문을 제목으로 서버 대화를 생성하고 성공 시 상세 이동 효과를 발행한다. */
+    /** 질문을 제목으로 서버 대화를 생성하고 성공 시 서버 ID로 상세 이동 효과를 발행한다. */
     private fun createChat(question: String) {
         val trimmedQuestion = question.trim()
         if (trimmedQuestion.isEmpty()) {
@@ -51,11 +51,12 @@ class ChatViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateState { copy(isLoading = true, isCreateChatError = false) }
-            when (createChatUseCase(trimmedQuestion)) {
+            when (val result = createChatUseCase(trimmedQuestion)) {
                 is AppResult.Success -> {
                     updateState { copy(questionText = "", isLoading = false) }
-                    _effect.emit(ChatEffect.ChatCreated(trimmedQuestion))
+                    _effect.emit(ChatEffect.ChatCreated(result.value.id))
                 }
+
                 else -> updateState { copy(isLoading = false, isCreateChatError = true) }
             }
         }

@@ -6,12 +6,6 @@ sealed interface DetailScreenEvent {
 
     data object AppSettingsClicked : DetailScreenEvent
 
-    data object ConversationSaveClicked : DetailScreenEvent
-
-    data class ReplyChanged(val value: String) : DetailScreenEvent
-
-    data object ReplySubmitted : DetailScreenEvent
-
     data class ProfileNameChanged(val value: String) : DetailScreenEvent
 
     data class ProfileIntroductionChanged(val value: String) : DetailScreenEvent

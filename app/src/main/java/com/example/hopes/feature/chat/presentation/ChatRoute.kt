@@ -10,7 +10,7 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun ChatRoute(
     onNavigate: (HopesDestination) -> Unit,
-    onNavigateToChatDetail: (String) -> Unit,
+    onNavigateToChatDetail: (Long) -> Unit,
     viewModel: ChatViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -18,7 +18,7 @@ fun ChatRoute(
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
             if (effect is ChatEffect.ChatCreated) {
-                onNavigateToChatDetail(effect.question)
+                onNavigateToChatDetail(effect.chatId)
             }
         }
     }

@@ -12,6 +12,7 @@ import com.example.hopes.data.api.UserResponseDto
 import com.example.hopes.domain.model.AuthToken
 import com.example.hopes.domain.model.Chat
 import com.example.hopes.domain.model.ChatMessage
+import com.example.hopes.domain.model.ChatMessageRole
 import com.example.hopes.domain.model.ChatPage
 import com.example.hopes.domain.model.PasswordResetRequest
 import com.example.hopes.domain.model.ProfileUpdateRequest
@@ -35,7 +36,20 @@ fun ChatResponseDto.toDomain(): Chat = Chat(
     hasMoreMessages = hasMoreMessages,
 )
 
-fun MessageDto.toDomain(): ChatMessage = ChatMessage(id, role, content, createdAt)
+fun MessageDto.toDomain(): ChatMessage = ChatMessage(
+    id = id,
+    role = role.toChatMessageRole(),
+    content = content,
+    createdAt = createdAt,
+)
+
+private fun String.toChatMessageRole(): ChatMessageRole {
+    return when (this) {
+        "USER" -> ChatMessageRole.User
+        "ASSISTANT" -> ChatMessageRole.Assistant
+        else -> ChatMessageRole.Unknown
+    }
+}
 
 fun UserResponseDto.toDomain(): UserProfile = UserProfile(
     username = username,

@@ -16,7 +16,6 @@ fun ChatScreen(
         questionText = questionText,
         isCreateChatError = isCreateChatError,
         onQuestionChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
-        onSuggestionClick = { onEvent(ChatScreenEvent.SuggestionSelected(it)) },
         onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
         onNewChatClick = { onEvent(ChatScreenEvent.NewChatClicked) },
         onNavigate = onNavigate,

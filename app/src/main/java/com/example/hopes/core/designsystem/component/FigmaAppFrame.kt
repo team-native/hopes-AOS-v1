@@ -16,6 +16,7 @@ import com.example.hopes.navigation.HopesDestination
 fun FigmaAppFrame(
     selectedDestination: HopesDestination,
     onNavigate: (HopesDestination) -> Unit,
+    fixedTopContent: (@Composable () -> Unit)? = null,
     fixedBottomContent: (@Composable () -> Unit)? = null,
     isBottomNavigationVisible: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {},
@@ -26,6 +27,7 @@ fun FigmaAppFrame(
     HopesScaffold(
         selectedDestination = selectedDestination,
         onNavigate = onNavigate,
+        fixedTopContent = fixedTopContent,
         fixedBottomContent = fixedBottomContent,
         isBottomNavigationVisible = isBottomNavigationVisible,
     ) { innerPadding ->

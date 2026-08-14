@@ -37,6 +37,16 @@ fun ChatDetailScreenContent(
     FigmaAppFrame(
         selectedDestination = HopesDestination.Chat,
         onNavigate = onNavigate,
+        fixedTopContent = {
+            FigmaDetailBackHeader(
+                title = uiState.title.ifBlank { stringResource(R.string.chat_detail_title) },
+                subtitle = stringResource(R.string.chat_answer_label),
+                onBackClick = { onEvent(ChatDetailScreenEvent.BackClicked) },
+                actionText = stringResource(R.string.chat_save),
+                onActionClick = {},
+                backOffsetX = 19,
+            )
+        },
         fixedBottomContent = {
             FigmaChatReplyBar(
                 value = uiState.replyText,
@@ -46,14 +56,6 @@ fun ChatDetailScreenContent(
             )
         },
     ) {
-        FigmaDetailBackHeader(
-            title = uiState.title.ifBlank { stringResource(R.string.chat_detail_title) },
-            subtitle = stringResource(R.string.chat_answer_label),
-            onBackClick = { onEvent(ChatDetailScreenEvent.BackClicked) },
-            actionText = stringResource(R.string.chat_save),
-            onActionClick = {},
-            backOffsetX = 19,
-        )
         ChatMessages(
             uiState = uiState,
             onRetryClick = { onEvent(ChatDetailScreenEvent.RetryClicked) },
@@ -68,7 +70,7 @@ private fun ChatMessages(
 ) {
     Column(
         modifier = Modifier
-            .padding(start = 24.dp, top = 150.dp, end = 24.dp, bottom = 90.dp)
+            .padding(start = 24.dp, top = 16.dp, end = 24.dp, bottom = 16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

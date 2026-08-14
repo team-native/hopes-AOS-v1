@@ -13,11 +13,15 @@ import com.example.hopes.navigation.HopesDestination
 fun HopesScaffold(
     selectedDestination: HopesDestination,
     onNavigate: (HopesDestination) -> Unit,
+    fixedTopContent: (@Composable () -> Unit)? = null,
     fixedBottomContent: (@Composable () -> Unit)? = null,
     isBottomNavigationVisible: Boolean = true,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
+        topBar = {
+            fixedTopContent?.invoke()
+        },
         bottomBar = {
             Column {
                 fixedBottomContent?.invoke()

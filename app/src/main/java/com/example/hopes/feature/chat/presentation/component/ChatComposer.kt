@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
@@ -53,7 +54,9 @@ fun ChatComposer(
             if (value.isEmpty()) {
                 Text(
                     text = stringResource(R.string.chat_new_message),
-                    modifier = Modifier.padding(start = 14.dp, top = 17.dp),
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 14.dp, end = 54.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = TextStyle(fontSize = 14.sp),
                 )
@@ -63,7 +66,8 @@ fun ChatComposer(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier
-                    .padding(start = 14.dp, top = 10.dp)
+                    .align(Alignment.CenterStart)
+                    .padding(start = 14.dp)
                     .width(276.dp)
                     .height(32.dp),
                 singleLine = true,
@@ -71,6 +75,14 @@ fun ChatComposer(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp,
                 ),
+                decorationBox = { innerTextField ->
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        innerTextField()
+                    }
+                },
             )
 
             Box(
@@ -88,8 +100,14 @@ fun ChatComposer(
             ) {
                 Text(
                     text = stringResource(R.string.chat_send_symbol),
+                    modifier = Modifier.fillMaxWidth(),
                     color = MaterialTheme.colorScheme.onPrimary,
-                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 30.sp,
+                    ),
                 )
             }
         }

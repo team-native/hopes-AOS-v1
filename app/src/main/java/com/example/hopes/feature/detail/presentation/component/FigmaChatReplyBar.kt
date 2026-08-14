@@ -109,11 +109,12 @@ private fun FigmaChatReplyInput(
                 shape = RoundedCornerShape(16.dp),
             )
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
+        contentAlignment = Alignment.CenterStart,
     ) {
         if (value.isEmpty()) {
             Text(
                 text = stringResource(R.string.chat_additional_question),
-                modifier = Modifier.padding(start = 20.dp, top = 14.dp),
+                modifier = Modifier.padding(start = 20.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 14.sp),
             )
@@ -122,7 +123,8 @@ private fun FigmaChatReplyInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .padding(start = 20.dp, top = 10.dp)
+                .align(Alignment.CenterStart)
+                .padding(start = 20.dp)
                 .width(244.dp)
                 .height(24.dp),
             singleLine = true,
@@ -130,6 +132,14 @@ private fun FigmaChatReplyInput(
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             ),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier.width(244.dp),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    innerTextField()
+                }
+            },
         )
     }
 }

@@ -6,9 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +27,7 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
@@ -36,30 +43,53 @@ fun FigmaDetailBackHeader(
     onActionClick: (() -> Unit)? = null,
     backOffsetX: Int = 18,
 ) {
-    FigmaDetailBackButton(
-        modifier = Modifier.padding(start = backOffsetX.dp, top = 74.dp),
-        onBackClick = onBackClick,
-    )
-    Text(
-        text = title,
-        modifier = Modifier.padding(start = 74.dp, top = 76.dp),
-        style = TextStyle(
-            fontSize = 27.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 32.sp,
-        ),
-    )
-    Text(
-        text = subtitle,
-        modifier = Modifier.padding(start = 74.dp, top = 111.dp),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
-    )
-    if (actionText != null && onActionClick != null) {
-        FigmaDetailTopAction(
-            text = actionText,
-            modifier = Modifier.padding(start = 324.dp, top = 76.dp),
-            onClick = onActionClick,
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = backOffsetX.dp, top = 74.dp, end = 24.dp)
+                .height(39.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            FigmaDetailBackButton(
+                modifier = Modifier,
+                onBackClick = onBackClick,
+            )
+
+            Spacer(modifier = Modifier.width(18.dp))
+
+            Text(
+                text = title,
+                modifier = Modifier.weight(1f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = TextStyle(
+                    fontSize = 27.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 32.sp,
+                ),
+            )
+
+            if (actionText != null && onActionClick != null) {
+                Spacer(modifier = Modifier.width(12.dp))
+
+                FigmaDetailTopAction(
+                    text = actionText,
+                    modifier = Modifier,
+                    onClick = onActionClick,
+                )
+            }
+        }
+
+        Text(
+            text = subtitle,
+            modifier = Modifier.padding(start = 74.dp, top = 111.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )
     }
 }
@@ -86,11 +116,11 @@ private fun FigmaDetailBackButton(
             .clickable(onClick = onBackClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = stringResource(R.string.back_symbol),
-            modifier = Modifier.padding(top = (-1).dp),
-            color = MaterialTheme.colorScheme.primary,
-            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null,
+            modifier = Modifier.width(24.dp),
+            tint = MaterialTheme.colorScheme.primary,
         )
     }
 }

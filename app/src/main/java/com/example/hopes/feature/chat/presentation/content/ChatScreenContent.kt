@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -68,6 +69,7 @@ private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
         modifier = Modifier
             .padding(start = 308.dp, top = 66.dp)
             .width(70.dp)
+            .height(39.dp)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
             .clickable(onClick = onNewChatClick),

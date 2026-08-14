@@ -48,6 +48,7 @@
     <string name="onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
     <string name="onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
     <string name="start_chat">채팅 시작하기</string>
+    <string name="chat_create_error">채팅을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
     <string name="new_chat">새 대화</string>
     <string name="chat_detail_title">기숙사 생활</string>
     <string name="history_search">지난 대화 검색</string>

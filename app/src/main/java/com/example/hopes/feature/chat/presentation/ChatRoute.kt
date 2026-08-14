@@ -25,6 +25,7 @@ fun ChatRoute(
 
     ChatScreen(
         questionText = uiState.value.questionText,
+        isCreateChatError = uiState.value.isCreateChatError,
         onEvent = viewModel::onEvent,
         onNavigate = onNavigate,
     )

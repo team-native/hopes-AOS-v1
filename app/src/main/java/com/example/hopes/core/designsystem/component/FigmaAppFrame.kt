@@ -16,6 +16,8 @@ import com.example.hopes.navigation.HopesDestination
 fun FigmaAppFrame(
     selectedDestination: HopesDestination,
     onNavigate: (HopesDestination) -> Unit,
+    fixedBottomContent: (@Composable () -> Unit)? = null,
+    isBottomNavigationVisible: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {},
     contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
     imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
@@ -24,6 +26,8 @@ fun FigmaAppFrame(
     HopesScaffold(
         selectedDestination = selectedDestination,
         onNavigate = onNavigate,
+        fixedBottomContent = fixedBottomContent,
+        isBottomNavigationVisible = isBottomNavigationVisible,
     ) { innerPadding ->
         FigmaPhoneScreen(
             modifier = Modifier.padding(innerPadding),

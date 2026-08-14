@@ -31,10 +31,14 @@ class ChatViewModel @Inject constructor(
     /** 질문 입력·추천 선택·제출 이벤트를 처리한다. */
     fun onEvent(event: ChatScreenEvent) {
         when (event) {
-            is ChatScreenEvent.QuestionChanged -> updateState { copy(questionText = event.question, errorMessage = null) }
+            is ChatScreenEvent.QuestionChanged -> updateState {
+                copy(questionText = event.question, isCreateChatError = false)
+            }
             is ChatScreenEvent.SuggestionSelected -> createChat(event.question)
             ChatScreenEvent.QuestionSubmitted -> createChat(_uiState.value.questionText)
-            ChatScreenEvent.NewChatClicked -> updateState { copy(questionText = "", errorMessage = null) }
+            ChatScreenEvent.NewChatClicked -> updateState {
+                copy(questionText = "", isCreateChatError = false)
+            }
         }
     }
 
@@ -46,13 +50,13 @@ class ChatViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            updateState { copy(isLoading = true, errorMessage = null) }
+            updateState { copy(isLoading = true, isCreateChatError = false) }
             when (createChatUseCase(trimmedQuestion)) {
                 is AppResult.Success -> {
                     updateState { copy(questionText = "", isLoading = false) }
                     _effect.emit(ChatEffect.ChatCreated(trimmedQuestion))
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState { copy(isLoading = false, isCreateChatError = true) }
             }
         }
     }

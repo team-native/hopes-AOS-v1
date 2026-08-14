@@ -85,6 +85,7 @@
     <string name="history_loading">지난 대화를 불러오는 중이에요.</string>
     <string name="history_error">지난 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="history_empty">지난 대화가 없어요.</string>
+    <string name="history_load_next_page_error">다음 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="my_page_account">계정 정보 (수정 불가)</string>
     <string name="my_page_email">이메일: s26055@gsm.hs.kr</string>
     <string name="my_page_major">전공: 인공지능소프트웨어과</string>

@@ -10,6 +10,7 @@ import com.example.hopes.navigation.HopesDestination
 fun HistoryRoute(
     onNavigate: (HopesDestination) -> Unit,
     onNavigateToChatDetail: (Long) -> Unit,
+    onStartNewChat: () -> Unit,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -17,10 +18,10 @@ fun HistoryRoute(
     HistoryScreen(
         uiState = uiState.value,
         onEvent = { event ->
-            if (event is HistoryScreenEvent.ChatClicked) {
-                onNavigateToChatDetail(event.chatId)
-            } else {
-                viewModel.onEvent(event)
+            when (event) {
+                HistoryScreenEvent.NewChatClicked -> onStartNewChat()
+                is HistoryScreenEvent.ChatClicked -> onNavigateToChatDetail(event.chatId)
+                else -> viewModel.onEvent(event)
             }
         },
         onNavigate = onNavigate,

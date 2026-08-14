@@ -11,6 +11,7 @@ import com.example.hopes.navigation.HopesDestination
 fun ChatRoute(
     onNavigate: (HopesDestination) -> Unit,
     onNavigateToChatDetail: (Long) -> Unit,
+    isNewChatRequested: Boolean = false,
     viewModel: ChatViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -20,6 +21,12 @@ fun ChatRoute(
             if (effect is ChatEffect.ChatCreated) {
                 onNavigateToChatDetail(effect.chatId)
             }
+        }
+    }
+
+    LaunchedEffect(isNewChatRequested) {
+        if (isNewChatRequested) {
+            viewModel.onEvent(ChatScreenEvent.NewChatClicked)
         }
     }
 

@@ -82,11 +82,27 @@ fun HopesNavigation(
             })
         }
         composable(HopesDestination.Home.route) { HomeRoute(onNavigate = hopesNavController::navigateToTopLevel) }
-        composable(HopesDestination.Chat.route) {
-            ChatRoute(onNavigate = hopesNavController::navigateToTopLevel, onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) })
+        composable(
+            route = chatRoutePattern(),
+            arguments = listOf(
+                navArgument(CHAT_NEW_CHAT_ARGUMENT) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+            ),
+        ) { backStackEntry ->
+            ChatRoute(
+                onNavigate = hopesNavController::navigateToTopLevel,
+                onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) },
+                isNewChatRequested = backStackEntry.arguments?.getBoolean(CHAT_NEW_CHAT_ARGUMENT) ?: false,
+            )
         }
         composable(HopesDestination.History.route) {
-            HistoryRoute(onNavigate = hopesNavController::navigateToTopLevel, onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) })
+            HistoryRoute(
+                onNavigate = hopesNavController::navigateToTopLevel,
+                onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) },
+                onStartNewChat = hopesNavController::navigateToNewChat,
+            )
         }
         composable(HopesDestination.Settings.route) { DetailRoute(DetailScreenType.MyPage, detailUiState(), ::handleDetailEvent, hopesNavController::navigateToTopLevel) }
         composable(HopesDestination.AppSettings.route) {
@@ -105,5 +121,13 @@ private fun NavHostController.navigateToTopLevel(destination: HopesDestination) 
         launchSingleTop = true
         popUpTo(HopesDestination.Home.route) { saveState = true }
         restoreState = true
+    }
+}
+
+/** 기록 화면의 새 대화 시작에서 빈 채팅 입력 상태를 보장하는 탐색이다. */
+private fun NavHostController.navigateToNewChat() {
+    navigate(chatRoute(isNewChatRequested = true)) {
+        launchSingleTop = true
+        popUpTo(HopesDestination.Home.route) { saveState = true }
     }
 }

@@ -86,3 +86,7 @@ fun FigmaPhoneScreen(
 
 const val FIGMA_PHONE_WIDTH = 402f
 const val FIGMA_PHONE_HEIGHT = 874f
+
+/** Figma 기준 프레임 크기를 Compose 레이아웃에 전달하는 호환 값이다. */
+val figmaPhoneFrameWidth = FIGMA_PHONE_WIDTH.dp
+val figmaPhoneFrameHeight = FIGMA_PHONE_HEIGHT.dp

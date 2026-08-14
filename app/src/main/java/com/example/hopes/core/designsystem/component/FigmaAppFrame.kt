@@ -19,6 +19,7 @@ fun FigmaAppFrame(
     fixedTopContent: (@Composable () -> Unit)? = null,
     fixedBottomContent: (@Composable () -> Unit)? = null,
     isBottomNavigationVisible: Boolean = true,
+    scrollContentModifier: Modifier = Modifier,
     background: @Composable BoxScope.() -> Unit = {},
     contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
     imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
@@ -33,6 +34,7 @@ fun FigmaAppFrame(
     ) { innerPadding ->
         FigmaPhoneScreen(
             modifier = Modifier.padding(innerPadding),
+            scrollContentModifier = scrollContentModifier,
             background = {
                 // 콘텐츠 영역의 여백을 앱 배경으로 채워 Figma 캔버스 밖에 빈 띠가 생기지 않게 한다.
                 Box(

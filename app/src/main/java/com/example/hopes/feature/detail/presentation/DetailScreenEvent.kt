@@ -1,16 +1,10 @@
 package com.example.hopes.feature.detail.presentation
 
-/** 상세 화면에서 발생하는 로컬 입력·저장·탐색 의도다. */
+/** 개인 설정·문의 화면에서 발생하는 로컬 입력·저장·탐색 의도다. */
 sealed interface DetailScreenEvent {
     data object BackClicked : DetailScreenEvent
 
     data object AppSettingsClicked : DetailScreenEvent
-
-    data class ProfileNameChanged(val value: String) : DetailScreenEvent
-
-    data class ProfileIntroductionChanged(val value: String) : DetailScreenEvent
-
-    data object ProfileSaveClicked : DetailScreenEvent
 
     data class PersonalPromptChanged(val value: String) : DetailScreenEvent
 

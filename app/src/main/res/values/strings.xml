@@ -85,11 +85,16 @@
     <string name="history_loading">지난 대화를 불러오는 중이에요.</string>
     <string name="history_error">지난 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="history_empty">지난 대화가 없어요.</string>
+    <string name="history_load_next_page_error">다음 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="my_page_account">계정 정보 (수정 불가)</string>
     <string name="my_page_email">이메일: s26055@gsm.hs.kr</string>
     <string name="my_page_major">전공: 인공지능소프트웨어과</string>
     <string name="profile_placeholder">예: 프론트엔드에 관심 많은 8기 학생이에요.</string>
     <string name="profile_personalization_label">자기소개 (AI 응답 개인화에 활용됩니다)</string>
+    <string name="profile_loading">불러오는 중</string>
+    <string name="profile_load_error">불러오기 실패</string>
+    <string name="profile_saving">저장 중</string>
+    <string name="profile_save_error">저장 실패</string>
     <string name="prompt_placeholder">예: 답변은 항상 3문장 이내로 짧게 해줘.</string>
     <string name="contact_placeholder">예: 답변이 너무 짧게 나와요.</string>
     <string name="contact_email_info">이메일 문의: gsm-chatbot@gsm.hs.kr</string>

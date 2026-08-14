@@ -30,6 +30,7 @@ data class FigmaViewportMetrics(
 @Composable
 fun FigmaPhoneScreen(
     modifier: Modifier = Modifier,
+    scrollContentModifier: Modifier = Modifier,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -54,6 +55,7 @@ fun FigmaPhoneScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .then(scrollContentModifier)
                 .verticalScroll(rememberScrollState()),
             contentAlignment = Alignment.TopCenter,
         ) {

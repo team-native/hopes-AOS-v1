@@ -20,6 +20,7 @@ import com.example.hopes.feature.detail.presentation.DetailRoute
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailScreenType
 import com.example.hopes.feature.detail.presentation.DetailUiState
+import com.example.hopes.feature.detail.presentation.MyPageRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
 import com.example.hopes.feature.settings.presentation.SettingsRoute
@@ -33,9 +34,6 @@ fun HopesNavigation(
     onDarkThemeChange: (Boolean) -> Unit,
 ) {
     val hopesNavController = rememberNavController()
-    var profileName by rememberSaveable { mutableStateOf("") }
-    var profileIntroduction by rememberSaveable { mutableStateOf("") }
-    var isProfileSaved by rememberSaveable { mutableStateOf(false) }
     var personalPrompt by rememberSaveable { mutableStateOf("") }
     var isPromptSaved by rememberSaveable { mutableStateOf(false) }
     var contactEmail by rememberSaveable { mutableStateOf("") }
@@ -43,9 +41,6 @@ fun HopesNavigation(
     var isContactSent by rememberSaveable { mutableStateOf(false) }
 
     fun detailUiState(): DetailUiState = DetailUiState(
-        profileName = profileName,
-        profileIntroduction = profileIntroduction,
-        isProfileSaved = isProfileSaved,
         personalPrompt = personalPrompt,
         isPromptSaved = isPromptSaved,
         contactEmail = contactEmail,
@@ -57,9 +52,6 @@ fun HopesNavigation(
         when (event) {
             DetailScreenEvent.BackClicked -> hopesNavController.popBackStack()
             DetailScreenEvent.AppSettingsClicked -> hopesNavController.navigate(HopesDestination.AppSettings.route)
-            is DetailScreenEvent.ProfileNameChanged -> { profileName = event.value; isProfileSaved = false }
-            is DetailScreenEvent.ProfileIntroductionChanged -> { profileIntroduction = event.value; isProfileSaved = false }
-            DetailScreenEvent.ProfileSaveClicked -> isProfileSaved = true
             is DetailScreenEvent.PersonalPromptChanged -> { personalPrompt = event.value; isPromptSaved = false }
             DetailScreenEvent.PersonalPromptSaveClicked -> isPromptSaved = true
             is DetailScreenEvent.ContactEmailChanged -> { contactEmail = event.value; isContactSent = false }
@@ -82,13 +74,31 @@ fun HopesNavigation(
             })
         }
         composable(HopesDestination.Home.route) { HomeRoute(onNavigate = hopesNavController::navigateToTopLevel) }
-        composable(HopesDestination.Chat.route) {
-            ChatRoute(onNavigate = hopesNavController::navigateToTopLevel, onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) })
+        composable(
+            route = chatRoutePattern(),
+            arguments = listOf(
+                navArgument(CHAT_NEW_CHAT_ARGUMENT) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                },
+            ),
+        ) { backStackEntry ->
+            ChatRoute(
+                onNavigate = hopesNavController::navigateToTopLevel,
+                onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) },
+                isNewChatRequested = backStackEntry.arguments?.getBoolean(CHAT_NEW_CHAT_ARGUMENT) ?: false,
+            )
         }
         composable(HopesDestination.History.route) {
-            HistoryRoute(onNavigate = hopesNavController::navigateToTopLevel, onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) })
+            HistoryRoute(
+                onNavigate = hopesNavController::navigateToTopLevel,
+                onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) },
+                onStartNewChat = hopesNavController::navigateToNewChat,
+            )
         }
-        composable(HopesDestination.Settings.route) { DetailRoute(DetailScreenType.MyPage, detailUiState(), ::handleDetailEvent, hopesNavController::navigateToTopLevel) }
+        composable(HopesDestination.Settings.route) {
+            MyPageRoute(onNavigate = hopesNavController::navigateToTopLevel)
+        }
         composable(HopesDestination.AppSettings.route) {
             SettingsRoute(hopesNavController::navigateToTopLevel, isDarkThemeEnabled, onDarkThemeChange, hopesNavController::popBackStack, { hopesNavController.navigate(HopesDestination.PersonalSettings.route) }, { hopesNavController.navigate(HopesDestination.Contact.route) }, { hopesNavController.navigate(AUTH_ROUTE) { popUpTo(0) { inclusive = true } } })
         }
@@ -105,5 +115,13 @@ private fun NavHostController.navigateToTopLevel(destination: HopesDestination) 
         launchSingleTop = true
         popUpTo(HopesDestination.Home.route) { saveState = true }
         restoreState = true
+    }
+}
+
+/** 기록 화면의 새 대화 시작에서 빈 채팅 입력 상태를 보장하는 탐색이다. */
+private fun NavHostController.navigateToNewChat() {
+    navigate(chatRoute(isNewChatRequested = true)) {
+        launchSingleTop = true
+        popUpTo(HopesDestination.Home.route) { saveState = true }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.hopes.feature.settings.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.hopes.navigation.HopesDestination
 
 /** 설정 화면에 앱 탐색 콜백을 제공한다. */
@@ -13,7 +15,16 @@ fun SettingsRoute(
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
     onLogout: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(viewModel) {
+        viewModel.effect.collect { effect ->
+            if (effect is SettingsEffect.LoggedOut) {
+                onLogout()
+            }
+        }
+    }
+
     SettingsScreen(
         onNavigate = onNavigate,
         isDarkModeEnabled = isDarkModeEnabled,
@@ -21,6 +32,6 @@ fun SettingsRoute(
         onBackClick = onBackClick,
         onNavigateToPersonalSettings = onNavigateToPersonalSettings,
         onNavigateToContact = onNavigateToContact,
-        onLogout = onLogout,
+        onLogout = viewModel::logout,
     )
 }

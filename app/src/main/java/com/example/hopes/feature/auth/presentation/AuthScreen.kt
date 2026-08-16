@@ -32,8 +32,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -54,7 +55,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.annotation.StringRes
-import kotlinx.coroutines.launch
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppAnimationDuration
 import com.example.hopes.core.designsystem.AppBlurRadius
@@ -143,19 +143,23 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
-    val sheetTopOffset = remember { Animatable(AUTH_SHEET_COLLAPSED_TOP) }
-    val animationScope = rememberCoroutineScope()
+    val guideAnimation = remember { Animatable(AUTH_SHEET_COLLAPSED_TOP) }
+    val guideDragOffset = remember { mutableFloatStateOf(AUTH_SHEET_COLLAPSED_TOP) }
+    val isGuideDragging = remember { mutableStateOf(false) }
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
+    val guideCurrentOffset = if (isGuideDragging.value) {
+        guideDragOffset.floatValue
+    } else {
+        guideAnimation.value
+    }
     val guideDragState = rememberDraggableState { dragAmount ->
-        // 드래그 delta는 순차적으로 처리해 이동 중 Coroutine이 누적되지 않게 한다.
-        sheetTopOffset.snapTo(
-            (sheetTopOffset.value + with(guideDensity) {
+        // 드래그 delta는 일반 상태값에 즉시 반영해 이동 중 Coroutine이 누적되지 않게 한다.
+        guideDragOffset.floatValue = (guideDragOffset.floatValue + with(guideDensity) {
                 dragAmount.toDp().value
             }).coerceIn(
-                AUTH_SHEET_EXPANDED_TOP,
-                AUTH_SHEET_COLLAPSED_TOP,
-            ),
+            AUTH_SHEET_EXPANDED_TOP,
+            AUTH_SHEET_COLLAPSED_TOP,
         )
     }
 
@@ -168,40 +172,46 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 76.dp))
             AuthHeroCopy()
 
-            if (sheetTopOffset.value > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
+            if (guideCurrentOffset > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
                 SwipeHint(extendedColors = extendedColors)
             }
 
             // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 시트를 확장한다.
             FigmaAuthSheet(
                 modifier = Modifier
-                    .padding(top = sheetTopOffset.value.dp)
+                    .padding(top = guideCurrentOffset.dp)
                     .width(figmaPhoneFrameWidth)
                     .height(
-                        (FIGMA_PHONE_HEIGHT - sheetTopOffset.value)
+                        (FIGMA_PHONE_HEIGHT - guideCurrentOffset)
                             .coerceAtLeast(AUTH_SHEET_PEEK_HEIGHT)
                             .dp,
                     )
                     .draggable(
                         state = guideDragState,
                         orientation = Orientation.Vertical,
-                        onDragStopped = {
-                            animationScope.launch {
-                                if (sheetTopOffset.value < AUTH_SHEET_OPEN_THRESHOLD) {
-                                    sheetTopOffset.animateTo(
-                                        AUTH_SHEET_EXPANDED_TOP,
-                                        tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
-                                    )
-                                    onNavigateLogin()
-                                } else {
-                                    sheetTopOffset.animateTo(
-                                        AUTH_SHEET_COLLAPSED_TOP,
-                                        tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
-                                    )
-                                }
+                        onDragStarted = {
+                            guideDragOffset.floatValue = guideAnimation.value
+                            isGuideDragging.value = true
+                        },
+                        onDragStopped = { _ ->
+                            val targetOffset = if (guideDragOffset.floatValue < AUTH_SHEET_OPEN_THRESHOLD) {
+                                AUTH_SHEET_EXPANDED_TOP
+                            } else {
+                                AUTH_SHEET_COLLAPSED_TOP
+                            }
+
+                            guideAnimation.snapTo(guideDragOffset.floatValue)
+                            isGuideDragging.value = false
+                            guideAnimation.animateTo(
+                                targetOffset,
+                                tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
+                            )
+
+                            if (targetOffset == AUTH_SHEET_EXPANDED_TOP) {
+                                onNavigateLogin()
                             }
                         },
-                    )
+                    ),
                 isPeekSheet = true,
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -242,21 +252,25 @@ private fun LoginSheetScreen(
     onNavigateSignup: () -> Unit,
     onDismissLogin: () -> Unit,
 ) {
-    val sheetTopOffset = remember { Animatable(AUTH_SHEET_EXPANDED_TOP) }
-    val animationScope = rememberCoroutineScope()
+    val loginAnimation = remember { Animatable(AUTH_SHEET_EXPANDED_TOP) }
+    val loginDragOffset = remember { mutableFloatStateOf(AUTH_SHEET_EXPANDED_TOP) }
+    val isLoginDragging = remember { mutableStateOf(false) }
     val loginDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
     val isImeVisible = WindowInsets.ime.getBottom(loginDensity) > 0
     val keyboardLift = if (isImeVisible) LOGIN_KEYBOARD_LIFT else 0.dp
+    val loginCurrentOffset = if (isLoginDragging.value) {
+        loginDragOffset.floatValue
+    } else {
+        loginAnimation.value
+    }
     val loginDragState = rememberDraggableState { dragAmount ->
-        // 드래그 delta는 순차적으로 처리해 이동 중 Coroutine이 누적되지 않게 한다.
-        sheetTopOffset.snapTo(
-            (sheetTopOffset.value + with(loginDensity) {
+        // 드래그 delta는 일반 상태값에 즉시 반영해 이동 중 Coroutine이 누적되지 않게 한다.
+        loginDragOffset.floatValue = (loginDragOffset.floatValue + with(loginDensity) {
                 dragAmount.toDp().value
             }).coerceIn(
-                AUTH_SHEET_EXPANDED_TOP,
-                AUTH_SHEET_COLLAPSED_TOP,
-            ),
+            AUTH_SHEET_EXPANDED_TOP,
+            AUTH_SHEET_COLLAPSED_TOP,
         )
     }
 
@@ -282,29 +296,35 @@ private fun LoginSheetScreen(
             )
             FigmaAuthSheet(
                 modifier = Modifier
-                    .padding(top = sheetTopOffset.value.dp - keyboardLift)
+                    .padding(top = loginCurrentOffset.dp - keyboardLift)
                     .width(figmaPhoneFrameWidth)
                     .height(LOGIN_SHEET_HEIGHT)
                     .draggable(
                         state = loginDragState,
                         orientation = Orientation.Vertical,
-                        onDragStopped = {
-                            animationScope.launch {
-                                if (sheetTopOffset.value > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
-                                    sheetTopOffset.animateTo(
-                                        AUTH_SHEET_COLLAPSED_TOP,
-                                        tween(AppAnimationDuration.SheetTransitionMillis),
-                                    )
-                                    onDismissLogin()
-                                } else {
-                                    sheetTopOffset.animateTo(
-                                        AUTH_SHEET_EXPANDED_TOP,
-                                        tween(AppAnimationDuration.SheetTransitionMillis),
-                                    )
-                                }
+                        onDragStarted = {
+                            loginDragOffset.floatValue = loginAnimation.value
+                            isLoginDragging.value = true
+                        },
+                        onDragStopped = { _ ->
+                            val targetOffset = if (loginDragOffset.floatValue > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
+                                AUTH_SHEET_COLLAPSED_TOP
+                            } else {
+                                AUTH_SHEET_EXPANDED_TOP
+                            }
+
+                            loginAnimation.snapTo(loginDragOffset.floatValue)
+                            isLoginDragging.value = false
+                            loginAnimation.animateTo(
+                                targetOffset,
+                                tween(AppAnimationDuration.SheetTransitionMillis),
+                            )
+
+                            if (targetOffset == AUTH_SHEET_COLLAPSED_TOP) {
+                                onDismissLogin()
                             }
                         },
-                    )
+                    ),
                 isPeekSheet = false,
             ) {
                 FigmaLoginSheetContent(

@@ -14,10 +14,20 @@ class GetChatsUseCase @Inject constructor(
     }
 }
 
+class GetChatUseCase @Inject constructor(
+    private val chatRepository: ChatRepository,
+) {
+    suspend operator fun invoke(chatId: Long, page: Int, size: Int): AppResult<Chat> {
+        return chatRepository.getChat(chatId, page, size)
+    }
+}
+
 class CreateChatUseCase @Inject constructor(
     private val chatRepository: ChatRepository,
 ) {
-    suspend operator fun invoke(title: String?): AppResult<Chat> = chatRepository.createChat(title)
+    suspend operator fun invoke(title: String?): AppResult<Chat> {
+        return chatRepository.createChat(title)
+    }
 }
 
 class SendChatMessageUseCase @Inject constructor(

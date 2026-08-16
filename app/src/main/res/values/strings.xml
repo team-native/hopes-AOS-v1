@@ -15,16 +15,8 @@
     <string name="chat_description">광주소프트웨어마이스터고 선배에게 편하게 질문해 보세요.</string>
     <string name="chat_input_label">선배에게 메시지 보내기</string>
     <string name="chat_send">전송</string>
-    <string name="chat_suggestion_marker">•</string>
     <string name="chat_send_symbol">↑</string>
     <string name="back_symbol">‹</string>
-    <string-array name="chat_suggestion_symbols">
-        <item>⌂</item>
-        <item>◇</item>
-        <item>&lt;&gt;</item>
-        <item>□</item>
-    </string-array>
-    <string name="chat_demo_answer">UI 데모 답변입니다. 실제 답변 기능은 서버 연동이 완료된 뒤 제공됩니다.</string>
     <string name="history_title">지난 대화</string>
     <string name="history_description">웹사이트 구성을 리스트로 정리했어요.</string>
     <string name="settings_title">설정</string>
@@ -48,6 +40,7 @@
     <string name="onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
     <string name="onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
     <string name="start_chat">채팅 시작하기</string>
+    <string name="chat_create_error">채팅을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
     <string name="new_chat">새 대화</string>
     <string name="chat_detail_title">기숙사 생활</string>
     <string name="history_search">지난 대화 검색</string>
@@ -86,7 +79,13 @@
     <string name="chat_additional_question">추가 질문 입력</string>
     <string name="chat_save">저장</string>
     <string name="chat_answer_label">선배 답변 · 실제 경험 기반</string>
-    <string name="chat_detail_answer">평일은 저녁 식사 후 자습, 점호 순서로 흘러가요. 처음엔 빠듯하지만 일주일 정도 지나면 개인 루틴이 잡혀요.</string>
+    <string name="chat_messages_loading">대화를 불러오는 중이에요.</string>
+    <string name="chat_messages_error">대화를 불러오지 못했어요. 다시 시도해주세요.</string>
+    <string name="chat_message_send_error">메시지를 보내지 못했어요. 다시 시도해주세요.</string>
+    <string name="history_loading">지난 대화를 불러오는 중이에요.</string>
+    <string name="history_error">지난 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
+    <string name="history_empty">지난 대화가 없어요.</string>
+    <string name="history_load_next_page_error">다음 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="my_page_account">계정 정보 (수정 불가)</string>
     <string name="my_page_email">이메일: s26055@gsm.hs.kr</string>
     <string name="my_page_major">전공: 인공지능소프트웨어과</string>
@@ -113,28 +112,6 @@
     <string name="signup_dropdown_symbol">⌄</string>
     <string name="auth_swipe_title">위로 스와이프하기</string>
     <string name="prompt_save">프롬프트 저장</string>
-    <string-array name="chat_suggestions">
-        <item>기숙사 하루 일과가 어떻게 돼?</item>
-        <item>입학하려면 뭘 준비해야 해?</item>
-        <item>전공 선택은 어떻게 하는 게 좋아?</item>
-        <item>후배한테 해주고 싶은 조언 있어?</item>
-    </string-array>
-    <string-array name="history_questions">
-        <item>기숙사 하루 일과가 어떻게 돼?</item>
-        <item>전공 선택은 어떻게 하면 좋을까?</item>
-        <item>입학하려면 무엇을 준비해야 해?</item>
-    </string-array>
-    <string-array name="history_recent_questions">
-        <item>기숙사 하루 일과가 어떻게 돼?</item>
-        <item>전공 선택은 어떻게 하는 게 좋...</item>
-        <item>여기랑 대덕중에 누가 더 좋음</item>
-    </string-array>
-    <string-array name="history_previous_questions">
-        <item>입학하려면 뭘 준비해야 해?</item>
-        <item>과랑 전공이랑 뭐가 다름</item>
-        <item>후배한테 해주고 싶은 조언 있어?</item>
-        <item>가장 예쁜 사람 누구?</item>
-    </string-array>
     <string-array name="settings_items">
         <item>개인 설정</item>
         <item>알림 설정</item>

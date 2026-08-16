@@ -8,13 +8,14 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun ChatScreen(
     questionText: String,
+    isCreateChatError: Boolean,
     onEvent: (ChatScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     ChatScreenContent(
         questionText = questionText,
+        isCreateChatError = isCreateChatError,
         onQuestionChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
-        onSuggestionClick = { onEvent(ChatScreenEvent.SuggestionSelected(it)) },
         onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
         onNewChatClick = { onEvent(ChatScreenEvent.NewChatClicked) },
         onNavigate = onNavigate,

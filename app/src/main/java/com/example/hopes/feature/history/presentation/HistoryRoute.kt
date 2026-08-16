@@ -1,26 +1,29 @@
 package com.example.hopes.feature.history.presentation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import com.example.hopes.navigation.DemoConversation
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.navigation.HopesDestination
 
-/** 기록 화면에 앱 탐색 콜백을 제공한다. */
+/** 기록 서버 상태를 수집하고 상세 이동을 연결한다. */
 @Composable
 fun HistoryRoute(
-    conversations: List<DemoConversation>,
     onNavigate: (HopesDestination) -> Unit,
-    onNavigateToChatDetail: (String) -> Unit,
+    onNavigateToChatDetail: (Long) -> Unit,
+    onStartNewChat: () -> Unit,
+    viewModel: HistoryViewModel = hiltViewModel(),
 ) {
-    var searchQuery by rememberSaveable { mutableStateOf("") }
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
     HistoryScreen(
-        searchQuery = searchQuery,
-        conversations = conversations,
-        onSearchQueryChange = { searchQuery = it },
-        onQuestionClick = onNavigateToChatDetail,
+        uiState = uiState.value,
+        onEvent = { event ->
+            when (event) {
+                HistoryScreenEvent.NewChatClicked -> onStartNewChat()
+                is HistoryScreenEvent.ChatClicked -> onNavigateToChatDetail(event.chatId)
+                else -> viewModel.onEvent(event)
+            }
+        },
         onNavigate = onNavigate,
     )
 }

@@ -1,0 +1,28 @@
+package com.example.hopes.feature.chat.presentation.detail
+
+import androidx.compose.runtime.Composable
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.hopes.navigation.HopesDestination
+
+/** 서버 대화 상세 상태를 수집하고 탐색 이벤트를 연결한다. */
+@Composable
+fun ChatDetailRoute(
+    onBackClick: () -> Unit,
+    onNavigate: (HopesDestination) -> Unit,
+    viewModel: ChatDetailViewModel = hiltViewModel(),
+) {
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    ChatDetailScreen(
+        uiState = uiState.value,
+        onEvent = { event ->
+            if (event == ChatDetailScreenEvent.BackClicked) {
+                onBackClick()
+            } else {
+                viewModel.onEvent(event)
+            }
+        },
+        onNavigate = onNavigate,
+    )
+}

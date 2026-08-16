@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -114,11 +115,12 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
     val extendedColors = LocalHopesExtendedColors.current
 
     FigmaPhoneScreen(
+        useFigmaViewport = false,
         background = {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
+        Box(modifier = Modifier.fillMaxSize()) {
             FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 76.dp))
             AuthHeroCopy()
 
@@ -130,8 +132,8 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             FigmaAuthSheet(
                 modifier = Modifier
                     .padding(top = sheetTopOffset.value.dp)
-                    .width(402.dp)
-                    .height((874f - sheetTopOffset.value).coerceAtLeast(190f).dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
                     .pointerInput(guideDensity) {
                         detectDragGestures(
                             onDrag = { change, dragAmount ->
@@ -204,12 +206,14 @@ private fun LoginSheetScreen(
     val keyboardLift = if (isImeVisible) 126.dp else 0.dp
 
     FigmaPhoneScreen(
+        useFigmaViewport = false,
+        navigationBarColor = MaterialTheme.colorScheme.surface,
         background = {
             // Figma의 배경은 선명한 그라디언트이고, 전경 브랜드/카피에만 8px 블러가 적용된다.
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.width(402.dp).height(874.dp)) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.blur(8.dp)) {
                 FigmaAuthBrandHeader(
                     modifier = Modifier.padding(start = 32.dp, top = 76.dp),
@@ -219,15 +223,15 @@ private fun LoginSheetScreen(
             }
             Box(
                 modifier = Modifier
-                    .width(402.dp)
+                    .fillMaxWidth()
                     .height(397.dp)
                     .background(extendedColors.authBackdropScrim),
             )
             FigmaAuthSheet(
                 modifier = Modifier
                     .padding(top = sheetTopOffset.value.dp - keyboardLift)
-                    .width(402.dp)
-                    .height(502.dp)
+                    .fillMaxWidth()
+                    .fillMaxHeight()
                     .pointerInput(loginDensity) {
                         detectDragGestures(
                             onDrag = { change, dragAmount ->
@@ -505,18 +509,17 @@ private fun AuthFormScreen(
     val signupGenerationValue = stringResource(R.string.signup_generation_value)
 
     // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
-    FigmaPhoneScreen {
+    FigmaPhoneScreen(useFigmaViewport = false) {
         Box(
             modifier = Modifier
-                .width(402.dp)
-                .height(874.dp)
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background),
         ) {
         // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
         Box(modifier = Modifier.padding(top = keyboardLift)) {
             Box(
                 modifier = Modifier
-                    .width(402.dp)
+                    .fillMaxWidth()
                     .height(250.dp)
                     .background(
                         Brush.verticalGradient(

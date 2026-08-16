@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 
@@ -22,12 +23,14 @@ data class FigmaViewportMetrics(
 )
 
 /**
- * 402×874 Figma iPhone 프레임을 실제 Android 화면 폭에 맞춰 표시한다.
- * 화면 높이가 짧은 기기에서는 전체 화면을 축소하지 않고 세로 스크롤로 접근한다.
+ * 402×874 Figma 프레임을 화면 폭에 맞춰 표시하거나 실제 화면 크기를 사용한다.
+ * Figma 뷰포트가 필요한 화면은 짧은 기기에서 세로 스크롤로 콘텐츠에 접근한다.
  */
 @Composable
 fun FigmaPhoneScreen(
     modifier: Modifier = Modifier,
+    navigationBarColor: Color? = null,
+    useFigmaViewport: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -49,30 +52,43 @@ fun FigmaPhoneScreen(
 
         background()
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            contentAlignment = Alignment.TopCenter,
-        ) {
+        if (navigationBarColor != null) {
+            FigmaNavigationBarBackground(color = navigationBarColor)
+        }
+
+        if (useFigmaViewport) {
             Box(
                 modifier = Modifier
-                    .width(viewportWidth)
-                    .height(viewportHeight),
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                contentAlignment = Alignment.TopCenter,
             ) {
                 Box(
                     modifier = Modifier
-                        .width(FIGMA_PHONE_WIDTH.dp)
-                        .height(FIGMA_PHONE_HEIGHT.dp)
-                        .graphicsLayer(
-                            scaleX = scale,
-                            scaleY = scale,
-                            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f),
-                        ),
-                    contentAlignment = Alignment.TopCenter,
+                        .width(viewportWidth)
+                        .height(viewportHeight),
                 ) {
-                    content()
+                    Box(
+                        modifier = Modifier
+                            .width(FIGMA_PHONE_WIDTH.dp)
+                            .height(FIGMA_PHONE_HEIGHT.dp)
+                            .graphicsLayer(
+                                scaleX = scale,
+                                scaleY = scale,
+                                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f),
+                            ),
+                        contentAlignment = Alignment.TopCenter,
+                    ) {
+                        content()
+                    }
                 }
+            }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                content()
             }
         }
 

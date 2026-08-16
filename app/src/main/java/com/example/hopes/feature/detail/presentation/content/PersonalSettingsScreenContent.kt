@@ -28,7 +28,11 @@ fun PersonalSettingsScreenContent(
         )
         FigmaPersonalSettingsFormCard(
             personalPrompt = uiState.personalPrompt,
+            isPromptLoading = uiState.isPromptLoading,
+            isPromptLoadError = uiState.isPromptLoadError,
+            isPromptSaving = uiState.isPromptSaving,
             isPromptSaved = uiState.isPromptSaved,
+            isPromptSaveError = uiState.isPromptSaveError,
             onPersonalPromptChange = {
                 onEvent(DetailScreenEvent.PersonalPromptChanged(it))
             },

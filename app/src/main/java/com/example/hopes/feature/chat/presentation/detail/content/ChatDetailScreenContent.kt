@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.rememberScrollState
@@ -26,7 +27,6 @@ import com.example.hopes.feature.chat.presentation.detail.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailUiState
 import com.example.hopes.feature.detail.presentation.component.FigmaChatDetailBubble
 import com.example.hopes.feature.detail.presentation.component.FigmaChatReplyBar
-import com.example.hopes.feature.detail.presentation.component.FigmaImeChatReplyBar
 import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
 import com.example.hopes.navigation.HopesDestination
 
@@ -53,29 +53,16 @@ fun ChatDetailScreenContent(
                 backOffsetX = 19,
             )
         },
-        fixedBottomContent = if (isImeVisible) {
-            null
-        } else {
-            {
-                FigmaChatReplyBar(
-                    value = uiState.replyText,
-                    onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
-                    onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
-                    modifier = Modifier,
-                )
-            }
+        fixedBottomContent = {
+            // 화면 전환 중 IME 상태가 바뀌어도 입력창은 항상 하단에 유지한다.
+            FigmaChatReplyBar(
+                value = uiState.replyText,
+                onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
+                onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
+                modifier = Modifier.imePadding(),
+            )
         },
         isBottomNavigationVisible = !isImeVisible,
-        imeOverlay = { viewportMetrics ->
-            if (isImeVisible) {
-                FigmaImeChatReplyBar(
-                    viewportMetrics = viewportMetrics,
-                    value = uiState.replyText,
-                    onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
-                    onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
-                )
-            }
-        },
     ) {
         ChatMessages(
             uiState = uiState,

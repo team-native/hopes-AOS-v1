@@ -56,7 +56,7 @@ class ChatDetailViewModel @Inject constructor(
         }
     }
 
-    /** 추가 질문 입력과 전송 의도를 처리하고, 전송 성공 시 서버 대화 응답으로 목록을 교체한다. */
+    /** 추가 질문 입력과 전송 의도를 처리하고, 전송 성공 시 서버 대화를 다시 조회한다. */
     fun onEvent(event: ChatDetailScreenEvent) {
         when (event) {
             ChatDetailScreenEvent.BackClicked -> Unit
@@ -76,15 +76,9 @@ class ChatDetailViewModel @Inject constructor(
             updateState { copy(isSendError = false) }
             when (val result = sendChatMessageUseCase(chatId, trimmedReply)) {
                 is AppResult.Success -> {
-                    updateState {
-                        copy(
-                            title = result.value.title,
-                            messages = result.value.messages.map { message ->
-                                message.toChatMessageUiModel()
-                            },
-                            replyText = "",
-                        )
-                    }
+                    // 첫 질문과 같이 서버의 완성된 메시지 목록을 다시 조회해 답변 항목을 표시한다.
+                    updateState { copy(replyText = "") }
+                    loadChat()
                 }
 
                 else -> updateState { copy(isSendError = true) }

@@ -18,7 +18,11 @@ import com.example.hopes.R
 @Composable
 fun FigmaPersonalSettingsFormCard(
     personalPrompt: String,
+    isPromptLoading: Boolean,
+    isPromptLoadError: Boolean,
+    isPromptSaving: Boolean,
     isPromptSaved: Boolean,
+    isPromptSaveError: Boolean,
     onPersonalPromptChange: (String) -> Unit,
     onSaveClick: () -> Unit,
 ) {
@@ -45,15 +49,18 @@ fun FigmaPersonalSettingsFormCard(
             modifier = Modifier.padding(start = 24.dp, top = 112.dp),
         )
         FigmaDetailPrimaryButton(
-            text = if (isPromptSaved) {
-                stringResource(R.string.saved)
-            } else {
-                stringResource(R.string.prompt_save)
+            text = when {
+                isPromptLoading || isPromptSaving -> stringResource(R.string.profile_saving)
+                isPromptLoadError -> stringResource(R.string.prompt_load_error)
+                isPromptSaveError -> stringResource(R.string.prompt_save_error)
+                isPromptSaved -> stringResource(R.string.saved)
+                else -> stringResource(R.string.prompt_save)
             },
             modifier = Modifier
                 .padding(start = 230.dp, top = 341.dp)
                 .width(100.dp)
                 .height(46.dp),
+            enabled = !isPromptLoading && !isPromptSaving,
             onClick = onSaveClick,
         )
     }

@@ -151,7 +151,7 @@ private fun FigmaHomeTipCard(
             modifier = Modifier.padding(start = 50.dp, top = 15.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(
-                fontSize = 10.sp,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 lineHeight = 20.sp,
             ),
@@ -160,7 +160,7 @@ private fun FigmaHomeTipCard(
             text = bottomText,
             modifier = Modifier.padding(start = 47.dp, top = 39.dp).width(260.dp),
             color = MaterialTheme.colorScheme.onSurface,
-            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp),
+            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp),
         )
     }
 }

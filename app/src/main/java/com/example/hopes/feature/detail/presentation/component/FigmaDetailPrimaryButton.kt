@@ -21,6 +21,7 @@ import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 fun FigmaDetailPrimaryButton(
     text: String,
     modifier: Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit,
     shadowStyle: FigmaDetailPrimaryButtonShadow = FigmaDetailPrimaryButtonShadow.Subtle,
 ) {
@@ -34,7 +35,10 @@ fun FigmaDetailPrimaryButton(
                 },
             )
             .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
+            .clickable(
+                enabled = enabled,
+                onClick = onClick,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Text(

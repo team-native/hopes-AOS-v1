@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.heightIn
@@ -24,6 +26,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.animation.core.Animatable
@@ -35,8 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -63,7 +64,6 @@ import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
 import com.example.hopes.core.designsystem.component.FIGMA_PHONE_HEIGHT
 import com.example.hopes.core.designsystem.component.figmaPhoneFrameHeight
 import com.example.hopes.core.designsystem.component.figmaPhoneFrameWidth
-import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.HopesLightLogo
@@ -73,6 +73,7 @@ import com.example.hopes.core.designsystem.component.overlay.dialogBackdropBlur
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthLogoShadowStyle
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
+import com.example.hopes.feature.auth.presentation.component.FigmaSignupHeader
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.feature.auth.presentation.component.FigmaSignupSelectionField
 import com.example.hopes.feature.auth.presentation.component.SignupVerificationCodeField
@@ -146,6 +147,17 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
     val animationScope = rememberCoroutineScope()
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
+    val guideDragState = rememberDraggableState { dragAmount ->
+        // 드래그 delta는 순차적으로 처리해 이동 중 Coroutine이 누적되지 않게 한다.
+        sheetTopOffset.snapTo(
+            (sheetTopOffset.value + with(guideDensity) {
+                dragAmount.toDp().value
+            }).coerceIn(
+                AUTH_SHEET_EXPANDED_TOP,
+                AUTH_SHEET_COLLAPSED_TOP,
+            ),
+        )
+    }
 
     FigmaPhoneScreen(
         background = {
@@ -170,39 +182,26 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                             .coerceAtLeast(AUTH_SHEET_PEEK_HEIGHT)
                             .dp,
                     )
-                    .pointerInput(guideDensity) {
-                        detectDragGestures(
-                            onDrag = { change, dragAmount ->
-                                change.consume()
-                                animationScope.launch {
-                                    sheetTopOffset.snapTo(
-                                        (sheetTopOffset.value + with(guideDensity) {
-                                            dragAmount.y.toDp().value
-                                        }).coerceIn(
-                                            AUTH_SHEET_EXPANDED_TOP,
-                                            AUTH_SHEET_COLLAPSED_TOP,
-                                        ),
+                    .draggable(
+                        state = guideDragState,
+                        orientation = Orientation.Vertical,
+                        onDragStopped = {
+                            animationScope.launch {
+                                if (sheetTopOffset.value < AUTH_SHEET_OPEN_THRESHOLD) {
+                                    sheetTopOffset.animateTo(
+                                        AUTH_SHEET_EXPANDED_TOP,
+                                        tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
+                                    )
+                                    onNavigateLogin()
+                                } else {
+                                    sheetTopOffset.animateTo(
+                                        AUTH_SHEET_COLLAPSED_TOP,
+                                        tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
                                     )
                                 }
-                            },
-                            onDragEnd = {
-                                animationScope.launch {
-                                    if (sheetTopOffset.value < AUTH_SHEET_OPEN_THRESHOLD) {
-                                        sheetTopOffset.animateTo(
-                                            AUTH_SHEET_EXPANDED_TOP,
-                                            tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
-                                        )
-                                        onNavigateLogin()
-                                    } else {
-                                        sheetTopOffset.animateTo(
-                                            AUTH_SHEET_COLLAPSED_TOP,
-                                            tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
-                                        )
-                                    }
-                                }
-                            },
-                        )
-                    },
+                            }
+                        },
+                    )
                 isPeekSheet = true,
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -249,6 +248,17 @@ private fun LoginSheetScreen(
     val extendedColors = LocalHopesExtendedColors.current
     val isImeVisible = WindowInsets.ime.getBottom(loginDensity) > 0
     val keyboardLift = if (isImeVisible) LOGIN_KEYBOARD_LIFT else 0.dp
+    val loginDragState = rememberDraggableState { dragAmount ->
+        // 드래그 delta는 순차적으로 처리해 이동 중 Coroutine이 누적되지 않게 한다.
+        sheetTopOffset.snapTo(
+            (sheetTopOffset.value + with(loginDensity) {
+                dragAmount.toDp().value
+            }).coerceIn(
+                AUTH_SHEET_EXPANDED_TOP,
+                AUTH_SHEET_COLLAPSED_TOP,
+            ),
+        )
+    }
 
     FigmaPhoneScreen(
         background = {
@@ -275,39 +285,26 @@ private fun LoginSheetScreen(
                     .padding(top = sheetTopOffset.value.dp - keyboardLift)
                     .width(figmaPhoneFrameWidth)
                     .height(LOGIN_SHEET_HEIGHT)
-                    .pointerInput(loginDensity) {
-                        detectDragGestures(
-                            onDrag = { change, dragAmount ->
-                                change.consume()
-                                animationScope.launch {
-                                    sheetTopOffset.snapTo(
-                                        (sheetTopOffset.value + with(loginDensity) {
-                                            dragAmount.y.toDp().value
-                                        }).coerceIn(
-                                            AUTH_SHEET_EXPANDED_TOP,
-                                            AUTH_SHEET_COLLAPSED_TOP,
-                                        ),
+                    .draggable(
+                        state = loginDragState,
+                        orientation = Orientation.Vertical,
+                        onDragStopped = {
+                            animationScope.launch {
+                                if (sheetTopOffset.value > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
+                                    sheetTopOffset.animateTo(
+                                        AUTH_SHEET_COLLAPSED_TOP,
+                                        tween(AppAnimationDuration.SheetTransitionMillis),
+                                    )
+                                    onDismissLogin()
+                                } else {
+                                    sheetTopOffset.animateTo(
+                                        AUTH_SHEET_EXPANDED_TOP,
+                                        tween(AppAnimationDuration.SheetTransitionMillis),
                                     )
                                 }
-                            },
-                            onDragEnd = {
-                                animationScope.launch {
-                                    if (sheetTopOffset.value > AUTH_SHEET_SWIPE_HINT_THRESHOLD) {
-                                        sheetTopOffset.animateTo(
-                                            AUTH_SHEET_COLLAPSED_TOP,
-                                            tween(AppAnimationDuration.SheetTransitionMillis),
-                                        )
-                                        onDismissLogin()
-                                    } else {
-                                        sheetTopOffset.animateTo(
-                                            AUTH_SHEET_EXPANDED_TOP,
-                                            tween(AppAnimationDuration.SheetTransitionMillis),
-                                        )
-                                    }
-                                }
-                            },
-                        )
-                    },
+                            }
+                        },
+                    )
                 isPeekSheet = false,
             ) {
                 FigmaLoginSheetContent(
@@ -570,89 +567,78 @@ private fun AuthFormScreen(
     val signupNameHint = stringResource(R.string.signup_name_hint)
     val signupGenerationHint = stringResource(R.string.signup_generation_hint)
 
-    // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
-    FigmaPhoneScreen {
-        Box(
-            modifier = Modifier
-                .width(figmaPhoneFrameWidth)
-                .height(figmaPhoneFrameHeight)
-                .background(MaterialTheme.colorScheme.background)
-                .dialogBackdropBlur(
-                    isEnabled = isSelectionDialogVisible,
-                    blurRadius = AppBlurRadius.DialogBackground,
-                ),
-        ) {
-        // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
-        // 음수 padding은 Compose 예외를 발생시키므로 위치 이동에는 offset을 사용한다.
-        Box(modifier = Modifier.offset(y = keyboardLift)) {
+    // 상단 헤더를 Scaffold에 고정해 가입 폼 스크롤과 무관하게 화면 전체 폭의 배경을 유지한다.
+    Scaffold(
+        topBar = ::FigmaSignupHeader,
+        containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+    ) { innerPadding ->
+        FigmaPhoneScreen(modifier = Modifier.padding(innerPadding)) {
             Box(
                 modifier = Modifier
                     .width(figmaPhoneFrameWidth)
-                    .height(250.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(
-                                extendedColors.signupGradientStart,
-                                extendedColors.signupGradientEnd,
-                            ),
-                        ),
+                    .height(figmaPhoneFrameHeight)
+                    .background(MaterialTheme.colorScheme.background)
+                    .dialogBackdropBlur(
+                        isEnabled = isSelectionDialogVisible,
+                        blurRadius = AppBlurRadius.DialogBackground,
                     ),
-            )
-            FigmaBrandHeader(
-                modifier = Modifier.padding(start = 32.dp, top = 76.dp),
-                isOnBlueBackground = true,
-            )
-            Text(
-                text = stringResource(R.string.signup_hero_title),
-                modifier = Modifier.padding(start = 32.dp, top = 154.dp).width(260.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
-            )
-            // 헤더와 가입 버튼 사이를 1f로 사용해 카드의 세로 비율을 유지한다.
-            Column(
-                modifier = Modifier
-                    .padding(start = 24.dp, top = 276.dp)
-                    .width(354.dp)
-                    .height(474.dp),
             ) {
-                SignupFormCard(
-                    modifier = Modifier.weight(1f),
-                    emailText = emailText,
-                    passwordText = passwordText,
-                    nameText = nameText.orEmpty(),
-                    departmentText = departmentText,
-                    generationText = generationText,
-                    verificationCode = verificationCode,
-                    signupValidation = signupValidation,
-                    isLoading = isLoading,
-                    requestError = requestError,
-                    emailHint = signupEmailHint,
-                    nameHint = signupNameHint,
-                    generationHint = signupGenerationHint,
-                    isSignupEnabled = isSignupEnabled,
-                    onEmailChange = onEmailChange,
-                    onPasswordChange = onPasswordChange,
-                    onNameChange = onNameChange,
-                    onDepartmentClick = onDepartmentClick,
-                    onGenerationClick = onGenerationClick,
-                    onVerificationCodeChange = onVerificationCodeChange,
-                    onSendVerificationCode = onSendVerificationCode,
-                    onSignupClick = onActionClick,
-                )
-                Spacer(modifier = Modifier.height(42.dp))
-                SignupActionButton(
-                    isEnabled = isSignupEnabled,
-                    onClick = onActionClick,
-                )
+                // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
+                // 음수 padding은 Compose 예외를 발생시키므로 위치 이동에는 offset을 사용한다.
+                Box(modifier = Modifier.offset(y = keyboardLift)) {
+                    // 헤더와 가입 버튼 사이를 1f로 사용해 카드의 세로 비율을 유지한다.
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 24.dp, top = 26.dp)
+                            .width(354.dp)
+                            .height(474.dp),
+                    ) {
+                        SignupFormCard(
+                            modifier = Modifier.weight(1f),
+                            emailText = emailText,
+                            passwordText = passwordText,
+                            nameText = nameText.orEmpty(),
+                            departmentText = departmentText,
+                            generationText = generationText,
+                            verificationCode = verificationCode,
+                            signupValidation = signupValidation,
+                            isLoading = isLoading,
+                            requestError = requestError,
+                            emailHint = signupEmailHint,
+                            nameHint = signupNameHint,
+                            generationHint = signupGenerationHint,
+                            isSignupEnabled = isSignupEnabled,
+                            onEmailChange = onEmailChange,
+                            onPasswordChange = onPasswordChange,
+                            onNameChange = onNameChange,
+                            onDepartmentClick = onDepartmentClick,
+                            onGenerationClick = onGenerationClick,
+                            onVerificationCodeChange = onVerificationCodeChange,
+                            onSendVerificationCode = onSendVerificationCode,
+                            onSignupClick = onActionClick,
+                        )
+
+                        Spacer(modifier = Modifier.height(42.dp))
+
+                        SignupActionButton(
+                            isEnabled = isSignupEnabled,
+                            onClick = onActionClick,
+                        )
+                    }
+
+                    Text(
+                        text = stringResource(R.string.has_account),
+                        modifier = Modifier
+                            .padding(top = 510.dp)
+                            .fillMaxWidth()
+                            .clickable(onClick = onFooterClick),
+                        color = extendedColors.authFieldHint,
+                        textAlign = TextAlign.Center,
+                        style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+                    )
+                }
             }
-            Text(
-                text = stringResource(R.string.has_account),
-                modifier = Modifier.padding(top = 760.dp).fillMaxWidth().clickable(onClick = onFooterClick),
-                color = extendedColors.authFieldHint,
-                textAlign = TextAlign.Center,
-                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
-            )
-        }
         }
     }
 }

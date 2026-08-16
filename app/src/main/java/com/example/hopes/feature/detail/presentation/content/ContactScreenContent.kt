@@ -30,7 +30,9 @@ fun ContactScreenContent(
         FigmaContactFormCard(
             contactEmail = uiState.contactEmail,
             contactMessage = uiState.contactMessage,
+            isContactSubmitting = uiState.isContactSubmitting,
             isContactSent = uiState.isContactSent,
+            isContactSubmitError = uiState.isContactSubmitError,
             onContactEmailChange = { onEvent(DetailScreenEvent.ContactEmailChanged(it)) },
             onContactMessageChange = { onEvent(DetailScreenEvent.ContactMessageChanged(it)) },
             onSendClick = { onEvent(DetailScreenEvent.ContactSendClicked) },

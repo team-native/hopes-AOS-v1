@@ -204,6 +204,7 @@ private fun LoginSheetScreen(
     val keyboardLift = if (isImeVisible) 126.dp else 0.dp
 
     FigmaPhoneScreen(
+        navigationBarColor = MaterialTheme.colorScheme.surface,
         background = {
             // Figma의 배경은 선명한 그라디언트이고, 전경 브랜드/카피에만 8px 블러가 적용된다.
             AuthBackground(modifier = Modifier.fillMaxSize())

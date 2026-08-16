@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import kotlin.math.min
@@ -27,6 +28,7 @@ data class FigmaViewportMetrics(
 @Composable
 fun FigmaPhoneScreen(
     modifier: Modifier = Modifier,
+    navigationBarColor: Color? = null,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -48,6 +50,10 @@ fun FigmaPhoneScreen(
         val viewportMetrics = FigmaViewportMetrics(scale = scale)
 
         background()
+
+        if (navigationBarColor != null) {
+            FigmaNavigationBarBackground(color = navigationBarColor)
+        }
 
         Box(
             modifier = Modifier

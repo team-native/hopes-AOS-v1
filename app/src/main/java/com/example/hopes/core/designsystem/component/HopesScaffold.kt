@@ -1,6 +1,7 @@
 package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,14 +13,26 @@ import com.example.hopes.navigation.HopesDestination
 fun HopesScaffold(
     selectedDestination: HopesDestination,
     onNavigate: (HopesDestination) -> Unit,
+    fixedTopContent: (@Composable () -> Unit)? = null,
+    fixedBottomContent: (@Composable () -> Unit)? = null,
+    isBottomNavigationVisible: Boolean = true,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
+        topBar = {
+            fixedTopContent?.invoke()
+        },
         bottomBar = {
-            HopesBottomNavigation(
-                selectedDestination = selectedDestination,
-                onNavigate = onNavigate,
-            )
+            Column {
+                fixedBottomContent?.invoke()
+
+                if (isBottomNavigationVisible) {
+                    HopesBottomNavigation(
+                        selectedDestination = selectedDestination,
+                        onNavigate = onNavigate,
+                    )
+                }
+            }
         },
     ) { innerPadding ->
         content(innerPadding)

@@ -8,10 +8,17 @@ data class ChatSummary(
 
 data class ChatMessage(
     val id: Long?,
-    val role: String,
+    val role: ChatMessageRole,
     val content: String,
     val createdAt: String?,
 )
+
+/** 서버 메시지 발신자를 앱의 표시 규칙과 분리해 표현한다. */
+enum class ChatMessageRole {
+    User,
+    Assistant,
+    Unknown,
+}
 
 data class Chat(
     val id: Long,

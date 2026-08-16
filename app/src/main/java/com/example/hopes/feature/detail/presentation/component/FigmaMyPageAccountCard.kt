@@ -15,10 +15,11 @@ import com.example.hopes.R
 
 /** 마이페이지 계정 정보 카드다. */
 @Composable
-fun FigmaMyPageAccountCard() {
+fun FigmaMyPageAccountCard(
+    modifier: Modifier = Modifier,
+) {
     FigmaDetailCard(
-        modifier = Modifier
-            .padding(start = 12.dp, top = 194.dp)
+        modifier = modifier
             .height(128.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {

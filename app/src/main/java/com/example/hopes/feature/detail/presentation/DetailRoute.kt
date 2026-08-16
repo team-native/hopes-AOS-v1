@@ -15,14 +15,6 @@ fun DetailRoute(
     onNavigate: (HopesDestination) -> Unit,
 ) {
     when (screenType) {
-        DetailScreenType.ChatDetail -> {
-            ChatDetailScreen(
-                uiState = uiState,
-                onEvent = onEvent,
-                onNavigate = onNavigate,
-            )
-        }
-
         DetailScreenType.MyPage -> {
             MyPageScreen(
                 uiState = uiState,

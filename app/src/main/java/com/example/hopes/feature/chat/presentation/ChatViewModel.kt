@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.CreateChatUseCase
+import com.example.hopes.domain.usecase.SendChatMessageUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,12 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 sealed interface ChatEffect {
-    data class ChatCreated(val question: String) : ChatEffect
+    data class ChatCreated(val chatId: Long) : ChatEffect
 }
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val createChatUseCase: CreateChatUseCase,
+    private val sendChatMessageUseCase: SendChatMessageUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -28,17 +30,21 @@ class ChatViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<ChatEffect>()
     val effect: SharedFlow<ChatEffect> = _effect.asSharedFlow()
 
-    /** 질문 입력·추천 선택·제출 이벤트를 처리한다. */
+    /** 질문 입력·제출 이벤트를 처리한다. */
     fun onEvent(event: ChatScreenEvent) {
         when (event) {
-            is ChatScreenEvent.QuestionChanged -> updateState { copy(questionText = event.question, errorMessage = null) }
-            is ChatScreenEvent.SuggestionSelected -> createChat(event.question)
+            is ChatScreenEvent.QuestionChanged -> updateState {
+                copy(questionText = event.question, isCreateChatError = false)
+            }
+
             ChatScreenEvent.QuestionSubmitted -> createChat(_uiState.value.questionText)
-            ChatScreenEvent.NewChatClicked -> updateState { copy(questionText = "", errorMessage = null) }
+            ChatScreenEvent.NewChatClicked -> updateState {
+                copy(questionText = "", isCreateChatError = false)
+            }
         }
     }
 
-    /** 질문을 제목으로 서버 대화를 생성하고 성공 시 상세 이동 효과를 발행한다. */
+    /** 질문 제출 시 서버 대화를 생성한 뒤 첫 메시지를 전송하고 성공 시 상세로 이동한다. */
     private fun createChat(question: String) {
         val trimmedQuestion = question.trim()
         if (trimmedQuestion.isEmpty()) {
@@ -46,14 +52,32 @@ class ChatViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            updateState { copy(isLoading = true, errorMessage = null) }
-            when (createChatUseCase(trimmedQuestion)) {
+            updateState { copy(isLoading = true, isCreateChatError = false) }
+            when (val result = createChatUseCase(trimmedQuestion)) {
                 is AppResult.Success -> {
-                    updateState { copy(questionText = "", isLoading = false) }
-                    _effect.emit(ChatEffect.ChatCreated(trimmedQuestion))
+                    sendInitialMessage(
+                        chatId = result.value.id,
+                        question = trimmedQuestion,
+                    )
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+
+                else -> updateState { copy(isLoading = false, isCreateChatError = true) }
             }
+        }
+    }
+
+    /** 새 대화에 첫 질문을 서버로 전송해 서버 메시지가 생성된 뒤 상세 화면으로 이동한다. */
+    private suspend fun sendInitialMessage(
+        chatId: Long,
+        question: String,
+    ) {
+        when (sendChatMessageUseCase(chatId, question)) {
+            is AppResult.Success -> {
+                updateState { copy(questionText = "", isLoading = false) }
+                _effect.emit(ChatEffect.ChatCreated(chatId))
+            }
+
+            else -> updateState { copy(isLoading = false, isCreateChatError = true) }
         }
     }
 

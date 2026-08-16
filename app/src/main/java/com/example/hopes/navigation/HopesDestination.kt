@@ -15,7 +15,13 @@ enum class HopesDestination(
     ChatDetail("chat_detail/{$CHAT_DETAIL_ARGUMENT}"),
 }
 
-const val CHAT_DETAIL_ARGUMENT = "conversationId"
+const val CHAT_DETAIL_ARGUMENT = "chatId"
+const val CHAT_NEW_CHAT_ARGUMENT = "newChat"
+
+fun chatRoutePattern(): String = "${HopesDestination.Chat.route}?$CHAT_NEW_CHAT_ARGUMENT={$CHAT_NEW_CHAT_ARGUMENT}"
+
+fun chatRoute(isNewChatRequested: Boolean): String =
+    "${HopesDestination.Chat.route}?$CHAT_NEW_CHAT_ARGUMENT=$isNewChatRequested"
 
 /** 대화 식별자를 경로에 포함해 상세 화면이 선택된 대화를 정확히 복원하게 한다. */
-fun chatDetailRoute(conversationId: String): String = "chat_detail/$conversationId"
+fun chatDetailRoute(chatId: Long): String = "chat_detail/$chatId"

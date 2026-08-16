@@ -68,7 +68,13 @@ fun MyPageScreenContent(
                     .padding(start = 6.dp)
                     .width(96.dp)
                     .height(44.dp),
-                onClick = { onEvent(MyPageScreenEvent.ProfileSaveClicked) },
+                onClick = {
+                    if (uiState.isProfileLoadFailed) {
+                        onEvent(MyPageScreenEvent.ProfileRetryClicked)
+                    } else {
+                        onEvent(MyPageScreenEvent.ProfileSaveClicked)
+                    }
+                },
                 shadowStyle = FigmaDetailPrimaryButtonShadow.Raised,
             )
         }

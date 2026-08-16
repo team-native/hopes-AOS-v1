@@ -46,6 +46,7 @@ class MyPageViewModel @Inject constructor(
                 )
             }
             MyPageScreenEvent.ProfileSaveClicked -> saveProfile()
+            MyPageScreenEvent.ProfileRetryClicked -> loadProfile()
         }
     }
 

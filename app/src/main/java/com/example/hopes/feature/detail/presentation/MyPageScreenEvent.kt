@@ -9,4 +9,6 @@ sealed interface MyPageScreenEvent {
     data class ProfileIntroductionChanged(val value: String) : MyPageScreenEvent
 
     data object ProfileSaveClicked : MyPageScreenEvent
+
+    data object ProfileRetryClicked : MyPageScreenEvent
 }

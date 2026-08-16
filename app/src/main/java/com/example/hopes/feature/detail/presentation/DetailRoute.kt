@@ -15,14 +15,6 @@ fun DetailRoute(
     onNavigate: (HopesDestination) -> Unit,
 ) {
     when (screenType) {
-        DetailScreenType.MyPage -> {
-            MyPageScreen(
-                uiState = uiState,
-                onEvent = onEvent,
-                onNavigate = onNavigate,
-            )
-        }
-
         DetailScreenType.PersonalSettings -> {
             PersonalSettingsScreen(
                 uiState = uiState,

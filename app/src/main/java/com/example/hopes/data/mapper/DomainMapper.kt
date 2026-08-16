@@ -57,6 +57,7 @@ fun UserResponseDto.toDomain(): UserProfile = UserProfile(
     nickname = nickname,
     profileInfo = profileInfo,
     profileImage = profileImage,
+    major = major,
 )
 
 fun SettingMainResponseDto.toDomain(): UserSettings = UserSettings(

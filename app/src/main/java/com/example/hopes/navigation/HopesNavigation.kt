@@ -20,6 +20,7 @@ import com.example.hopes.feature.detail.presentation.DetailRoute
 import com.example.hopes.feature.detail.presentation.DetailScreenEvent
 import com.example.hopes.feature.detail.presentation.DetailScreenType
 import com.example.hopes.feature.detail.presentation.DetailUiState
+import com.example.hopes.feature.detail.presentation.MyPageRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
 import com.example.hopes.feature.settings.presentation.SettingsRoute
@@ -104,7 +105,9 @@ fun HopesNavigation(
                 onStartNewChat = hopesNavController::navigateToNewChat,
             )
         }
-        composable(HopesDestination.Settings.route) { DetailRoute(DetailScreenType.MyPage, detailUiState(), ::handleDetailEvent, hopesNavController::navigateToTopLevel) }
+        composable(HopesDestination.Settings.route) {
+            MyPageRoute(onNavigate = hopesNavController::navigateToTopLevel)
+        }
         composable(HopesDestination.AppSettings.route) {
             SettingsRoute(hopesNavController::navigateToTopLevel, isDarkThemeEnabled, onDarkThemeChange, hopesNavController::popBackStack, { hopesNavController.navigate(HopesDestination.PersonalSettings.route) }, { hopesNavController.navigate(HopesDestination.Contact.route) }, { hopesNavController.navigate(AUTH_ROUTE) { popUpTo(0) { inclusive = true } } })
         }

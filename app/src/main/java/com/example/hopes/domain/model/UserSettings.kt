@@ -6,6 +6,7 @@ data class UserProfile(
     val nickname: String,
     val profileInfo: String,
     val profileImage: String?,
+    val major: String? = null,
 )
 
 data class UserSettings(

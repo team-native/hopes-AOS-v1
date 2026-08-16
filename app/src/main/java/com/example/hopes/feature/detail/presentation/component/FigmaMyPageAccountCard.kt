@@ -16,6 +16,8 @@ import com.example.hopes.R
 /** 마이페이지 계정 정보 카드다. */
 @Composable
 fun FigmaMyPageAccountCard(
+    email: String,
+    major: String?,
     modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
@@ -29,12 +31,12 @@ fun FigmaMyPageAccountCard(
             style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
         )
         Text(
-            text = stringResource(R.string.my_page_email),
+            text = stringResource(R.string.my_page_email, email.ifBlank { "-" }),
             modifier = Modifier.padding(start = 24.dp, top = 63.dp),
             style = TextStyle(fontSize = 13.sp),
         )
         Text(
-            text = stringResource(R.string.my_page_major),
+            text = stringResource(R.string.my_page_major, major ?: "-"),
             modifier = Modifier.padding(start = 24.dp, top = 87.dp),
             style = TextStyle(fontSize = 13.sp),
         )

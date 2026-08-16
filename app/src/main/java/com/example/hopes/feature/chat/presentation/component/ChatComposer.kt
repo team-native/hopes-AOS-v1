@@ -46,17 +46,17 @@ fun ChatComposer(
         Box(
             modifier = Modifier
                 .width(354.dp)
-                .height(52.dp)
-                .figmaRaisedShadow(RoundedCornerShape(18.dp))
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+                .height(82.dp)
+                .figmaRaisedShadow(RoundedCornerShape(41.dp))
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(41.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(41.dp)),
         ) {
             if (value.isEmpty()) {
                 Text(
                     text = stringResource(R.string.chat_new_message),
                     modifier = Modifier
                         .align(Alignment.CenterStart)
-                        .padding(start = 14.dp, end = 54.dp),
+                        .padding(start = 20.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = TextStyle(fontSize = 14.sp),
                 )
@@ -67,8 +67,8 @@ fun ChatComposer(
                 onValueChange = onValueChange,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 14.dp)
-                    .width(276.dp)
+                    .padding(start = 20.dp)
+                    .width(254.dp)
                     .height(32.dp),
                 singleLine = true,
                 textStyle = TextStyle(
@@ -87,10 +87,10 @@ fun ChatComposer(
 
             Box(
                 modifier = Modifier
-                    .padding(start = 306.dp, top = 11.dp)
-                    .size(30.dp)
-                    .figmaRaisedShadow(RoundedCornerShape(14.dp))
-                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
+                    .padding(start = 288.dp, top = 17.dp)
+                    .size(48.dp)
+                    .figmaRaisedShadow(RoundedCornerShape(24.dp))
+                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(24.dp))
                     .semantics {
                         role = Role.Button
                         contentDescription = sendDescription
@@ -104,7 +104,7 @@ fun ChatComposer(
                     color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
                     style = TextStyle(
-                        fontSize = 16.sp,
+                        fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
                         lineHeight = 30.sp,
                     ),

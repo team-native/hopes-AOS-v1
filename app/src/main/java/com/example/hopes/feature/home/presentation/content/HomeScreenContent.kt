@@ -6,10 +6,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,7 @@ fun HomeScreenContent(
     onNavigate: (HopesDestination) -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
+
     FigmaAppFrame(
         selectedDestination = HopesDestination.Home,
         onNavigate = onNavigate,
@@ -52,6 +56,8 @@ fun HomeScreenContent(
             )
         },
         contentBackgroundColor = Color.Transparent,
+        // edge-to-edge 상태 바 영역도 홈의 파란 배경으로 채운다.
+        scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
         Column(
             modifier = Modifier.padding(start = 32.dp, top = 76.dp),
@@ -102,6 +108,7 @@ fun HomeScreenContent(
                     .width(338.dp)
                     .height(46.dp)
                     .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+                    .semantics { role = Role.Button }
                     .clickable(onClick = onStartChatClick),
                 contentAlignment = Alignment.Center,
             ) {

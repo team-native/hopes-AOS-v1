@@ -21,6 +21,7 @@ fun FigmaAppFrame(
     isBottomNavigationVisible: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {},
     contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
+    scaffoldContainerColor: Color = MaterialTheme.colorScheme.background,
     imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
@@ -30,6 +31,7 @@ fun FigmaAppFrame(
         fixedTopContent = fixedTopContent,
         fixedBottomContent = fixedBottomContent,
         isBottomNavigationVisible = isBottomNavigationVisible,
+        containerColor = scaffoldContainerColor,
     ) { innerPadding ->
         FigmaPhoneScreen(
             modifier = Modifier.padding(innerPadding),

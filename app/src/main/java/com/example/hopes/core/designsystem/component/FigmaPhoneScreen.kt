@@ -22,13 +22,15 @@ data class FigmaViewportMetrics(
 )
 
 /**
- * 402×874 Figma iPhone 프레임을 실제 Android 화면에 비례해 표시한다.
+ * 402×874 Figma iPhone 프레임을 실제 Android 화면에 비례해 표시하거나,
+ * 실제 화면 크기를 그대로 사용하는 콘텐츠 영역을 제공한다.
  * 배경과 오버레이는 전체 화면을 차지해 기기 비율이 달라도 빈 공간이 보이지 않는다.
  */
 @Composable
 fun FigmaPhoneScreen(
     modifier: Modifier = Modifier,
     navigationBarColor: Color? = null,
+    useFigmaViewport: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -55,18 +57,27 @@ fun FigmaPhoneScreen(
             FigmaNavigationBarBackground(color = navigationBarColor)
         }
 
-        Box(
-            modifier = Modifier
-                .width(402.dp)
-                .height(874.dp)
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f),
-                ),
-            contentAlignment = Alignment.TopCenter,
-        ) {
-            content()
+        if (useFigmaViewport) {
+            Box(
+                modifier = Modifier
+                    .width(402.dp)
+                    .height(874.dp)
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0f),
+                    ),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                content()
+            }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.TopCenter,
+            ) {
+                content()
+            }
         }
 
         overlay(viewportMetrics)

@@ -18,12 +18,14 @@ fun FigmaAppFrame(
     onNavigate: (HopesDestination) -> Unit,
     background: @Composable BoxScope.() -> Unit = {},
     contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
+    scaffoldContainerColor: Color = MaterialTheme.colorScheme.background,
     imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     HopesScaffold(
         selectedDestination = selectedDestination,
         onNavigate = onNavigate,
+        containerColor = scaffoldContainerColor,
     ) { innerPadding ->
         FigmaPhoneScreen(
             modifier = Modifier.padding(innerPadding),

@@ -1,14 +1,15 @@
 package com.example.hopes.feature.home.presentation.content
 
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +43,7 @@ fun HomeScreenContent(
     onNavigate: (HopesDestination) -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
+
     FigmaAppFrame(
         selectedDestination = HopesDestination.Home,
         onNavigate = onNavigate,
@@ -51,50 +56,70 @@ fun HomeScreenContent(
             )
         },
         contentBackgroundColor = Color.Transparent,
+        // edge-to-edge 상태 바 영역도 홈의 파란 배경으로 채운다.
+        scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
-        FigmaBrandHeader(
+        Column(
             modifier = Modifier.padding(start = 32.dp, top = 76.dp),
-            isOnBlueBackground = true,
-            logoShadow = FigmaBrandLogoShadow.Subtle,
-        )
-        Text(
-            text = stringResource(R.string.onboarding_title),
-            modifier = Modifier.padding(start = 32.dp, top = 220.dp).width(318.dp),
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 43.sp),
-        )
-        Text(
-            text = stringResource(R.string.onboarding_description),
-            modifier = Modifier.padding(start = 32.dp, top = 330.dp).width(306.dp),
-            color = extendedColors.authDescription,
-            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, lineHeight = 26.sp),
-        )
-        FigmaHomeTipCard(
-            index = 1,
-            topText = stringResource(R.string.onboarding_tip_one_top),
-            bottomText = stringResource(R.string.onboarding_tip_one_bottom),
-            modifier = Modifier.padding(start = 32.dp, top = 450.dp),
-        )
-        FigmaHomeTipCard(
-            index = 2,
-            topText = stringResource(R.string.onboarding_tip_two_top),
-            bottomText = stringResource(R.string.onboarding_tip_two_bottom),
-            modifier = Modifier.padding(start = 32.dp, top = 543.dp),
-        )
-        Box(
-            modifier = Modifier
-                .padding(start = 32.dp, top = 706.dp)
-                .width(338.dp)
-                .height(46.dp)
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-                .clickable(onClick = onStartChatClick),
-            contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = stringResource(R.string.start_chat),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+            FigmaBrandHeader(
+                isOnBlueBackground = true,
+                logoShadow = FigmaBrandLogoShadow.Subtle,
             )
+
+            // 헤더와 제목 사이의 기존 102dp 간격을 1/3 수준으로 줄인다.
+            Spacer(modifier = Modifier.height(34.dp))
+
+            Text(
+                text = stringResource(R.string.onboarding_title),
+                modifier = Modifier.width(318.dp),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 43.sp),
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(R.string.onboarding_description),
+                modifier = Modifier.width(306.dp),
+                color = extendedColors.authDescription,
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, lineHeight = 26.sp),
+            )
+
+            Spacer(modifier = Modifier.height(68.dp))
+
+            FigmaHomeTipCard(
+                index = 1,
+                topText = stringResource(R.string.onboarding_tip_one_top),
+                bottomText = stringResource(R.string.onboarding_tip_one_bottom),
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            FigmaHomeTipCard(
+                index = 2,
+                topText = stringResource(R.string.onboarding_tip_two_top),
+                bottomText = stringResource(R.string.onboarding_tip_two_bottom),
+            )
+
+            // 두 설명 카드 사이와 CTA 사이의 간격을 동일하게 유지한다.
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Box(
+                modifier = Modifier
+                    .width(338.dp)
+                    .height(46.dp)
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+                    .semantics { role = Role.Button }
+                    .clickable(onClick = onStartChatClick),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = stringResource(R.string.start_chat),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                )
+            }
         }
     }
 }
@@ -105,12 +130,11 @@ private fun FigmaHomeTipCard(
     index: Int,
     topText: String,
     bottomText: String,
-    modifier: Modifier,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .width(338.dp)
             .height(78.dp)
             .figmaSubtleShadow(RoundedCornerShape(18.dp))

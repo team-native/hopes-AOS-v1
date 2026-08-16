@@ -56,6 +56,8 @@ fun HomeScreenContent(
             )
         },
         contentBackgroundColor = Color.Transparent,
+        // 홈 온보딩은 일반 화면 크기를 사용해 콘텐츠가 불필요하게 Figma 프레임 안에서 스크롤되지 않게 한다.
+        useFigmaViewport = false,
         // edge-to-edge 상태 바 영역도 홈의 파란 배경으로 채운다.
         scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {

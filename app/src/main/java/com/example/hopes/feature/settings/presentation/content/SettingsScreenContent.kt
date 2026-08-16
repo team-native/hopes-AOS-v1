@@ -120,7 +120,6 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
     ) {
         Text(
             text = stringResource(R.string.back_symbol),
-            modifier = Modifier.padding(top = (-1).dp),
             color = MaterialTheme.colorScheme.primary,
             style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
         )

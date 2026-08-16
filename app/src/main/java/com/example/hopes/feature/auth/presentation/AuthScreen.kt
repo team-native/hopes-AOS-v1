@@ -194,21 +194,19 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                             isGuideDragging.value = true
                         },
                         onDragStopped = { _ ->
-                            val targetOffset = if (guideDragOffset.floatValue < AUTH_SHEET_OPEN_THRESHOLD) {
-                                AUTH_SHEET_EXPANDED_TOP
-                            } else {
-                                AUTH_SHEET_COLLAPSED_TOP
-                            }
+                            val shouldOpenLogin = guideDragOffset.floatValue < AUTH_SHEET_OPEN_THRESHOLD
 
                             guideAnimation.snapTo(guideDragOffset.floatValue)
                             isGuideDragging.value = false
-                            guideAnimation.animateTo(
-                                targetOffset,
-                                tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
-                            )
 
-                            if (targetOffset == AUTH_SHEET_EXPANDED_TOP) {
+                            if (shouldOpenLogin) {
+                                // 로그인 화면 진입은 시트 정착 애니메이션을 기다리지 않고 즉시 처리한다.
                                 onNavigateLogin()
+                            } else {
+                                guideAnimation.animateTo(
+                                    AUTH_SHEET_COLLAPSED_TOP,
+                                    tween(durationMillis = AppAnimationDuration.SheetTransitionMillis),
+                                )
                             }
                         },
                     ),

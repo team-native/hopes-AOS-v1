@@ -159,5 +159,5 @@ private fun HistoryListStateMessage(
     )
 }
 
-private val HISTORY_LIST_TOP_PADDING = 278.dp
+private val HISTORY_LIST_TOP_PADDING = 227.dp
 private val HISTORY_LIST_BOTTOM_PADDING = 120.dp

@@ -44,9 +44,18 @@ class EncryptedTokenStore @Inject constructor(
 
     /** 앱 시작 시 암호화된 access token을 복호화해 반환한다. */
     suspend fun read(): String? {
-        return applicationContext.sessionDataStore.data
+        val encryptedToken = applicationContext.sessionDataStore.data
             .first()[accessTokenPreferenceKey]
-            ?.let(::decrypt)
+
+        if (encryptedToken == null) {
+            return null
+        }
+
+        return decrypt(encryptedToken) ?: run {
+            // Keystore 키가 초기화되었거나 저장 값이 손상된 경우 잘못된 세션을 남기지 않는다.
+            clear()
+            null
+        }
     }
 
     private fun secretKey(): SecretKey {

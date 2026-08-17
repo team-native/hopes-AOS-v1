@@ -49,12 +49,12 @@ fun SettingsScreenContent(
         )
         Text(
             text = stringResource(R.string.settings_title),
-            modifier = Modifier.padding(start = 68.dp, top = 74.dp),
+            modifier = Modifier.padding(start = 68.dp, top = 25.dp),
             style = TextStyle(fontSize = 27.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp),
         )
         Text(
             text = stringResource(R.string.logout_description),
-            modifier = Modifier.padding(start = 74.dp, top = 115.dp),
+            modifier = Modifier.padding(start = 74.dp, top = 66.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )

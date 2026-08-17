@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,6 +56,7 @@ import kotlinx.coroutines.launch
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.FIGMA_PHONE_HEIGHT
 import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
@@ -61,10 +64,14 @@ import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.HopesLightLogo
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesSurfaceCard
+import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthLogoShadowStyle
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
+import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreen
+import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
+import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
@@ -82,6 +89,9 @@ fun AuthScreen(
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
     onDismissLogin: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
+    passwordResetUiState: PasswordResetUiState,
+    onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
     when (authStep) {
         AuthStep.Guide -> AuthGuideContent(onNavigateLogin = onNavigateLogin)
@@ -93,6 +103,11 @@ fun AuthScreen(
             onLoginClick = onLoginClick,
             onNavigateSignup = onNavigateSignup,
             onDismissLogin = onDismissLogin,
+            onForgotPasswordClick = onForgotPasswordClick,
+        )
+        AuthStep.PasswordResetRequest -> PasswordResetScreen(
+            uiState = passwordResetUiState,
+            onEvent = onPasswordResetEvent,
         )
         AuthStep.SignUp -> AuthFormScreen(
             emailText = emailText,
@@ -197,8 +212,8 @@ private fun LoginSheetScreen(
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onDismissLogin: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
 ) {
-    val sheetTopOffset = remember { Animatable(372f) }
     val animationScope = rememberCoroutineScope()
     val loginDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
@@ -213,7 +228,19 @@ private fun LoginSheetScreen(
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더만 시스템 영역 안쪽으로 배치한다.
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .systemBarsPadding(),
+        ) {
+            // 시트 좌표는 피그마 874dp 프레임 기준이라, 실제 사용 가능 높이와의 차이만큼 보정해야
+            // 기기별로 시트 콘텐츠(로그인 버튼, 비밀번호를 잊으셨나요 링크 등)가 화면 아래로 잘리지 않는다.
+            val heightDelta = maxHeight.value - FIGMA_PHONE_HEIGHT
+            val expandedTopOffset = 372f + heightDelta
+            val dismissedTopOffset = 684f + heightDelta
+            val sheetTopOffset = remember(heightDelta) { Animatable(expandedTopOffset) }
+
             Box(modifier = Modifier.blur(8.dp)) {
                 FigmaAuthBrandHeader(
                     modifier = Modifier.padding(start = 32.dp, top = 76.dp),
@@ -240,17 +267,17 @@ private fun LoginSheetScreen(
                                     sheetTopOffset.snapTo(
                                         (sheetTopOffset.value + with(loginDensity) {
                                             dragAmount.y.toDp().value
-                                        }).coerceIn(372f, 684f),
+                                        }).coerceIn(expandedTopOffset, dismissedTopOffset),
                                     )
                                 }
                             },
                             onDragEnd = {
                                 animationScope.launch {
-                                    if (sheetTopOffset.value > 520f) {
-                                        sheetTopOffset.animateTo(684f, tween(180))
+                                    if (sheetTopOffset.value > 520f + heightDelta) {
+                                        sheetTopOffset.animateTo(dismissedTopOffset, tween(180))
                                         onDismissLogin()
                                     } else {
-                                        sheetTopOffset.animateTo(372f, tween(180))
+                                        sheetTopOffset.animateTo(expandedTopOffset, tween(180))
                                     }
                                 }
                             },
@@ -265,6 +292,7 @@ private fun LoginSheetScreen(
                     onPasswordChange = onPasswordChange,
                     onLoginClick = onLoginClick,
                     onNavigateSignup = onNavigateSignup,
+                    onForgotPasswordClick = onForgotPasswordClick,
                 )
             }
         }
@@ -376,6 +404,7 @@ private fun FigmaLoginSheetContent(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
     val isLoginEnabled = emailText.isNotBlank() && passwordText.isNotBlank()
@@ -418,7 +447,7 @@ private fun FigmaLoginSheetContent(
             value = emailText,
             onValueChange = onEmailChange,
             labelRes = R.string.auth_email,
-            modifier = Modifier.padding(top = 183.dp),
+            modifier = Modifier.padding(top = 183.dp).width(332.dp),
         )
         AuthFieldLabel(labelRes = R.string.password, modifier = Modifier.padding(top = 238.dp))
         FigmaAuthTextField(
@@ -427,7 +456,17 @@ private fun FigmaLoginSheetContent(
             labelRes = R.string.password,
             isPassword = true,
             onImeAction = if (isLoginEnabled) onLoginClick else null,
-            modifier = Modifier.padding(top = 261.dp),
+            modifier = Modifier.padding(top = 261.dp).width(332.dp),
+        )
+        Text(
+            text = stringResource(R.string.forgot_password),
+            modifier = Modifier
+                .padding(top = 314.dp)
+                .width(332.dp)
+                .clickable(onClick = onForgotPasswordClick),
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.End,
+            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium),
         )
         FigmaLoginButton(
             isEnabled = isLoginEnabled,
@@ -445,16 +484,6 @@ private fun FigmaLoginSheetContent(
             style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
         )
     }
-}
-
-@Composable
-private fun AuthFieldLabel(labelRes: Int, modifier: Modifier = Modifier) {
-    Text(
-        text = stringResource(labelRes),
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurface,
-        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
-    )
 }
 
 @Composable

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -36,7 +35,7 @@ import androidx.compose.ui.semantics.semantics
 import com.example.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
-/** 피그마 로그인 시트의 40dp 입력 필드다. */
+/** 40dp 높이의 피그마 스타일 입력 필드다. 실제 폭은 호출부의 modifier가 결정한다. */
 @Composable
 fun FigmaAuthTextField(
     value: String,
@@ -65,8 +64,6 @@ fun FigmaAuthTextField(
 
     Box(
         modifier = modifier
-            // Figma 02 입력 필드의 실제 폭은 332dp이며 로그인 버튼(338dp)보다 6dp 좁다.
-            .width(332.dp)
             .height(40.dp)
             .border(
                 width = 1.dp,

@@ -116,6 +116,12 @@
     <string name="signup_dropdown_symbol">⌄</string>
     <string name="auth_swipe_title">위로 스와이프하기</string>
     <string name="prompt_save">프롬프트 저장</string>
+    <string name="forgot_password">비밀번호를 잊으셨나요?</string>
+    <string name="password_reset_title">비밀번호 재설정</string>
+    <string name="password_reset_subtitle">학교 이메일로 받은 인증번호를 입력해주세요.</string>
+    <string name="request_verification_code">인증번호 받기</string>
+    <string name="verification_sent_message">인증번호를 전송했어요.</string>
+    <string name="generic_error_message">잠시 후 다시 시도해주세요.</string>
     <string-array name="settings_items">
         <item>개인 설정</item>
         <item>알림 설정</item>

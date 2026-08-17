@@ -36,9 +36,11 @@ fun AuthRoute(
         emailText = uiState.value.email,
         passwordText = uiState.value.password,
         nameText = uiState.value.name,
+        passwordConfirmText = uiState.value.passwordConfirm,
         onEmailChange = { value -> viewModel.onEvent(AuthScreenEvent.EmailChanged(value)) },
         onPasswordChange = { value -> viewModel.onEvent(AuthScreenEvent.PasswordChanged(value)) },
         onNameChange = { value -> viewModel.onEvent(AuthScreenEvent.NameChanged(value)) },
+        onPasswordConfirmChange = { value -> viewModel.onEvent(AuthScreenEvent.PasswordConfirmChanged(value)) },
         onLoginClick = { viewModel.onEvent(AuthScreenEvent.LoginClicked) },
         onSignupClick = { viewModel.onEvent(AuthScreenEvent.SignUpClicked) },
         onNavigateSignup = {

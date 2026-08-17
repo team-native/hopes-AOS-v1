@@ -121,7 +121,7 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
         },
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-            FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 76.dp))
+            FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 25.dp))
             AuthHeroCopy()
 
             if (sheetTopOffset.value > 520f) {
@@ -216,7 +216,7 @@ private fun LoginSheetScreen(
         Box(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.blur(8.dp)) {
                 FigmaAuthBrandHeader(
-                    modifier = Modifier.padding(start = 32.dp, top = 76.dp),
+                    modifier = Modifier.padding(start = 32.dp, top = 25.dp),
                     logoShadowStyle = FigmaAuthLogoShadowStyle.Login,
                 )
                 AuthHeroCopy()
@@ -531,7 +531,7 @@ private fun AuthFormScreen(
                     ),
             )
             FigmaBrandHeader(
-                modifier = Modifier.padding(start = 32.dp, top = 76.dp),
+                modifier = Modifier.padding(start = 32.dp, top = 25.dp),
                 isOnBlueBackground = true,
             )
             Text(

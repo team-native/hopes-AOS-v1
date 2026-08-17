@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
@@ -52,7 +53,9 @@ fun ChatScreenContent(
                 value = questionText,
                 onValueChange = onQuestionChange,
                 onSubmitClick = onSubmitClick,
-                modifier = Modifier.imePadding(),
+                modifier = Modifier
+                    .imePadding()
+                    .padding(bottom = 10.dp),
             )
         },
         isBottomNavigationVisible = !isImeVisible,
@@ -64,10 +67,12 @@ fun ChatScreenContent(
 
 @Composable
 private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
-    FigmaBrandHeader(modifier = Modifier.padding(start = 24.dp, top = 72.dp))
+    FigmaBrandHeader(
+        modifier = Modifier.padding(start = 24.dp, top = AppSpacing.SystemBarToContent),
+    )
     Box(
         modifier = Modifier
-            .padding(start = 308.dp, top = 66.dp)
+            .padding(start = 308.dp, top = 19.dp)
             .width(70.dp)
             .height(39.dp)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))

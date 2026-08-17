@@ -89,7 +89,7 @@ fun HistorySearchField(
     }
 }
 
-private val HISTORY_SEARCH_TOP_PADDING = 208.dp
+private val HISTORY_SEARCH_TOP_PADDING = 157.dp
 private val HISTORY_SEARCH_HEIGHT = 41.dp
 private val HISTORY_SEARCH_HORIZONTAL_PADDING = 20.dp
 private val HISTORY_SEARCH_TEXT_WIDTH = 270.dp

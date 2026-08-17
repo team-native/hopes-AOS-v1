@@ -59,5 +59,5 @@ fun HistoryNewChatButton(onClick: () -> Unit) {
     }
 }
 
-private val HISTORY_NEW_CHAT_TOP_PADDING = 144.dp
+private val HISTORY_NEW_CHAT_TOP_PADDING = 93.dp
 private val HISTORY_NEW_CHAT_HEIGHT = 48.dp

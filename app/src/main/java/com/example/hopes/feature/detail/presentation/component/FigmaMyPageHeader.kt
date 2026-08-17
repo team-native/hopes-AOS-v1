@@ -11,20 +11,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 
 /** 피그마 10 마이페이지의 브랜드와 제목, 설정 진입 액션을 표시한다. */
 @Composable
 fun FigmaMyPageHeader(onAppSettingsClick: () -> Unit) {
-    FigmaBrandHeader(modifier = Modifier.padding(start = 24.dp, top = 70.dp))
+    FigmaBrandHeader(
+        modifier = Modifier.padding(start = 24.dp, top = AppSpacing.SystemBarToContent),
+    )
     Text(
         text = stringResource(R.string.my_page),
-        modifier = Modifier.padding(start = 24.dp, top = 138.dp),
+        modifier = Modifier.padding(start = 24.dp, top = 93.dp),
         style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold),
     )
     FigmaDetailTopAction(
         text = stringResource(R.string.navigation_settings),
-        modifier = Modifier.padding(start = 311.dp, top = 69.dp),
+        modifier = Modifier.padding(start = 311.dp, top = AppSpacing.SystemBarToContent),
         onClick = onAppSettingsClick,
     )
 }

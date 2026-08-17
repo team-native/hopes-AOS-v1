@@ -24,13 +24,14 @@ data class FigmaViewportMetrics(
 
 /**
  * 402×874 Figma 프레임을 화면 폭에 맞춰 표시하거나 실제 화면 크기를 사용한다.
- * Figma 뷰포트가 필요한 화면은 짧은 기기에서 세로 스크롤로 콘텐츠에 접근한다.
+ * 화면별 콘텐츠 스크롤은 각 화면의 메시지·목록 영역에서 직접 관리한다.
  */
 @Composable
 fun FigmaPhoneScreen(
     modifier: Modifier = Modifier,
     navigationBarColor: Color? = null,
     useFigmaViewport: Boolean = true,
+    isScrollable: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -60,7 +61,13 @@ fun FigmaPhoneScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+                    .then(
+                        if (isScrollable) {
+                            Modifier.verticalScroll(rememberScrollState())
+                        } else {
+                            Modifier
+                        },
+                    ),
                 contentAlignment = Alignment.TopCenter,
             ) {
                 Box(

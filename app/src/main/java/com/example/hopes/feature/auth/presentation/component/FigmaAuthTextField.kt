@@ -1,17 +1,19 @@
 package com.example.hopes.feature.auth.presentation.component
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
@@ -36,7 +37,7 @@ import androidx.compose.ui.semantics.semantics
 import com.example.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
-/** 피그마 로그인 시트의 40dp 입력 필드다. */
+/** 40dp 높이의 피그마 스타일 입력 필드다. 실제 폭은 호출부의 modifier가 결정한다. */
 @Composable
 fun FigmaAuthTextField(
     value: String,
@@ -65,8 +66,6 @@ fun FigmaAuthTextField(
 
     Box(
         modifier = modifier
-            // Figma 02 입력 필드의 실제 폭은 332dp이며 로그인 버튼(338dp)보다 6dp 좁다.
-            .width(332.dp)
             .height(40.dp)
             .border(
                 width = 1.dp,
@@ -113,10 +112,12 @@ fun FigmaAuthTextField(
                     .align(Alignment.CenterEnd)
                     .size(40.dp),
             ) {
-                Image(
-                    painter = painterResource(R.drawable.figma_auth_password_eye),
+                // 상태에 따라 눈 뜬 아이콘과 눈 감은 아이콘을 실제로 교체한다.
+                Icon(
+                    imageVector = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
                     contentDescription = passwordVisibilityDescription,
-                    modifier = Modifier.size(width = 16.dp, height = 11.dp),
+                    tint = extendedColors.authFieldHint,
+                    modifier = Modifier.size(20.dp),
                 )
             }
         }

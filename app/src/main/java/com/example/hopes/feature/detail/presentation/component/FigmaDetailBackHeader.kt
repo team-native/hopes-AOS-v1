@@ -45,7 +45,7 @@ fun FigmaDetailBackHeader(
                 .fillMaxWidth()
                 .padding(
                     start = backOffsetX.dp,
-                    top = if (applySystemBarPadding) 0.dp else 74.dp,
+                    top = if (applySystemBarPadding) 0.dp else 25.dp,
                     end = 24.dp,
                 )
                 .height(39.dp),
@@ -84,7 +84,7 @@ fun FigmaDetailBackHeader(
             text = subtitle,
             modifier = Modifier.padding(
                 start = 74.dp,
-                top = if (applySystemBarPadding) 39.dp + subtitleSpacing else 111.dp,
+                top = if (applySystemBarPadding) 39.dp + subtitleSpacing else 62.dp,
             ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),

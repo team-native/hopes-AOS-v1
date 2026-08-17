@@ -8,6 +8,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.R
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationScreenEvent
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationUiState
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationScreenEvent
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationUiState
 
 /** 인증 데모의 화면 전환과 입력 상태를 소유한다. */
 @Composable
@@ -59,6 +63,36 @@ fun AuthRoute(
                     viewModel.onEvent(AuthScreenEvent.PasswordResetBackClicked)
             }
         },
+        signUpEmailVerificationUiState = SignUpEmailVerificationUiState(
+            email = uiState.value.email,
+            isLoading = uiState.value.isLoading,
+            errorMessage = uiState.value.errorMessage,
+        ),
+        onSignUpEmailVerificationEvent = { event ->
+            when (event) {
+                is SignUpEmailVerificationScreenEvent.EmailChanged ->
+                    viewModel.onEvent(AuthScreenEvent.EmailChanged(event.value))
+                SignUpEmailVerificationScreenEvent.RequestCodeClicked ->
+                    viewModel.onEvent(AuthScreenEvent.SendSignupVerificationClicked)
+                SignUpEmailVerificationScreenEvent.BackClicked ->
+                    viewModel.onEvent(AuthScreenEvent.SignUpEmailVerificationBackClicked)
+            }
+        },
+        signUpCodeConfirmationUiState = SignUpCodeConfirmationUiState(
+            code = uiState.value.verificationCode,
+            isLoading = uiState.value.isLoading,
+            errorMessage = uiState.value.errorMessage,
+        ),
+        onSignUpCodeConfirmationEvent = { event ->
+            when (event) {
+                is SignUpCodeConfirmationScreenEvent.CodeChanged ->
+                    viewModel.onEvent(AuthScreenEvent.VerificationCodeChanged(event.value))
+                SignUpCodeConfirmationScreenEvent.ConfirmClicked ->
+                    viewModel.onEvent(AuthScreenEvent.ConfirmSignupVerificationClicked)
+                SignUpCodeConfirmationScreenEvent.BackClicked ->
+                    viewModel.onEvent(AuthScreenEvent.SignUpCodeConfirmationBackClicked)
+            }
+        },
     )
 }
 
@@ -66,5 +100,7 @@ enum class AuthStep {
     Guide,
     Login,
     PasswordResetRequest,
+    SignUpEmailVerification,
+    SignUpCodeConfirmation,
     SignUp,
 }

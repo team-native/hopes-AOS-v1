@@ -121,6 +121,12 @@
     <string name="password_reset_subtitle">학교 이메일로 받은 인증번호를 입력해주세요.</string>
     <string name="request_verification_code">인증번호 받기</string>
     <string name="verification_sent_message">인증번호를 전송했어요.</string>
+    <string name="verification_code">인증번호</string>
+    <string name="confirm_verification_code">확인</string>
+    <string name="signup_email_verification_title">이메일 인증</string>
+    <string name="signup_email_verification_subtitle">학교 이메일로 인증번호를 받아주세요.</string>
+    <string name="signup_code_confirmation_title">인증번호 입력</string>
+    <string name="signup_code_confirmation_subtitle">이메일로 받은 인증번호를 입력해주세요.</string>
     <string name="generic_error_message">잠시 후 다시 시도해주세요.</string>
     <string-array name="settings_items">
         <item>개인 설정</item>

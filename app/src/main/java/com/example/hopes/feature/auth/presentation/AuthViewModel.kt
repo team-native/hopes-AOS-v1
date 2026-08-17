@@ -3,8 +3,10 @@ package com.example.hopes.feature.auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hopes.domain.result.AppResult
+import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
+import com.example.hopes.domain.usecase.SendSignupVerificationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,6 +25,8 @@ sealed interface AuthEffect {
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
+    private val sendSignupVerificationUseCase: SendSignupVerificationUseCase,
+    private val confirmSignupVerificationUseCase: ConfirmSignupVerificationUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -36,13 +40,17 @@ class AuthViewModel @Inject constructor(
             is AuthScreenEvent.EmailChanged -> updateState { copy(email = event.value, errorMessage = null) }
             is AuthScreenEvent.PasswordChanged -> updateState { copy(password = event.value, errorMessage = null) }
             is AuthScreenEvent.NameChanged -> updateState { copy(name = event.value, errorMessage = null) }
+            is AuthScreenEvent.VerificationCodeChanged -> updateState {
+                copy(verificationCode = event.value, errorMessage = null)
+            }
             AuthScreenEvent.LoginClicked -> login()
             AuthScreenEvent.SignUpClicked -> login()
             is AuthScreenEvent.SignUpRequested -> updateState {
                 copy(
-                    authStep = AuthStep.SignUp,
+                    authStep = AuthStep.SignUpEmailVerification,
                     email = email.ifBlank { event.sampleEmail },
                     name = name.ifBlank { event.sampleName },
+                    errorMessage = null,
                 )
             }
             AuthScreenEvent.LoginRequested -> updateState { copy(authStep = AuthStep.Login) }
@@ -61,6 +69,14 @@ class AuthViewModel @Inject constructor(
             AuthScreenEvent.PasswordResetRequestClicked -> requestPasswordReset()
             AuthScreenEvent.PasswordResetBackClicked -> updateState {
                 copy(authStep = AuthStep.Login, errorMessage = null, statusMessage = null)
+            }
+            AuthScreenEvent.SendSignupVerificationClicked -> sendSignupVerification()
+            AuthScreenEvent.SignUpEmailVerificationBackClicked -> updateState {
+                copy(authStep = AuthStep.Login, errorMessage = null)
+            }
+            AuthScreenEvent.ConfirmSignupVerificationClicked -> confirmSignupVerification()
+            AuthScreenEvent.SignUpCodeConfirmationBackClicked -> updateState {
+                copy(authStep = AuthStep.SignUpEmailVerification, errorMessage = null)
             }
         }
     }
@@ -98,6 +114,44 @@ class AuthViewModel @Inject constructor(
             when (requestPasswordResetUseCase(email)) {
                 is AppResult.Success -> updateState {
                     copy(isLoading = false, statusMessage = "")
+                }
+                else -> updateState { copy(isLoading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    /** 회원가입 이메일 인증번호 발송을 요청하고, 성공하면 인증번호 입력 단계로 이동한다. */
+    private fun sendSignupVerification() {
+        val email = _uiState.value.email
+        if (email.isBlank()) {
+            updateState { copy(errorMessage = "") }
+            return
+        }
+
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, errorMessage = null) }
+            when (sendSignupVerificationUseCase(email)) {
+                is AppResult.Success -> updateState {
+                    copy(isLoading = false, authStep = AuthStep.SignUpCodeConfirmation)
+                }
+                else -> updateState { copy(isLoading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    /** 입력한 회원가입 인증번호를 서버에 확인받고, 성공하면 회원가입 입력 단계로 이동한다. */
+    private fun confirmSignupVerification() {
+        val currentState = _uiState.value
+        if (currentState.verificationCode.isBlank()) {
+            updateState { copy(errorMessage = "") }
+            return
+        }
+
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, errorMessage = null) }
+            when (confirmSignupVerificationUseCase(currentState.email, currentState.verificationCode)) {
+                is AppResult.Success -> updateState {
+                    copy(isLoading = false, authStep = AuthStep.SignUp)
                 }
                 else -> updateState { copy(isLoading = false, errorMessage = "") }
             }

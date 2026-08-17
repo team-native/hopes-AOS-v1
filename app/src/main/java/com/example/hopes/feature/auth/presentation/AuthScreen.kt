@@ -72,6 +72,12 @@ import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreen
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationScreen
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationScreenEvent
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationUiState
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationScreen
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationScreenEvent
+import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationUiState
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
@@ -92,6 +98,10 @@ fun AuthScreen(
     onForgotPasswordClick: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
+    signUpEmailVerificationUiState: SignUpEmailVerificationUiState,
+    onSignUpEmailVerificationEvent: (SignUpEmailVerificationScreenEvent) -> Unit,
+    signUpCodeConfirmationUiState: SignUpCodeConfirmationUiState,
+    onSignUpCodeConfirmationEvent: (SignUpCodeConfirmationScreenEvent) -> Unit,
 ) {
     when (authStep) {
         AuthStep.Guide -> AuthGuideContent(onNavigateLogin = onNavigateLogin)
@@ -108,6 +118,14 @@ fun AuthScreen(
         AuthStep.PasswordResetRequest -> PasswordResetScreen(
             uiState = passwordResetUiState,
             onEvent = onPasswordResetEvent,
+        )
+        AuthStep.SignUpEmailVerification -> SignUpEmailVerificationScreen(
+            uiState = signUpEmailVerificationUiState,
+            onEvent = onSignUpEmailVerificationEvent,
+        )
+        AuthStep.SignUpCodeConfirmation -> SignUpCodeConfirmationScreen(
+            uiState = signUpCodeConfirmationUiState,
+            onEvent = onSignUpCodeConfirmationEvent,
         )
         AuthStep.SignUp -> AuthFormScreen(
             emailText = emailText,

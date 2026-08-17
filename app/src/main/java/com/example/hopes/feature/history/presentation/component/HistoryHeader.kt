@@ -33,4 +33,4 @@ fun HistoryHeader() {
     }
 }
 
-private val HISTORY_HEADER_TOP_PADDING = 25.dp
+private val HISTORY_HEADER_TOP_PADDING = AppSpacing.SystemBarToContent

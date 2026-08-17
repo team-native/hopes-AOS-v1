@@ -26,34 +26,42 @@ fun FigmaAppFrame(
     imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
-    HopesScaffold(
-        selectedDestination = selectedDestination,
-        onNavigate = onNavigate,
-        fixedTopContent = fixedTopContent,
-        fixedBottomContent = fixedBottomContent,
-        isBottomNavigationVisible = isBottomNavigationVisible,
-        containerColor = scaffoldContainerColor,
-    ) { innerPadding ->
-        FigmaPhoneScreen(
-            modifier = Modifier.padding(innerPadding),
-            useFigmaViewport = useFigmaViewport,
-            background = {
-                // 콘텐츠 영역의 여백을 앱 배경으로 채워 Figma 캔버스 밖에 빈 띠가 생기지 않게 한다.
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(scaffoldContainerColor),
+    ) {
+        // 시스템바 아래까지 화면 배경을 그려 Scaffold의 inset 영역과 색이 달라지지 않게 한다.
+        background()
+
+        HopesScaffold(
+            selectedDestination = selectedDestination,
+            onNavigate = onNavigate,
+            fixedTopContent = fixedTopContent,
+            fixedBottomContent = fixedBottomContent,
+            isBottomNavigationVisible = isBottomNavigationVisible,
+            containerColor = Color.Transparent,
+        ) { innerPadding ->
+            FigmaPhoneScreen(
+                modifier = Modifier.padding(innerPadding),
+                useFigmaViewport = useFigmaViewport,
+                isScrollable = false,
+                background = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(contentBackgroundColor),
+                    )
+                },
+                overlay = imeOverlay,
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(contentBackgroundColor),
-                )
-                background()
-            },
-            overlay = imeOverlay,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(contentBackgroundColor),
-            ) {
-                content()
+                ) {
+                    content()
+                }
             }
         }
     }

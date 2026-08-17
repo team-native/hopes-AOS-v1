@@ -19,13 +19,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 시스템 네비게이션 바 영역까지 Compose 콘텐츠가 그려지도록 먼저 edge-to-edge를 활성화한다.
-        enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.auto(
-                lightScrim = android.graphics.Color.TRANSPARENT,
-                darkScrim = android.graphics.Color.TRANSPARENT,
-            ),
-        )
+        // 시스템바에 별도 색을 입히지 않고 화면 콘텐츠가 뒤까지 그려지도록 edge-to-edge를 활성화한다.
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         setContent {

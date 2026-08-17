@@ -2,18 +2,29 @@ package com.example.hopes.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.hopes.core.session.SessionState
 import com.example.hopes.feature.auth.presentation.AuthRoute
+import com.example.hopes.feature.auth.presentation.SessionViewModel
 import com.example.hopes.feature.chat.presentation.ChatRoute
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailRoute
 import com.example.hopes.feature.detail.presentation.DetailRoute
@@ -32,8 +43,10 @@ private const val AUTH_ROUTE = "auth"
 fun HopesNavigation(
     isDarkThemeEnabled: Boolean,
     onDarkThemeChange: (Boolean) -> Unit,
+    sessionViewModel: SessionViewModel = hiltViewModel(),
 ) {
     val hopesNavController = rememberNavController()
+    val sessionState by sessionViewModel.sessionState.collectAsStateWithLifecycle()
     var profileName by rememberSaveable { mutableStateOf("") }
     var profileIntroduction by rememberSaveable { mutableStateOf("") }
     var isProfileSaved by rememberSaveable { mutableStateOf(false) }
@@ -69,53 +82,133 @@ fun HopesNavigation(
         }
     }
 
-    NavHost(
-        navController = hopesNavController,
-        startDestination = AUTH_ROUTE,
-        enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        popExitTransition = { ExitTransition.None },
+    if (sessionState is SessionState.Loading) {
+        SessionRestoringIndicator()
+        return
+    }
+
+    key(sessionState) {
+        NavHost(
+            navController = hopesNavController,
+            startDestination = sessionState.startDestination(),
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
+        ) {
+            composable(AUTH_ROUTE) {
+                AuthRoute(onAuthenticated = {
+                    hopesNavController.navigate(HopesDestination.Home.route) {
+                        popUpTo(AUTH_ROUTE) {
+                            inclusive = true
+                        }
+                    }
+                })
+            }
+            composable(HopesDestination.Home.route) {
+                HomeRoute(onNavigate = hopesNavController::navigateToTopLevel)
+            }
+            composable(
+                route = chatRoutePattern(),
+                arguments = listOf(
+                    navArgument(CHAT_NEW_CHAT_ARGUMENT) {
+                        type = NavType.BoolType
+                        defaultValue = false
+                    },
+                ),
+            ) { backStackEntry ->
+                ChatRoute(
+                    onNavigate = hopesNavController::navigateToTopLevel,
+                    onNavigateToChatDetail = { chatId ->
+                        hopesNavController.navigate(chatDetailRoute(chatId))
+                    },
+                    isNewChatRequested = backStackEntry.arguments
+                        ?.getBoolean(CHAT_NEW_CHAT_ARGUMENT)
+                        ?: false,
+                )
+            }
+            composable(HopesDestination.History.route) {
+                HistoryRoute(
+                    onNavigate = hopesNavController::navigateToTopLevel,
+                    onNavigateToChatDetail = { chatId ->
+                        hopesNavController.navigate(chatDetailRoute(chatId))
+                    },
+                    onStartNewChat = hopesNavController::navigateToNewChat,
+                )
+            }
+            composable(HopesDestination.Settings.route) {
+                MyPageRoute(onNavigate = hopesNavController::navigateToTopLevel)
+            }
+            composable(HopesDestination.AppSettings.route) {
+                SettingsRoute(
+                    onNavigate = hopesNavController::navigateToTopLevel,
+                    isDarkModeEnabled = isDarkThemeEnabled,
+                    onDarkModeChange = onDarkThemeChange,
+                    onBackClick = hopesNavController::popBackStack,
+                    onNavigateToPersonalSettings = {
+                        hopesNavController.navigate(HopesDestination.PersonalSettings.route)
+                    },
+                    onNavigateToContact = {
+                        hopesNavController.navigate(HopesDestination.Contact.route)
+                    },
+                    onLogout = {
+                        hopesNavController.navigate(AUTH_ROUTE) {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                )
+            }
+            composable(HopesDestination.PersonalSettings.route) {
+                DetailRoute(
+                    DetailScreenType.PersonalSettings,
+                    detailUiState(),
+                    ::handleDetailEvent,
+                    hopesNavController::navigateToTopLevel,
+                )
+            }
+            composable(HopesDestination.Contact.route) {
+                DetailRoute(
+                    DetailScreenType.Contact,
+                    detailUiState(),
+                    ::handleDetailEvent,
+                    hopesNavController::navigateToTopLevel,
+                )
+            }
+            composable(
+                HopesDestination.ChatDetail.route,
+                arguments = listOf(
+                    navArgument(CHAT_DETAIL_ARGUMENT) {
+                        type = NavType.LongType
+                    },
+                ),
+            ) {
+                ChatDetailRoute(
+                    onBackClick = hopesNavController::popBackStack,
+                    onNavigate = hopesNavController::navigateToTopLevel,
+                )
+            }
+        }
+    }
+}
+
+/** 저장 세션을 읽는 동안 인증 화면이 잠시 노출되지 않도록 로딩 상태를 표시한다. */
+@Composable
+private fun SessionRestoringIndicator() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        composable(AUTH_ROUTE) {
-            AuthRoute(onAuthenticated = {
-                hopesNavController.navigate(HopesDestination.Home.route) { popUpTo(AUTH_ROUTE) { inclusive = true } }
-            })
-        }
-        composable(HopesDestination.Home.route) { HomeRoute(onNavigate = hopesNavController::navigateToTopLevel) }
-        composable(
-            route = chatRoutePattern(),
-            arguments = listOf(
-                navArgument(CHAT_NEW_CHAT_ARGUMENT) {
-                    type = NavType.BoolType
-                    defaultValue = false
-                },
-            ),
-        ) { backStackEntry ->
-            ChatRoute(
-                onNavigate = hopesNavController::navigateToTopLevel,
-                onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) },
-                isNewChatRequested = backStackEntry.arguments?.getBoolean(CHAT_NEW_CHAT_ARGUMENT) ?: false,
-            )
-        }
-        composable(HopesDestination.History.route) {
-            HistoryRoute(
-                onNavigate = hopesNavController::navigateToTopLevel,
-                onNavigateToChatDetail = { chatId -> hopesNavController.navigate(chatDetailRoute(chatId)) },
-                onStartNewChat = hopesNavController::navigateToNewChat,
-            )
-        }
-        composable(HopesDestination.Settings.route) {
-            MyPageRoute(onNavigate = hopesNavController::navigateToTopLevel)
-        }
-        composable(HopesDestination.AppSettings.route) {
-            SettingsRoute(hopesNavController::navigateToTopLevel, isDarkThemeEnabled, onDarkThemeChange, hopesNavController::popBackStack, { hopesNavController.navigate(HopesDestination.PersonalSettings.route) }, { hopesNavController.navigate(HopesDestination.Contact.route) }, { hopesNavController.navigate(AUTH_ROUTE) { popUpTo(0) { inclusive = true } } })
-        }
-        composable(HopesDestination.PersonalSettings.route) { DetailRoute(DetailScreenType.PersonalSettings, detailUiState(), ::handleDetailEvent, hopesNavController::navigateToTopLevel) }
-        composable(HopesDestination.Contact.route) { DetailRoute(DetailScreenType.Contact, detailUiState(), ::handleDetailEvent, hopesNavController::navigateToTopLevel) }
-        composable(HopesDestination.ChatDetail.route, arguments = listOf(navArgument(CHAT_DETAIL_ARGUMENT) { type = NavType.LongType })) {
-            ChatDetailRoute(onBackClick = hopesNavController::popBackStack, onNavigate = hopesNavController::navigateToTopLevel)
-        }
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+private fun SessionState.startDestination(): String {
+    return when (this) {
+        SessionState.Authenticated -> HopesDestination.Home.route
+        SessionState.Unauthenticated -> AUTH_ROUTE
+        SessionState.Loading -> AUTH_ROUTE
     }
 }
 

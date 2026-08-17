@@ -52,7 +52,9 @@ fun ChatScreenContent(
                 value = questionText,
                 onValueChange = onQuestionChange,
                 onSubmitClick = onSubmitClick,
-                modifier = Modifier.imePadding(),
+                modifier = Modifier
+                    .imePadding()
+                    .padding(bottom = 10.dp),
             )
         },
         isBottomNavigationVisible = !isImeVisible,

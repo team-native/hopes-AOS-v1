@@ -69,7 +69,8 @@ fun HomeScreenContent(
                 logoShadow = FigmaBrandLogoShadow.Subtle,
             )
 
-            Spacer(modifier = Modifier.height(34.dp))
+            // 브랜드 헤더와 온보딩 제목 사이에 요청된 20dp를 추가한다.
+            Spacer(modifier = Modifier.height(54.dp))
 
             Text(
                 text = stringResource(R.string.onboarding_title),
@@ -103,7 +104,7 @@ fun HomeScreenContent(
                 bottomText = stringResource(R.string.onboarding_tip_two_bottom),
             )
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(85.dp))
 
             Box(
                 modifier = Modifier

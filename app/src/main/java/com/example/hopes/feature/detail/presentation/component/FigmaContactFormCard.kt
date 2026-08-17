@@ -26,7 +26,7 @@ fun FigmaContactFormCard(
 ) {
     FigmaDetailCard(
         modifier = Modifier
-            .padding(start = 24.dp, top = 156.dp)
+            .padding(start = 24.dp, top = 107.dp)
             .height(420.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {

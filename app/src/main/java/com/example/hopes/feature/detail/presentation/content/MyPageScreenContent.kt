@@ -37,7 +37,7 @@ fun MyPageScreenContent(
         )
         Column(
             modifier = Modifier
-                .padding(start = 12.dp, top = 194.dp)
+                .padding(start = 24.dp, top = 147.dp)
                 .imePadding(),
         ) {
             FigmaMyPageAccountCard(email = uiState.email, major = uiState.major)

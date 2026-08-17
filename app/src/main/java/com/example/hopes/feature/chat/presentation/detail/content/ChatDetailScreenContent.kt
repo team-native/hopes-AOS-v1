@@ -21,12 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailUiState
 import com.example.hopes.feature.detail.presentation.component.FigmaChatDetailBubble
 import com.example.hopes.feature.detail.presentation.component.FigmaChatReplyBar
-import com.example.hopes.feature.detail.presentation.component.FigmaImeChatReplyBar
 import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
 import com.example.hopes.navigation.HopesDestination
 
@@ -51,31 +51,20 @@ fun ChatDetailScreenContent(
                 actionText = stringResource(R.string.chat_save),
                 onActionClick = {},
                 backOffsetX = 19,
+                headerHeight = 60.dp,
+                applySystemBarPadding = true,
+                subtitleSpacing = 3.dp,
             )
         },
-        fixedBottomContent = if (isImeVisible) {
-            null
-        } else {
-            {
-                FigmaChatReplyBar(
-                    value = uiState.replyText,
-                    onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
-                    onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
-                    modifier = Modifier,
-                )
-            }
+        fixedBottomContent = {
+            FigmaChatReplyBar(
+                value = uiState.replyText,
+                onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
+                onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
+                modifier = Modifier,
+            )
         },
         isBottomNavigationVisible = !isImeVisible,
-        imeOverlay = { viewportMetrics ->
-            if (isImeVisible) {
-                FigmaImeChatReplyBar(
-                    viewportMetrics = viewportMetrics,
-                    value = uiState.replyText,
-                    onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
-                    onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
-                )
-            }
-        },
     ) {
         ChatMessages(
             uiState = uiState,
@@ -91,7 +80,13 @@ private fun ChatMessages(
 ) {
     Column(
         modifier = Modifier
-            .padding(start = 24.dp, top = 16.dp, end = 24.dp, bottom = 16.dp)
+            .padding(
+                start = 24.dp,
+                // 상세 헤더의 subtitle과 첫 채팅 메시지 사이를 20.dp로 유지한다.
+                top = AppSpacing.ScreenVertical,
+                end = 24.dp,
+                bottom = 16.dp,
+            )
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.component.FigmaBackButton
@@ -28,16 +30,24 @@ fun FigmaDetailBackHeader(
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null,
     backOffsetX: Int = 18,
+    headerHeight: Dp = 150.dp,
+    applySystemBarPadding: Boolean = false,
+    subtitleSpacing: Dp = 8.dp,
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(150.dp),
+            .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier)
+            .height(headerHeight),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = backOffsetX.dp, top = 25.dp, end = 24.dp)
+                .padding(
+                    start = backOffsetX.dp,
+                    top = if (applySystemBarPadding) 0.dp else 25.dp,
+                    end = 24.dp,
+                )
                 .height(39.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -72,7 +82,10 @@ fun FigmaDetailBackHeader(
 
         Text(
             text = subtitle,
-            modifier = Modifier.padding(start = 74.dp, top = 62.dp),
+            modifier = Modifier.padding(
+                start = 74.dp,
+                top = if (applySystemBarPadding) 39.dp + subtitleSpacing else 62.dp,
+            ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )

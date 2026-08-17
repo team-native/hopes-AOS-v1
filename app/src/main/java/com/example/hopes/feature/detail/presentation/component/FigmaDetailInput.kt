@@ -71,7 +71,7 @@ fun FigmaDetailThinInput(
     }
 }
 
-/** 문의 카드에서 원본과 같은 가로 폭을 사용하는 이메일 입력 필드다. */
+/** 문의 카드의 다른 입력 영역과 좌우 여백을 맞추는 이메일 입력 필드다. */
 @Composable
 fun FigmaDetailContactEmailInput(
     value: String,
@@ -82,8 +82,8 @@ fun FigmaDetailContactEmailInput(
 
     Box(
         modifier = Modifier
-            .padding(start = 18.dp, top = 67.dp)
-            .width(332.dp)
+            .padding(start = 24.dp, top = 67.dp)
+            .width(306.dp)
             .height(40.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
             .border(1.dp, extendedColors.authFieldBorder, RoundedCornerShape(14.dp)),
@@ -101,7 +101,7 @@ fun FigmaDetailContactEmailInput(
             onValueChange = onValueChange,
             modifier = Modifier
                 .padding(start = 16.dp, top = 9.dp)
-                .width(300.dp)
+                .width(274.dp)
                 .height(24.dp),
             singleLine = true,
             textStyle = TextStyle(

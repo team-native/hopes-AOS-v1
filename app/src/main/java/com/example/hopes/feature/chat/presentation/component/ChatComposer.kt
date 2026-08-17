@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,8 +25,6 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
@@ -46,7 +47,7 @@ fun ChatComposer(
         Box(
             modifier = Modifier
                 .width(354.dp)
-                .height(82.dp)
+                .height(52.dp)
                 .figmaRaisedShadow(RoundedCornerShape(41.dp))
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(41.dp))
                 .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(41.dp)),
@@ -87,10 +88,9 @@ fun ChatComposer(
 
             Box(
                 modifier = Modifier
-                    .padding(start = 288.dp, top = 17.dp)
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 18.dp)
                     .size(48.dp)
-                    .figmaRaisedShadow(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(24.dp))
                     .semantics {
                         role = Role.Button
                         contentDescription = sendDescription
@@ -98,17 +98,21 @@ fun ChatComposer(
                     .clickable(onClick = onSubmitClick),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = stringResource(R.string.chat_send_symbol),
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    textAlign = TextAlign.Center,
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        lineHeight = 30.sp,
-                    ),
-                )
+                // 시각적 버튼은 30.dp로 유지하고, 바깥 48.dp 영역으로 터치 접근성을 보장한다.
+                Box(
+                    modifier = Modifier
+                        .size(30.dp)
+                        .figmaRaisedShadow(RoundedCornerShape(15.dp))
+                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(15.dp)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowUpward,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
             }
         }
     }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.LoginUseCase
+import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,6 +22,7 @@ sealed interface AuthEffect {
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -45,6 +47,21 @@ class AuthViewModel @Inject constructor(
             }
             AuthScreenEvent.LoginRequested -> updateState { copy(authStep = AuthStep.Login) }
             AuthScreenEvent.LoginDismissed -> updateState { copy(authStep = AuthStep.Guide) }
+            AuthScreenEvent.ForgotPasswordClicked -> updateState {
+                copy(
+                    authStep = AuthStep.PasswordResetRequest,
+                    passwordResetEmail = passwordResetEmail.ifBlank { email },
+                    errorMessage = null,
+                    statusMessage = null,
+                )
+            }
+            is AuthScreenEvent.PasswordResetEmailChanged -> updateState {
+                copy(passwordResetEmail = event.value, errorMessage = null, statusMessage = null)
+            }
+            AuthScreenEvent.PasswordResetRequestClicked -> requestPasswordReset()
+            AuthScreenEvent.PasswordResetBackClicked -> updateState {
+                copy(authStep = AuthStep.Login, errorMessage = null, statusMessage = null)
+            }
         }
     }
 
@@ -62,6 +79,25 @@ class AuthViewModel @Inject constructor(
                 is AppResult.Success -> {
                     updateState { copy(isLoading = false) }
                     _effect.emit(AuthEffect.Authenticated)
+                }
+                else -> updateState { copy(isLoading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    /** 학교 이메일로 비밀번호 재설정 인증번호 발송을 요청한다. */
+    private fun requestPasswordReset() {
+        val email = _uiState.value.passwordResetEmail
+        if (email.isBlank()) {
+            updateState { copy(errorMessage = "") }
+            return
+        }
+
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, errorMessage = null, statusMessage = null) }
+            when (requestPasswordResetUseCase(email)) {
+                is AppResult.Success -> updateState {
+                    copy(isLoading = false, statusMessage = "")
                 }
                 else -> updateState { copy(isLoading = false, errorMessage = "") }
             }

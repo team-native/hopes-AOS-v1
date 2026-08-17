@@ -9,4 +9,8 @@ sealed interface AuthScreenEvent {
     data class SignUpRequested(val sampleEmail: String, val sampleName: String) : AuthScreenEvent
     data object LoginRequested : AuthScreenEvent
     data object LoginDismissed : AuthScreenEvent
+    data object ForgotPasswordClicked : AuthScreenEvent
+    data class PasswordResetEmailChanged(val value: String) : AuthScreenEvent
+    data object PasswordResetRequestClicked : AuthScreenEvent
+    data object PasswordResetBackClicked : AuthScreenEvent
 }

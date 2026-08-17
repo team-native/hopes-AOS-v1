@@ -6,6 +6,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.R
+import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
+import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
 
 /** 인증 데모의 화면 전환과 입력 상태를 소유한다. */
 @Composable
@@ -40,11 +42,29 @@ fun AuthRoute(
         },
         onNavigateLogin = { viewModel.onEvent(AuthScreenEvent.LoginRequested) },
         onDismissLogin = { viewModel.onEvent(AuthScreenEvent.LoginDismissed) },
+        onForgotPasswordClick = { viewModel.onEvent(AuthScreenEvent.ForgotPasswordClicked) },
+        passwordResetUiState = PasswordResetUiState(
+            email = uiState.value.passwordResetEmail,
+            isLoading = uiState.value.isLoading,
+            errorMessage = uiState.value.errorMessage,
+            statusMessage = uiState.value.statusMessage,
+        ),
+        onPasswordResetEvent = { event ->
+            when (event) {
+                is PasswordResetScreenEvent.EmailChanged ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetEmailChanged(event.value))
+                PasswordResetScreenEvent.RequestCodeClicked ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetRequestClicked)
+                PasswordResetScreenEvent.BackClicked ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetBackClicked)
+            }
+        },
     )
 }
 
 enum class AuthStep {
     Guide,
     Login,
+    PasswordResetRequest,
     SignUp,
 }

@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 object AppSpacing {
     val ScreenHorizontal = 24.dp
     val ScreenVertical = 20.dp
+    val SystemBarToContent = 15.dp
     val Section = 24.dp
     val Item = 12.dp
     val Compact = 8.dp

@@ -2,11 +2,13 @@ package com.example.hopes.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
 import com.example.hopes.domain.usecase.SendSignupVerificationUseCase
+import com.example.hopes.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +29,7 @@ class AuthViewModel @Inject constructor(
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
     private val sendSignupVerificationUseCase: SendSignupVerificationUseCase,
     private val confirmSignupVerificationUseCase: ConfirmSignupVerificationUseCase,
+    private val signUpUseCase: SignUpUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -43,8 +46,11 @@ class AuthViewModel @Inject constructor(
             is AuthScreenEvent.VerificationCodeChanged -> updateState {
                 copy(verificationCode = event.value, errorMessage = null)
             }
+            is AuthScreenEvent.PasswordConfirmChanged -> updateState {
+                copy(passwordConfirm = event.value, errorMessage = null)
+            }
             AuthScreenEvent.LoginClicked -> login()
-            AuthScreenEvent.SignUpClicked -> login()
+            AuthScreenEvent.SignUpClicked -> signUp()
             is AuthScreenEvent.SignUpRequested -> updateState {
                 copy(
                     authStep = AuthStep.SignUpEmailVerification,
@@ -92,6 +98,39 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
             when (loginUseCase(currentState.email, currentState.password)) {
+                is AppResult.Success -> {
+                    updateState { copy(isLoading = false) }
+                    _effect.emit(AuthEffect.Authenticated)
+                }
+                else -> updateState { copy(isLoading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    /** 이메일 인증이 끝난 뒤 최종 회원가입 정보를 서버로 제출한다. */
+    private fun signUp() {
+        val currentState = _uiState.value
+        val isValid = currentState.email.isNotBlank() &&
+            currentState.name.isNotBlank() &&
+            currentState.password.isNotBlank() &&
+            currentState.passwordConfirm.isNotBlank() &&
+            currentState.verificationCode.isNotBlank()
+
+        if (!isValid) {
+            updateState { copy(errorMessage = "") }
+            return
+        }
+
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, errorMessage = null) }
+            val request = SignUpRequest(
+                email = currentState.email,
+                username = currentState.name,
+                password = currentState.password,
+                passwordConfirm = currentState.passwordConfirm,
+                verificationCode = currentState.verificationCode,
+            )
+            when (signUpUseCase(request)) {
                 is AppResult.Success -> {
                     updateState { copy(isLoading = false) }
                     _effect.emit(AuthEffect.Authenticated)

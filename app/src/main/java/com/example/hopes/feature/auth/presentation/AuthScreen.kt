@@ -87,9 +87,11 @@ fun AuthScreen(
     emailText: String,
     passwordText: String,
     nameText: String,
+    passwordConfirmText: String,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
+    onPasswordConfirmChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onSignupClick: () -> Unit,
     onNavigateSignup: () -> Unit,
@@ -131,9 +133,11 @@ fun AuthScreen(
             emailText = emailText,
             passwordText = passwordText,
             nameText = nameText,
+            passwordConfirmText = passwordConfirmText,
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
             onNameChange = onNameChange,
+            onPasswordConfirmChange = onPasswordConfirmChange,
             onActionClick = onSignupClick,
             onFooterClick = onNavigateLogin,
         )
@@ -539,9 +543,11 @@ private fun AuthFormScreen(
     emailText: String,
     passwordText: String,
     nameText: String?,
+    passwordConfirmText: String,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
+    onPasswordConfirmChange: (String) -> Unit,
     onActionClick: () -> Unit,
     onFooterClick: () -> Unit,
 ) {
@@ -549,7 +555,10 @@ private fun AuthFormScreen(
     val signupDensity = LocalDensity.current
     val isImeVisible = WindowInsets.ime.getBottom(signupDensity) > 0
     val keyboardLift = if (isImeVisible) (-120).dp else 0.dp
-    val isSignupEnabled = emailText.isNotBlank() && passwordText.isNotBlank() && !nameText.isNullOrBlank()
+    val isSignupEnabled = emailText.isNotBlank() &&
+        passwordText.isNotBlank() &&
+        passwordConfirmText.isNotBlank() &&
+        !nameText.isNullOrBlank()
     val signupEmailHint = stringResource(R.string.signup_email_hint)
     val signupNameHint = stringResource(R.string.signup_name_hint)
     val signupDepartmentValue = stringResource(R.string.signup_department_value)
@@ -599,6 +608,7 @@ private fun AuthFormScreen(
                     emailText = emailText,
                     passwordText = passwordText,
                     nameText = nameText.orEmpty(),
+                    passwordConfirmText = passwordConfirmText,
                     emailHint = signupEmailHint,
                     nameHint = signupNameHint,
                     departmentValue = signupDepartmentValue,
@@ -607,6 +617,7 @@ private fun AuthFormScreen(
                     onEmailChange = onEmailChange,
                     onPasswordChange = onPasswordChange,
                     onNameChange = onNameChange,
+                    onPasswordConfirmChange = onPasswordConfirmChange,
                     onSignupClick = onActionClick,
                 )
                 Spacer(modifier = Modifier.height(42.dp))
@@ -634,6 +645,7 @@ private fun SignupFormCard(
     emailText: String,
     passwordText: String,
     nameText: String,
+    passwordConfirmText: String,
     emailHint: String,
     nameHint: String,
     departmentValue: String,
@@ -642,6 +654,7 @@ private fun SignupFormCard(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
+    onPasswordConfirmChange: (String) -> Unit,
     onSignupClick: () -> Unit,
 ) {
     Box(
@@ -709,6 +722,17 @@ private fun SignupFormCard(
                     hint = stringResource(R.string.password),
                     value = passwordText,
                     onValueChange = onPasswordChange,
+                    isPassword = true,
+                )
+            }
+            SignupFormFieldGroup(
+                labelRes = R.string.password_confirm,
+                modifier = Modifier.weight(1f),
+            ) {
+                FigmaSignupField(
+                    hint = stringResource(R.string.password_confirm),
+                    value = passwordConfirmText,
+                    onValueChange = onPasswordConfirmChange,
                     isPassword = true,
                     onImeAction = if (isSignupEnabled) onSignupClick else null,
                 )

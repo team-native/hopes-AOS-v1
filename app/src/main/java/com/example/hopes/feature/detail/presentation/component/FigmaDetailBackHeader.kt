@@ -51,7 +51,7 @@ fun FigmaDetailBackHeader(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = backOffsetX.dp, top = 74.dp, end = 24.dp)
+                .padding(start = backOffsetX.dp, top = 25.dp, end = 24.dp)
                 .height(39.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -87,7 +87,7 @@ fun FigmaDetailBackHeader(
 
         Text(
             text = subtitle,
-            modifier = Modifier.padding(start = 74.dp, top = 111.dp),
+            modifier = Modifier.padding(start = 74.dp, top = 62.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )

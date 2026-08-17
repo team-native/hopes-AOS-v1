@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,12 +53,12 @@ fun SettingsScreenContent(
         FigmaSettingsBackButton(onClick = onBackClick)
         Text(
             text = stringResource(R.string.settings_title),
-            modifier = Modifier.padding(start = 68.dp, top = 74.dp),
+            modifier = Modifier.padding(start = 68.dp, top = 25.dp),
             style = TextStyle(fontSize = 27.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp),
         )
         Text(
             text = stringResource(R.string.logout_description),
-            modifier = Modifier.padding(start = 74.dp, top = 115.dp),
+            modifier = Modifier.padding(start = 74.dp, top = 66.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )
@@ -105,7 +108,7 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
-            .padding(start = 10.dp, top = 76.dp)
+            .padding(start = 10.dp, top = 27.dp)
             .width(38.dp)
             .height(38.dp)
             .figmaSubtleShadow(RoundedCornerShape(13.dp))
@@ -118,10 +121,11 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = stringResource(R.string.back_symbol),
-            color = MaterialTheme.colorScheme.primary,
-            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null,
+            modifier = Modifier.width(24.dp),
+            tint = MaterialTheme.colorScheme.primary,
         )
     }
 }

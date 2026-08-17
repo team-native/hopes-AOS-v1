@@ -53,12 +53,12 @@ fun SettingsScreenContent(
         FigmaSettingsBackButton(onClick = onBackClick)
         Text(
             text = stringResource(R.string.settings_title),
-            modifier = Modifier.padding(start = 68.dp, top = 74.dp),
+            modifier = Modifier.padding(start = 68.dp, top = 25.dp),
             style = TextStyle(fontSize = 27.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp),
         )
         Text(
             text = stringResource(R.string.logout_description),
-            modifier = Modifier.padding(start = 74.dp, top = 115.dp),
+            modifier = Modifier.padding(start = 74.dp, top = 66.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )
@@ -108,7 +108,7 @@ private fun FigmaSettingsBackButton(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
-            .padding(start = 10.dp, top = 76.dp)
+            .padding(start = 10.dp, top = 27.dp)
             .width(38.dp)
             .height(38.dp)
             .figmaSubtleShadow(RoundedCornerShape(13.dp))

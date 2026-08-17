@@ -64,10 +64,10 @@ fun ChatScreenContent(
 
 @Composable
 private fun ChatHomeHeader(onNewChatClick: () -> Unit) {
-    FigmaBrandHeader(modifier = Modifier.padding(start = 24.dp, top = 72.dp))
+    FigmaBrandHeader(modifier = Modifier.padding(start = 24.dp, top = 25.dp))
     Box(
         modifier = Modifier
-            .padding(start = 308.dp, top = 66.dp)
+            .padding(start = 308.dp, top = 19.dp)
             .width(70.dp)
             .height(39.dp)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))

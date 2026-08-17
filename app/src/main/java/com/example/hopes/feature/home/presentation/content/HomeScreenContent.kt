@@ -62,7 +62,7 @@ fun HomeScreenContent(
         scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
         Column(
-            modifier = Modifier.padding(start = 32.dp, top = 76.dp),
+            modifier = Modifier.padding(start = 32.dp, top = 25.dp),
         ) {
             FigmaBrandHeader(
                 isOnBlueBackground = true,

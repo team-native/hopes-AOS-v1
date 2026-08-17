@@ -1,12 +1,11 @@
 package com.example.hopes.feature.settings.presentation.content
 
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -15,10 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -26,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.core.designsystem.component.FigmaBackButton
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
@@ -47,7 +43,10 @@ fun SettingsScreenContent(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
     ) {
-        FigmaSettingsBackButton(onClick = onBackClick)
+        FigmaBackButton(
+            modifier = Modifier.padding(start = 10.dp, top = 76.dp),
+            onClick = onBackClick,
+        )
         Text(
             text = stringResource(R.string.settings_title),
             modifier = Modifier.padding(start = 68.dp, top = 74.dp),
@@ -95,34 +94,6 @@ fun SettingsScreenContent(
                 style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
             )
         }
-    }
-}
-
-/** 피그마 11의 마이페이지 복귀용 상단 뒤로가기 버튼이다. */
-@Composable
-private fun FigmaSettingsBackButton(onClick: () -> Unit) {
-    val backDescription = stringResource(R.string.back)
-
-    Box(
-        modifier = Modifier
-            .padding(start = 10.dp, top = 76.dp)
-            .width(38.dp)
-            .height(38.dp)
-            .figmaSubtleShadow(RoundedCornerShape(13.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(13.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(13.dp))
-            .semantics {
-                role = Role.Button
-                contentDescription = backDescription
-            }
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = stringResource(R.string.back_symbol),
-            color = MaterialTheme.colorScheme.primary,
-            style = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.SemiBold),
-        )
     }
 }
 

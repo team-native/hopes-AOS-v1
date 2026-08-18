@@ -19,19 +19,17 @@ import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton
 import com.example.hopes.feature.auth.presentation.component.AuthStatusText
 import com.example.hopes.feature.auth.presentation.component.AuthStepHeader
+import com.example.hopes.feature.auth.presentation.component.AuthVerificationCodeField
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
 
-/** 피그마 13 비밀번호 재설정 화면의 헤더, 이메일 입력, 제출 버튼을 조합한다. */
+/** 피그마 13 비밀번호 재설정 화면의 헤더, 이메일+인증번호 입력, 새 비밀번호 입력, 제출 버튼을 조합한다. */
 @Composable
 fun PasswordResetScreenContent(
     uiState: PasswordResetUiState,
     onEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
-    // 인증번호 발송에 성공하면 statusMessage가 채워지며, 이후 화면은 인증번호/새 비밀번호 제출 모드로 전환된다.
-    val isCodeRequested = uiState.statusMessage != null
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,6 +58,21 @@ fun PasswordResetScreenContent(
             modifier = Modifier.fillMaxWidth(),
         )
 
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        AuthFieldLabel(labelRes = R.string.verification_code)
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        // 인증번호 입력과 발송 요청을 같은 행에서 함께 받는다 (회원가입 화면과 동일한 컴포넌트를 공유한다).
+        AuthVerificationCodeField(
+            value = uiState.code,
+            isSending = uiState.isLoading,
+            onValueChange = { value -> onEvent(PasswordResetScreenEvent.CodeChanged(value)) },
+            onSendClick = { onEvent(PasswordResetScreenEvent.RequestCodeClicked) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
         if (uiState.errorMessage != null || uiState.statusMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
@@ -76,19 +89,6 @@ fun PasswordResetScreenContent(
 
         Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-        AuthFieldLabel(labelRes = R.string.verification_code)
-
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
-
-        FigmaAuthTextField(
-            value = uiState.code,
-            onValueChange = { value -> onEvent(PasswordResetScreenEvent.CodeChanged(value)) },
-            labelRes = R.string.verification_code,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
-
         AuthFieldLabel(labelRes = R.string.password)
 
         Spacer(modifier = Modifier.height(AppSpacing.Compact))
@@ -98,20 +98,6 @@ fun PasswordResetScreenContent(
             onValueChange = { value -> onEvent(PasswordResetScreenEvent.NewPasswordChanged(value)) },
             labelRes = R.string.password,
             isPassword = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
-
-        AuthFieldLabel(labelRes = R.string.password_confirm)
-
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
-
-        FigmaAuthTextField(
-            value = uiState.newPasswordConfirm,
-            onValueChange = { value -> onEvent(PasswordResetScreenEvent.NewPasswordConfirmChanged(value)) },
-            labelRes = R.string.password_confirm,
-            isPassword = true,
             onImeAction = { onEvent(PasswordResetScreenEvent.SubmitClicked) },
             modifier = Modifier.fillMaxWidth(),
         )
@@ -119,26 +105,11 @@ fun PasswordResetScreenContent(
         Spacer(modifier = Modifier.weight(1f))
 
         AuthPrimaryActionButton(
-            text = stringResource(
-                if (isCodeRequested) R.string.password_reset_complete else R.string.request_verification_code,
-            ),
-            isEnabled = if (isCodeRequested) {
-                uiState.code.isNotBlank() &&
-                    uiState.newPassword.isNotBlank() &&
-                    uiState.newPasswordConfirm.isNotBlank() &&
-                    !uiState.isLoading
-            } else {
-                uiState.email.isNotBlank() && !uiState.isLoading
-            },
-            onClick = {
-                onEvent(
-                    if (isCodeRequested) {
-                        PasswordResetScreenEvent.SubmitClicked
-                    } else {
-                        PasswordResetScreenEvent.RequestCodeClicked
-                    },
-                )
-            },
+            text = stringResource(R.string.password_reset_complete),
+            isEnabled = uiState.code.isNotBlank() &&
+                uiState.newPassword.isNotBlank() &&
+                !uiState.isLoading,
+            onClick = { onEvent(PasswordResetScreenEvent.SubmitClicked) },
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.Section))

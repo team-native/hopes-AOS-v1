@@ -2,9 +2,11 @@ package com.example.hopes.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hopes.core.validation.isValidSchoolEmail
+import com.example.hopes.core.validation.isValidSignupPassword
+import com.example.hopes.core.validation.isValidUsername
 import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.result.AppResult
-import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
 import com.example.hopes.domain.usecase.ResetPasswordUseCase
@@ -30,7 +32,6 @@ class AuthViewModel @Inject constructor(
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
     private val resetPasswordUseCase: ResetPasswordUseCase,
     private val sendSignupVerificationUseCase: SendSignupVerificationUseCase,
-    private val confirmSignupVerificationUseCase: ConfirmSignupVerificationUseCase,
     private val signUpUseCase: SignUpUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -42,24 +43,16 @@ class AuthViewModel @Inject constructor(
     /** 화면 이벤트로 입력값과 인증 요청을 처리한다. */
     fun onEvent(event: AuthScreenEvent) {
         when (event) {
-            is AuthScreenEvent.EmailChanged -> updateState { copy(email = event.value, errorMessage = null) }
-            is AuthScreenEvent.PasswordChanged -> updateState { copy(password = event.value, errorMessage = null) }
-            is AuthScreenEvent.NameChanged -> updateState { copy(name = event.value, errorMessage = null) }
-            is AuthScreenEvent.VerificationCodeChanged -> updateState {
-                copy(verificationCode = event.value, errorMessage = null)
-            }
-            is AuthScreenEvent.PasswordConfirmChanged -> updateState {
-                copy(passwordConfirm = event.value, errorMessage = null)
-            }
+            is AuthScreenEvent.EmailChanged -> updateSignupEmail(event.value)
+            is AuthScreenEvent.PasswordChanged -> updateSignupPassword(event.value)
+            is AuthScreenEvent.NameChanged -> updateSignupName(event.value)
+            is AuthScreenEvent.DepartmentChanged -> updateState { copy(department = event.value) }
+            is AuthScreenEvent.GenerationChanged -> updateSignupGeneration(event.value)
+            is AuthScreenEvent.VerificationCodeChanged -> updateSignupVerificationCode(event.value)
             AuthScreenEvent.LoginClicked -> login()
-            AuthScreenEvent.SignUpClicked -> signUp()
-            is AuthScreenEvent.SignUpRequested -> updateState {
-                copy(
-                    authStep = AuthStep.SignUpEmailVerification,
-                    email = email.ifBlank { event.sampleEmail },
-                    name = name.ifBlank { event.sampleName },
-                    errorMessage = null,
-                )
+            AuthScreenEvent.SignUpClicked -> submitSignup()
+            AuthScreenEvent.SignUpRequested -> updateState {
+                copy(authStep = AuthStep.SignUp, errorMessage = null)
             }
             AuthScreenEvent.LoginRequested -> updateState { copy(authStep = AuthStep.Login) }
             AuthScreenEvent.LoginDismissed -> updateState { copy(authStep = AuthStep.Guide) }
@@ -80,9 +73,6 @@ class AuthViewModel @Inject constructor(
             is AuthScreenEvent.PasswordResetNewPasswordChanged -> updateState {
                 copy(passwordResetNewPassword = event.value, errorMessage = null)
             }
-            is AuthScreenEvent.PasswordResetNewPasswordConfirmChanged -> updateState {
-                copy(passwordResetNewPasswordConfirm = event.value, errorMessage = null)
-            }
             AuthScreenEvent.PasswordResetRequestClicked -> requestPasswordReset()
             AuthScreenEvent.PasswordResetSubmitClicked -> resetPassword()
             AuthScreenEvent.PasswordResetBackClicked -> updateState {
@@ -92,17 +82,9 @@ class AuthViewModel @Inject constructor(
                     statusMessage = null,
                     passwordResetCode = "",
                     passwordResetNewPassword = "",
-                    passwordResetNewPasswordConfirm = "",
                 )
             }
-            AuthScreenEvent.SendSignupVerificationClicked -> sendSignupVerification()
-            AuthScreenEvent.SignUpEmailVerificationBackClicked -> updateState {
-                copy(authStep = AuthStep.Login, errorMessage = null)
-            }
-            AuthScreenEvent.ConfirmSignupVerificationClicked -> confirmSignupVerification()
-            AuthScreenEvent.SignUpCodeConfirmationBackClicked -> updateState {
-                copy(authStep = AuthStep.SignUpEmailVerification, errorMessage = null)
-            }
+            AuthScreenEvent.SendSignupVerificationClicked -> sendSignupVerificationCode()
         }
     }
 
@@ -126,28 +108,133 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    /** 이메일 인증이 끝난 뒤 최종 회원가입 정보를 서버로 제출한다. */
-    private fun signUp() {
-        val currentState = _uiState.value
-        val isValid = currentState.email.isNotBlank() &&
-            currentState.name.isNotBlank() &&
-            currentState.password.isNotBlank() &&
-            currentState.passwordConfirm.isNotBlank() &&
-            currentState.verificationCode.isNotBlank()
+    /** 이메일 입력 시 학교 이메일 형식을 즉시 검사해 화면 상태에 반영한다. */
+    private fun updateSignupEmail(email: String) {
+        updateState {
+            copy(
+                email = email,
+                errorMessage = null,
+                signupValidation = signupValidation.copy(
+                    isEmailTouched = true,
+                    emailError = email.invalidSchoolEmailError(),
+                ),
+            )
+        }
+    }
 
-        if (!isValid) {
-            updateState { copy(errorMessage = "") }
+    /** 이름 입력 시 필수 입력과 최대 길이를 즉시 검사해 화면 상태에 반영한다. */
+    private fun updateSignupName(name: String) {
+        updateState {
+            copy(
+                name = name,
+                errorMessage = null,
+                signupValidation = signupValidation.copy(
+                    isNameTouched = true,
+                    nameError = name.invalidUsernameError(),
+                ),
+            )
+        }
+    }
+
+    /** 기수 선택 시 필수 선택 오류를 해제하거나 표시한다. */
+    private fun updateSignupGeneration(generation: String) {
+        updateState {
+            copy(
+                generation = generation,
+                signupValidation = signupValidation.copy(
+                    isGenerationTouched = true,
+                    generationError = generation.requiredGenerationError(),
+                ),
+            )
+        }
+    }
+
+    /** 비밀번호 입력 시 영문·숫자와 길이 조건을 즉시 검사한다. */
+    private fun updateSignupPassword(password: String) {
+        updateState {
+            copy(
+                password = password,
+                errorMessage = null,
+                signupValidation = signupValidation.copy(
+                    isPasswordTouched = true,
+                    passwordError = password.invalidSignupPasswordError(),
+                ),
+            )
+        }
+    }
+
+    /** 인증번호 입력 시 숫자 여섯 자리만 유지하고 형식 오류를 갱신한다. */
+    private fun updateSignupVerificationCode(value: String) {
+        val numericCode = value.filter(Char::isDigit).take(VERIFICATION_CODE_LENGTH)
+
+        updateState {
+            copy(
+                verificationCode = numericCode,
+                errorMessage = null,
+                signupValidation = signupValidation.copy(
+                    isVerificationCodeTouched = true,
+                    verificationCodeError = numericCode.invalidVerificationCodeError(),
+                ),
+            )
+        }
+    }
+
+    /** 번호 발송 클릭 시 유효한 학교 이메일로만 회원가입 인증번호 발송 UseCase를 실행한다. */
+    private fun sendSignupVerificationCode() {
+        val currentState = _uiState.value
+        val emailError = currentState.email.invalidSchoolEmailError()
+        updateState {
+            copy(
+                signupValidation = signupValidation.copy(isEmailTouched = true, emailError = emailError),
+            )
+        }
+
+        if (emailError != null) {
             return
         }
 
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
+            when (sendSignupVerificationUseCase(currentState.email)) {
+                is AppResult.Success -> updateState { copy(isLoading = false) }
+                else -> updateState { copy(isLoading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    /** 가입 클릭 시 모든 필드를 검사하고 유효할 때 회원가입 정보를 서버로 전송한다. */
+    private fun submitSignup() {
+        val currentState = _uiState.value
+        val validation = SignupValidationUiState(
+            isEmailTouched = true,
+            isNameTouched = true,
+            isGenerationTouched = true,
+            isPasswordTouched = true,
+            isVerificationCodeTouched = true,
+            emailError = currentState.email.invalidSchoolEmailError(),
+            nameError = currentState.name.invalidUsernameError(),
+            generationError = currentState.generation.requiredGenerationError(),
+            passwordError = currentState.password.invalidSignupPasswordError(),
+            verificationCodeError = currentState.verificationCode.invalidVerificationCodeError(),
+        )
+
+        updateState { copy(signupValidation = validation) }
+
+        if (validation.hasError) {
+            return
+        }
+
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, errorMessage = null) }
+            // 회원가입 화면에는 별도의 비밀번호 확인 입력칸이 없어, 같은 비밀번호 값을 확인란으로도 함께 전송한다.
             val request = SignUpRequest(
                 email = currentState.email,
                 username = currentState.name,
                 password = currentState.password,
-                passwordConfirm = currentState.passwordConfirm,
+                passwordConfirm = currentState.password,
                 verificationCode = currentState.verificationCode,
+                major = currentState.department.toMajorCode(),
+                cohort = currentState.generation.toCohort(),
             )
             when (signUpUseCase(request)) {
                 is AppResult.Success -> {
@@ -182,27 +269,22 @@ class AuthViewModel @Inject constructor(
     private fun resetPassword() {
         val currentState = _uiState.value
         val isValid = currentState.passwordResetCode.isNotBlank() &&
-            currentState.passwordResetNewPassword.isNotBlank() &&
-            currentState.passwordResetNewPasswordConfirm.isNotBlank()
+            currentState.passwordResetNewPassword.isNotBlank()
 
         if (!isValid) {
             updateState { copy(errorMessage = "") }
             return
         }
 
-        if (currentState.passwordResetNewPassword != currentState.passwordResetNewPasswordConfirm) {
-            updateState { copy(errorMessage = "") }
-            return
-        }
-
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
+            // 비밀번호 재설정 화면에도 별도의 비밀번호 확인 입력칸이 없어, 같은 비밀번호 값을 확인란으로도 함께 전송한다.
             when (
                 resetPasswordUseCase(
                     email = currentState.passwordResetEmail,
                     code = currentState.passwordResetCode,
                     password = currentState.passwordResetNewPassword,
-                    passwordConfirm = currentState.passwordResetNewPasswordConfirm,
+                    passwordConfirm = currentState.passwordResetNewPassword,
                 )
             ) {
                 is AppResult.Success -> updateState {
@@ -212,47 +294,8 @@ class AuthViewModel @Inject constructor(
                         passwordResetEmail = "",
                         passwordResetCode = "",
                         passwordResetNewPassword = "",
-                        passwordResetNewPasswordConfirm = "",
                         statusMessage = null,
                     )
-                }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
-            }
-        }
-    }
-
-    /** 회원가입 이메일 인증번호 발송을 요청하고, 성공하면 인증번호 입력 단계로 이동한다. */
-    private fun sendSignupVerification() {
-        val email = _uiState.value.email
-        if (email.isBlank()) {
-            updateState { copy(errorMessage = "") }
-            return
-        }
-
-        viewModelScope.launch {
-            updateState { copy(isLoading = true, errorMessage = null) }
-            when (sendSignupVerificationUseCase(email)) {
-                is AppResult.Success -> updateState {
-                    copy(isLoading = false, authStep = AuthStep.SignUpCodeConfirmation)
-                }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
-            }
-        }
-    }
-
-    /** 입력한 회원가입 인증번호를 서버에 확인받고, 성공하면 회원가입 입력 단계로 이동한다. */
-    private fun confirmSignupVerification() {
-        val currentState = _uiState.value
-        if (currentState.verificationCode.isBlank()) {
-            updateState { copy(errorMessage = "") }
-            return
-        }
-
-        viewModelScope.launch {
-            updateState { copy(isLoading = true, errorMessage = null) }
-            when (confirmSignupVerificationUseCase(currentState.email, currentState.verificationCode)) {
-                is AppResult.Success -> updateState {
-                    copy(isLoading = false, authStep = AuthStep.SignUp)
                 }
                 else -> updateState { copy(isLoading = false, errorMessage = "") }
             }
@@ -262,4 +305,41 @@ class AuthViewModel @Inject constructor(
     private fun updateState(transform: AuthUiState.() -> AuthUiState) {
         _uiState.value = _uiState.value.transform()
     }
+}
+
+private const val VERIFICATION_CODE_LENGTH = 6
+
+/** 화면 표시용 학과명을 회원가입 API의 고정 코드로 변환한다. */
+private fun String.toMajorCode(): String? {
+    return when (this) {
+        "소프트웨어개발과" -> "SOFTWARE"
+        "IoT과" -> "IOT"
+        "AI과" -> "AI"
+        else -> null
+    }
+}
+
+/** 화면 표시용 기수에서 서버가 요구하는 숫자만 추출한다. */
+private fun String.toCohort(): Int? {
+    return filter(Char::isDigit).toIntOrNull()
+}
+
+private fun String.invalidSchoolEmailError(): SignupInputError? {
+    return if (isValidSchoolEmail()) null else SignupInputError.InvalidSchoolEmail
+}
+
+private fun String.invalidUsernameError(): SignupInputError? {
+    return if (isValidUsername()) null else SignupInputError.InvalidUsername
+}
+
+private fun String.requiredGenerationError(): SignupInputError? {
+    return if (isNotBlank()) null else SignupInputError.GenerationRequired
+}
+
+private fun String.invalidSignupPasswordError(): SignupInputError? {
+    return if (isValidSignupPassword()) null else SignupInputError.InvalidPassword
+}
+
+private fun String.invalidVerificationCodeError(): SignupInputError? {
+    return if (length == VERIFICATION_CODE_LENGTH) null else SignupInputError.InvalidVerificationCode
 }

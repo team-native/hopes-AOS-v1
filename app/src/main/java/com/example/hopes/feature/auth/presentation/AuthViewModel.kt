@@ -7,6 +7,7 @@ import com.example.hopes.core.validation.isValidSignupPassword
 import com.example.hopes.core.validation.isValidUsername
 import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.result.AppResult
+import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
 import com.example.hopes.domain.usecase.ResetPasswordUseCase
@@ -32,6 +33,7 @@ class AuthViewModel @Inject constructor(
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
     private val resetPasswordUseCase: ResetPasswordUseCase,
     private val sendSignupVerificationUseCase: SendSignupVerificationUseCase,
+    private val confirmSignupVerificationUseCase: ConfirmSignupVerificationUseCase,
     private val signUpUseCase: SignUpUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -226,6 +228,17 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
+
+            // "회원가입" 클릭 한 번으로 인증번호 확인과 최종 가입 요청을 순서대로 처리한다.
+            // 인증번호 확인이 실패하면 나머지 입력값은 전송하지 않는다.
+            when (confirmSignupVerificationUseCase(currentState.email, currentState.verificationCode)) {
+                is AppResult.Success -> Unit
+                else -> {
+                    updateState { copy(isLoading = false, errorMessage = "") }
+                    return@launch
+                }
+            }
+
             // 회원가입 화면에는 별도의 비밀번호 확인 입력칸이 없어, 같은 비밀번호 값을 확인란으로도 함께 전송한다.
             val request = SignUpRequest(
                 email = currentState.email,

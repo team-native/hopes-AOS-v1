@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +33,10 @@ fun FigmaPhoneScreen(
     navigationBarColor: Color? = null,
     useFigmaViewport: Boolean = true,
     isScrollable: Boolean = true,
+    // 배경은 시스템바 뒤까지 그려진 채로 유지하고, 이 값이 true면 콘텐츠에만
+    // statusBarsPadding을 적용해 화면마다 직접 상태바 인셋을 처리하지 않아도 된다.
+    // 네비게이션 바 쪽은 패딩하지 않아, 시트 등 하단 콘텐츠가 네비바 영역까지 표시된다.
+    applyStatusBarsPadding: Boolean = false,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -92,7 +97,9 @@ fun FigmaPhoneScreen(
             }
         } else {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (applyStatusBarsPadding) Modifier.statusBarsPadding() else Modifier),
                 contentAlignment = Alignment.TopCenter,
             ) {
                 content()

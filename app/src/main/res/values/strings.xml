@@ -113,7 +113,6 @@
     <string name="signup_name_hint">임서하</string>
     <string name="signup_department_hint">학과 선택</string>
     <string name="signup_generation_hint">기수 선택</string>
-    <string name="signup_dropdown_symbol">⌄</string>
     <string name="signup_department_dialog_title">학과 선택</string>
     <string name="signup_department_software">소프트웨어개발과</string>
     <string name="signup_department_iot">IoT과</string>

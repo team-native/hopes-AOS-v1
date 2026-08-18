@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -148,23 +148,28 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
-    val sheetTopOffset = remember { Animatable(684f) }
     val animationScope = rememberCoroutineScope()
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
+        applyStatusBarsPadding = true,
         background = {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        // 시트가 실제 사용 가능 높이와 무관하게 항상 190dp만 노출되도록, 접힌 상태의
+        // top 오프셋을 컨테이너 높이 기준으로 계산한다.
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val dismissedTopOffset = maxHeight.value - 190f
+            val sheetTopOffset = remember(dismissedTopOffset) { Animatable(dismissedTopOffset) }
+
             FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 25.dp))
             AuthHeroCopy()
 
-            if (sheetTopOffset.value > 520f) {
-                SwipeHint(extendedColors = extendedColors)
+            if (sheetTopOffset.value > dismissedTopOffset - 164f) {
+                SwipeHint(extendedColors = extendedColors, sheetTopOffset = dismissedTopOffset)
             }
 
             // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 시트를 확장한다.
@@ -181,17 +186,17 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                                     sheetTopOffset.snapTo(
                                         (sheetTopOffset.value + with(guideDensity) {
                                             dragAmount.y.toDp().value
-                                        }).coerceIn(372f, 684f),
+                                        }).coerceIn(372f, dismissedTopOffset),
                                     )
                                 }
                             },
                             onDragEnd = {
                                 animationScope.launch {
-                                    if (sheetTopOffset.value < 540f) {
+                                    if (sheetTopOffset.value < dismissedTopOffset - 144f) {
                                         sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
                                         onNavigateLogin()
                                     } else {
-                                        sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
+                                        sheetTopOffset.animateTo(dismissedTopOffset, tween(durationMillis = 180))
                                     }
                                 }
                             },
@@ -246,17 +251,17 @@ private fun LoginSheetScreen(
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
+        applyStatusBarsPadding = true,
         navigationBarColor = MaterialTheme.colorScheme.surface,
         background = {
             // Figma의 배경은 선명한 그라디언트이고, 전경 브랜드/카피에만 8px 블러가 적용된다.
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더만 시스템 영역 안쪽으로 배치한다.
+        // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더는 FigmaPhoneScreen이 적용하는
+        // statusBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             // 시트 좌표는 피그마 874dp 프레임 기준이라, 실제 사용 가능 높이와의 차이만큼 보정해야
             // 기기별로 시트 콘텐츠(로그인 버튼, 비밀번호를 잊으셨나요 링크 등)가 화면 아래로 잘리지 않는다.
@@ -337,7 +342,8 @@ private fun AuthBackground(modifier: Modifier = Modifier) {
 private fun AuthHeroCopy() {
     val extendedColors = LocalHopesExtendedColors.current
 
-    Column(modifier = Modifier.padding(start = 32.dp, top = 286.dp).width(318.dp)) {
+    // 헤더(top 25dp, height 42dp)의 하단(67dp) 기준으로 74dp 간격을 두도록 배치한다.
+    Column(modifier = Modifier.padding(start = 32.dp, top = 141.dp).width(318.dp)) {
         Text(
             text = stringResource(R.string.auth_title),
             color = MaterialTheme.colorScheme.onPrimary,
@@ -363,12 +369,17 @@ private fun AuthHeroCopy() {
 }
 
 @Composable
-private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedColors) {
+private fun SwipeHint(
+    extendedColors: com.example.hopes.ui.theme.HopesExtendedColors,
+    sheetTopOffset: Float,
+) {
+    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소를 배치하되, 히어로 설명과의
+    // 간격이 234dp에서 214dp(20dp 축소)가 되도록 오프셋을 30dp씩 늘려 위로 당긴다.
     Image(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = 581.dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 133f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -377,7 +388,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = 563.dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 151f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -385,7 +396,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
-            .padding(top = 621.dp)
+            .padding(top = (sheetTopOffset - 93f).dp)
             .fillMaxWidth(),
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -397,7 +408,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe),
         modifier = Modifier
-            .padding(top = 651.dp)
+            .padding(top = (sheetTopOffset - 63f).dp)
             .fillMaxWidth(),
         color = extendedColors.authDescription,
         textAlign = TextAlign.Center,
@@ -572,19 +583,26 @@ private fun AuthFormScreen(
     val signupGenerationHint = stringResource(R.string.signup_generation_hint)
 
     // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
-    FigmaPhoneScreen(useFigmaViewport = false) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .systemBarsPadding(),
-        ) {
-        // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
-        Box(modifier = Modifier.padding(top = keyboardLift)) {
+    FigmaPhoneScreen(
+        useFigmaViewport = false,
+        applyStatusBarsPadding = true,
+        background = {
+            // 배경은 시스템바 뒤까지 유지하고, 콘텐츠는 FigmaPhoneScreen이 적용하는
+            // statusBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
+            val statusBarHeight = with(LocalDensity.current) {
+                WindowInsets.statusBars.getTop(this).toDp()
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
+            )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp)
+                    // 콘텐츠 좌표계 기준 250dp를 유지하도록 상태바 높이만큼 더 그린다.
+                    .height(250.dp + statusBarHeight)
                     .background(
                         Brush.verticalGradient(
                             listOf(
@@ -594,62 +612,67 @@ private fun AuthFormScreen(
                         ),
                     ),
             )
-            FigmaBrandHeader(
-                modifier = Modifier.padding(start = 32.dp, top = 25.dp),
-                isOnBlueBackground = true,
-            )
-            Text(
-                text = stringResource(R.string.signup_hero_title),
-                modifier = Modifier.padding(start = 32.dp, top = 154.dp).width(260.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
-            )
-            // 헤더와 가입 버튼 사이를 1f로 사용해 카드의 세로 비율을 유지한다.
-            Column(
-                modifier = Modifier
-                    .padding(start = 24.dp, top = 276.dp)
-                    .width(354.dp)
-                    .height(474.dp),
-            ) {
-                SignupFormCard(
-                    modifier = Modifier.weight(1f),
-                    emailText = emailText,
-                    passwordText = passwordText,
-                    nameText = nameText.orEmpty(),
-                    departmentText = departmentText,
-                    generationText = generationText,
-                    verificationCodeText = verificationCodeText,
-                    signupValidation = signupValidation,
-                    isSending = isLoading,
-                    errorMessage = errorMessage,
-                    emailHint = signupEmailHint,
-                    nameHint = signupNameHint,
-                    departmentHint = signupDepartmentHint,
-                    generationHint = signupGenerationHint,
-                    isSignupEnabled = isSignupEnabled,
-                    onEmailChange = onEmailChange,
-                    onPasswordChange = onPasswordChange,
-                    onNameChange = onNameChange,
-                    onDepartmentClick = onDepartmentClick,
-                    onGenerationClick = onGenerationClick,
-                    onVerificationCodeChange = onVerificationCodeChange,
-                    onSendVerificationCodeClick = onSendVerificationCodeClick,
-                    onSignupClick = onActionClick,
+        },
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
+            Box(modifier = Modifier.padding(top = keyboardLift)) {
+                FigmaBrandHeader(
+                    modifier = Modifier.padding(start = 32.dp, top = 25.dp),
+                    isOnBlueBackground = true,
                 )
-                Spacer(modifier = Modifier.height(42.dp))
-                SignupActionButton(
-                    isEnabled = isSignupEnabled,
-                    onClick = onActionClick,
+                Text(
+                    text = stringResource(R.string.signup_hero_title),
+                    modifier = Modifier.padding(start = 32.dp, top = 154.dp).width(260.dp),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = TextStyle(fontSize = 28.sp, fontWeight = FontWeight.Bold, lineHeight = 35.sp),
+                )
+                // 헤더와 가입 버튼 사이를 1f로 사용해 카드의 세로 비율을 유지한다.
+                Column(
+                    modifier = Modifier
+                        .padding(start = 24.dp, top = 276.dp)
+                        .width(354.dp)
+                        .height(474.dp),
+                ) {
+                    SignupFormCard(
+                        modifier = Modifier.weight(1f),
+                        emailText = emailText,
+                        passwordText = passwordText,
+                        nameText = nameText.orEmpty(),
+                        departmentText = departmentText,
+                        generationText = generationText,
+                        verificationCodeText = verificationCodeText,
+                        signupValidation = signupValidation,
+                        isSending = isLoading,
+                        errorMessage = errorMessage,
+                        emailHint = signupEmailHint,
+                        nameHint = signupNameHint,
+                        departmentHint = signupDepartmentHint,
+                        generationHint = signupGenerationHint,
+                        isSignupEnabled = isSignupEnabled,
+                        onEmailChange = onEmailChange,
+                        onPasswordChange = onPasswordChange,
+                        onNameChange = onNameChange,
+                        onDepartmentClick = onDepartmentClick,
+                        onGenerationClick = onGenerationClick,
+                        onVerificationCodeChange = onVerificationCodeChange,
+                        onSendVerificationCodeClick = onSendVerificationCodeClick,
+                        onSignupClick = onActionClick,
+                    )
+                    Spacer(modifier = Modifier.height(42.dp))
+                    SignupActionButton(
+                        isEnabled = isSignupEnabled,
+                        onClick = onActionClick,
+                    )
+                }
+                Text(
+                    text = stringResource(R.string.has_account),
+                    modifier = Modifier.padding(top = 760.dp).fillMaxWidth().clickable(onClick = onFooterClick),
+                    color = extendedColors.authFieldHint,
+                    textAlign = TextAlign.Center,
+                    style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
                 )
             }
-            Text(
-                text = stringResource(R.string.has_account),
-                modifier = Modifier.padding(top = 760.dp).fillMaxWidth().clickable(onClick = onFooterClick),
-                color = extendedColors.authFieldHint,
-                textAlign = TextAlign.Center,
-                style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
-            )
-        }
         }
     }
 }

@@ -7,6 +7,7 @@ import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
+import com.example.hopes.domain.usecase.ResetPasswordUseCase
 import com.example.hopes.domain.usecase.SendSignupVerificationUseCase
 import com.example.hopes.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,7 @@ sealed interface AuthEffect {
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
+    private val resetPasswordUseCase: ResetPasswordUseCase,
     private val sendSignupVerificationUseCase: SendSignupVerificationUseCase,
     private val confirmSignupVerificationUseCase: ConfirmSignupVerificationUseCase,
     private val signUpUseCase: SignUpUseCase,
@@ -72,9 +74,26 @@ class AuthViewModel @Inject constructor(
             is AuthScreenEvent.PasswordResetEmailChanged -> updateState {
                 copy(passwordResetEmail = event.value, errorMessage = null, statusMessage = null)
             }
+            is AuthScreenEvent.PasswordResetCodeChanged -> updateState {
+                copy(passwordResetCode = event.value, errorMessage = null)
+            }
+            is AuthScreenEvent.PasswordResetNewPasswordChanged -> updateState {
+                copy(passwordResetNewPassword = event.value, errorMessage = null)
+            }
+            is AuthScreenEvent.PasswordResetNewPasswordConfirmChanged -> updateState {
+                copy(passwordResetNewPasswordConfirm = event.value, errorMessage = null)
+            }
             AuthScreenEvent.PasswordResetRequestClicked -> requestPasswordReset()
+            AuthScreenEvent.PasswordResetSubmitClicked -> resetPassword()
             AuthScreenEvent.PasswordResetBackClicked -> updateState {
-                copy(authStep = AuthStep.Login, errorMessage = null, statusMessage = null)
+                copy(
+                    authStep = AuthStep.Login,
+                    errorMessage = null,
+                    statusMessage = null,
+                    passwordResetCode = "",
+                    passwordResetNewPassword = "",
+                    passwordResetNewPasswordConfirm = "",
+                )
             }
             AuthScreenEvent.SendSignupVerificationClicked -> sendSignupVerification()
             AuthScreenEvent.SignUpEmailVerificationBackClicked -> updateState {
@@ -153,6 +172,49 @@ class AuthViewModel @Inject constructor(
             when (requestPasswordResetUseCase(email)) {
                 is AppResult.Success -> updateState {
                     copy(isLoading = false, statusMessage = "")
+                }
+                else -> updateState { copy(isLoading = false, errorMessage = "") }
+            }
+        }
+    }
+
+    /** 인증번호와 새 비밀번호를 서버에 제출해 비밀번호 재설정을 완료하고, 성공하면 로그인 단계로 되돌아간다. */
+    private fun resetPassword() {
+        val currentState = _uiState.value
+        val isValid = currentState.passwordResetCode.isNotBlank() &&
+            currentState.passwordResetNewPassword.isNotBlank() &&
+            currentState.passwordResetNewPasswordConfirm.isNotBlank()
+
+        if (!isValid) {
+            updateState { copy(errorMessage = "") }
+            return
+        }
+
+        if (currentState.passwordResetNewPassword != currentState.passwordResetNewPasswordConfirm) {
+            updateState { copy(errorMessage = "") }
+            return
+        }
+
+        viewModelScope.launch {
+            updateState { copy(isLoading = true, errorMessage = null) }
+            when (
+                resetPasswordUseCase(
+                    email = currentState.passwordResetEmail,
+                    code = currentState.passwordResetCode,
+                    password = currentState.passwordResetNewPassword,
+                    passwordConfirm = currentState.passwordResetNewPasswordConfirm,
+                )
+            ) {
+                is AppResult.Success -> updateState {
+                    copy(
+                        isLoading = false,
+                        authStep = AuthStep.Login,
+                        passwordResetEmail = "",
+                        passwordResetCode = "",
+                        passwordResetNewPassword = "",
+                        passwordResetNewPasswordConfirm = "",
+                        statusMessage = null,
+                    )
                 }
                 else -> updateState { copy(isLoading = false, errorMessage = "") }
             }

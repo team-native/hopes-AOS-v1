@@ -124,6 +124,7 @@
     <string name="verification_code">인증번호</string>
     <string name="confirm_verification_code">확인</string>
     <string name="password_confirm">비밀번호 확인</string>
+    <string name="password_reset_complete">완료</string>
     <string name="signup_email_verification_title">이메일 인증</string>
     <string name="signup_email_verification_subtitle">학교 이메일로 인증번호를 받아주세요.</string>
     <string name="signup_code_confirmation_title">인증번호 입력</string>

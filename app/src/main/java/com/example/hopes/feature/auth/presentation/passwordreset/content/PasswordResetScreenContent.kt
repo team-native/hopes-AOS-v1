@@ -29,6 +29,9 @@ fun PasswordResetScreenContent(
     uiState: PasswordResetUiState,
     onEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
+    // 인증번호 발송에 성공하면 statusMessage가 채워지며, 이후 화면은 인증번호/새 비밀번호 제출 모드로 전환된다.
+    val isCodeRequested = uiState.statusMessage != null
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -57,25 +60,85 @@ fun PasswordResetScreenContent(
             modifier = Modifier.fillMaxWidth(),
         )
 
-        if (uiState.statusMessage != null || uiState.errorMessage != null) {
+        if (uiState.errorMessage != null || uiState.statusMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
+            // 인증번호 발송 성공 후 재설정 제출이 실패하는 경우도 있으므로, 에러가 있으면 항상 에러 문구를 우선 표시한다.
             AuthStatusText(
-                message = if (uiState.statusMessage != null) {
-                    stringResource(R.string.verification_sent_message)
-                } else {
+                message = if (uiState.errorMessage != null) {
                     stringResource(R.string.generic_error_message)
+                } else {
+                    stringResource(R.string.verification_sent_message)
                 },
-                isError = uiState.statusMessage == null,
+                isError = uiState.errorMessage != null,
             )
         }
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        AuthFieldLabel(labelRes = R.string.verification_code)
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        FigmaAuthTextField(
+            value = uiState.code,
+            onValueChange = { value -> onEvent(PasswordResetScreenEvent.CodeChanged(value)) },
+            labelRes = R.string.verification_code,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        AuthFieldLabel(labelRes = R.string.password)
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        FigmaAuthTextField(
+            value = uiState.newPassword,
+            onValueChange = { value -> onEvent(PasswordResetScreenEvent.NewPasswordChanged(value)) },
+            labelRes = R.string.password,
+            isPassword = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        AuthFieldLabel(labelRes = R.string.password_confirm)
+
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+        FigmaAuthTextField(
+            value = uiState.newPasswordConfirm,
+            onValueChange = { value -> onEvent(PasswordResetScreenEvent.NewPasswordConfirmChanged(value)) },
+            labelRes = R.string.password_confirm,
+            isPassword = true,
+            onImeAction = { onEvent(PasswordResetScreenEvent.SubmitClicked) },
+            modifier = Modifier.fillMaxWidth(),
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
         AuthPrimaryActionButton(
-            text = stringResource(R.string.request_verification_code),
-            isEnabled = uiState.email.isNotBlank() && !uiState.isLoading,
-            onClick = { onEvent(PasswordResetScreenEvent.RequestCodeClicked) },
+            text = stringResource(
+                if (isCodeRequested) R.string.password_reset_complete else R.string.request_verification_code,
+            ),
+            isEnabled = if (isCodeRequested) {
+                uiState.code.isNotBlank() &&
+                    uiState.newPassword.isNotBlank() &&
+                    uiState.newPasswordConfirm.isNotBlank() &&
+                    !uiState.isLoading
+            } else {
+                uiState.email.isNotBlank() && !uiState.isLoading
+            },
+            onClick = {
+                onEvent(
+                    if (isCodeRequested) {
+                        PasswordResetScreenEvent.SubmitClicked
+                    } else {
+                        PasswordResetScreenEvent.RequestCodeClicked
+                    },
+                )
+            },
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.Section))

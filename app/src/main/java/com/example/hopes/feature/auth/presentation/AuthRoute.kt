@@ -51,6 +51,9 @@ fun AuthRoute(
         onForgotPasswordClick = { viewModel.onEvent(AuthScreenEvent.ForgotPasswordClicked) },
         passwordResetUiState = PasswordResetUiState(
             email = uiState.value.passwordResetEmail,
+            code = uiState.value.passwordResetCode,
+            newPassword = uiState.value.passwordResetNewPassword,
+            newPasswordConfirm = uiState.value.passwordResetNewPasswordConfirm,
             isLoading = uiState.value.isLoading,
             errorMessage = uiState.value.errorMessage,
             statusMessage = uiState.value.statusMessage,
@@ -59,8 +62,16 @@ fun AuthRoute(
             when (event) {
                 is PasswordResetScreenEvent.EmailChanged ->
                     viewModel.onEvent(AuthScreenEvent.PasswordResetEmailChanged(event.value))
+                is PasswordResetScreenEvent.CodeChanged ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetCodeChanged(event.value))
+                is PasswordResetScreenEvent.NewPasswordChanged ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetNewPasswordChanged(event.value))
+                is PasswordResetScreenEvent.NewPasswordConfirmChanged ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetNewPasswordConfirmChanged(event.value))
                 PasswordResetScreenEvent.RequestCodeClicked ->
                     viewModel.onEvent(AuthScreenEvent.PasswordResetRequestClicked)
+                PasswordResetScreenEvent.SubmitClicked ->
+                    viewModel.onEvent(AuthScreenEvent.PasswordResetSubmitClicked)
                 PasswordResetScreenEvent.BackClicked ->
                     viewModel.onEvent(AuthScreenEvent.PasswordResetBackClicked)
             }

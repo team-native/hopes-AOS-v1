@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -247,17 +246,17 @@ private fun LoginSheetScreen(
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
+        applySystemBarsPadding = true,
         navigationBarColor = MaterialTheme.colorScheme.surface,
         background = {
             // Figma의 배경은 선명한 그라디언트이고, 전경 브랜드/카피에만 8px 블러가 적용된다.
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더만 시스템 영역 안쪽으로 배치한다.
+        // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더는 FigmaPhoneScreen이 적용하는
+        // systemBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
         BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             // 시트 좌표는 피그마 874dp 프레임 기준이라, 실제 사용 가능 높이와의 차이만큼 보정해야
             // 기기별로 시트 콘텐츠(로그인 버튼, 비밀번호를 잊으셨나요 링크 등)가 화면 아래로 잘리지 않는다.
@@ -575,8 +574,10 @@ private fun AuthFormScreen(
     // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
     FigmaPhoneScreen(
         useFigmaViewport = false,
+        applySystemBarsPadding = true,
         background = {
-            // 배경은 시스템바 뒤까지 유지하고, 콘텐츠만 시스템 영역 안쪽으로 배치한다.
+            // 배경은 시스템바 뒤까지 유지하고, 콘텐츠는 FigmaPhoneScreen이 적용하는
+            // systemBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
             val statusBarHeight = with(LocalDensity.current) {
                 WindowInsets.statusBars.getTop(this).toDp()
             }
@@ -602,11 +603,7 @@ private fun AuthFormScreen(
             )
         },
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .systemBarsPadding(),
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
             Box(modifier = Modifier.padding(top = keyboardLift)) {
                 FigmaBrandHeader(

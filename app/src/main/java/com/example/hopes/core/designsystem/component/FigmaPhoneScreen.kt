@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -32,6 +33,9 @@ fun FigmaPhoneScreen(
     navigationBarColor: Color? = null,
     useFigmaViewport: Boolean = true,
     isScrollable: Boolean = true,
+    // 배경은 시스템바 뒤까지 그려진 채로 유지하고, 이 값이 true면 콘텐츠에만
+    // systemBarsPadding을 적용해 화면마다 직접 시스템바 인셋을 처리하지 않아도 된다.
+    applySystemBarsPadding: Boolean = false,
     background: @Composable BoxScope.() -> Unit = {
         Box(
             modifier = Modifier
@@ -92,7 +96,9 @@ fun FigmaPhoneScreen(
             }
         } else {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(if (applySystemBarsPadding) Modifier.systemBarsPadding() else Modifier),
                 contentAlignment = Alignment.TopCenter,
             ) {
                 content()

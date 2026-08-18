@@ -50,7 +50,6 @@ fun ChatDetailScreenContent(
                 onBackClick = { onEvent(ChatDetailScreenEvent.BackClicked) },
                 actionText = stringResource(R.string.chat_save),
                 onActionClick = {},
-                backOffsetX = 19,
                 headerHeight = 60.dp,
                 applySystemBarPadding = true,
                 subtitleSpacing = 3.dp,

@@ -3,6 +3,7 @@ package com.example.hopes.feature.auth.presentation.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaBackButton
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
@@ -23,7 +25,11 @@ fun AuthStepHeader(
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        FigmaBackButton(onClick = onBackClick)
+        // 뒤로가기 버튼만 화면 공용 좌우 여백(24dp)이 아닌 18dp 기준선에 맞춘다.
+        FigmaBackButton(
+            modifier = Modifier.offset(x = 18.dp - AppSpacing.ScreenHorizontal),
+            onClick = onBackClick,
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 

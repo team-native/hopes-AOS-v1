@@ -148,7 +148,6 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
-    val sheetTopOffset = remember { Animatable(684f) }
     val animationScope = rememberCoroutineScope()
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
@@ -160,12 +159,17 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        // 시트가 실제 사용 가능 높이와 무관하게 항상 190dp만 노출되도록, 접힌 상태의
+        // top 오프셋을 컨테이너 높이 기준으로 계산한다.
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            val dismissedTopOffset = maxHeight.value - 190f
+            val sheetTopOffset = remember(dismissedTopOffset) { Animatable(dismissedTopOffset) }
+
             FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 25.dp))
             AuthHeroCopy()
 
-            if (sheetTopOffset.value > 520f) {
-                SwipeHint(extendedColors = extendedColors)
+            if (sheetTopOffset.value > dismissedTopOffset - 164f) {
+                SwipeHint(extendedColors = extendedColors, sheetTopOffset = dismissedTopOffset)
             }
 
             // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 시트를 확장한다.
@@ -182,17 +186,17 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                                     sheetTopOffset.snapTo(
                                         (sheetTopOffset.value + with(guideDensity) {
                                             dragAmount.y.toDp().value
-                                        }).coerceIn(372f, 684f),
+                                        }).coerceIn(372f, dismissedTopOffset),
                                     )
                                 }
                             },
                             onDragEnd = {
                                 animationScope.launch {
-                                    if (sheetTopOffset.value < 540f) {
+                                    if (sheetTopOffset.value < dismissedTopOffset - 144f) {
                                         sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
                                         onNavigateLogin()
                                     } else {
-                                        sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
+                                        sheetTopOffset.animateTo(dismissedTopOffset, tween(durationMillis = 180))
                                     }
                                 }
                             },
@@ -365,12 +369,16 @@ private fun AuthHeroCopy() {
 }
 
 @Composable
-private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedColors) {
+private fun SwipeHint(
+    extendedColors: com.example.hopes.ui.theme.HopesExtendedColors,
+    sheetTopOffset: Float,
+) {
+    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소가 시트 바로 위에 놓이도록 배치한다.
     Image(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = 581.dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 103f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -379,7 +387,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = 563.dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 121f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -387,7 +395,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
-            .padding(top = 621.dp)
+            .padding(top = (sheetTopOffset - 63f).dp)
             .fillMaxWidth(),
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -399,7 +407,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe),
         modifier = Modifier
-            .padding(top = 651.dp)
+            .padding(top = (sheetTopOffset - 33f).dp)
             .fillMaxWidth(),
         color = extendedColors.authDescription,
         textAlign = TextAlign.Center,

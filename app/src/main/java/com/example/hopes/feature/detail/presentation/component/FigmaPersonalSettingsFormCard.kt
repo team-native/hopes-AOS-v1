@@ -25,6 +25,7 @@ fun FigmaPersonalSettingsFormCard(
     FigmaDetailCard(
         modifier = Modifier
             .padding(start = 24.dp, top = 158.dp)
+            .width(354.dp)
             .height(408.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {

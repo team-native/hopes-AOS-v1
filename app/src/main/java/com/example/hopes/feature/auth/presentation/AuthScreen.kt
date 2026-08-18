@@ -78,15 +78,6 @@ import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetSc
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
-// 헤더-타이틀, 타이틀-설명, 설명-스와이프힌트 간격을 모두 동일하게 맞추기 위한 값이다.
-// (Section 토큰 24dp와 기존 최소 간격 13dp의 평균)
-private const val COMPONENT_GAP = 18.5f
-private const val HEADER_BOTTOM = 67f // 헤더 top 25dp + height 42dp
-private const val HERO_TITLE_HEIGHT = 117f // auth_title 3줄 × lineHeight 39sp
-private const val HERO_DESCRIPTION_HEIGHT = 48f // auth_description 2줄 × lineHeight 24sp
-private const val HERO_TOP = HEADER_BOTTOM + COMPONENT_GAP
-private const val HERO_BOTTOM = HERO_TOP + HERO_TITLE_HEIGHT + COMPONENT_GAP + HERO_DESCRIPTION_HEIGHT
-
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
 @Composable
 fun AuthScreen(
@@ -178,7 +169,7 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             AuthHeroCopy()
 
             if (sheetTopOffset.value > dismissedTopOffset - 164f) {
-                SwipeHint(extendedColors = extendedColors)
+                SwipeHint(extendedColors = extendedColors, sheetTopOffset = dismissedTopOffset)
             }
 
             // 피그마의 안내 화면처럼 처음에는 190dp만 노출하고, 위로 끌수록 시트를 확장한다.
@@ -351,9 +342,10 @@ private fun AuthBackground(modifier: Modifier = Modifier) {
 private fun AuthHeroCopy() {
     val extendedColors = LocalHopesExtendedColors.current
 
-    // 헤더-타이틀, 타이틀-설명, 설명-스와이프힌트 세 간격을 모두 18.5dp로 통일한다.
-    // (24dp/13dp 두 후보 간격의 평균값)
-    Column(modifier = Modifier.padding(start = 32.dp, top = HERO_TOP.dp).width(318.dp)) {
+    // 헤더(top 25dp, height 42dp)의 하단(67dp) 기준으로 84dp 간격을 두도록 배치한다.
+    // 히어로 카피만 아래로 옮기고 SwipeHint 위치는 그대로 두어, 헤더와의 간격은 늘고
+    // SwipeHint와의 간격은 같은 폭(30dp)만큼 자연히 줄어들게 한다.
+    Column(modifier = Modifier.padding(start = 32.dp, top = 151.dp).width(318.dp)) {
         Text(
             text = stringResource(R.string.auth_title),
             color = MaterialTheme.colorScheme.onPrimary,
@@ -364,7 +356,7 @@ private fun AuthHeroCopy() {
             ),
         )
 
-        Spacer(modifier = Modifier.height(COMPONENT_GAP.dp))
+        Spacer(modifier = Modifier.height(13.dp))
 
         Text(
             text = stringResource(R.string.auth_description),
@@ -379,16 +371,16 @@ private fun AuthHeroCopy() {
 }
 
 @Composable
-private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedColors) {
-    // 히어로 카피 하단(HERO_BOTTOM) 기준으로 COMPONENT_GAP만큼 떨어진 위치에 배치해,
-    // 헤더-타이틀·타이틀-설명 간격과 동일한 간격을 유지한다.
-    val swipeHintTop = HERO_BOTTOM + COMPONENT_GAP
-
+private fun SwipeHint(
+    extendedColors: com.example.hopes.ui.theme.HopesExtendedColors,
+    sheetTopOffset: Float,
+) {
+    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소가 시트 바로 위에 놓이도록 배치한다.
     Image(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = (swipeHintTop + 18f).dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 103f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -397,7 +389,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = swipeHintTop.dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 121f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -405,7 +397,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
-            .padding(top = (swipeHintTop + 58f).dp)
+            .padding(top = (sheetTopOffset - 63f).dp)
             .fillMaxWidth(),
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -417,7 +409,7 @@ private fun SwipeHint(extendedColors: com.example.hopes.ui.theme.HopesExtendedCo
     Text(
         text = stringResource(R.string.auth_swipe),
         modifier = Modifier
-            .padding(top = (swipeHintTop + 88f).dp)
+            .padding(top = (sheetTopOffset - 33f).dp)
             .fillMaxWidth(),
         color = extendedColors.authDescription,
         textAlign = TextAlign.Center,

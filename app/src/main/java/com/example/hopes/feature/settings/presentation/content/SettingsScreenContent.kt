@@ -44,7 +44,7 @@ fun SettingsScreenContent(
         onNavigate = onNavigate,
     ) {
         FigmaBackButton(
-            modifier = Modifier.padding(start = 10.dp, top = 25.dp),
+            modifier = Modifier.padding(start = 18.dp, top = 25.dp),
             onClick = onBackClick,
         )
         Text(

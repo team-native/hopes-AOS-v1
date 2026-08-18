@@ -342,10 +342,8 @@ private fun AuthBackground(modifier: Modifier = Modifier) {
 private fun AuthHeroCopy() {
     val extendedColors = LocalHopesExtendedColors.current
 
-    // 헤더(top 25dp, height 42dp)의 하단(67dp) 기준으로 84dp 간격을 두도록 배치한다.
-    // 히어로 카피만 아래로 옮기고 SwipeHint 위치는 그대로 두어, 헤더와의 간격은 늘고
-    // SwipeHint와의 간격은 같은 폭(30dp)만큼 자연히 줄어들게 한다.
-    Column(modifier = Modifier.padding(start = 32.dp, top = 151.dp).width(318.dp)) {
+    // 헤더(top 25dp, height 42dp)의 하단(67dp) 기준으로 74dp 간격을 두도록 배치한다.
+    Column(modifier = Modifier.padding(start = 32.dp, top = 141.dp).width(318.dp)) {
         Text(
             text = stringResource(R.string.auth_title),
             color = MaterialTheme.colorScheme.onPrimary,
@@ -375,12 +373,13 @@ private fun SwipeHint(
     extendedColors: com.example.hopes.ui.theme.HopesExtendedColors,
     sheetTopOffset: Float,
 ) {
-    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소가 시트 바로 위에 놓이도록 배치한다.
+    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소를 배치하되, 히어로 설명과의
+    // 간격이 234dp에서 214dp(20dp 축소)가 되도록 오프셋을 30dp씩 늘려 위로 당긴다.
     Image(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = (sheetTopOffset - 103f).dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 133f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -389,7 +388,7 @@ private fun SwipeHint(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = (sheetTopOffset - 121f).dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 151f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -397,7 +396,7 @@ private fun SwipeHint(
     Text(
         text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
-            .padding(top = (sheetTopOffset - 63f).dp)
+            .padding(top = (sheetTopOffset - 93f).dp)
             .fillMaxWidth(),
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -409,7 +408,7 @@ private fun SwipeHint(
     Text(
         text = stringResource(R.string.auth_swipe),
         modifier = Modifier
-            .padding(top = (sheetTopOffset - 33f).dp)
+            .padding(top = (sheetTopOffset - 63f).dp)
             .fillMaxWidth(),
         color = extendedColors.authDescription,
         textAlign = TextAlign.Center,

@@ -246,8 +246,9 @@ private fun LoginSheetScreen(
     val animationScope = rememberCoroutineScope()
     val loginDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
-    val isImeVisible = WindowInsets.ime.getBottom(loginDensity) > 0
-    val keyboardLift = if (isImeVisible) 126.dp else 0.dp
+    // 고정값 대신 실제 키보드 높이를 그대로 사용해 기기·키보드 앱에 따라 달라지는
+    // 높이 차이에도 정확히 대응한다.
+    val keyboardLift = with(loginDensity) { WindowInsets.ime.getBottom(loginDensity).toDp() }
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
@@ -373,13 +374,13 @@ private fun SwipeHint(
     extendedColors: com.example.hopes.ui.theme.HopesExtendedColors,
     sheetTopOffset: Float,
 ) {
-    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소를 배치하되, 히어로 설명과의
-    // 간격이 234dp에서 214dp(20dp 축소)가 되도록 오프셋을 30dp씩 늘려 위로 당긴다.
+    // 접힌 시트 상단(sheetTopOffset) 기준으로 각 요소를 배치하되, 설명 컴포넌트와의
+    // 간격을 기존보다 20dp 줄이기 위해 오프셋을 20dp씩 늘려 위로 당긴다.
     Image(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = (sheetTopOffset - 133f).dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 123f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -388,7 +389,7 @@ private fun SwipeHint(
         painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
         contentDescription = null,
         modifier = Modifier
-            .padding(start = 181.dp, top = (sheetTopOffset - 151f).dp)
+            .padding(start = 181.dp, top = (sheetTopOffset - 141f).dp)
             .width(22.dp)
             .height(39.dp)
             .rotate(90f),
@@ -396,7 +397,7 @@ private fun SwipeHint(
     Text(
         text = stringResource(R.string.auth_swipe_title),
         modifier = Modifier
-            .padding(top = (sheetTopOffset - 93f).dp)
+            .padding(top = (sheetTopOffset - 83f).dp)
             .fillMaxWidth(),
         color = MaterialTheme.colorScheme.onPrimary,
         textAlign = TextAlign.Center,
@@ -408,7 +409,7 @@ private fun SwipeHint(
     Text(
         text = stringResource(R.string.auth_swipe),
         modifier = Modifier
-            .padding(top = (sheetTopOffset - 63f).dp)
+            .padding(top = (sheetTopOffset - 53f).dp)
             .fillMaxWidth(),
         color = extendedColors.authDescription,
         textAlign = TextAlign.Center,
@@ -574,8 +575,9 @@ private fun AuthFormScreen(
 ) {
     val extendedColors = LocalHopesExtendedColors.current
     val signupDensity = LocalDensity.current
-    val isImeVisible = WindowInsets.ime.getBottom(signupDensity) > 0
-    val keyboardLift = if (isImeVisible) (-120).dp else 0.dp
+    // 고정값 대신 실제 키보드 높이를 그대로 사용해 기기·키보드 앱에 따라 달라지는
+    // 높이 차이에도 정확히 대응한다.
+    val keyboardLift = -with(signupDensity) { WindowInsets.ime.getBottom(signupDensity).toDp() }
     val isSignupEnabled = !isLoading
     val signupEmailHint = stringResource(R.string.signup_email_hint)
     val signupNameHint = stringResource(R.string.signup_name_hint)

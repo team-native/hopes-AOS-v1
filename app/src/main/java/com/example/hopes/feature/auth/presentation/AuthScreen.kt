@@ -155,6 +155,7 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
+        applySystemBarsPadding = true,
         background = {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },

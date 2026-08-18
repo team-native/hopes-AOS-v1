@@ -155,7 +155,7 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
-        applySystemBarsPadding = true,
+        applyStatusBarsPadding = true,
         background = {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
@@ -247,7 +247,7 @@ private fun LoginSheetScreen(
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
-        applySystemBarsPadding = true,
+        applyStatusBarsPadding = true,
         navigationBarColor = MaterialTheme.colorScheme.surface,
         background = {
             // Figma의 배경은 선명한 그라디언트이고, 전경 브랜드/카피에만 8px 블러가 적용된다.
@@ -255,7 +255,7 @@ private fun LoginSheetScreen(
         },
     ) {
         // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더는 FigmaPhoneScreen이 적용하는
-        // systemBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
+        // statusBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -338,7 +338,8 @@ private fun AuthBackground(modifier: Modifier = Modifier) {
 private fun AuthHeroCopy() {
     val extendedColors = LocalHopesExtendedColors.current
 
-    Column(modifier = Modifier.padding(start = 32.dp, top = 286.dp).width(318.dp)) {
+    // 상태바 패딩으로 헤더가 아래로 밀린 만큼 헤더-카피 간격을 20dp 줄여 보정한다.
+    Column(modifier = Modifier.padding(start = 32.dp, top = 266.dp).width(318.dp)) {
         Text(
             text = stringResource(R.string.auth_title),
             color = MaterialTheme.colorScheme.onPrimary,
@@ -575,10 +576,10 @@ private fun AuthFormScreen(
     // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
     FigmaPhoneScreen(
         useFigmaViewport = false,
-        applySystemBarsPadding = true,
+        applyStatusBarsPadding = true,
         background = {
             // 배경은 시스템바 뒤까지 유지하고, 콘텐츠는 FigmaPhoneScreen이 적용하는
-            // systemBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
+            // statusBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
             val statusBarHeight = with(LocalDensity.current) {
                 WindowInsets.statusBars.getTop(this).toDp()
             }

@@ -2,6 +2,7 @@ package com.example.hopes.feature.detail.presentation.content
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -37,7 +38,8 @@ fun MyPageScreenContent(
         )
         Column(
             modifier = Modifier
-                .padding(start = 24.dp, top = 147.dp)
+                .fillMaxWidth()
+                .padding(start = 24.dp, top = 147.dp, end = 24.dp)
                 .imePadding(),
         ) {
             FigmaMyPageAccountCard(email = uiState.email, major = uiState.major)

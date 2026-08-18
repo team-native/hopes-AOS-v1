@@ -3,7 +3,6 @@ package com.example.hopes.feature.detail.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,7 +18,7 @@ enum class FigmaDetailCardShadow {
     None,
 }
 
-/** 상세 화면에서 쓰는 354dp 폭 카드의 공통 테두리·그림자 표현이다. */
+/** 상세 화면 카드의 공통 테두리·그림자 표현이다. 폭은 호출부의 modifier가 결정한다. */
 @Composable
 fun FigmaDetailCard(
     modifier: Modifier,
@@ -29,7 +28,6 @@ fun FigmaDetailCard(
 ) {
     Box(
         modifier = modifier
-            .width(354.dp)
             .then(
                 when (shadowStyle) {
                     FigmaDetailCardShadow.Raised -> Modifier.figmaRaisedShadow(shape)

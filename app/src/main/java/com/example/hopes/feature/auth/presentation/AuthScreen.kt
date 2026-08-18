@@ -338,8 +338,8 @@ private fun AuthBackground(modifier: Modifier = Modifier) {
 private fun AuthHeroCopy() {
     val extendedColors = LocalHopesExtendedColors.current
 
-    // 상태바 패딩으로 헤더가 아래로 밀린 만큼 헤더-카피 간격을 20dp 줄여 보정한다.
-    Column(modifier = Modifier.padding(start = 32.dp, top = 266.dp).width(318.dp)) {
+    // 헤더(top 25dp, height 42dp)의 하단(67dp) 기준으로 54dp 간격을 두도록 배치한다.
+    Column(modifier = Modifier.padding(start = 32.dp, top = 121.dp).width(318.dp)) {
         Text(
             text = stringResource(R.string.auth_title),
             color = MaterialTheme.colorScheme.onPrimary,

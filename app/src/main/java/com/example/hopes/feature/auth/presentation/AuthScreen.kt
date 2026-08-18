@@ -148,6 +148,7 @@ fun AuthScreen(
 
 @Composable
 private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
+    val sheetTopOffset = remember { Animatable(684f) }
     val animationScope = rememberCoroutineScope()
     val guideDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
@@ -159,18 +160,11 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
             AuthBackground(modifier = Modifier.fillMaxSize())
         },
     ) {
-        // 시트 좌표는 피그마 874dp 프레임 기준이라, 시스템바 인셋 적용 후 실제 사용 가능
-        // 높이와의 차이만큼 보정해야 시트 콘텐츠(로그인 타이틀 등)가 화면 아래로 잘리지 않는다.
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-            val heightDelta = maxHeight.value - FIGMA_PHONE_HEIGHT
-            val expandedTopOffset = 372f + heightDelta
-            val dismissedTopOffset = 684f + heightDelta
-            val sheetTopOffset = remember(heightDelta) { Animatable(dismissedTopOffset) }
-
+        Box(modifier = Modifier.fillMaxSize()) {
             FigmaAuthBrandHeader(modifier = Modifier.padding(start = 32.dp, top = 25.dp))
             AuthHeroCopy()
 
-            if (sheetTopOffset.value > expandedTopOffset + 148f) {
+            if (sheetTopOffset.value > 520f) {
                 SwipeHint(extendedColors = extendedColors)
             }
 
@@ -188,17 +182,17 @@ private fun AuthGuideContent(onNavigateLogin: () -> Unit) {
                                     sheetTopOffset.snapTo(
                                         (sheetTopOffset.value + with(guideDensity) {
                                             dragAmount.y.toDp().value
-                                        }).coerceIn(expandedTopOffset, dismissedTopOffset),
+                                        }).coerceIn(372f, 684f),
                                     )
                                 }
                             },
                             onDragEnd = {
                                 animationScope.launch {
-                                    if (sheetTopOffset.value < expandedTopOffset + 168f) {
-                                        sheetTopOffset.animateTo(expandedTopOffset, tween(durationMillis = 180))
+                                    if (sheetTopOffset.value < 540f) {
+                                        sheetTopOffset.animateTo(372f, tween(durationMillis = 180))
                                         onNavigateLogin()
                                     } else {
-                                        sheetTopOffset.animateTo(dismissedTopOffset, tween(durationMillis = 180))
+                                        sheetTopOffset.animateTo(684f, tween(durationMillis = 180))
                                     }
                                 }
                             },

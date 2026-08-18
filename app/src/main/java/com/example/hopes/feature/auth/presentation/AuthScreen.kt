@@ -2,8 +2,6 @@ package com.example.hopes.feature.auth.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -24,7 +22,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -248,6 +246,8 @@ private fun LoginSheetScreen(
     val animationScope = rememberCoroutineScope()
     val loginDensity = LocalDensity.current
     val extendedColors = LocalHopesExtendedColors.current
+    val isImeVisible = WindowInsets.ime.getBottom(loginDensity) > 0
+    val keyboardLift = if (isImeVisible) 126.dp else 0.dp
 
     FigmaPhoneScreen(
         useFigmaViewport = false,
@@ -259,10 +259,9 @@ private fun LoginSheetScreen(
         },
     ) {
         // 배경은 시스템바 뒤까지 유지하고, 로그인 시트와 헤더는 FigmaPhoneScreen이 적용하는
-        // statusBarsPadding에 의해 시스템 영역 안쪽으로 배치된다. imePadding으로 키보드
-        // 높이만큼 사용 가능한 높이를 줄여, 수동 좌표 계산 없이 시트가 키보드 위로 올라오게 한다.
+        // statusBarsPadding에 의해 시스템 영역 안쪽으로 배치된다.
         BoxWithConstraints(
-            modifier = Modifier.fillMaxSize().imePadding(),
+            modifier = Modifier.fillMaxSize(),
         ) {
             // 시트 좌표는 피그마 874dp 프레임 기준이라, 실제 사용 가능 높이와의 차이만큼 보정해야
             // 기기별로 시트 콘텐츠(로그인 버튼, 비밀번호를 잊으셨나요 링크 등)가 화면 아래로 잘리지 않는다.
@@ -286,7 +285,7 @@ private fun LoginSheetScreen(
             )
             FigmaAuthSheet(
                 modifier = Modifier
-                    .padding(top = sheetTopOffset.value.dp)
+                    .padding(top = sheetTopOffset.value.dp - keyboardLift)
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .pointerInput(loginDensity) {
@@ -574,6 +573,9 @@ private fun AuthFormScreen(
     onFooterClick: () -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
+    val signupDensity = LocalDensity.current
+    val isImeVisible = WindowInsets.ime.getBottom(signupDensity) > 0
+    val keyboardLift = if (isImeVisible) (-120).dp else 0.dp
     val isSignupEnabled = !isLoading
     val signupEmailHint = stringResource(R.string.signup_email_hint)
     val signupNameHint = stringResource(R.string.signup_name_hint)
@@ -612,15 +614,9 @@ private fun AuthFormScreen(
             )
         },
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                // 키보드가 열리면 imePadding이 하단 공간을 확보하고, 포커스된 필드는
-                // verticalScroll을 통해 자동으로 보이는 영역까지 스크롤된다.
-                .verticalScroll(rememberScrollState())
-                .imePadding(),
-        ) {
-            Box {
+        Box(modifier = Modifier.fillMaxSize()) {
+            // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
+            Box(modifier = Modifier.padding(top = keyboardLift)) {
                 FigmaBrandHeader(
                     modifier = Modifier.padding(start = 32.dp, top = 25.dp),
                     isOnBlueBackground = true,

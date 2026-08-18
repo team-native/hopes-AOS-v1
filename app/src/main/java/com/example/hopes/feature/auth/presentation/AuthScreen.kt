@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
@@ -65,19 +67,15 @@ import com.example.hopes.core.designsystem.component.HopesLightLogo
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesSurfaceCard
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
+import com.example.hopes.feature.auth.presentation.component.AuthVerificationCodeField
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthLogoShadowStyle
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
+import com.example.hopes.feature.auth.presentation.component.FigmaSignupSelectionField
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreen
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
-import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationScreen
-import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationScreenEvent
-import com.example.hopes.feature.auth.presentation.signupverification.SignUpCodeConfirmationUiState
-import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationScreen
-import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationScreenEvent
-import com.example.hopes.feature.auth.presentation.signupverification.SignUpEmailVerificationUiState
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 01~04 인증 화면을 로컬 입력 상태와 함께 제공한다. */
@@ -87,11 +85,19 @@ fun AuthScreen(
     emailText: String,
     passwordText: String,
     nameText: String,
-    passwordConfirmText: String,
+    departmentText: String,
+    generationText: String,
+    verificationCodeText: String,
+    signupValidation: SignupValidationUiState,
+    isSignupLoading: Boolean,
+    signupErrorMessage: String?,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
-    onPasswordConfirmChange: (String) -> Unit,
+    onDepartmentClick: () -> Unit,
+    onGenerationClick: () -> Unit,
+    onVerificationCodeChange: (String) -> Unit,
+    onSendVerificationCodeClick: () -> Unit,
     onLoginClick: () -> Unit,
     onSignupClick: () -> Unit,
     onNavigateSignup: () -> Unit,
@@ -100,10 +106,6 @@ fun AuthScreen(
     onForgotPasswordClick: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
-    signUpEmailVerificationUiState: SignUpEmailVerificationUiState,
-    onSignUpEmailVerificationEvent: (SignUpEmailVerificationScreenEvent) -> Unit,
-    signUpCodeConfirmationUiState: SignUpCodeConfirmationUiState,
-    onSignUpCodeConfirmationEvent: (SignUpCodeConfirmationScreenEvent) -> Unit,
 ) {
     when (authStep) {
         AuthStep.Guide -> AuthGuideContent(onNavigateLogin = onNavigateLogin)
@@ -121,23 +123,23 @@ fun AuthScreen(
             uiState = passwordResetUiState,
             onEvent = onPasswordResetEvent,
         )
-        AuthStep.SignUpEmailVerification -> SignUpEmailVerificationScreen(
-            uiState = signUpEmailVerificationUiState,
-            onEvent = onSignUpEmailVerificationEvent,
-        )
-        AuthStep.SignUpCodeConfirmation -> SignUpCodeConfirmationScreen(
-            uiState = signUpCodeConfirmationUiState,
-            onEvent = onSignUpCodeConfirmationEvent,
-        )
         AuthStep.SignUp -> AuthFormScreen(
             emailText = emailText,
             passwordText = passwordText,
             nameText = nameText,
-            passwordConfirmText = passwordConfirmText,
+            departmentText = departmentText,
+            generationText = generationText,
+            verificationCodeText = verificationCodeText,
+            signupValidation = signupValidation,
+            isLoading = isSignupLoading,
+            errorMessage = signupErrorMessage,
             onEmailChange = onEmailChange,
             onPasswordChange = onPasswordChange,
             onNameChange = onNameChange,
-            onPasswordConfirmChange = onPasswordConfirmChange,
+            onDepartmentClick = onDepartmentClick,
+            onGenerationClick = onGenerationClick,
+            onVerificationCodeChange = onVerificationCodeChange,
+            onSendVerificationCodeClick = onSendVerificationCodeClick,
             onActionClick = onSignupClick,
             onFooterClick = onNavigateLogin,
         )
@@ -543,11 +545,19 @@ private fun AuthFormScreen(
     emailText: String,
     passwordText: String,
     nameText: String?,
-    passwordConfirmText: String,
+    departmentText: String,
+    generationText: String,
+    verificationCodeText: String,
+    signupValidation: SignupValidationUiState,
+    isLoading: Boolean,
+    errorMessage: String?,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
-    onPasswordConfirmChange: (String) -> Unit,
+    onDepartmentClick: () -> Unit,
+    onGenerationClick: () -> Unit,
+    onVerificationCodeChange: (String) -> Unit,
+    onSendVerificationCodeClick: () -> Unit,
     onActionClick: () -> Unit,
     onFooterClick: () -> Unit,
 ) {
@@ -555,21 +565,19 @@ private fun AuthFormScreen(
     val signupDensity = LocalDensity.current
     val isImeVisible = WindowInsets.ime.getBottom(signupDensity) > 0
     val keyboardLift = if (isImeVisible) (-120).dp else 0.dp
-    val isSignupEnabled = emailText.isNotBlank() &&
-        passwordText.isNotBlank() &&
-        passwordConfirmText.isNotBlank() &&
-        !nameText.isNullOrBlank()
+    val isSignupEnabled = !isLoading
     val signupEmailHint = stringResource(R.string.signup_email_hint)
     val signupNameHint = stringResource(R.string.signup_name_hint)
-    val signupDepartmentValue = stringResource(R.string.signup_department_value)
-    val signupGenerationValue = stringResource(R.string.signup_generation_value)
+    val signupDepartmentHint = stringResource(R.string.signup_department_hint)
+    val signupGenerationHint = stringResource(R.string.signup_generation_hint)
 
     // 회원가입은 인증 흐름의 독립 화면이므로 하단 탭을 표시하지 않는다.
     FigmaPhoneScreen(useFigmaViewport = false) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+                .systemBarsPadding(),
         ) {
         // 키보드는 Android 시스템 UI로 유지하고, 회원가입 콘텐츠를 위로 이동해 가려지지 않게 한다.
         Box(modifier = Modifier.padding(top = keyboardLift)) {
@@ -608,16 +616,24 @@ private fun AuthFormScreen(
                     emailText = emailText,
                     passwordText = passwordText,
                     nameText = nameText.orEmpty(),
-                    passwordConfirmText = passwordConfirmText,
+                    departmentText = departmentText,
+                    generationText = generationText,
+                    verificationCodeText = verificationCodeText,
+                    signupValidation = signupValidation,
+                    isSending = isLoading,
+                    errorMessage = errorMessage,
                     emailHint = signupEmailHint,
                     nameHint = signupNameHint,
-                    departmentValue = signupDepartmentValue,
-                    generationValue = signupGenerationValue,
+                    departmentHint = signupDepartmentHint,
+                    generationHint = signupGenerationHint,
                     isSignupEnabled = isSignupEnabled,
                     onEmailChange = onEmailChange,
                     onPasswordChange = onPasswordChange,
                     onNameChange = onNameChange,
-                    onPasswordConfirmChange = onPasswordConfirmChange,
+                    onDepartmentClick = onDepartmentClick,
+                    onGenerationClick = onGenerationClick,
+                    onVerificationCodeChange = onVerificationCodeChange,
+                    onSendVerificationCodeClick = onSendVerificationCodeClick,
                     onSignupClick = onActionClick,
                 )
                 Spacer(modifier = Modifier.height(42.dp))
@@ -638,25 +654,49 @@ private fun AuthFormScreen(
     }
 }
 
-/** 회원가입 카드의 다섯 입력 행을 같은 세로 비율로 배치한다. */
+/** 회원가입 카드의 입력 행을 스크롤 가능한 목록으로 배치한다. */
 @Composable
 private fun SignupFormCard(
     modifier: Modifier,
     emailText: String,
     passwordText: String,
     nameText: String,
-    passwordConfirmText: String,
+    departmentText: String,
+    generationText: String,
+    verificationCodeText: String,
+    signupValidation: SignupValidationUiState,
+    isSending: Boolean,
+    errorMessage: String?,
     emailHint: String,
     nameHint: String,
-    departmentValue: String,
-    generationValue: String,
+    departmentHint: String,
+    generationHint: String,
     isSignupEnabled: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
-    onPasswordConfirmChange: (String) -> Unit,
+    onDepartmentClick: () -> Unit,
+    onGenerationClick: () -> Unit,
+    onVerificationCodeChange: (String) -> Unit,
+    onSendVerificationCodeClick: () -> Unit,
     onSignupClick: () -> Unit,
 ) {
+    val emailErrorMessage = signupValidation.emailError
+        ?.takeIf { signupValidation.isEmailTouched }
+        ?.let { stringResource(R.string.signup_error_email) }
+    val nameErrorMessage = signupValidation.nameError
+        ?.takeIf { signupValidation.isNameTouched }
+        ?.let { stringResource(R.string.signup_error_name) }
+    val generationErrorMessage = signupValidation.generationError
+        ?.takeIf { signupValidation.isGenerationTouched }
+        ?.let { stringResource(R.string.signup_error_generation) }
+    val passwordErrorMessage = signupValidation.passwordError
+        ?.takeIf { signupValidation.isPasswordTouched }
+        ?.let { stringResource(R.string.signup_error_password) }
+    val verificationCodeErrorMessage = signupValidation.verificationCodeError
+        ?.takeIf { signupValidation.isVerificationCodeTouched }
+        ?.let { stringResource(R.string.signup_error_verification_code) }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -664,98 +704,114 @@ private fun SignupFormCard(
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = 29.dp, bottom = 27.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            SignupFormFieldGroup(
-                labelRes = R.string.email,
-                modifier = Modifier.weight(1f),
-            ) {
-                FigmaSignupField(
-                    hint = emailHint,
-                    value = emailText,
-                    onValueChange = onEmailChange,
-                    isSampleValue = emailText == emailHint,
-                )
+            if (errorMessage != null) {
+                item {
+                    Text(
+                        text = stringResource(R.string.generic_error_message),
+                        modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 8.dp),
+                        color = MaterialTheme.colorScheme.error,
+                        style = TextStyle(fontSize = 11.sp, lineHeight = 14.sp),
+                    )
+                }
             }
-            SignupFormFieldGroup(
-                labelRes = R.string.name,
-                modifier = Modifier.weight(1f),
-            ) {
-                FigmaSignupField(
-                    hint = nameHint,
-                    value = nameText,
-                    onValueChange = onNameChange,
-                    isSampleValue = nameText == nameHint,
-                )
+            item {
+                SignupFormFieldGroup(labelRes = R.string.email, errorMessage = emailErrorMessage) {
+                    FigmaSignupField(
+                        hint = emailHint,
+                        value = emailText,
+                        onValueChange = onEmailChange,
+                        isError = emailErrorMessage != null,
+                    )
+                }
             }
-            SignupFormFieldGroup(
-                labelRes = R.string.department,
-                modifier = Modifier.weight(1f),
-            ) {
-                FigmaSignupField(
-                    hint = departmentValue,
-                    value = departmentValue,
-                    onValueChange = {},
-                    hasDropDown = true,
-                    isSampleValue = true,
-                )
+            item {
+                SignupFormFieldGroup(
+                    labelRes = R.string.verification_code,
+                    errorMessage = verificationCodeErrorMessage,
+                ) {
+                    AuthVerificationCodeField(
+                        value = verificationCodeText,
+                        isSending = isSending,
+                        onValueChange = onVerificationCodeChange,
+                        onSendClick = onSendVerificationCodeClick,
+                        modifier = Modifier.padding(start = 17.dp, end = 18.dp),
+                    )
+                }
             }
-            SignupFormFieldGroup(
-                labelRes = R.string.generation,
-                modifier = Modifier.weight(1f),
-            ) {
-                FigmaSignupField(
-                    hint = generationValue,
-                    value = generationValue,
-                    onValueChange = {},
-                    isSampleValue = true,
-                )
+            item {
+                SignupFormFieldGroup(labelRes = R.string.name, errorMessage = nameErrorMessage) {
+                    FigmaSignupField(
+                        hint = nameHint,
+                        value = nameText,
+                        onValueChange = onNameChange,
+                        isError = nameErrorMessage != null,
+                    )
+                }
             }
-            SignupFormFieldGroup(
-                labelRes = R.string.password,
-                modifier = Modifier.weight(1f),
-            ) {
-                FigmaSignupField(
-                    hint = stringResource(R.string.password),
-                    value = passwordText,
-                    onValueChange = onPasswordChange,
-                    isPassword = true,
-                )
+            item {
+                SignupFormFieldGroup(labelRes = R.string.department) {
+                    FigmaSignupSelectionField(
+                        selectedValue = departmentText,
+                        placeholder = departmentHint,
+                        onClick = onDepartmentClick,
+                    )
+                }
             }
-            SignupFormFieldGroup(
-                labelRes = R.string.password_confirm,
-                modifier = Modifier.weight(1f),
-            ) {
-                FigmaSignupField(
-                    hint = stringResource(R.string.password_confirm),
-                    value = passwordConfirmText,
-                    onValueChange = onPasswordConfirmChange,
-                    isPassword = true,
-                    onImeAction = if (isSignupEnabled) onSignupClick else null,
-                )
+            item {
+                SignupFormFieldGroup(labelRes = R.string.generation, errorMessage = generationErrorMessage) {
+                    FigmaSignupSelectionField(
+                        selectedValue = generationText,
+                        placeholder = generationHint,
+                        isError = generationErrorMessage != null,
+                        onClick = onGenerationClick,
+                    )
+                }
+            }
+            item {
+                SignupFormFieldGroup(labelRes = R.string.password, errorMessage = passwordErrorMessage) {
+                    FigmaSignupField(
+                        hint = stringResource(R.string.password),
+                        value = passwordText,
+                        onValueChange = onPasswordChange,
+                        isPassword = true,
+                        isError = passwordErrorMessage != null,
+                        onImeAction = if (isSignupEnabled) onSignupClick else null,
+                    )
+                }
             }
         }
     }
 }
 
-/** 한 입력 행에서 라벨과 필드를 남은 세로 공간 안에 정렬한다. */
+/** 한 입력 행에서 라벨, 필드, 오류 문구를 세로로 배치한다. */
 @Composable
 private fun SignupFormFieldGroup(
     labelRes: Int,
-    modifier: Modifier,
+    errorMessage: String? = null,
     field: @Composable () -> Unit,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth().heightIn(min = 66.dp)) {
         Text(
             text = stringResource(labelRes),
             modifier = Modifier.padding(start = 24.dp, end = 24.dp),
             style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(6.dp))
         field()
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                modifier = Modifier.padding(start = 24.dp, top = 4.dp, end = 24.dp),
+                color = MaterialTheme.colorScheme.error,
+                style = TextStyle(fontSize = 11.sp, lineHeight = 14.sp),
+            )
+        }
     }
 }
 
@@ -796,8 +852,7 @@ private fun FigmaSignupField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
-    hasDropDown: Boolean = false,
-    isSampleValue: Boolean = false,
+    isError: Boolean = false,
     onImeAction: (() -> Unit)? = null,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
@@ -811,7 +866,11 @@ private fun FigmaSignupField(
             modifier = Modifier
                 .weight(1f)
                 .height(43.dp)
-                .border(1.dp, extendedColors.authFieldBorder, RoundedCornerShape(14.dp)),
+                .border(
+                    width = 1.dp,
+                    color = if (isError) MaterialTheme.colorScheme.error else extendedColors.authFieldBorder,
+                    shape = RoundedCornerShape(14.dp),
+                ),
         ) {
             if (value.isEmpty()) {
                 Text(
@@ -827,15 +886,11 @@ private fun FigmaSignupField(
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxWidth()
-                    .padding(start = 12.dp, end = if (hasDropDown) 40.dp else 12.dp)
+                    .padding(start = 12.dp, end = 12.dp)
                     .height(24.dp),
                 singleLine = true,
                 textStyle = TextStyle(
-                    color = if (isSampleValue) {
-                        extendedColors.authFieldHint
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 15.sp,
                 ),
                 keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
@@ -850,16 +905,6 @@ private fun FigmaSignupField(
                 ),
                 visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             )
-            if (hasDropDown) {
-                Text(
-                    text = stringResource(R.string.signup_dropdown_symbol),
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 13.dp),
-                    color = extendedColors.authFieldHint,
-                    style = TextStyle(fontSize = 20.sp),
-                )
-            }
         }
     }
 }

@@ -38,6 +38,7 @@ class ChatViewModel @Inject constructor(
             }
 
             ChatScreenEvent.QuestionSubmitted -> createChat(_uiState.value.questionText)
+            is ChatScreenEvent.SuggestionClicked -> createChat(event.question)
             ChatScreenEvent.NewChatClicked -> updateState {
                 copy(questionText = "", isCreateChatError = false)
             }
@@ -47,7 +48,7 @@ class ChatViewModel @Inject constructor(
     /** 질문 제출 시 서버 대화를 생성한 뒤 첫 메시지를 전송하고 성공 시 상세로 이동한다. */
     private fun createChat(question: String) {
         val trimmedQuestion = question.trim()
-        if (trimmedQuestion.isEmpty()) {
+        if (trimmedQuestion.isEmpty() || _uiState.value.isLoading) {
             return
         }
 

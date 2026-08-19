@@ -33,6 +33,7 @@ fun ChatRoute(
     ChatScreen(
         questionText = uiState.value.questionText,
         isCreateChatError = uiState.value.isCreateChatError,
+        isLoading = uiState.value.isLoading,
         onEvent = viewModel::onEvent,
         onNavigate = onNavigate,
     )

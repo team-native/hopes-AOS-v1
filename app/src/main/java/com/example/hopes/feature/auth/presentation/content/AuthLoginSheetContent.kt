@@ -2,12 +2,10 @@ package com.example.hopes.feature.auth.presentation.content
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.hopes.feature.auth.presentation.component.AuthBackdropScrim
@@ -67,35 +64,18 @@ fun AuthLoginSheetContent(
 
         // 시트 위치는 드래그로 계속 바뀌는 값이라 padding이 아닌 offset으로 적용한다. offset은
         // padding과 달리 음수 값에서도 예외를 던지지 않아, 키보드가 열려 있는 상태에서도 안전하다.
+        // 드래그 제스처 자체는 시트 전체가 아니라 AuthLoginFormContent의 핸들에만 붙인다 —
+        // 시트 전체에 붙이면 필드 목록의 verticalScroll과 제스처가 경합해 드래그로 시트를
+        // 내릴 수 없게 되기 때문이다.
+        // 높이는 fillMaxHeight 대신 "화면 하단까지 남은 만큼"만 정확히 준다. offset으로 이미
+        // 아래로 밀린 시트에 fillMaxHeight를 주면 화면 밖까지 오버사이즈되어, 내부
+        // imePadding·verticalScroll이 실제보다 훨씬 넓은 뷰포트가 있다고 착각해 키보드 위로
+        // 충분히 스크롤하지 못하는 원인이 된다.
         FigmaAuthSheet(
             modifier = Modifier
                 .offset(y = sheetTopOffset.value.dp)
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .pointerInput(loginDensity) {
-                    detectDragGestures(
-                        onDrag = { change, dragAmount ->
-                            change.consume()
-                            animationScope.launch {
-                                sheetTopOffset.snapTo(
-                                    (sheetTopOffset.value + with(loginDensity) {
-                                        dragAmount.y.toDp().value
-                                    }).coerceIn(expandedTopOffset, dismissedTopOffset),
-                                )
-                            }
-                        },
-                        onDragEnd = {
-                            animationScope.launch {
-                                if (sheetTopOffset.value > dismissThreshold) {
-                                    sheetTopOffset.animateTo(dismissedTopOffset, tween(180))
-                                    onDismissLogin()
-                                } else {
-                                    sheetTopOffset.animateTo(expandedTopOffset, tween(180))
-                                }
-                            }
-                        },
-                    )
-                },
+                .height((maxHeight - sheetTopOffset.value.dp).coerceAtLeast(0.dp)),
             isPeekSheet = false,
         ) {
             AuthLoginFormContent(
@@ -107,6 +87,24 @@ fun AuthLoginSheetContent(
                 onLoginClick = onLoginClick,
                 onNavigateSignup = onNavigateSignup,
                 onForgotPasswordClick = onForgotPasswordClick,
+                onHandleDrag = { deltaPx ->
+                    animationScope.launch {
+                        sheetTopOffset.snapTo(
+                            (sheetTopOffset.value + with(loginDensity) { deltaPx.toDp().value })
+                                .coerceIn(expandedTopOffset, dismissedTopOffset),
+                        )
+                    }
+                },
+                onHandleDragEnd = {
+                    animationScope.launch {
+                        if (sheetTopOffset.value > dismissThreshold) {
+                            sheetTopOffset.animateTo(dismissedTopOffset, tween(180))
+                            onDismissLogin()
+                        } else {
+                            sheetTopOffset.animateTo(expandedTopOffset, tween(180))
+                        }
+                    }
+                },
             )
         }
     }

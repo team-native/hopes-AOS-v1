@@ -2,15 +2,16 @@ package com.example.hopes.feature.auth.presentation.content
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
@@ -47,15 +48,17 @@ fun AuthSignUpScreenContent(
     val signupNameHint = stringResource(R.string.signup_name_hint)
     val signupDepartmentHint = stringResource(R.string.signup_department_hint)
     val signupGenerationHint = stringResource(R.string.signup_generation_hint)
+    val density = LocalDensity.current
+    val isImeVisible = WindowInsets.ime.getBottom(density) > 0
 
-    // 키보드가 열리면 imePadding이 하단 여백을 확보하고, verticalScroll이 포커스된 필드가
-    // 보이는 영역까지 화면 전체를 자연스럽게 스크롤한다. 매직넘버로 화면 전체를 강제로
-    // 밀어 올리던 기존 방식(카드가 찌그러지는 원인)을 대체한다.
+    // 화면 자체는 스크롤하지 않고, 카드 영역만 weight로 남은 공간을 차지해 내부에서
+    // 스크롤된다. 헤더·타이틀·카드가 항상 한 화면에 함께 보이도록 유지한다. 키보드가
+    // 열리면 imePadding이 하단 여백을 확보해 카드가 자연스럽게 줄어들고, 카드 내부
+    // 스크롤로 모든 입력 필드에 접근할 수 있다.
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .imePadding()
-            .verticalScroll(rememberScrollState()),
+            .imePadding(),
     ) {
         FigmaBrandHeader(
             modifier = Modifier.padding(start = 32.dp, top = 25.dp),
@@ -70,6 +73,7 @@ fun AuthSignUpScreenContent(
 
         SignupFormSectionContent(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             emailText = emailText,
@@ -96,20 +100,24 @@ fun AuthSignUpScreenContent(
             onSignupClick = onActionClick,
         )
 
-        Spacer(modifier = Modifier.height(42.dp))
+        // 키보드가 열려 있는 동안은 회원가입 버튼과 로그인 유도 링크를 숨겨, 좁아진
+        // 화면에서도 카드가 더 많은 공간을 차지하도록 한다.
+        if (!isImeVisible) {
+            Spacer(modifier = Modifier.height(42.dp))
 
-        SignupActionButton(
-            isEnabled = isSignupEnabled,
-            onClick = onActionClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-        )
+            SignupActionButton(
+                isEnabled = isSignupEnabled,
+                onClick = onActionClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+            )
 
-        Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-        AuthSignUpFooterLink(onClick = onFooterClick)
+            AuthSignUpFooterLink(onClick = onFooterClick)
 
-        Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+        }
     }
 }

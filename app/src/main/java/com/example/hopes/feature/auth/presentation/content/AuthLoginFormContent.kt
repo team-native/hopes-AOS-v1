@@ -1,5 +1,7 @@
 package com.example.hopes.feature.auth.presentation.content
 
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,20 +39,37 @@ fun AuthLoginFormContent(
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onForgotPasswordClick: () -> Unit,
+    onHandleDrag: (Float) -> Unit,
+    onHandleDragEnd: () -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
     val isLoginEnabled = emailText.isNotBlank() && passwordText.isNotBlank()
 
-    // 키보드가 열리면 imePadding이 하단 여백을 확보하고, verticalScroll이 포커스된 필드가
-    // 보이는 영역까지 자동으로 스크롤한다. 매직넘버로 시트를 밀어올리던 기존 방식을 대체한다.
+    // imePadding을 verticalScroll보다 바깥쪽에 둬야 키보드 높이만큼 뷰포트 자체가 줄어들어,
+    // verticalScroll이 실제로 남은 공간을 정확히 알고 그 안에서 포커스된 필드를 끝까지
+    // 끌어올릴 수 있다.
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .imePadding(),
+            .imePadding()
+            .verticalScroll(rememberScrollState()),
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
-        AuthSheetHandle()
+        // 핸들에만 드래그 제스처를 붙여, 아래 필드 목록의 verticalScroll과 제스처가
+        // 충돌해 시트를 끌어내릴 수 없게 되는 문제를 막는다.
+        Box(
+            modifier = Modifier.pointerInput(Unit) {
+                detectDragGestures(
+                    onDrag = { change, dragAmount ->
+                        change.consume()
+                        onHandleDrag(dragAmount.y)
+                    },
+                    onDragEnd = { onHandleDragEnd() },
+                )
+            },
+        ) {
+            AuthSheetHandle()
+        }
 
         Spacer(modifier = Modifier.height(43.dp))
 

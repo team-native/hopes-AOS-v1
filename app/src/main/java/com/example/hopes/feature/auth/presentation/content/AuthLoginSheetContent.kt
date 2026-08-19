@@ -49,7 +49,9 @@ fun AuthLoginSheetContent(
         // maxHeight를 직접 쓰면 그 보정 자체가 필요 없어진다.
         val expandedTopOffset = maxHeight.value - 502f
         val dismissedTopOffset = maxHeight.value - 190f
-        val dismissThreshold = maxHeight.value - 354f
+        // 임계값을 닫힘 위치 쪽으로 옮겨, 살짝만 내려도 바로 닫히던 것을 더 많이 내려야
+        // 닫히도록 한다. 조금 끌었다가 놓았을 때 열림 위치로 자연스럽게 되돌아간다.
+        val dismissThreshold = maxHeight.value - 260f
         val sheetTopOffset = remember(maxHeight) { Animatable(expandedTopOffset) }
 
         Box(modifier = Modifier.blur(8.dp)) {

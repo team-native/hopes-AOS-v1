@@ -111,7 +111,7 @@ fun ChatComposer(
                     Icon(
                         painter = painterResource(R.drawable.img),
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(12.dp),
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }

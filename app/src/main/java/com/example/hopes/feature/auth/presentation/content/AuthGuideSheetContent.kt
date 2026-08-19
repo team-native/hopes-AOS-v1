@@ -10,13 +10,13 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -43,28 +43,47 @@ fun AuthGuideSheetContent(onNavigateLogin: () -> Unit) {
         // 시트가 실제 사용 가능 높이와 무관하게 항상 peekHeight만 노출되도록, 접힌 상태의 top
         // 오프셋을 컨테이너의 실제 높이(maxHeight) 기준으로 계산한다. 피그마 프레임 고정 높이가
         // 아니라 실제 기기 높이만 쓰므로 화면 크기가 달라도 노출 높이가 항상 동일하게 유지된다.
+        // expandedOffsetDp는 스와이프 완료 후 전환되는 AuthLoginSheetContent의 시작 오프셋
+        // (expandedTopOffset = maxHeight.value - 502f)과 동일한 공식을 써서, 화면 전환 시
+        // 시트 위치가 어긋나지 않도록 한다.
         val peekHeightDp = 190f
-        val expandedOffsetDp = 372f
+        val expandedOffsetDp = maxHeight.value - 502f
         val dismissedTopOffset = maxHeight.value - peekHeightDp
         val sheetTopOffset = remember(dismissedTopOffset) { Animatable(dismissedTopOffset) }
 
-        Column(modifier = Modifier.padding(start = 32.dp, top = 25.dp)) {
-            FigmaAuthBrandHeader()
+        // 상단 문구와 스와이프 안내는 드래그로 움직이지 않는 정적 레이아웃이므로 offset 대신
+        // 일반 레이아웃 흐름(Column + weight Spacer)으로 배치한다. 기기 화면 비율이 피그마 01
+        // 프레임과 달라 남는 세로 여백의 절대량이 기기마다 다르므로, 고정 dp 대신 피그마
+        // 실측 간격 비율(설명 하단→화살표 상단 92px : 부제 하단→시트 상단 20px ≈ 23:5)로 남는
+        // 공간을 나눠, 화면 크기가 달라져도 두 간격의 비율이 피그마 디자인과 일치하게 한다.
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = peekHeightDp.dp),
+        ) {
+            Column(modifier = Modifier.padding(start = 32.dp, top = 25.dp)) {
+                FigmaAuthBrandHeader()
 
-            Spacer(modifier = Modifier.height(74.dp))
+                Spacer(modifier = Modifier.height(74.dp))
 
-            AuthHeroCopy()
+                AuthHeroCopy()
+            }
+
+            Spacer(modifier = Modifier.weight(23f))
+
+            if (sheetTopOffset.value > dismissedTopOffset - 164f) {
+                AuthSwipeHint(extendedColors = extendedColors)
+            }
+
+            Spacer(modifier = Modifier.weight(5f))
         }
 
-        if (sheetTopOffset.value > dismissedTopOffset - 164f) {
-            AuthSwipeHint(extendedColors = extendedColors, sheetTopOffset = dismissedTopOffset)
-        }
-
-        // 시트 위치는 드래그로 계속 바뀌는 값이라 padding이 아닌 offset으로 적용한다. offset은
-        // padding과 달리 음수 값에서도 예외를 던지지 않아, 작은 화면에서도 안전하다.
+        // 시트 위치는 드래그로 매 프레임 바뀌는 값이라, layout을 다시 계산하는 offset 대신
+        // draw 단계에서만 이동시키는 graphicsLayer translationY를 쓴다. 리컴포지션·리레이아웃
+        // 없이 위치만 갱신되어 드래그 중에도 더 가볍다. 값을 람다 안에서 읽어야 이 이점이 있다.
         FigmaAuthSheet(
             modifier = Modifier
-                .offset(y = sheetTopOffset.value.dp)
+                .graphicsLayer { translationY = sheetTopOffset.value.dp.toPx() }
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .pointerInput(guideDensity) {

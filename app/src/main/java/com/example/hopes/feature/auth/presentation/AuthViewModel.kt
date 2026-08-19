@@ -66,12 +66,19 @@ class AuthViewModel @Inject constructor(
                 copy(
                     authStep = AuthStep.PasswordResetRequest,
                     passwordResetEmail = passwordResetEmail.ifBlank { email },
+                    isPasswordResetCodeSent = false,
                     errorMessage = null,
                     statusMessage = null,
                 )
             }
             is AuthScreenEvent.PasswordResetEmailChanged -> updateState {
-                copy(passwordResetEmail = event.value, errorMessage = null, statusMessage = null)
+                // 이메일이 바뀌면 이전에 발송된 인증번호는 새 이메일에 유효하지 않으므로 발송 상태를 리셋한다.
+                copy(
+                    passwordResetEmail = event.value,
+                    isPasswordResetCodeSent = false,
+                    errorMessage = null,
+                    statusMessage = null,
+                )
             }
             is AuthScreenEvent.PasswordResetCodeChanged -> updateState {
                 copy(passwordResetCode = event.value, errorMessage = null)
@@ -88,6 +95,7 @@ class AuthViewModel @Inject constructor(
                     statusMessage = null,
                     passwordResetCode = "",
                     passwordResetNewPassword = "",
+                    isPasswordResetCodeSent = false,
                 )
             }
             AuthScreenEvent.SendSignupVerificationClicked -> sendSignupVerificationCode()
@@ -275,9 +283,11 @@ class AuthViewModel @Inject constructor(
             updateState { copy(isLoading = true, errorMessage = null, statusMessage = null) }
             when (requestPasswordResetUseCase(email)) {
                 is AppResult.Success -> updateState {
-                    copy(isLoading = false, statusMessage = "")
+                    copy(isLoading = false, statusMessage = "", isPasswordResetCodeSent = true)
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState {
+                    copy(isLoading = false, errorMessage = "", isPasswordResetCodeSent = false)
+                }
             }
         }
     }
@@ -285,7 +295,9 @@ class AuthViewModel @Inject constructor(
     /** 인증번호와 새 비밀번호를 서버에 제출해 비밀번호 재설정을 완료하고, 성공하면 로그인 단계로 되돌아간다. */
     private fun resetPassword() {
         val currentState = _uiState.value
-        val isValid = currentState.passwordResetCode.isNotBlank() &&
+        // 번호 발송이 성공한 뒤에만 재설정을 제출할 수 있도록 UI 게이팅과 동일한 조건을 한 번 더 검사한다.
+        val isValid = currentState.isPasswordResetCodeSent &&
+            currentState.passwordResetCode.isNotBlank() &&
             currentState.passwordResetNewPassword.isNotBlank()
 
         if (!isValid) {
@@ -311,6 +323,7 @@ class AuthViewModel @Inject constructor(
                         passwordResetEmail = "",
                         passwordResetCode = "",
                         passwordResetNewPassword = "",
+                        isPasswordResetCodeSent = false,
                         statusMessage = null,
                     )
                 }

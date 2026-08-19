@@ -71,6 +71,7 @@ fun AuthRoute(
             email = uiState.value.passwordResetEmail,
             code = uiState.value.passwordResetCode,
             newPassword = uiState.value.passwordResetNewPassword,
+            isCodeSent = uiState.value.isPasswordResetCodeSent,
             isLoading = uiState.value.isLoading,
             errorMessage = uiState.value.errorMessage,
             statusMessage = uiState.value.statusMessage,

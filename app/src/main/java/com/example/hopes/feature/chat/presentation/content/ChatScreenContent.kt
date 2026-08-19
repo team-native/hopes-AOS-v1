@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,7 +57,13 @@ fun ChatScreenContent(
         },
         isBottomNavigationVisible = !isImeVisible,
     ) {
-        Column {
+        // 키보드가 올라와 가용 높이가 줄어들 때도 콘텐츠가 잘리지 않도록 스크롤 가능하게 하고,
+        // imePadding으로 키보드 높이만큼 하단 여백을 확보해 마지막 카드까지 스크롤해 볼 수 있게 한다.
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .imePadding(),
+        ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

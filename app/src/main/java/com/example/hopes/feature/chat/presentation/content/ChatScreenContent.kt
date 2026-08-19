@@ -20,6 +20,7 @@ import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.feature.chat.presentation.component.ChatComposer
 import com.example.hopes.feature.chat.presentation.component.ChatNewChatButton
+import com.example.hopes.feature.chat.presentation.component.ChatSuggestionList
 import com.example.hopes.feature.chat.presentation.component.ChatWelcomeHero
 import com.example.hopes.navigation.HopesDestination
 
@@ -28,8 +29,10 @@ import com.example.hopes.navigation.HopesDestination
 fun ChatScreenContent(
     questionText: String,
     isCreateChatError: Boolean,
+    isLoading: Boolean,
     onQuestionChange: (String) -> Unit,
     onSubmitClick: () -> Unit,
+    onSuggestionClick: (String) -> Unit,
     onNewChatClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
@@ -44,6 +47,7 @@ fun ChatScreenContent(
                 value = questionText,
                 onValueChange = onQuestionChange,
                 onSubmitClick = onSubmitClick,
+                isLoading = isLoading,
                 modifier = Modifier
                     .imePadding()
                     .padding(bottom = 10.dp),
@@ -64,9 +68,19 @@ fun ChatScreenContent(
                 ChatNewChatButton(onClick = onNewChatClick)
             }
 
-            Spacer(modifier = Modifier.height(126.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             ChatWelcomeHero(isCreateChatError = isCreateChatError)
+
+            Spacer(modifier = Modifier.height(AppSpacing.Section))
+
+            ChatSuggestionList(
+                onSuggestionClick = onSuggestionClick,
+                isLoading = isLoading,
+                modifier = Modifier.padding(horizontal = 24.dp),
+            )
+
+            Spacer(modifier = Modifier.height(27.dp))
         }
     }
 }

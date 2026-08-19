@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -36,6 +37,7 @@ fun ChatComposer(
     value: String,
     onValueChange: (String) -> Unit,
     onSubmitClick: () -> Unit,
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val sendDescription = stringResource(R.string.chat_send)
@@ -95,7 +97,7 @@ fun ChatComposer(
                         role = Role.Button
                         contentDescription = sendDescription
                     }
-                    .clickable(onClick = onSubmitClick),
+                    .clickable(enabled = !isLoading, onClick = onSubmitClick),
                 contentAlignment = Alignment.Center,
             ) {
                 // 시각적 버튼은 30.dp로 유지하고, 바깥 48.dp 영역으로 터치 접근성을 보장한다.
@@ -107,9 +109,9 @@ fun ChatComposer(
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowUpward,
+                        painter = painterResource(R.drawable.img),
                         contentDescription = null,
-                        modifier = Modifier.size(12.dp),
+                        modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }

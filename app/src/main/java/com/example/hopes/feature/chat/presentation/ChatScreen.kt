@@ -9,14 +9,17 @@ import com.example.hopes.navigation.HopesDestination
 fun ChatScreen(
     questionText: String,
     isCreateChatError: Boolean,
+    isLoading: Boolean,
     onEvent: (ChatScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     ChatScreenContent(
         questionText = questionText,
         isCreateChatError = isCreateChatError,
+        isLoading = isLoading,
         onQuestionChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
         onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
+        onSuggestionClick = { onEvent(ChatScreenEvent.SuggestionClicked(it)) },
         onNewChatClick = { onEvent(ChatScreenEvent.NewChatClicked) },
         onNavigate = onNavigate,
     )

@@ -75,6 +75,10 @@
     <string name="home_tip_two">질문 전에,\n입학 / 전공 / 학교생활 중 카테고리를 골라요.</string>
     <string name="chat_welcome">무엇이 궁금한가요?</string>
     <string name="chat_welcome_description">광주소프트웨어마이스터고 선배에게 편하게 물어보세요.</string>
+    <string name="chat_suggestion_dormitory">기숙사 하루 일과가 어떻게 돼?</string>
+    <string name="chat_suggestion_admission">입학하려면 뭘 준비해야 해?</string>
+    <string name="chat_suggestion_major">전공 선택은 어떻게 하는 게 좋아?</string>
+    <string name="chat_suggestion_advice">후배한테 해주고 싶은 조언 있어?</string>
     <string name="chat_new_message">선배에게 메시지 보내기</string>
     <string name="chat_additional_question">추가 질문 입력</string>
     <string name="chat_save">저장</string>

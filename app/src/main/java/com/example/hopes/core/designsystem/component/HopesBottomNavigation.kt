@@ -65,6 +65,7 @@ private fun HopesDestination.labelResourceId() = when (this) {
     HopesDestination.Home -> R.string.navigation_home
     HopesDestination.Chat -> R.string.navigation_chat
     HopesDestination.History -> R.string.navigation_history
-    HopesDestination.Settings -> R.string.navigation_settings
+    // Settings 라우트는 실제로 MyPageRoute(마이페이지)를 보여주므로 라벨도 그에 맞춘다.
+    HopesDestination.Settings -> R.string.my_page
     else -> R.string.navigation_home
 }

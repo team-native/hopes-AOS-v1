@@ -107,6 +107,12 @@
     <string name="system_prompt_description">시스템 프롬프트 (AI 응답 생성 시 반영됩니다)</string>
     <string name="saved">저장됨</string>
     <string name="sent">전송됨</string>
+    <string name="prompt_loading">불러오는 중</string>
+    <string name="prompt_load_error">불러오기 실패 · 다시 시도</string>
+    <string name="prompt_saving">저장 중</string>
+    <string name="prompt_save_error">저장 실패</string>
+    <string name="contact_sending">보내는 중</string>
+    <string name="contact_send_error">전송 실패</string>
     <string name="open">열기</string>
     <string name="logout_description">앱 설정과 도움말을 관리해요.</string>
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>

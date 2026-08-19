@@ -16,7 +16,9 @@ import com.example.hopes.R
 fun FigmaContactFormCard(
     contactEmail: String,
     contactMessage: String,
+    isSending: Boolean,
     isContactSent: Boolean,
+    isSendFailed: Boolean,
     onContactEmailChange: (String) -> Unit,
     onContactMessageChange: (String) -> Unit,
     onSendClick: () -> Unit,
@@ -55,10 +57,11 @@ fun FigmaContactFormCard(
             Spacer(modifier = Modifier.height(30.dp))
 
             FigmaDetailPrimaryButton(
-                text = if (isContactSent) {
-                    stringResource(R.string.sent)
-                } else {
-                    stringResource(R.string.send_contact)
+                text = when {
+                    isSending -> stringResource(R.string.contact_sending)
+                    isContactSent -> stringResource(R.string.sent)
+                    isSendFailed -> stringResource(R.string.contact_send_error)
+                    else -> stringResource(R.string.send_contact)
                 },
                 modifier = Modifier
                     .width(306.dp)

@@ -12,6 +12,7 @@ data class AuthUiState(
     val passwordResetEmail: String = "",
     val passwordResetCode: String = "",
     val passwordResetNewPassword: String = "",
+    val isPasswordResetCodeSent: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val statusMessage: String? = null,

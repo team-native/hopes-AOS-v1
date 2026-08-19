@@ -3,14 +3,18 @@ package com.example.hopes.feature.auth.presentation.passwordreset.content
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
@@ -30,12 +34,21 @@ fun PasswordResetScreenContent(
     uiState: PasswordResetUiState,
     onEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
+    val density = LocalDensity.current
+    // 키보드가 열려 있을 때만 완료 버튼과 키보드 사이에 여백을 추가로 준다 (AuthSignUpScreenContent와 동일한 판별 방식).
+    val isImeVisible = WindowInsets.ime.getBottom(density) > 0
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
-            .padding(horizontal = AppSpacing.ScreenHorizontal),
+            .imePadding()
+            .padding(
+                start = AppSpacing.ScreenHorizontal,
+                end = AppSpacing.ScreenHorizontal,
+                bottom = if (isImeVisible) AppSpacing.Item else 0.dp,
+            ),
     ) {
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -106,7 +119,8 @@ fun PasswordResetScreenContent(
 
         AuthPrimaryActionButton(
             text = stringResource(R.string.password_reset_complete),
-            isEnabled = uiState.code.isNotBlank() &&
+            isEnabled = uiState.isCodeSent &&
+                uiState.code.isNotBlank() &&
                 uiState.newPassword.isNotBlank() &&
                 !uiState.isLoading,
             onClick = { onEvent(PasswordResetScreenEvent.SubmitClicked) },

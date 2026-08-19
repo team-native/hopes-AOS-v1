@@ -36,7 +36,7 @@ fun FigmaDetailTextArea(
             Text(
                 text = hint,
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 18.dp)
+                    .padding(start = 16.dp, top = 14.dp)
                     .width(260.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 15.sp, lineHeight = 22.sp),

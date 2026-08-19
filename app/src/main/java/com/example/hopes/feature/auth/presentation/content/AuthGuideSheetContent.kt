@@ -71,9 +71,15 @@ fun AuthGuideSheetContent(onNavigateLogin: () -> Unit) {
 
             Spacer(modifier = Modifier.weight(23f))
 
-            if (sheetTopOffset.value > dismissedTopOffset - 164f) {
-                AuthSwipeHint(extendedColors = extendedColors)
-            }
+            // 조건문으로 넣고 빼면 sheetTopOffset이 바뀔 때마다(드래그 중 매 프레임)
+            // 리컴포지션이 일어난다. graphicsLayer alpha로 옮기면 draw 단계에서만
+            // 갱신되어 드래그 중에도 가볍다.
+            AuthSwipeHint(
+                extendedColors = extendedColors,
+                modifier = Modifier.graphicsLayer {
+                    alpha = if (sheetTopOffset.value > dismissedTopOffset - 164f) 1f else 0f
+                },
+            )
 
             Spacer(modifier = Modifier.weight(5f))
         }

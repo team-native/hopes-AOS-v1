@@ -16,6 +16,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.example.hopes.feature.auth.presentation.component.AuthBackdropScrim
@@ -23,6 +24,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthHeroCopy
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthLogoShadowStyle
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
+import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
 /** 피그마 02 로그인 화면을 구성한다. 시트는 드래그로 여닫을 수 있고, 아래로 스와이프하면 닫힌다. */
@@ -72,11 +74,24 @@ fun AuthLoginSheetContent(
         // 이미 아래로 밀린 시트에 fillMaxHeight를 주면 화면 밖까지 오버사이즈되어, 내부
         // imePadding·verticalScroll이 실제보다 훨씬 넓은 뷰포트가 있다고 착각해 키보드 위로
         // 충분히 스크롤하지 못하는 원인이 된다.
+        // height()를 컴포저블 본문에서 직접 계산하면 sheetTopOffset이 바뀔 때마다(드래그 중
+        // 매 프레임) 리컴포지션+리레이아웃이 통째로 일어난다. Modifier.layout으로 값을 읽는
+        // 시점을 레이아웃 단계로 미루면 리컴포지션 없이 리레이아웃만 일어나 드래그가 가벼워진다.
         FigmaAuthSheet(
             modifier = Modifier
                 .graphicsLayer { translationY = sheetTopOffset.value.dp.toPx() }
                 .fillMaxWidth()
-                .height((maxHeight - sheetTopOffset.value.dp).coerceAtLeast(0.dp)),
+                .layout { measurable, constraints ->
+                    val heightPx = (maxHeight.toPx() - sheetTopOffset.value.dp.toPx())
+                        .coerceAtLeast(0f)
+                        .roundToInt()
+                    val placeable = measurable.measure(
+                        constraints.copy(minHeight = heightPx, maxHeight = heightPx),
+                    )
+                    layout(placeable.width, heightPx) {
+                        placeable.placeRelative(0, 0)
+                    }
+                },
             isPeekSheet = false,
         ) {
             AuthLoginFormContent(

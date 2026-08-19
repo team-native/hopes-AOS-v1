@@ -9,6 +9,7 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun MyPageRoute(
     onNavigate: (HopesDestination) -> Unit,
+    onNavigateToAppSettings: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -17,7 +18,7 @@ fun MyPageRoute(
         uiState = uiState.value,
         onEvent = { event ->
             if (event is MyPageScreenEvent.AppSettingsClicked) {
-                onNavigate(HopesDestination.AppSettings)
+                onNavigateToAppSettings()
             } else {
                 viewModel.onEvent(event)
             }

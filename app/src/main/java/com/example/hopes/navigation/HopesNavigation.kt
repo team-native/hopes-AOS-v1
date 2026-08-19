@@ -137,7 +137,14 @@ fun HopesNavigation(
                 )
             }
             composable(HopesDestination.Settings.route) {
-                MyPageRoute(onNavigate = hopesNavController::navigateToTopLevel)
+                MyPageRoute(
+                    onNavigate = hopesNavController::navigateToTopLevel,
+                    // 설정은 마이페이지 하위 화면이라 top-level 탐색이 아닌 일반 push로 진입시켜,
+                    // 뒤로가기(popBackStack) 시 홈이 아닌 마이페이지로 돌아오게 한다.
+                    onNavigateToAppSettings = {
+                        hopesNavController.navigate(HopesDestination.AppSettings.route)
+                    },
+                )
             }
             composable(HopesDestination.AppSettings.route) {
                 SettingsRoute(

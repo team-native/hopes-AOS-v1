@@ -44,7 +44,7 @@ fun FigmaDarkModeRow(
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp))
             .clickable(onClick = onToggle)
-            .padding(start = 20.dp, top = 13.dp, end = 20.dp),
+            .padding(start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {

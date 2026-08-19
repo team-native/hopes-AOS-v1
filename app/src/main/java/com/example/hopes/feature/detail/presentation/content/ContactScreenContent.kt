@@ -1,6 +1,8 @@
 package com.example.hopes.feature.detail.presentation.content
 
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,31 +28,30 @@ fun ContactScreenContent(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
     ) {
-        FigmaDetailBackHeader(
-            title = stringResource(R.string.contact),
-            subtitle = stringResource(R.string.contact_subtitle),
-            onBackClick = { onEvent(DetailScreenEvent.BackClicked) },
-        )
+        Column {
+            FigmaDetailBackHeader(
+                title = stringResource(R.string.contact),
+                subtitle = stringResource(R.string.contact_subtitle),
+                onBackClick = { onEvent(DetailScreenEvent.BackClicked) },
+            )
 
-        // 헤더의 레이아웃 높이(150dp)가 실제 보이는 내용보다 넉넉히 잡혀 있어, 폼 카드가 그
-        // 여백 안쪽(y=107dp)에서 시작한다. Column 순차 배치로는 이 겹침을 표현할 수 없어
-        // 화면 상단 기준 offset을 유지한다. offset은 padding과 달리 음수에서도 안전하다.
-        FigmaContactFormCard(
-            contactEmail = uiState.contactEmail,
-            contactMessage = uiState.contactMessage,
-            isContactSent = uiState.isContactSent,
-            onContactEmailChange = { onEvent(DetailScreenEvent.ContactEmailChanged(it)) },
-            onContactMessageChange = { onEvent(DetailScreenEvent.ContactMessageChanged(it)) },
-            onSendClick = { onEvent(DetailScreenEvent.ContactSendClicked) },
-            modifier = Modifier
-                .padding(start = 24.dp)
-                .offset(y = 107.dp),
-        )
+            Spacer(modifier = Modifier.height(25.dp))
 
-        FigmaContactInformationCard(
-            modifier = Modifier
-                .padding(start = 24.dp)
-                .offset(y = 624.dp),
-        )
+            FigmaContactFormCard(
+                contactEmail = uiState.contactEmail,
+                contactMessage = uiState.contactMessage,
+                isContactSent = uiState.isContactSent,
+                onContactEmailChange = { onEvent(DetailScreenEvent.ContactEmailChanged(it)) },
+                onContactMessageChange = { onEvent(DetailScreenEvent.ContactMessageChanged(it)) },
+                onSendClick = { onEvent(DetailScreenEvent.ContactSendClicked) },
+                modifier = Modifier.padding(start = 24.dp),
+            )
+
+            Spacer(modifier = Modifier.height(97.dp))
+
+            FigmaContactInformationCard(
+                modifier = Modifier.padding(start = 24.dp),
+            )
+        }
     }
 }

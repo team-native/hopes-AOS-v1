@@ -1,5 +1,6 @@
 package com.example.hopes.feature.auth.presentation.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -53,13 +56,13 @@ fun FigmaAuthBrandHeader(
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = stringResource(R.string.logo_mark),
-                color = MaterialTheme.colorScheme.primary,
-                style = TextStyle(
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+            Image(
+                painter = painterResource(R.drawable.icon),
+                contentDescription = stringResource(R.string.app_name),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .height(26.dp)
+                    .width(18.dp),
             )
         }
 

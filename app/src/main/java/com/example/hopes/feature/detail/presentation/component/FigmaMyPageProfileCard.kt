@@ -1,9 +1,10 @@
 package com.example.hopes.feature.detail.presentation.component
 
-import androidx.compose.foundation.layout.padding
-
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,31 +30,36 @@ fun FigmaMyPageProfileCard(
             .height(326.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {
-        Text(
-            text = stringResource(R.string.profile),
-            modifier = Modifier.padding(start = 24.dp, top = 32.dp),
-            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
-        )
-        FigmaDetailFieldLabel(
-            text = stringResource(R.string.name),
-            modifier = Modifier.padding(start = 24.dp, top = 80.dp),
-        )
-        FigmaDetailThinInput(
-            value = profileName,
-            onValueChange = onProfileNameChange,
-            hint = stringResource(R.string.name),
-            modifier = Modifier.padding(start = 24.dp, top = 101.dp),
-        )
-        FigmaDetailFieldLabel(
-            text = stringResource(R.string.profile_personalization_label),
-            modifier = Modifier.padding(start = 24.dp, top = 172.dp),
-        )
-        FigmaDetailTextArea(
-            value = profileIntroduction,
-            onValueChange = onProfileIntroductionChange,
-            hint = stringResource(R.string.profile_placeholder),
-            height = 92,
-            modifier = Modifier.padding(start = 24.dp, top = 204.dp),
-        )
+        Column(modifier = Modifier.padding(start = 24.dp, top = 32.dp)) {
+            Text(
+                text = stringResource(R.string.profile),
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+            )
+
+            Spacer(modifier = Modifier.height(26.dp))
+
+            FigmaDetailFieldLabel(text = stringResource(R.string.name))
+
+            Spacer(modifier = Modifier.height(7.dp))
+
+            FigmaDetailThinInput(
+                value = profileName,
+                onValueChange = onProfileNameChange,
+                hint = stringResource(R.string.name),
+            )
+
+            Spacer(modifier = Modifier.height(31.dp))
+
+            FigmaDetailFieldLabel(text = stringResource(R.string.profile_personalization_label))
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            FigmaDetailTextArea(
+                value = profileIntroduction,
+                onValueChange = onProfileIntroductionChange,
+                hint = stringResource(R.string.profile_placeholder),
+                height = 92,
+            )
+        }
     }
 }

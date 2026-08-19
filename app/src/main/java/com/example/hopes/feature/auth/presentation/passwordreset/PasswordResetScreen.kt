@@ -10,7 +10,7 @@ fun PasswordResetScreen(
     uiState: PasswordResetUiState,
     onEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
-    FigmaPhoneScreen(useFigmaViewport = false) {
+    FigmaPhoneScreen {
         PasswordResetScreenContent(
             uiState = uiState,
             onEvent = onEvent,

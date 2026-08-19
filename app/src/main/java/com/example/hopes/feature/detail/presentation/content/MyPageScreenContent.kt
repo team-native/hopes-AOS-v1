@@ -33,52 +33,56 @@ fun MyPageScreenContent(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
     ) {
-        FigmaMyPageHeader(
-            onAppSettingsClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
-        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, top = 147.dp, end = 24.dp)
                 .imePadding(),
         ) {
-            FigmaMyPageAccountCard(email = uiState.email, major = uiState.major)
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            FigmaMyPageProfileCard(
-                profileName = uiState.profileName,
-                profileIntroduction = uiState.profileIntroduction,
-                onProfileNameChange = { onEvent(MyPageScreenEvent.ProfileNameChanged(it)) },
-                onProfileIntroductionChange = {
-                    onEvent(MyPageScreenEvent.ProfileIntroductionChanged(it))
-                },
+            FigmaMyPageHeader(
+                onAppSettingsClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            FigmaDetailPrimaryButton(
-                text = when {
-                    uiState.isProfileLoading -> stringResource(R.string.profile_loading)
-                    uiState.isProfileLoadFailed -> stringResource(R.string.profile_load_error)
-                    uiState.isProfileSaving -> stringResource(R.string.profile_saving)
-                    uiState.isProfileSaved -> stringResource(R.string.saved)
-                    uiState.isProfileSaveFailed -> stringResource(R.string.profile_save_error)
-                    else -> stringResource(R.string.save)
-                },
-                modifier = Modifier
-                    .padding(start = 6.dp)
-                    .width(96.dp)
-                    .height(44.dp),
-                onClick = {
-                    if (uiState.isProfileLoadFailed) {
-                        onEvent(MyPageScreenEvent.ProfileRetryClicked)
-                    } else {
-                        onEvent(MyPageScreenEvent.ProfileSaveClicked)
-                    }
-                },
-                shadowStyle = FigmaDetailPrimaryButtonShadow.Raised,
-            )
+            Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp)) {
+                FigmaMyPageAccountCard(email = uiState.email, major = uiState.major)
+
+                Spacer(modifier = Modifier.height(28.dp))
+
+                FigmaMyPageProfileCard(
+                    profileName = uiState.profileName,
+                    profileIntroduction = uiState.profileIntroduction,
+                    onProfileNameChange = { onEvent(MyPageScreenEvent.ProfileNameChanged(it)) },
+                    onProfileIntroductionChange = {
+                        onEvent(MyPageScreenEvent.ProfileIntroductionChanged(it))
+                    },
+                )
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                FigmaDetailPrimaryButton(
+                    text = when {
+                        uiState.isProfileLoading -> stringResource(R.string.profile_loading)
+                        uiState.isProfileLoadFailed -> stringResource(R.string.profile_load_error)
+                        uiState.isProfileSaving -> stringResource(R.string.profile_saving)
+                        uiState.isProfileSaved -> stringResource(R.string.saved)
+                        uiState.isProfileSaveFailed -> stringResource(R.string.profile_save_error)
+                        else -> stringResource(R.string.save)
+                    },
+                    modifier = Modifier
+                        .padding(start = 6.dp)
+                        .width(96.dp)
+                        .height(44.dp),
+                    onClick = {
+                        if (uiState.isProfileLoadFailed) {
+                            onEvent(MyPageScreenEvent.ProfileRetryClicked)
+                        } else {
+                            onEvent(MyPageScreenEvent.ProfileSaveClicked)
+                        }
+                    },
+                    shadowStyle = FigmaDetailPrimaryButtonShadow.Raised,
+                )
+            }
         }
     }
 }

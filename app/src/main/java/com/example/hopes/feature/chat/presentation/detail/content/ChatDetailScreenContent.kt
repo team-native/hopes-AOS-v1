@@ -2,27 +2,23 @@ package com.example.hopes.feature.chat.presentation.detail.content
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.feature.chat.presentation.component.ChatMessageStateText
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailUiState
 import com.example.hopes.feature.detail.presentation.component.FigmaChatDetailBubble
@@ -50,7 +46,6 @@ fun ChatDetailScreenContent(
                 onBackClick = { onEvent(ChatDetailScreenEvent.BackClicked) },
                 actionText = stringResource(R.string.chat_save),
                 onActionClick = {},
-                headerHeight = 60.dp,
                 applySystemBarPadding = true,
                 subtitleSpacing = 3.dp,
             )
@@ -90,8 +85,8 @@ private fun ChatMessages(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         when {
-            uiState.isLoading -> MessageStateText(R.string.chat_messages_loading)
-            uiState.isLoadError -> MessageStateText(R.string.chat_messages_error, onRetryClick)
+            uiState.isLoading -> ChatMessageStateText(R.string.chat_messages_loading)
+            uiState.isLoadError -> ChatMessageStateText(R.string.chat_messages_error, onRetryClick)
             uiState.messages.isEmpty() -> Unit
             else -> uiState.messages.forEach { message ->
                 FigmaChatDetailBubble(
@@ -102,24 +97,9 @@ private fun ChatMessages(
             }
         }
         if (uiState.isSendError) {
-            MessageStateText(R.string.chat_message_send_error)
+            ChatMessageStateText(R.string.chat_message_send_error)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
     }
-}
-
-@Composable
-private fun MessageStateText(
-    textResId: Int,
-    onClick: (() -> Unit)? = null,
-) {
-    Text(
-        text = stringResource(textResId),
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick)),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        textAlign = TextAlign.Center,
-    )
 }

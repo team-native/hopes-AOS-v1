@@ -1,9 +1,10 @@
 package com.example.hopes.feature.auth.presentation.component
 
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,10 +33,9 @@ fun FigmaAuthBrandHeader(
 ) {
     val extendedColors = LocalHopesExtendedColors.current
 
-    Box(
-        modifier = modifier
-            .width(240.dp)
-            .height(42.dp),
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
@@ -63,27 +63,27 @@ fun FigmaAuthBrandHeader(
             )
         }
 
-        Text(
-            text = stringResource(R.string.app_name),
-            modifier = Modifier
-                .padding(start = 54.dp, top = 4.dp),
-            color = MaterialTheme.colorScheme.onPrimary,
-            style = TextStyle(
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-        )
+        Spacer(modifier = Modifier.width(12.dp))
 
-        Text(
-            text = stringResource(R.string.school_name),
-            modifier = Modifier
-                .padding(start = 54.dp, top = 25.dp),
-            color = extendedColors.brandSubtitleOnBlue,
-            style = TextStyle(
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-        )
+        Column {
+            Text(
+                text = stringResource(R.string.app_name),
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = TextStyle(
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+
+            Text(
+                text = stringResource(R.string.school_name),
+                color = extendedColors.brandSubtitleOnBlue,
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+            )
+        }
     }
 }
 

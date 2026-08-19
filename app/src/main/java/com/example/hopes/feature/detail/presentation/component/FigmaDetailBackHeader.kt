@@ -1,6 +1,6 @@
 package com.example.hopes.feature.detail.presentation.component
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,24 +30,19 @@ fun FigmaDetailBackHeader(
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null,
     backOffsetX: Int = 18,
-    headerHeight: Dp = 150.dp,
     applySystemBarPadding: Boolean = false,
     subtitleSpacing: Dp = 8.dp,
 ) {
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier)
-            .height(headerHeight),
+            .padding(top = if (applySystemBarPadding) 0.dp else 25.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    start = backOffsetX.dp,
-                    top = if (applySystemBarPadding) 0.dp else 25.dp,
-                    end = 24.dp,
-                )
+                .padding(start = backOffsetX.dp, end = 24.dp)
                 .height(39.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -80,12 +75,13 @@ fun FigmaDetailBackHeader(
             }
         }
 
+        // 시스템바 패딩을 적용하는 화면은 헤더 행 바로 아래에 subtitleSpacing만큼만 띄운다.
+        // 적용하지 않는 화면은 기존 좌표상 그 간격이 사실상 0에 가까워 별도 간격을 두지 않는다.
+        Spacer(modifier = Modifier.height(if (applySystemBarPadding) subtitleSpacing else 0.dp))
+
         Text(
             text = subtitle,
-            modifier = Modifier.padding(
-                start = 74.dp,
-                top = if (applySystemBarPadding) 39.dp + subtitleSpacing else 62.dp,
-            ),
+            modifier = Modifier.padding(start = 74.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )

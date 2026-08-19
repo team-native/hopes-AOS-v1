@@ -1,8 +1,7 @@
 package com.example.hopes.feature.detail.presentation.component
 
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -15,12 +14,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 
-/** 문의 전송 방법을 보완하는 하단 이메일 안내 카드다. */
+/** 문의 전송 방법을 보완하는 하단 이메일 안내 카드다. 배치는 호출부가 맡는다. */
 @Composable
-fun FigmaContactInformationCard() {
+fun FigmaContactInformationCard(modifier: Modifier = Modifier) {
     FigmaDetailCard(
-        modifier = Modifier
-            .padding(start = 24.dp, top = 624.dp)
+        modifier = modifier
             .width(354.dp)
             .height(70.dp),
         shadowStyle = FigmaDetailCardShadow.None,

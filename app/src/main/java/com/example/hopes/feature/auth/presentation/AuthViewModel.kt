@@ -56,8 +56,12 @@ class AuthViewModel @Inject constructor(
             AuthScreenEvent.SignUpRequested -> updateState {
                 copy(authStep = AuthStep.SignUp, errorMessage = null)
             }
-            AuthScreenEvent.LoginRequested -> updateState { copy(authStep = AuthStep.Login) }
-            AuthScreenEvent.LoginDismissed -> updateState { copy(authStep = AuthStep.Guide) }
+            AuthScreenEvent.LoginRequested -> updateState {
+                copy(authStep = AuthStep.Login, errorMessage = null)
+            }
+            AuthScreenEvent.LoginDismissed -> updateState {
+                copy(authStep = AuthStep.Guide, errorMessage = null)
+            }
             AuthScreenEvent.ForgotPasswordClicked -> updateState {
                 copy(
                     authStep = AuthStep.PasswordResetRequest,

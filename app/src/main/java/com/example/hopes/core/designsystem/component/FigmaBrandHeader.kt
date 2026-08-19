@@ -1,10 +1,10 @@
 package com.example.hopes.core.designsystem.component
 
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,10 +40,9 @@ fun FigmaBrandHeader(
         MaterialTheme.colorScheme.onSurfaceVariant
     }
 
-    Box(
-        modifier = modifier
-            .width(250.dp)
-            .height(42.dp),
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
@@ -72,25 +71,27 @@ fun FigmaBrandHeader(
             )
         }
 
-        Text(
-            text = stringResource(R.string.app_name),
-            modifier = Modifier.padding(start = 54.dp, top = 4.dp),
-            color = titleColor,
-            style = TextStyle(
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-        )
+        Spacer(modifier = Modifier.width(12.dp))
 
-        Text(
-            text = stringResource(R.string.school_name),
-            modifier = Modifier.padding(start = 54.dp, top = 25.dp),
-            color = subtitleColor,
-            style = TextStyle(
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Medium,
-            ),
-        )
+        Column {
+            Text(
+                text = stringResource(R.string.app_name),
+                color = titleColor,
+                style = TextStyle(
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+
+            Text(
+                text = stringResource(R.string.school_name),
+                color = subtitleColor,
+                style = TextStyle(
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+            )
+        }
     }
 }
 

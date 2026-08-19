@@ -2,7 +2,10 @@ package com.example.hopes.feature.detail.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -29,22 +32,24 @@ fun FigmaChatReplyBar(
     onSubmitClick: () -> Unit,
     modifier: Modifier,
 ) {
-    Box(
+    Row(
         modifier = modifier
             .imePadding()
-            .width(402.dp)
+            .fillMaxWidth()
             .height(74.dp)
             .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, MaterialTheme.colorScheme.outline),
+            .border(1.dp, MaterialTheme.colorScheme.outline)
+            .padding(start = 24.dp, top = 16.dp, end = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         FigmaChatReplyInput(
             value = value,
             onValueChange = onValueChange,
+            modifier = Modifier.weight(1f),
         )
         FigmaDetailPrimaryButton(
             text = stringResource(R.string.chat_send),
             modifier = Modifier
-                .padding(start = 320.dp, top = 16.dp)
                 .width(58.dp)
                 .height(44.dp),
             onClick = onSubmitClick,
@@ -52,30 +57,29 @@ fun FigmaChatReplyBar(
     }
 }
 
-/** 피그마 282×44 추가 질문 입력 필드다. */
+/** 피그마 44dp 높이의 추가 질문 입력 필드다. 실제 폭은 호출부의 modifier가 결정한다. */
 @Composable
 private fun FigmaChatReplyInput(
     value: String,
     onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
 
     Box(
-        modifier = Modifier
-            .padding(start = 24.dp, top = 16.dp)
-            .width(282.dp)
+        modifier = modifier
             .height(44.dp)
             .background(
                 color = extendedColors.replyFieldBackground,
                 shape = RoundedCornerShape(16.dp),
             )
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp)),
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp))
+            .padding(start = 20.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         if (value.isEmpty()) {
             Text(
                 text = stringResource(R.string.chat_additional_question),
-                modifier = Modifier.padding(start = 20.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = TextStyle(fontSize = 14.sp),
             )
@@ -84,23 +88,13 @@ private fun FigmaChatReplyInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 20.dp)
-                .width(244.dp)
+                .fillMaxWidth()
                 .height(24.dp),
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurface,
             ),
-            decorationBox = { innerTextField ->
-                Box(
-                    modifier = Modifier.width(244.dp),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    innerTextField()
-                }
-            },
         )
     }
 }

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.hopes.navigation.HopesDestination
 
-/** 피그마 iPhone 17 Pro(402×874) 좌표계를 유지하는 앱 화면 프레임이다. */
+/** 뒤로가기·하단 탭 등 공용 Scaffold와 배경을 갖춘 앱 화면 프레임이다. */
 @Composable
 fun FigmaAppFrame(
     selectedDestination: HopesDestination,
@@ -19,11 +19,9 @@ fun FigmaAppFrame(
     fixedTopContent: (@Composable () -> Unit)? = null,
     fixedBottomContent: (@Composable () -> Unit)? = null,
     isBottomNavigationVisible: Boolean = true,
-    useFigmaViewport: Boolean = true,
     background: @Composable BoxScope.() -> Unit = {},
     contentBackgroundColor: Color = MaterialTheme.colorScheme.background,
     scaffoldContainerColor: Color = MaterialTheme.colorScheme.background,
-    imeOverlay: @Composable BoxScope.(FigmaViewportMetrics) -> Unit = {},
     content: @Composable () -> Unit,
 ) {
     Box(
@@ -44,8 +42,6 @@ fun FigmaAppFrame(
         ) { innerPadding ->
             FigmaPhoneScreen(
                 modifier = Modifier.padding(innerPadding),
-                useFigmaViewport = useFigmaViewport,
-                isScrollable = false,
                 background = {
                     Box(
                         modifier = Modifier
@@ -53,7 +49,6 @@ fun FigmaAppFrame(
                             .background(contentBackgroundColor),
                     )
                 },
-                overlay = imeOverlay,
             ) {
                 Box(
                     modifier = Modifier

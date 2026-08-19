@@ -1,8 +1,12 @@
 package com.example.hopes.feature.detail.presentation.component
 
-import androidx.compose.foundation.layout.padding
-
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,41 +25,56 @@ fun FigmaPersonalSettingsFormCard(
     isPromptSaved: Boolean,
     onPersonalPromptChange: (String) -> Unit,
     onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
-        modifier = Modifier
-            .padding(start = 24.dp, top = 158.dp)
+        modifier = modifier
             .width(354.dp)
             .height(408.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {
-        Text(
-            text = stringResource(R.string.personal_settings),
-            modifier = Modifier.padding(start = 24.dp, top = 32.dp),
-            style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
-        )
-        FigmaDetailFieldLabel(
-            text = stringResource(R.string.system_prompt_description),
-            modifier = Modifier.padding(start = 24.dp, top = 80.dp),
-        )
-        FigmaDetailTextArea(
-            value = personalPrompt,
-            onValueChange = onPersonalPromptChange,
-            hint = stringResource(R.string.prompt_placeholder),
-            height = 210,
-            modifier = Modifier.padding(start = 24.dp, top = 112.dp),
-        )
-        FigmaDetailPrimaryButton(
-            text = if (isPromptSaved) {
-                stringResource(R.string.saved)
-            } else {
-                stringResource(R.string.prompt_save)
-            },
+        Column(
             modifier = Modifier
-                .padding(start = 230.dp, top = 341.dp)
-                .width(100.dp)
-                .height(46.dp),
-            onClick = onSaveClick,
-        )
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp)
+                .padding(top = 32.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.personal_settings),
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+            )
+
+            Spacer(modifier = Modifier.height(26.dp))
+
+            FigmaDetailFieldLabel(text = stringResource(R.string.system_prompt_description))
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            FigmaDetailTextArea(
+                value = personalPrompt,
+                onValueChange = onPersonalPromptChange,
+                hint = stringResource(R.string.prompt_placeholder),
+                height = 210,
+            )
+
+            Spacer(modifier = Modifier.height(19.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                FigmaDetailPrimaryButton(
+                    text = if (isPromptSaved) {
+                        stringResource(R.string.saved)
+                    } else {
+                        stringResource(R.string.prompt_save)
+                    },
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(46.dp),
+                    onClick = onSaveClick,
+                )
+            }
+        }
     }
 }

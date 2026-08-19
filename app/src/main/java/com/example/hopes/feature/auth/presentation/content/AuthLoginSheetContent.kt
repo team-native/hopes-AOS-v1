@@ -55,7 +55,7 @@ fun AuthLoginSheetContent(
         val sheetTopOffset = remember(maxHeight) { Animatable(expandedTopOffset) }
 
         Box(modifier = Modifier.blur(8.dp)) {
-            Column(modifier = Modifier.padding(start = 32.dp, top = 25.dp)) {
+            Column(modifier = Modifier.padding(start = 24.dp, top = 25.dp)) {
                 FigmaAuthBrandHeader(logoShadowStyle = FigmaAuthLogoShadowStyle.Login)
 
                 Spacer(modifier = Modifier.height(74.dp))

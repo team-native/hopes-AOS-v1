@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
-import com.example.hopes.feature.settings.presentation.component.FigmaDarkModeRow
 import com.example.hopes.feature.settings.presentation.component.FigmaSettingsRow
 import com.example.hopes.feature.settings.presentation.component.SettingsHeader
 import com.example.hopes.feature.settings.presentation.component.SettingsLogoutButton
@@ -50,14 +49,6 @@ fun SettingsScreenContent(
                 description = stringResource(R.string.settings_contact_description),
                 onClick = onNavigateToContact,
                 modifier = Modifier.padding(start = 37.dp, end = 37.dp),
-            )
-
-            Spacer(modifier = Modifier.height(26.dp))
-
-            FigmaDarkModeRow(
-                isEnabled = isDarkModeEnabled,
-                onToggle = { onDarkModeChange(!isDarkModeEnabled) },
-                modifier = Modifier.padding(start = 39.dp, end = 39.dp),
             )
 
             Spacer(modifier = Modifier.height(26.dp))

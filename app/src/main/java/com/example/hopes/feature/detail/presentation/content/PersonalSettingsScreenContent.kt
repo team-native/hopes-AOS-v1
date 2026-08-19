@@ -10,8 +10,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
-import com.example.hopes.feature.detail.presentation.DetailScreenEvent
-import com.example.hopes.feature.detail.presentation.DetailUiState
+import com.example.hopes.feature.detail.presentation.PersonalSettingsScreenEvent
+import com.example.hopes.feature.detail.presentation.PersonalSettingsUiState
 import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
 import com.example.hopes.feature.detail.presentation.component.FigmaPersonalSettingsFormCard
 import com.example.hopes.navigation.HopesDestination
@@ -19,8 +19,9 @@ import com.example.hopes.navigation.HopesDestination
 /** 피그마 13 개인 설정의 시스템 프롬프트 입력 영역을 구성한다. */
 @Composable
 fun PersonalSettingsScreenContent(
-    uiState: DetailUiState,
-    onEvent: (DetailScreenEvent) -> Unit,
+    uiState: PersonalSettingsUiState,
+    onEvent: (PersonalSettingsScreenEvent) -> Unit,
+    onBackClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     FigmaAppFrame(
@@ -31,18 +32,28 @@ fun PersonalSettingsScreenContent(
             FigmaDetailBackHeader(
                 title = stringResource(R.string.personal_settings),
                 subtitle = stringResource(R.string.personal_settings_subtitle),
-                onBackClick = { onEvent(DetailScreenEvent.BackClicked) },
+                onBackClick = onBackClick,
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             FigmaPersonalSettingsFormCard(
                 personalPrompt = uiState.personalPrompt,
+                isPromptLoading = uiState.isPromptLoading,
+                isPromptLoadFailed = uiState.isPromptLoadFailed,
+                isPromptSaving = uiState.isPromptSaving,
                 isPromptSaved = uiState.isPromptSaved,
+                isPromptSaveFailed = uiState.isPromptSaveFailed,
                 onPersonalPromptChange = {
-                    onEvent(DetailScreenEvent.PersonalPromptChanged(it))
+                    onEvent(PersonalSettingsScreenEvent.PersonalPromptChanged(it))
                 },
-                onSaveClick = { onEvent(DetailScreenEvent.PersonalPromptSaveClicked) },
+                onSaveClick = {
+                    if (uiState.isPromptLoadFailed) {
+                        onEvent(PersonalSettingsScreenEvent.PersonalPromptRetryClicked)
+                    } else {
+                        onEvent(PersonalSettingsScreenEvent.PersonalPromptSaveClicked)
+                    }
+                },
                 modifier = Modifier.padding(start = 24.dp),
             )
         }

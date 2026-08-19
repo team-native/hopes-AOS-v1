@@ -52,6 +52,8 @@ fun ContactScreenContent(
             FigmaContactInformationCard(
                 modifier = Modifier.padding(start = 24.dp),
             )
+
+            Spacer(modifier = Modifier.height(96.dp))
         }
     }
 }

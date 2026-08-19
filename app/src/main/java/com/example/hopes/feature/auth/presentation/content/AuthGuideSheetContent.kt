@@ -61,7 +61,7 @@ fun AuthGuideSheetContent(onNavigateLogin: () -> Unit) {
                 .fillMaxSize()
                 .padding(bottom = peekHeightDp.dp),
         ) {
-            Column(modifier = Modifier.padding(start = 32.dp, top = 25.dp)) {
+            Column(modifier = Modifier.padding(start = 24.dp, top = 25.dp)) {
                 FigmaAuthBrandHeader()
 
                 Spacer(modifier = Modifier.height(74.dp))

@@ -2,13 +2,19 @@ package com.example.hopes.feature.detail.presentation.content
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
@@ -33,9 +39,21 @@ fun MyPageScreenContent(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
     ) {
+        val density = LocalDensity.current
+        val isImeVisible = WindowInsets.ime.getBottom(density) > 0
+        val scrollState = rememberScrollState()
+
+        // 키보드가 올라오면 맨 아래로 애니메이션 스크롤해 가려지는 입력창·저장 버튼을 보여준다.
+        LaunchedEffect(isImeVisible) {
+            if (isImeVisible) {
+                scrollState.animateScrollTo(scrollState.maxValue)
+            }
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(scrollState)
                 .imePadding()
                 .padding(bottom = 24.dp)
         ) {

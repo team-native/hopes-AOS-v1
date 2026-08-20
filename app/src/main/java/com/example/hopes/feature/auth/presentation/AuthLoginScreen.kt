@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
 import com.example.hopes.feature.auth.presentation.component.AuthBackground
 import com.example.hopes.feature.auth.presentation.content.AuthLoginSheetContent
@@ -25,8 +27,9 @@ fun AuthLoginScreen(
         applyStatusBarsPadding = true,
         navigationBarColor = MaterialTheme.colorScheme.surface,
         background = {
-            // 피그마의 배경은 선명한 그라디언트이고, 전경 브랜드/카피에만 8px 블러가 적용된다.
-            AuthBackground(modifier = Modifier.fillMaxSize())
+            // 로그인 시트가 뜨는 동안은 배경 그라디언트 전체를 블러 처리하고,
+            // 전경 브랜드/카피는 선명하게 유지한다.
+            AuthBackground(modifier = Modifier.fillMaxSize().blur(8.dp))
         },
     ) {
         AuthLoginSheetContent(

@@ -2,7 +2,6 @@ package com.example.hopes.feature.auth.presentation.content
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
@@ -54,14 +52,13 @@ fun AuthLoginSheetContent(
         val dismissThreshold = maxHeight.value - 260f
         val sheetTopOffset = remember(maxHeight) { Animatable(expandedTopOffset) }
 
-        Box(modifier = Modifier.blur(8.dp)) {
-            Column(modifier = Modifier.padding(start = 24.dp, top = 25.dp)) {
-                FigmaAuthBrandHeader(logoShadowStyle = FigmaAuthLogoShadowStyle.Login)
+        // 배경 그라디언트가 블러 처리되므로, 그 위의 브랜드/카피는 선명하게 유지한다.
+        Column(modifier = Modifier.padding(start = 24.dp, top = 25.dp)) {
+            FigmaAuthBrandHeader(logoShadowStyle = FigmaAuthLogoShadowStyle.Login)
 
-                Spacer(modifier = Modifier.height(74.dp))
+            Spacer(modifier = Modifier.height(74.dp))
 
-                AuthHeroCopy()
-            }
+            AuthHeroCopy()
         }
 
         AuthBackdropScrim()

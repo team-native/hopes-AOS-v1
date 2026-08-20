@@ -36,7 +36,7 @@ fun PersonalSettingsScreenContent(
                 backOffsetX = 24,
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             FigmaPersonalSettingsFormCard(
                 personalPrompt = uiState.personalPrompt,

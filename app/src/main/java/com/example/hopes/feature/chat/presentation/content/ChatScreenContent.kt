@@ -76,7 +76,7 @@ fun ChatScreenContent(
                 ChatNewChatButton(onClick = onNewChatClick)
             }
 
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             ChatWelcomeHero(isCreateChatError = isCreateChatError)
 

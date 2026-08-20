@@ -145,7 +145,7 @@ private fun HistoryListStateMessage(
                 top = HISTORY_LIST_TOP_PADDING,
                 end = AppSpacing.ScreenHorizontal,
             )
-            .fillMaxWidth()
+            .fillMaxSize()
             .then(
                 if (onClick == null) {
                     Modifier
@@ -160,5 +160,5 @@ private fun HistoryListStateMessage(
 }
 
 // "모든 기록" 라벨(약 20dp 높이) 아래 20dp 지점이다.
-private val HISTORY_LIST_TOP_PADDING = HISTORY_ALL_RECORDS_TOP_PADDING + 20.dp + 20.dp
-private val HISTORY_LIST_BOTTOM_PADDING = 120.dp
+private val HISTORY_LIST_TOP_PADDING = HISTORY_ALL_RECORDS_TOP_PADDING + 15.dp + 20.dp
+private val HISTORY_LIST_BOTTOM_PADDING = 0.dp

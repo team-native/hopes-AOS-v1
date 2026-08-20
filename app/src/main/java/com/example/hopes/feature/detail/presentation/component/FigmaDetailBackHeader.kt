@@ -34,6 +34,9 @@ fun FigmaDetailBackHeader(
     applySystemBarPadding: Boolean = false,
     subtitleSpacing: Dp = 8.dp,
 ) {
+    // 뒤로가기 버튼(32.dp) + 버튼-타이틀 간격(16.dp)만큼 타이틀이 시작하는 위치와 같게 맞춘다.
+    val textStartX = backOffsetX.dp + 32.dp + 16.dp
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,7 +85,7 @@ fun FigmaDetailBackHeader(
 
         Text(
             text = subtitle,
-            modifier = Modifier.padding(start = 74.dp),
+            modifier = Modifier.padding(start = textStartX),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )

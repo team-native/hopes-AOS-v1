@@ -33,8 +33,6 @@ fun FigmaDetailBackHeader(
     backOffsetX: Int = 18,
     applySystemBarPadding: Boolean = false,
     subtitleSpacing: Dp = 8.dp,
-    // 설정 화면(SettingsHeader)과 같이 버튼을 타이틀+서브타이틀 블록 중간쯤으로 내릴지 여부.
-    alignBackButtonWithTitleBlock: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -46,12 +44,11 @@ fun FigmaDetailBackHeader(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = backOffsetX.dp, end = 24.dp)
-                .then(if (alignBackButtonWithTitleBlock) Modifier else Modifier.height(39.dp)),
-            verticalAlignment = if (alignBackButtonWithTitleBlock) Alignment.Top else Alignment.CenterVertically,
+                .height(39.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             FigmaBackButton(
                 onClick = onBackClick,
-                modifier = if (alignBackButtonWithTitleBlock) Modifier.padding(top = 10.dp) else Modifier,
             )
 
             Spacer(modifier = Modifier.width(16.dp))

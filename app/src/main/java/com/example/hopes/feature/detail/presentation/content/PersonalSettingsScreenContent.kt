@@ -33,10 +33,10 @@ fun PersonalSettingsScreenContent(
                 title = stringResource(R.string.personal_settings),
                 subtitle = stringResource(R.string.personal_settings_subtitle),
                 onBackClick = onBackClick,
-                alignBackButtonWithTitleBlock = true,
+                backOffsetX = 24,
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             FigmaPersonalSettingsFormCard(
                 personalPrompt = uiState.personalPrompt,

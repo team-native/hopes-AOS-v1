@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -29,6 +30,7 @@ fun FigmaChatAnswerGeneratingBubble(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .figmaSubtleShadow(bubbleShape)
+            .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surface, shape = bubbleShape)
             .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = bubbleShape)
             .padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 18.dp),

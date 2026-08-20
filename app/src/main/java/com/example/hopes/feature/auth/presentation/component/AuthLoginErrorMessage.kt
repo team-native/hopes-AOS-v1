@@ -11,11 +11,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 
-/** 로그인 실패 시 사용자에게 원인을 알리는 오류 문구다. */
+/** 로그인 실패 시 사용자에게 원인을 알리는 오류 문구다. 서버 메시지가 없으면 기본 문구로 대신한다. */
 @Composable
-fun AuthLoginErrorMessage(modifier: Modifier = Modifier) {
+fun AuthLoginErrorMessage(message: String, modifier: Modifier = Modifier) {
     Text(
-        text = stringResource(R.string.login_error_message),
+        text = message.ifBlank { stringResource(R.string.login_error_message) },
         modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.error,
         textAlign = TextAlign.Center,

@@ -7,6 +7,7 @@ import com.example.hopes.core.validation.isValidSignupPassword
 import com.example.hopes.core.validation.isValidUsername
 import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.result.AppResult
+import com.example.hopes.domain.result.toDisplayMessage
 import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
@@ -104,12 +105,13 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
-            when (loginUseCase(currentState.email, currentState.password)) {
+            val result = loginUseCase(currentState.email, currentState.password)
+            when (result) {
                 is AppResult.Success -> {
                     updateState { copy(isLoading = false) }
                     _effect.emit(AuthEffect.Authenticated)
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState { copy(isLoading = false, errorMessage = result.toDisplayMessage("")) }
             }
         }
     }
@@ -201,9 +203,10 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
-            when (sendSignupVerificationUseCase(currentState.email)) {
+            val result = sendSignupVerificationUseCase(currentState.email)
+            when (result) {
                 is AppResult.Success -> updateState { copy(isLoading = false) }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState { copy(isLoading = false, errorMessage = result.toDisplayMessage("")) }
             }
         }
     }
@@ -235,12 +238,10 @@ class AuthViewModel @Inject constructor(
 
             // "회원가입" 클릭 한 번으로 인증번호 확인과 최종 가입 요청을 순서대로 처리한다.
             // 인증번호 확인이 실패하면 나머지 입력값은 전송하지 않는다.
-            when (confirmSignupVerificationUseCase(currentState.email, currentState.verificationCode)) {
-                is AppResult.Success -> Unit
-                else -> {
-                    updateState { copy(isLoading = false, errorMessage = "") }
-                    return@launch
-                }
+            val verificationResult = confirmSignupVerificationUseCase(currentState.email, currentState.verificationCode)
+            if (verificationResult !is AppResult.Success) {
+                updateState { copy(isLoading = false, errorMessage = verificationResult.toDisplayMessage("")) }
+                return@launch
             }
 
             // 회원가입 화면에는 별도의 비밀번호 확인 입력칸이 없어, 같은 비밀번호 값을 확인란으로도 함께 전송한다.
@@ -253,12 +254,19 @@ class AuthViewModel @Inject constructor(
                 major = currentState.department.toMajorCode(),
                 cohort = currentState.generation.toCohort(),
             )
-            when (signUpUseCase(request)) {
+            val signUpResult = signUpUseCase(request)
+            when (signUpResult) {
                 is AppResult.Success -> {
-                    updateState { copy(isLoading = false) }
-                    _effect.emit(AuthEffect.Authenticated)
+                    // 회원가입은 바로 인증하지 않고 로그인 화면으로 보내, 서버가 준 성공 메시지를 보여준다.
+                    updateState {
+                        copy(
+                            isLoading = false,
+                            authStep = AuthStep.Login,
+                            statusMessage = signUpResult.value.message ?: "",
+                        )
+                    }
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState { copy(isLoading = false, errorMessage = signUpResult.toDisplayMessage("")) }
             }
         }
     }
@@ -273,11 +281,12 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null, statusMessage = null) }
-            when (requestPasswordResetUseCase(email)) {
+            val result = requestPasswordResetUseCase(email)
+            when (result) {
                 is AppResult.Success -> updateState {
-                    copy(isLoading = false, statusMessage = "")
+                    copy(isLoading = false, statusMessage = result.value)
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState { copy(isLoading = false, errorMessage = result.toDisplayMessage("")) }
             }
         }
     }
@@ -296,14 +305,13 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             updateState { copy(isLoading = true, errorMessage = null) }
             // 비밀번호 재설정 화면에도 별도의 비밀번호 확인 입력칸이 없어, 같은 비밀번호 값을 확인란으로도 함께 전송한다.
-            when (
-                resetPasswordUseCase(
-                    email = currentState.passwordResetEmail,
-                    code = currentState.passwordResetCode,
-                    password = currentState.passwordResetNewPassword,
-                    passwordConfirm = currentState.passwordResetNewPassword,
-                )
-            ) {
+            val result = resetPasswordUseCase(
+                email = currentState.passwordResetEmail,
+                code = currentState.passwordResetCode,
+                password = currentState.passwordResetNewPassword,
+                passwordConfirm = currentState.passwordResetNewPassword,
+            )
+            when (result) {
                 is AppResult.Success -> updateState {
                     copy(
                         isLoading = false,
@@ -314,7 +322,7 @@ class AuthViewModel @Inject constructor(
                         statusMessage = null,
                     )
                 }
-                else -> updateState { copy(isLoading = false, errorMessage = "") }
+                else -> updateState { copy(isLoading = false, errorMessage = result.toDisplayMessage("")) }
             }
         }
     }

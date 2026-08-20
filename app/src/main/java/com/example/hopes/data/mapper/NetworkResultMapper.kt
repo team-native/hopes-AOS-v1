@@ -7,7 +7,7 @@ import com.example.hopes.domain.result.AppResult
 fun <T, R> NetworkResult<T>.toAppResult(mapper: (T) -> R): AppResult<R> {
     return when (this) {
         is NetworkResult.Success -> AppResult.Success(mapper(value))
-        is NetworkResult.HttpError -> AppResult.HttpError(statusCode)
+        is NetworkResult.HttpError -> AppResult.HttpError(statusCode, message)
         is NetworkResult.NetworkError -> AppResult.NetworkError
         is NetworkResult.SerializationError -> AppResult.SerializationError
     }

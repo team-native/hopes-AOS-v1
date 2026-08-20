@@ -24,6 +24,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthLoginErrorMessa
 import com.example.hopes.feature.auth.presentation.component.AuthSheetHandle
 import com.example.hopes.feature.auth.presentation.component.AuthSheetHeading
 import com.example.hopes.feature.auth.presentation.component.AuthSignupPrompt
+import com.example.hopes.feature.auth.presentation.component.AuthStatusText
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.feature.auth.presentation.component.FigmaLoginButton
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
@@ -34,6 +35,7 @@ fun AuthLoginFormContent(
     emailText: String,
     passwordText: String,
     errorMessage: String?,
+    statusMessage: String?,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
@@ -122,7 +124,15 @@ fun AuthLoginFormContent(
         if (errorMessage != null) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            AuthLoginErrorMessage(modifier = Modifier.width(332.dp))
+            AuthLoginErrorMessage(message = errorMessage, modifier = Modifier.width(332.dp))
+        } else if (statusMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            AuthStatusText(
+                message = statusMessage.ifBlank { stringResource(R.string.signup_success_message) },
+                isError = false,
+                modifier = Modifier.width(332.dp),
+            )
         }
 
         Spacer(modifier = Modifier.height(27.dp))

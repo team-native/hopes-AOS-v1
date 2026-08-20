@@ -77,8 +77,8 @@ class AuthRepositoryImpl @Inject constructor(
         return authRemoteDataSource.confirmSignupCode(EmailCodeRequestDto(email, code)).toAppResult { Unit }
     }
 
-    override suspend fun requestPasswordReset(email: String): AppResult<Unit> {
-        return authRemoteDataSource.requestPasswordReset(EmailRequestDto(email)).toAppResult { Unit }
+    override suspend fun requestPasswordReset(email: String): AppResult<String> {
+        return authRemoteDataSource.requestPasswordReset(EmailRequestDto(email)).toAppResult { it.message }
     }
 
     override suspend fun resetPassword(request: PasswordResetRequest): AppResult<Unit> {

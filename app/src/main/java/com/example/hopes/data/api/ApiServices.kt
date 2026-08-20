@@ -33,7 +33,7 @@ interface SettingsApiService {
     @POST("api/setting/inquiry") suspend fun submitInquiry(@Body body: ContentRequestDto): Response<MessageEnvelopeDto>
     @POST("api/logout") suspend fun logout(): Response<MessageEnvelopeDto>
 }
-@Serializable data class TokenResponseDto(@SerialName("accessToken") val accessToken: String, @SerialName("tokenType") val tokenType: String)
+@Serializable data class TokenResponseDto(@SerialName("accessToken") val accessToken: String, @SerialName("tokenType") val tokenType: String, @SerialName("message") val message: String? = null)
 @Serializable data class MessageEnvelopeDto(@SerialName("message") val message: String)
 @Serializable data class EmailRequestDto(@SerialName("email") val email: String)
 @Serializable data class EmailCodeRequestDto(@SerialName("email") val email: String, @SerialName("code") val code: String)

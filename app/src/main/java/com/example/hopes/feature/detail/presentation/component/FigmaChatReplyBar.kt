@@ -87,9 +87,7 @@ private fun FigmaChatReplyInput(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(24.dp),
+            modifier = Modifier.fillMaxWidth(),
             singleLine = true,
             textStyle = TextStyle(
                 fontSize = 14.sp,

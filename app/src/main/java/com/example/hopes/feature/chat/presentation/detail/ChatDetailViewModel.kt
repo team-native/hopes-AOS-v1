@@ -73,7 +73,7 @@ class ChatDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            updateState { copy(isSendError = false) }
+            updateState { copy(isSending = true, isSendError = false) }
             when (val result = sendChatMessageUseCase(chatId, trimmedReply)) {
                 is AppResult.Success -> {
                     updateState {
@@ -83,11 +83,12 @@ class ChatDetailViewModel @Inject constructor(
                                 message.toChatMessageUiModel()
                             },
                             replyText = "",
+                            isSending = false,
                         )
                     }
                 }
 
-                else -> updateState { copy(isSendError = true) }
+                else -> updateState { copy(isSending = false, isSendError = true) }
             }
         }
     }

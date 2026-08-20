@@ -7,6 +7,7 @@ data class ChatDetailUiState(
     val replyText: String = "",
     val isLoading: Boolean = true,
     val isLoadError: Boolean = false,
+    val isSending: Boolean = false,
     val isSendError: Boolean = false,
 )
 

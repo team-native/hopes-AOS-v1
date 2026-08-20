@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -21,6 +22,7 @@ import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.chat.presentation.component.ChatMessageStateText
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.presentation.detail.ChatDetailUiState
+import com.example.hopes.feature.detail.presentation.component.FigmaChatAnswerGeneratingBubble
 import com.example.hopes.feature.detail.presentation.component.FigmaChatDetailBubble
 import com.example.hopes.feature.detail.presentation.component.FigmaChatReplyBar
 import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
@@ -72,6 +74,13 @@ private fun ChatMessages(
     uiState: ChatDetailUiState,
     onRetryClick: () -> Unit,
 ) {
+    val scrollState = rememberScrollState()
+
+    // 메시지 목록이 바뀌거나 전송 중 표시가 나타날 때 맨 아래로 스크롤한다.
+    LaunchedEffect(uiState.messages, uiState.isSending) {
+        scrollState.animateScrollTo(scrollState.maxValue)
+    }
+
     Column(
         modifier = Modifier
             .padding(
@@ -81,7 +90,7 @@ private fun ChatMessages(
                 end = 24.dp,
                 bottom = 16.dp,
             )
-            .verticalScroll(rememberScrollState()),
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         when {
@@ -95,6 +104,9 @@ private fun ChatMessages(
                     isUser = message.isUser,
                 )
             }
+        }
+        if (uiState.isSending) {
+            FigmaChatAnswerGeneratingBubble(modifier = Modifier.align(Alignment.Start))
         }
         if (uiState.isSendError) {
             ChatMessageStateText(R.string.chat_message_send_error)

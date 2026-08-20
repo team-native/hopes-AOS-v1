@@ -28,12 +28,10 @@ fun SettingsHeader(
     Column(modifier = modifier) {
         Row(
             modifier = Modifier.padding(start = 18.dp, top = 25.dp),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            // 버튼을 타이틀 기준선이 아니라 타이틀+설명 블록 중간쯤에 오도록 아래로 내린다.
             FigmaBackButton(
                 onClick = onBackClick,
-                modifier = Modifier.padding(top = 10.dp),
             )
 
             Spacer(modifier = Modifier.width(12.dp))

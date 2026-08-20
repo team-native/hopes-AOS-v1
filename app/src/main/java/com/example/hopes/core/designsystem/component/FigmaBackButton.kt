@@ -31,7 +31,8 @@ fun FigmaBackButton(
 
     Box(
         modifier = modifier
-            .size(38.dp)
+            // 헤더 타이틀(27.sp, lineHeight 32.sp)의 세로 길이와 같게 맞춘다.
+            .size(32.dp)
             .figmaSubtleShadow(RoundedCornerShape(13.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(13.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(13.dp))

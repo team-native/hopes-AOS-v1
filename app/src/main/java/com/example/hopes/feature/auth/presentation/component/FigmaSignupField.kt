@@ -64,7 +64,7 @@ fun FigmaSignupField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier
-                    .padding(top = 10.dp)
+                    .padding(top = 11.dp)
                     .fillMaxWidth()
                     .padding(start = 12.dp, end = 12.dp)
                     .height(24.dp),

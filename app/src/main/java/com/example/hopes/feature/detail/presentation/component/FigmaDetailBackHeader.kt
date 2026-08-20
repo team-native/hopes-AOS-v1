@@ -40,8 +40,7 @@ fun FigmaDetailBackHeader(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier)
-            .padding(top = if (applySystemBarPadding) 0.dp else 25.dp),
+            .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier),
     ) {
         Row(
             modifier = Modifier

@@ -33,6 +33,7 @@ fun PersonalSettingsScreenContent(
                 title = stringResource(R.string.personal_settings),
                 subtitle = stringResource(R.string.personal_settings_subtitle),
                 onBackClick = onBackClick,
+                alignBackButtonWithTitleBlock = true,
             )
 
             Spacer(modifier = Modifier.height(8.dp))

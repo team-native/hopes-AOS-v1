@@ -30,7 +30,7 @@ fun SettingsHeader(
 
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier.padding(start = 18.dp, top = 25.dp),
+            modifier = Modifier.padding(start = 18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             FigmaBackButton(

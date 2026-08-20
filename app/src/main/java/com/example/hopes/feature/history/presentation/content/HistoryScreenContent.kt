@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.history.presentation.HistoryScreenEvent
 import com.example.hopes.feature.history.presentation.HistoryUiState
+import com.example.hopes.feature.history.presentation.component.HistoryAllRecordsLabel
 import com.example.hopes.feature.history.presentation.component.HistoryConversationList
 import com.example.hopes.feature.history.presentation.component.HistoryHeader
 import com.example.hopes.feature.history.presentation.component.HistoryNewChatButton
@@ -35,6 +36,7 @@ fun HistoryScreenContent(
                     onEvent(HistoryScreenEvent.SearchQueryChanged(query))
                 },
             )
+            HistoryAllRecordsLabel()
             HistoryConversationList(
                 uiState = uiState,
                 onChatClick = { chatId ->

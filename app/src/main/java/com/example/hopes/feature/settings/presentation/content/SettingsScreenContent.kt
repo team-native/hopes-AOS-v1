@@ -33,7 +33,7 @@ fun SettingsScreenContent(
         Column {
             SettingsHeader(onBackClick = onBackClick)
 
-            Spacer(modifier = Modifier.height(68.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             FigmaSettingsRow(
                 title = stringResource(R.string.personal_settings),

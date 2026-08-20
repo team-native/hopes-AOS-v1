@@ -30,7 +30,6 @@ fun FigmaAppFrame(
             .background(scaffoldContainerColor),
     ) {
         // 시스템바 아래까지 화면 배경을 그려 Scaffold의 inset 영역과 색이 달라지지 않게 한다.
-        background()
 
         HopesScaffold(
             selectedDestination = selectedDestination,

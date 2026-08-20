@@ -13,6 +13,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.fillMaxHeight
+
+import androidx.compose.foundation.layout.Arrangement
+
 import com.example.hopes.R
 
 /** 마이페이지 계정 정보 카드다. */
@@ -28,7 +32,13 @@ fun FigmaMyPageAccountCard(
             .height(128.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {
-        Column(modifier = Modifier.padding(start = 24.dp, top = 26.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(start = 24.dp, end = 24.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center,
+
+        ) {
             Text(
                 text = stringResource(R.string.my_page_account),
                 style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),

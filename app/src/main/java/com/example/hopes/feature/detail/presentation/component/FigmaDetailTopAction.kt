@@ -1,9 +1,11 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,8 +37,8 @@ fun FigmaDetailTopAction(
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.primary,
-            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
+            color = Color.Black,
+            style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Light),
         )
     }
 }

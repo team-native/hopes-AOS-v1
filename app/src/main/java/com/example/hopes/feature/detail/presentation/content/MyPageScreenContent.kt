@@ -36,7 +36,8 @@ fun MyPageScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .imePadding(),
+                .imePadding()
+                .padding(bottom = 24.dp)
         ) {
             FigmaMyPageHeader(
                 onAppSettingsClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },

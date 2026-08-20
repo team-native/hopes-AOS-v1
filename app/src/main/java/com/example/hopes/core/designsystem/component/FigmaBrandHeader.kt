@@ -70,8 +70,8 @@ fun FigmaBrandHeader(
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .height(26.dp)
-                    .width(18.dp),
+                    .height(20.dp)
+                    .width(14.dp),
             )
         }
 

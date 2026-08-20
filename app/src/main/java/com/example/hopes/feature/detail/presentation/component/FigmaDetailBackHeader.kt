@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaBackButton
 
 /** 상세·개인 설정·문의 화면에서 공통으로 쓰는 뒤로가기 상단 바다. */
@@ -33,11 +34,13 @@ fun FigmaDetailBackHeader(
     applySystemBarPadding: Boolean = false,
     subtitleSpacing: Dp = 8.dp,
 ) {
+    // 뒤로가기 버튼(32.dp) + 버튼-타이틀 간격(16.dp)만큼 타이틀이 시작하는 위치와 같게 맞춘다.
+    val textStartX = backOffsetX.dp + 32.dp + 16.dp
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier)
-            .padding(top = if (applySystemBarPadding) 0.dp else 25.dp),
+            .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier),
     ) {
         Row(
             modifier = Modifier
@@ -50,7 +53,7 @@ fun FigmaDetailBackHeader(
                 onClick = onBackClick,
             )
 
-            Spacer(modifier = Modifier.width(18.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
             Text(
                 text = title,
@@ -81,7 +84,7 @@ fun FigmaDetailBackHeader(
 
         Text(
             text = subtitle,
-            modifier = Modifier.padding(start = 74.dp),
+            modifier = Modifier.padding(start = textStartX),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp, lineHeight = 18.sp),
         )

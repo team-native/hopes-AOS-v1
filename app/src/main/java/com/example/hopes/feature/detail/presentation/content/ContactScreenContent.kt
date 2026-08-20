@@ -34,6 +34,7 @@ fun ContactScreenContent(
                 title = stringResource(R.string.contact),
                 subtitle = stringResource(R.string.contact_subtitle),
                 onBackClick = onBackClick,
+                backOffsetX = 24,
             )
 
             Spacer(modifier = Modifier.height(25.dp))

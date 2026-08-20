@@ -25,15 +25,16 @@ fun SettingsHeader(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    // 뒤로가기 버튼(32.dp) + 버튼-타이틀 간격(12.dp)만큼 타이틀이 시작하는 위치와 같게 맞춘다.
+    val textStartX = 18.dp + 32.dp + 12.dp
+
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier.padding(start = 18.dp, top = 25.dp),
-            verticalAlignment = Alignment.Top,
+            modifier = Modifier.padding(start = 18.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            // 버튼을 타이틀 기준선이 아니라 타이틀+설명 블록 중간쯤에 오도록 아래로 내린다.
             FigmaBackButton(
                 onClick = onBackClick,
-                modifier = Modifier.padding(top = 10.dp),
             )
 
             Spacer(modifier = Modifier.width(12.dp))
@@ -48,7 +49,7 @@ fun SettingsHeader(
 
         Text(
             text = stringResource(R.string.logout_description),
-            modifier = Modifier.padding(start = 74.dp),
+            modifier = Modifier.padding(start = textStartX),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = TextStyle(fontSize = 13.sp),
         )

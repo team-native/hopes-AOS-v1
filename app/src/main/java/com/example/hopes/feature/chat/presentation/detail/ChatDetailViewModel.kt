@@ -71,12 +71,21 @@ class ChatDetailViewModel @Inject constructor(
 
     /**
      * 채팅 홈에서 질문을 곧바로 상세 화면으로 들고 온 경우, 여기서 대화를 만들고 첫 질문을 보낸다.
-     * 추가 질문 전송(isSending)과 같은 로딩 말풍선을 그대로 재사용한다.
+     * 서버 응답을 기다리는 동안에도 내가 보낸 질문을 먼저 보여준 뒤, 그 아래에 추가 질문 전송과
+     * 같은 로딩 말풍선(isSending)을 띄운다.
      */
     private fun createNewChat(question: String) {
         loadChatJob?.cancel()
         loadChatJob = viewModelScope.launch {
-            updateState { copy(isLoading = false, isLoadError = false, isSending = true) }
+            val optimisticQuestion = ChatMessageUiModel(id = null, content = question, isUser = true)
+            updateState {
+                copy(
+                    isLoading = false,
+                    isLoadError = false,
+                    messages = listOf(optimisticQuestion),
+                    isSending = true,
+                )
+            }
             when (val createResult = createChatUseCase(question)) {
                 is AppResult.Success -> {
                     chatId = createResult.value.id
@@ -93,11 +102,11 @@ class ChatDetailViewModel @Inject constructor(
                             }
                         }
 
-                        else -> updateState { copy(isSending = false, isLoadError = true) }
+                        else -> updateState { copy(messages = emptyList(), isSending = false, isLoadError = true) }
                     }
                 }
 
-                else -> updateState { copy(isSending = false, isLoadError = true) }
+                else -> updateState { copy(messages = emptyList(), isSending = false, isLoadError = true) }
             }
         }
     }
@@ -128,7 +137,17 @@ class ChatDetailViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            updateState { copy(isSending = true, isSendError = false) }
+            // 서버 응답 전에 내가 보낸 메시지를 먼저 보여준 뒤, 그 아래에 로딩 말풍선을 띄운다.
+            val messagesBeforeSend = _uiState.value.messages
+            val optimisticReply = ChatMessageUiModel(id = null, content = trimmedReply, isUser = true)
+            updateState {
+                copy(
+                    messages = messagesBeforeSend + optimisticReply,
+                    replyText = "",
+                    isSending = true,
+                    isSendError = false,
+                )
+            }
             when (val result = sendChatMessageUseCase(chatId, trimmedReply)) {
                 is AppResult.Success -> {
                     updateState {
@@ -137,13 +156,19 @@ class ChatDetailViewModel @Inject constructor(
                             messages = result.value.messages.map { message ->
                                 message.toChatMessageUiModel()
                             },
-                            replyText = "",
                             isSending = false,
                         )
                     }
                 }
 
-                else -> updateState { copy(isSending = false, isSendError = true) }
+                else -> updateState {
+                    copy(
+                        messages = messagesBeforeSend,
+                        replyText = trimmedReply,
+                        isSending = false,
+                        isSendError = true,
+                    )
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ fun FigmaMyPageProfileCard(
             .height(326.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {
-        Column(modifier = Modifier.padding(start = 24.dp, top = 32.dp)) {
+        Column(modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)) {
             Text(
                 text = stringResource(R.string.profile),
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),

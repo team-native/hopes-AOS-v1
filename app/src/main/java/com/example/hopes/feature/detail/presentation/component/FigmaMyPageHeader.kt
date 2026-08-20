@@ -26,13 +26,12 @@ fun FigmaMyPageHeader(
     onAppSettingsClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.padding(start = 24.dp, top = AppSpacing.SystemBarToContent)) {
+    Column(modifier = modifier.padding(start = 24.dp, end = 24.dp, top = AppSpacing.SystemBarToContent)) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 37.dp),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
             FigmaBrandHeader()
 
@@ -43,7 +42,7 @@ fun FigmaMyPageHeader(
             )
         }
 
-        Spacer(modifier = Modifier.height(36.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = stringResource(R.string.my_page),

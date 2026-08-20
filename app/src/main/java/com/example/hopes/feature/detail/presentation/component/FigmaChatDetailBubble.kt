@@ -6,7 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,7 +29,7 @@ fun FigmaChatDetailBubble(
 
     Box(
         modifier = modifier
-            .width(if (isUser) 265.dp else 354.dp)
+            .widthIn(max = if (isUser) 265.dp else 354.dp)
             .defaultMinSize(minHeight = 58.dp)
             .then(
                 if (isUser) {
@@ -57,11 +57,10 @@ fun FigmaChatDetailBubble(
             modifier = Modifier
                 .padding(
                     start = if (isUser) 16.dp else 20.dp,
+                    end = if (isUser) 16.dp else 20.dp,
                     top = 18.dp,
                     bottom = 18.dp,
-                )
-                // Figma 06 사용자 버블은 x=129, w=244 (bubble 기준 x=16)이다.
-                .width(if (isUser) 244.dp else 296.dp),
+                ),
             color = if (isUser) {
                 MaterialTheme.colorScheme.onPrimary
             } else {

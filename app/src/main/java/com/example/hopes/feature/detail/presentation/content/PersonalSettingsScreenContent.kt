@@ -54,7 +54,7 @@ fun PersonalSettingsScreenContent(
                         onEvent(PersonalSettingsScreenEvent.PersonalPromptSaveClicked)
                     }
                 },
-                modifier = Modifier.padding(start = 24.dp),
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp),
             )
         }
     }

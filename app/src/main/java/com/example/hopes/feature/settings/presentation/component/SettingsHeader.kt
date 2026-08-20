@@ -26,11 +26,11 @@ fun SettingsHeader(
     modifier: Modifier = Modifier,
 ) {
     // 뒤로가기 버튼(32.dp) + 버튼-타이틀 간격(12.dp)만큼 타이틀이 시작하는 위치와 같게 맞춘다.
-    val textStartX = 18.dp + 32.dp + 12.dp
+    val textStartX = 29.dp + 32.dp + 12.dp
 
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier.padding(start = 18.dp),
+            modifier = Modifier.padding(start = 29.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             FigmaBackButton(

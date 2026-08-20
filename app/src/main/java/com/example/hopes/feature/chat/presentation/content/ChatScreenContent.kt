@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -24,6 +25,7 @@ import com.example.hopes.feature.chat.presentation.component.ChatComposer
 import com.example.hopes.feature.chat.presentation.component.ChatNewChatButton
 import com.example.hopes.feature.chat.presentation.component.ChatSuggestionList
 import com.example.hopes.feature.chat.presentation.component.ChatWelcomeHero
+import com.example.hopes.feature.detail.presentation.component.FigmaChatAnswerGeneratingBubble
 import com.example.hopes.navigation.HopesDestination
 
 /** 피그마 05 채팅 홈 프레임을 서버 대화 생성 입력 상태와 함께 표시한다. */
@@ -59,9 +61,18 @@ fun ChatScreenContent(
     ) {
         // 키보드가 올라와 가용 높이가 줄어들 때도 콘텐츠가 잘리지 않도록 스크롤 가능하게 하고,
         // imePadding으로 키보드 높이만큼 하단 여백을 확보해 마지막 카드까지 스크롤해 볼 수 있게 한다.
+        val scrollState = rememberScrollState()
+
+        // 대화 생성 로딩 말풍선이 나타나면 화면을 맨 아래로 애니메이션 스크롤해 보여준다.
+        LaunchedEffect(isLoading) {
+            if (isLoading) {
+                scrollState.animateScrollTo(scrollState.maxValue)
+            }
+        }
+
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .imePadding(),
         ) {
             Row(
@@ -87,6 +98,14 @@ fun ChatScreenContent(
                 isLoading = isLoading,
                 modifier = Modifier.padding(horizontal = 24.dp),
             )
+
+            if (isLoading) {
+                Spacer(modifier = Modifier.height(AppSpacing.Item))
+
+                FigmaChatAnswerGeneratingBubble(
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                )
+            }
 
             Spacer(modifier = Modifier.height(27.dp))
         }

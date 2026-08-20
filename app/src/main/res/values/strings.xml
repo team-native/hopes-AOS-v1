@@ -44,6 +44,7 @@
     <string name="new_chat">새 대화</string>
     <string name="chat_detail_title">기숙사 생활</string>
     <string name="history_search">지난 대화 검색</string>
+    <string name="history_all_records">모든 기록</string>
     <string name="history_start_new_chat">+  %1$s 시작</string>
     <string name="history_search_symbol">⌕</string>
     <string name="my_page">마이페이지</string>

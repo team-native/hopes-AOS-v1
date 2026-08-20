@@ -14,10 +14,12 @@ class NetworkResultMapperTest {
     }
 
     @Test
-    fun `http error preserves status code without exposing response body`() {
-        val result = NetworkResult.HttpError(401, "secret server detail").toAppResult { value: String -> value }
+    fun `http error preserves status code and server message`() {
+        // ApiExecutor가 오류 응답 본문을 이미 안전하게 파싱해 message에 담아 넘기므로,
+        // 매퍼는 그 값을 그대로 AppResult로 전달하기만 하면 된다.
+        val result = NetworkResult.HttpError(401, "이메일 또는 비밀번호가 올바르지 않습니다.").toAppResult { value: String -> value }
 
-        assertEquals(AppResult.HttpError(401), result)
+        assertEquals(AppResult.HttpError(401, "이메일 또는 비밀번호가 올바르지 않습니다."), result)
     }
 
     @Test

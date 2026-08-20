@@ -20,7 +20,7 @@ import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.model.UserProfile
 import com.example.hopes.domain.model.UserSettings
 
-fun TokenResponseDto.toDomain(): AuthToken = AuthToken(accessToken, tokenType)
+fun TokenResponseDto.toDomain(): AuthToken = AuthToken(accessToken, tokenType, message)
 
 fun MainResponseDto.toDomain(): ChatPage = ChatPage(
     chats = chatList.map { summary ->

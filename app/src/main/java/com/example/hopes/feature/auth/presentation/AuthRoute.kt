@@ -54,6 +54,7 @@ fun AuthRoute(
         isSignupLoading = uiState.value.isLoading,
         signupErrorMessage = uiState.value.errorMessage,
         loginErrorMessage = uiState.value.errorMessage,
+        loginStatusMessage = uiState.value.statusMessage,
         onEmailChange = { value -> viewModel.onEvent(AuthScreenEvent.EmailChanged(value)) },
         onPasswordChange = { value -> viewModel.onEvent(AuthScreenEvent.PasswordChanged(value)) },
         onNameChange = { value -> viewModel.onEvent(AuthScreenEvent.NameChanged(value)) },

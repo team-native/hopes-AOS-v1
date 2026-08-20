@@ -9,7 +9,7 @@ class RequestPasswordResetUseCase @Inject constructor(
 ) {
     // 학교 이메일로 비밀번호 재설정 인증번호 발송을 요청한다.
     // 비밀번호 재설정 화면의 "인증번호 받기" 클릭에서 호출되며, 성공 시 서버가 이메일로 인증번호를 보낸다.
-    suspend operator fun invoke(email: String): AppResult<Unit> {
+    suspend operator fun invoke(email: String): AppResult<String> {
         return authRepository.requestPasswordReset(email)
     }
 }

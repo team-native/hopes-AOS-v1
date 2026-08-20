@@ -120,6 +120,7 @@
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
     <string name="login_guide_subtitle">학교 이메일로 로그인하세요.</string>
     <string name="login_error_message">이메일 또는 비밀번호를 확인해주세요.</string>
+    <string name="signup_success_message">회원가입이 완료됐어요. 로그인해주세요.</string>
     <string name="signup_subtitle">학교 이메일로 간단히 시작하세요.</string>
     <string name="signup_hero_title">학교 이메일로\n간단히 시작하기</string>
     <string name="signup_email_hint">s20000@gsm.hs.kr</string>

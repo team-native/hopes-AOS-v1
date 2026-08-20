@@ -79,9 +79,10 @@ fun PasswordResetScreenContent(
             // 인증번호 발송 성공 후 재설정 제출이 실패하는 경우도 있으므로, 에러가 있으면 항상 에러 문구를 우선 표시한다.
             AuthStatusText(
                 message = if (uiState.errorMessage != null) {
-                    stringResource(R.string.generic_error_message)
+                    uiState.errorMessage.ifBlank { stringResource(R.string.generic_error_message) }
                 } else {
-                    stringResource(R.string.verification_sent_message)
+                    uiState.statusMessage?.ifBlank { stringResource(R.string.verification_sent_message) }
+                        ?: stringResource(R.string.verification_sent_message)
                 },
                 isError = uiState.errorMessage != null,
             )

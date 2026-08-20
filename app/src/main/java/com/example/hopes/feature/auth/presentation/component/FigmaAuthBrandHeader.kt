@@ -57,7 +57,7 @@ fun FigmaAuthBrandHeader(
             contentAlignment = Alignment.Center,
         ) {
             Image(
-                painter = painterResource(R.drawable.icon),
+                painter = painterResource(R.drawable.img_app),
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier

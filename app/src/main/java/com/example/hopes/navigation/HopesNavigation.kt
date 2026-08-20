@@ -80,8 +80,8 @@ fun HopesNavigation(
             ) { backStackEntry ->
                 ChatRoute(
                     onNavigate = hopesNavController::navigateToTopLevel,
-                    onNavigateToChatDetail = { chatId ->
-                        hopesNavController.navigate(chatDetailRoute(chatId))
+                    onNavigateToNewChatDetail = { question ->
+                        hopesNavController.navigate(chatDetailCreateRoute(question))
                     },
                     isNewChatRequested = backStackEntry.arguments
                         ?.getBoolean(CHAT_NEW_CHAT_ARGUMENT)
@@ -145,6 +145,10 @@ fun HopesNavigation(
                 arguments = listOf(
                     navArgument(CHAT_DETAIL_ARGUMENT) {
                         type = NavType.LongType
+                    },
+                    navArgument(CHAT_DETAIL_QUESTION_ARGUMENT) {
+                        type = NavType.StringType
+                        defaultValue = ""
                     },
                 ),
             ) {

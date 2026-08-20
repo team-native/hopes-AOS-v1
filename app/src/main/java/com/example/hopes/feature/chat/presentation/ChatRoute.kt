@@ -10,7 +10,7 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun ChatRoute(
     onNavigate: (HopesDestination) -> Unit,
-    onNavigateToChatDetail: (Long) -> Unit,
+    onNavigateToNewChatDetail: (String) -> Unit,
     isNewChatRequested: Boolean = false,
     viewModel: ChatViewModel = hiltViewModel(),
 ) {
@@ -18,8 +18,8 @@ fun ChatRoute(
 
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
-            if (effect is ChatEffect.ChatCreated) {
-                onNavigateToChatDetail(effect.chatId)
+            if (effect is ChatEffect.NavigateToNewChat) {
+                onNavigateToNewChatDetail(effect.question)
             }
         }
     }
@@ -32,8 +32,6 @@ fun ChatRoute(
 
     ChatScreen(
         questionText = uiState.value.questionText,
-        isCreateChatError = uiState.value.isCreateChatError,
-        isLoading = uiState.value.isLoading,
         onEvent = viewModel::onEvent,
         onNavigate = onNavigate,
     )

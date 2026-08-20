@@ -44,7 +44,7 @@ fun FigmaDetailThinInput(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .padding(start = 16.dp, top = 9.dp)
+                .padding(start = 16.dp, top = 10.dp)
                 .width(274.dp)
                 .height(24.dp),
             singleLine = true,

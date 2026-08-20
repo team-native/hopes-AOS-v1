@@ -71,8 +71,7 @@ fun ChatComposer(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 20.dp)
-                    .width(254.dp)
-                    .height(32.dp),
+                    .width(254.dp),
                 singleLine = true,
                 textStyle = TextStyle(
                     color = MaterialTheme.colorScheme.onSurface,

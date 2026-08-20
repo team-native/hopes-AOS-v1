@@ -26,12 +26,14 @@ import com.example.hopes.feature.chat.presentation.component.ChatSuggestionList
 import com.example.hopes.feature.chat.presentation.component.ChatWelcomeHero
 import com.example.hopes.navigation.HopesDestination
 
-/** 피그마 05 채팅 홈 프레임을 서버 대화 생성 입력 상태와 함께 표시한다. */
+/**
+ * 피그마 05 채팅 홈 프레임을 서버 대화 생성 입력 상태와 함께 표시한다.
+ * 질문을 제출하면 대화 생성을 기다리지 않고 곧바로 채팅 상세 화면으로 이동하며,
+ * 대화 생성·첫 답변 로딩 표시는 상세 화면(ChatDetailScreenContent)이 담당한다.
+ */
 @Composable
 fun ChatScreenContent(
     questionText: String,
-    isCreateChatError: Boolean,
-    isLoading: Boolean,
     onQuestionChange: (String) -> Unit,
     onSubmitClick: () -> Unit,
     onSuggestionClick: (String) -> Unit,
@@ -49,7 +51,7 @@ fun ChatScreenContent(
                 value = questionText,
                 onValueChange = onQuestionChange,
                 onSubmitClick = onSubmitClick,
-                isLoading = isLoading,
+                isLoading = false,
                 modifier = Modifier
                     .imePadding()
                     .padding(bottom = 10.dp),
@@ -78,13 +80,13 @@ fun ChatScreenContent(
 
             Spacer(modifier = Modifier.height(30.dp))
 
-            ChatWelcomeHero(isCreateChatError = isCreateChatError)
+            ChatWelcomeHero(isCreateChatError = false)
 
             Spacer(modifier = Modifier.height(AppSpacing.Section))
 
             ChatSuggestionList(
                 onSuggestionClick = onSuggestionClick,
-                isLoading = isLoading,
+                isLoading = false,
                 modifier = Modifier.padding(horizontal = 24.dp),
             )
 

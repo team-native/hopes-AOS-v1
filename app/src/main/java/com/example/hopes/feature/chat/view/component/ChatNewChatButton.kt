@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation.component
+package com.example.hopes.feature.chat.view.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,7 +28,7 @@ fun ChatNewChatButton(
     Box(
         modifier = modifier
             .width(70.dp)
-            .height(39.dp)
+            .height(38.dp)
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
             .clickable(onClick = onClick),

@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation
+package com.example.hopes.feature.chat.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

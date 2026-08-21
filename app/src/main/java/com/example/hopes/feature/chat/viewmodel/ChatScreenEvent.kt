@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation
+package com.example.hopes.feature.chat.viewmodel
 
 sealed interface ChatScreenEvent {
     data class QuestionChanged(val question: String) : ChatScreenEvent

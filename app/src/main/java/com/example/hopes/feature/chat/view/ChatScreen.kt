@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation.content
+package com.example.hopes.feature.chat.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,24 +20,22 @@ import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
-import com.example.hopes.feature.chat.presentation.component.ChatComposer
-import com.example.hopes.feature.chat.presentation.component.ChatNewChatButton
-import com.example.hopes.feature.chat.presentation.component.ChatSuggestionList
-import com.example.hopes.feature.chat.presentation.component.ChatWelcomeHero
+import com.example.hopes.feature.chat.view.component.ChatComposer
+import com.example.hopes.feature.chat.view.component.ChatNewChatButton
+import com.example.hopes.feature.chat.view.component.ChatSuggestionList
+import com.example.hopes.feature.chat.view.component.ChatWelcomeHero
+import com.example.hopes.feature.chat.viewmodel.ChatScreenEvent
 import com.example.hopes.navigation.HopesDestination
 
 /**
  * 피그마 05 채팅 홈 프레임을 서버 대화 생성 입력 상태와 함께 표시한다.
  * 질문을 제출하면 대화 생성을 기다리지 않고 곧바로 채팅 상세 화면으로 이동하며,
- * 대화 생성·첫 답변 로딩 표시는 상세 화면(ChatDetailScreenContent)이 담당한다.
+ * 대화 생성·첫 답변 로딩 표시는 상세 화면(ChatDetailScreen)이 담당한다.
  */
 @Composable
-fun ChatScreenContent(
+fun ChatScreen(
     questionText: String,
-    onQuestionChange: (String) -> Unit,
-    onSubmitClick: () -> Unit,
-    onSuggestionClick: (String) -> Unit,
-    onNewChatClick: () -> Unit,
+    onEvent: (ChatScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     val density = LocalDensity.current
@@ -49,8 +47,8 @@ fun ChatScreenContent(
         fixedBottomContent = {
             ChatComposer(
                 value = questionText,
-                onValueChange = onQuestionChange,
-                onSubmitClick = onSubmitClick,
+                onValueChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
+                onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
                 isLoading = false,
                 modifier = Modifier
                     .imePadding()
@@ -75,7 +73,7 @@ fun ChatScreenContent(
             ) {
                 FigmaBrandHeader()
 
-                ChatNewChatButton(onClick = onNewChatClick)
+                ChatNewChatButton(onClick = { onEvent(ChatScreenEvent.NewChatClicked) })
             }
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -85,7 +83,7 @@ fun ChatScreenContent(
             Spacer(modifier = Modifier.height(AppSpacing.Section))
 
             ChatSuggestionList(
-                onSuggestionClick = onSuggestionClick,
+                onSuggestionClick = { onEvent(ChatScreenEvent.SuggestionClicked(it)) },
                 isLoading = false,
                 modifier = Modifier.padding(horizontal = 24.dp),
             )

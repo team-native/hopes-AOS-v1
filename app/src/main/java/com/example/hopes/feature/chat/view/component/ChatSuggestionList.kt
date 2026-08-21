@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation.component
+package com.example.hopes.feature.chat.view.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

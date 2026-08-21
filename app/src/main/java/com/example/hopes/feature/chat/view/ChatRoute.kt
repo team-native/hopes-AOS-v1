@@ -1,9 +1,12 @@
-package com.example.hopes.feature.chat.presentation
+package com.example.hopes.feature.chat.view
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.hopes.feature.chat.viewmodel.ChatEffect
+import com.example.hopes.feature.chat.viewmodel.ChatScreenEvent
+import com.example.hopes.feature.chat.viewmodel.ChatViewModel
 import com.example.hopes.navigation.HopesDestination
 
 /** 채팅 입력 상태를 소유하고 화면 이벤트를 처리한다. */

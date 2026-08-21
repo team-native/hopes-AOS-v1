@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation.detail
+package com.example.hopes.feature.chat.detail.viewmodel
 
 /** 서버 대화 상세의 현재 표시 상태다. */
 data class ChatDetailUiState(

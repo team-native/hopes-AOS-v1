@@ -1,4 +1,4 @@
-package com.example.hopes.feature.chat.presentation.detail
+package com.example.hopes.feature.chat.detail.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

@@ -22,8 +22,8 @@ import androidx.navigation.navArgument
 import com.example.hopes.core.session.SessionState
 import com.example.hopes.feature.auth.presentation.AuthRoute
 import com.example.hopes.feature.auth.presentation.SessionViewModel
-import com.example.hopes.feature.chat.presentation.ChatRoute
-import com.example.hopes.feature.chat.presentation.detail.ChatDetailRoute
+import com.example.hopes.feature.chat.detail.view.ChatDetailRoute
+import com.example.hopes.feature.chat.view.ChatRoute
 import com.example.hopes.feature.detail.presentation.ContactRoute
 import com.example.hopes.feature.detail.presentation.MyPageRoute
 import com.example.hopes.feature.detail.presentation.PersonalSettingsRoute

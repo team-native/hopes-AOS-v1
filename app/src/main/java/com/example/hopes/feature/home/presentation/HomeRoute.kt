@@ -9,7 +9,7 @@ fun HomeRoute(onNavigate: (HopesDestination) -> Unit) {
     HomeScreen(
         onEvent = { event ->
             when (event) {
-                HomeScreenEvent.StartChatClicked -> onNavigate(HopesDestination.Chat)
+                HomeScreenEvent.StartChatClicked -> onNavigate(HopesDestination.Chat())
             }
         },
         onNavigate = onNavigate,

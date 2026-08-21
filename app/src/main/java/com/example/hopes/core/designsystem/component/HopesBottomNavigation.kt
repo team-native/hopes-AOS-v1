@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
 import com.example.hopes.navigation.HopesDestination
+import com.example.hopes.navigation.hopesTabDestinations
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 최상위 네 화면으로 이동하는 공통 하단 탐색 바다. */
@@ -27,14 +28,7 @@ fun HopesBottomNavigation(
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
     ) {
-        HopesDestination.entries
-            .filter { destination ->
-                destination == HopesDestination.Home ||
-                    destination == HopesDestination.Chat ||
-                    destination == HopesDestination.History ||
-                    destination == HopesDestination.Settings
-            }
-            .forEach { destination ->
+        hopesTabDestinations.forEach { destination ->
             NavigationBarItem(
                 selected = selectedDestination == destination,
                 onClick = { onNavigate(destination) },
@@ -63,7 +57,7 @@ fun HopesBottomNavigation(
 
 private fun HopesDestination.labelResourceId() = when (this) {
     HopesDestination.Home -> R.string.navigation_home
-    HopesDestination.Chat -> R.string.navigation_chat
+    is HopesDestination.Chat -> R.string.navigation_chat
     HopesDestination.History -> R.string.navigation_history
     // Settings 라우트는 실제로 MyPageRoute(마이페이지)를 보여주므로 라벨도 그에 맞춘다.
     HopesDestination.Settings -> R.string.my_page

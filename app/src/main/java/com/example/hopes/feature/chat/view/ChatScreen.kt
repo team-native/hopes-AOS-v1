@@ -42,7 +42,7 @@ fun ChatScreen(
     val isImeVisible = WindowInsets.ime.getBottom(density) > 0
 
     FigmaAppFrame(
-        selectedDestination = HopesDestination.Chat,
+        selectedDestination = HopesDestination.Chat(),
         onNavigate = onNavigate,
         fixedBottomContent = {
             ChatComposer(

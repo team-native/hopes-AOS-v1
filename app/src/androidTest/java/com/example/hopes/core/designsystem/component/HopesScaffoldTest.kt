@@ -26,7 +26,7 @@ class HopesScaffoldTest {
 
     @Test
     fun bottomNavigation_displaysAllTopLevelDestinationsAndNavigates() {
-        var selectedDestination by mutableStateOf(HopesDestination.Home)
+        var selectedDestination by mutableStateOf<HopesDestination>(HopesDestination.Home)
 
         composeRule.setContent {
             HopesTheme {
@@ -48,7 +48,7 @@ class HopesScaffoldTest {
         composeRule.onNodeWithText("채팅").performClick()
 
         composeRule.runOnIdle {
-            assertEquals(HopesDestination.Chat, selectedDestination)
+            assertEquals(HopesDestination.Chat(), selectedDestination)
         }
     }
 

@@ -8,7 +8,7 @@ import com.example.hopes.navigation.HopesDestination
 @DrawableRes
 internal fun HopesDestination.bottomNavigationIconResourceId(): Int = when (this) {
     HopesDestination.Home -> R.drawable.ic_bottom_navigation_home
-    HopesDestination.Chat -> R.drawable.ic_bottom_navigation_chat
+    is HopesDestination.Chat -> R.drawable.ic_bottom_navigation_chat
     HopesDestination.History -> R.drawable.ic_bottom_navigation_history
     HopesDestination.Settings -> R.drawable.ic_bottom_navigation_profile
     else -> R.drawable.ic_bottom_navigation_home

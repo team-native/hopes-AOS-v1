@@ -1,6 +1,5 @@
 package com.example.hopes.feature.chat.presentation.detail
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hopes.domain.model.ChatMessage
@@ -9,10 +8,7 @@ import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.CreateChatUseCase
 import com.example.hopes.domain.usecase.GetChatUseCase
 import com.example.hopes.domain.usecase.SendChatMessageUseCase
-import com.example.hopes.navigation.CHAT_DETAIL_ARGUMENT
-import com.example.hopes.navigation.CHAT_DETAIL_QUESTION_ARGUMENT
 import com.example.hopes.navigation.NEW_CHAT_ID
-import com.example.hopes.navigation.decodeChatDetailQuestion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -23,24 +19,28 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ChatDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val createChatUseCase: CreateChatUseCase,
     private val getChatUseCase: GetChatUseCase,
     private val sendChatMessageUseCase: SendChatMessageUseCase,
 ) : ViewModel() {
     /** 대화가 생성되면 이후의 추가 질문 전송이 실제 chatId를 쓰도록 갱신한다. */
-    private var chatId: Long = checkNotNull(savedStateHandle[CHAT_DETAIL_ARGUMENT])
-    private val initialQuestion: String =
-        decodeChatDetailQuestion(savedStateHandle[CHAT_DETAIL_QUESTION_ARGUMENT])
+    private var chatId: Long = NEW_CHAT_ID
+    private var initialQuestion: String = ""
+    private var isInitialized = false
 
     private val _uiState = MutableStateFlow(ChatDetailUiState())
     val uiState: StateFlow<ChatDetailUiState> = _uiState.asStateFlow()
 
     private var loadChatJob: Job? = null
 
-    init {
-        if (chatId == NEW_CHAT_ID && initialQuestion.isNotEmpty()) {
-            createNewChat(initialQuestion)
+    /** NavKey로 전달받은 chatId/question을 1회만 반영해 대화 생성 또는 로드를 시작한다. */
+    fun initialize(chatId: Long, question: String) {
+        if (isInitialized) return
+        isInitialized = true
+        this.chatId = chatId
+        this.initialQuestion = question
+        if (chatId == NEW_CHAT_ID && question.isNotEmpty()) {
+            createNewChat(question)
         } else {
             loadChat()
         }

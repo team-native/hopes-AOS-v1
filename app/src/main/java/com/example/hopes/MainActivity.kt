@@ -11,7 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.core.view.WindowCompat
-import com.example.hopes.navigation.HopesNavigation
+import com.example.hopes.navigation.HopesNavHost
 import com.example.hopes.ui.theme.HopesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 
             HopesTheme(darkTheme = isDarkThemeEnabled) {
                 // 로컬 화면 전환만 제공하는 UI 데모의 진입점이다.
-                HopesNavigation(
+                HopesNavHost(
                     isDarkThemeEnabled = isDarkThemeEnabled,
                     onDarkThemeChange = { isDarkThemeEnabled = it },
                 )

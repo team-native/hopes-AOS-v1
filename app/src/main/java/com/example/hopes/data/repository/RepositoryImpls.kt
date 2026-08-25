@@ -134,8 +134,14 @@ class SettingsRepositoryImpl @Inject constructor(
 
     /** 현재 비밀번호를 서버에 전달해 회원탈퇴 API 결과를 Domain 결과로 제공한다. */
     override suspend fun deleteAccount(password: String): AppResult<Unit> {
-        return settingsRemoteDataSource.deleteAccount(DeleteAccountRequestDto(password))
+        val result = settingsRemoteDataSource.deleteAccount(DeleteAccountRequestDto(password))
             .toAppResult { Unit }
+
+        if (result is AppResult.Success) {
+            sessionManager.expireSession()
+        }
+
+        return result
     }
 
     override suspend fun updateTheme(theme: String): AppResult<String> {

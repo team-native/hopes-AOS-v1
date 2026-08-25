@@ -10,6 +10,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.feature.settings.presentation.SettingsScreenEvent
+import com.example.hopes.feature.settings.presentation.SettingsUiState
 import com.example.hopes.feature.settings.presentation.component.FigmaSettingsRow
 import com.example.hopes.feature.settings.presentation.component.SettingsHeader
 import com.example.hopes.feature.settings.presentation.component.SettingsLogoutButton
@@ -24,7 +26,8 @@ fun SettingsScreenContent(
     onBackClick: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
-    onLogout: () -> Unit,
+    uiState: SettingsUiState,
+    onEvent: (SettingsScreenEvent) -> Unit,
 ) {
     FigmaAppFrame(
         selectedDestination = HopesDestination.Settings,
@@ -54,7 +57,16 @@ fun SettingsScreenContent(
             Spacer(modifier = Modifier.height(26.dp))
 
             SettingsLogoutButton(
-                onClick = onLogout,
+                onClick = { onEvent(SettingsScreenEvent.LogoutClicked) },
+                modifier = Modifier.padding(start = 29.dp, end = 29.dp),
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            SettingsLogoutButton(
+                onClick = { onEvent(SettingsScreenEvent.DeleteAccountClicked) },
+                textResId = R.string.delete_account,
+                enabled = !uiState.isDeletingAccount,
                 modifier = Modifier.padding(start = 29.dp, end = 29.dp),
             )
         }

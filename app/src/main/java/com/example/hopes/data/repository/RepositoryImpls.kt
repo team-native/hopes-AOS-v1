@@ -6,6 +6,7 @@ import com.example.hopes.data.mapper.toDomain
 import com.example.hopes.data.mapper.toDto
 import com.example.hopes.data.api.ContentRequestDto
 import com.example.hopes.data.api.CreateChatRequestDto
+import com.example.hopes.data.api.DeleteAccountRequestDto
 import com.example.hopes.data.api.EmailCodeRequestDto
 import com.example.hopes.data.api.EmailRequestDto
 import com.example.hopes.data.api.LoginRequestDto
@@ -129,6 +130,12 @@ class SettingsRepositoryImpl @Inject constructor(
         val result = settingsRemoteDataSource.logout().toAppResult { Unit }
         sessionManager.expireSession()
         return result
+    }
+
+    /** 현재 비밀번호를 서버에 전달해 회원탈퇴 API 결과를 Domain 결과로 제공한다. */
+    override suspend fun deleteAccount(password: String): AppResult<Unit> {
+        return settingsRemoteDataSource.deleteAccount(DeleteAccountRequestDto(password))
+            .toAppResult { Unit }
     }
 
     override suspend fun updateTheme(theme: String): AppResult<String> {

@@ -22,3 +22,12 @@ class LogoutUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): AppResult<Unit> = settingsRepository.logout()
 }
+
+class DeleteAccountUseCase @Inject constructor(
+    private val settingsRepository: SettingsRepository,
+) {
+    /** 현재 비밀번호를 검증받아 회원탈퇴 API를 실행한다. */
+    suspend operator fun invoke(password: String): AppResult<Unit> {
+        return settingsRepository.deleteAccount(password)
+    }
+}

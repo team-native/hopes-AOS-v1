@@ -7,6 +7,7 @@ import com.example.hopes.domain.result.AppResult
 
 interface SettingsRepository {
     suspend fun logout(): AppResult<Unit>
+    suspend fun deleteAccount(password: String): AppResult<Unit>
     suspend fun updateTheme(theme: String): AppResult<String>
     suspend fun getProfile(): AppResult<UserProfile>
     suspend fun updateProfile(request: ProfileUpdateRequest): AppResult<UserProfile>

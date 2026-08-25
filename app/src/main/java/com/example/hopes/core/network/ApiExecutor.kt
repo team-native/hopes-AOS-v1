@@ -11,6 +11,25 @@ import retrofit2.Response
 class ApiExecutor @Inject constructor(
     private val json: Json,
 ) {
+    /** 응답 본문이 없는 성공 응답(예: 204 No Content)을 공통 성공 결과로 변환한다. */
+    suspend fun executeNoContent(request: suspend () -> Response<*>): NetworkResult<Unit> {
+        return try {
+            val response = request()
+            if (response.isSuccessful) {
+                NetworkResult.Success(Unit)
+            } else {
+                val rawErrorBody = response.errorBody()?.string()
+                NetworkResult.HttpError(response.code(), rawErrorBody.toErrorMessage())
+            }
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: SerializationException) {
+            NetworkResult.SerializationError(exception)
+        } catch (exception: IOException) {
+            NetworkResult.NetworkError(exception)
+        }
+    }
+
     suspend fun <T> execute(request: suspend () -> Response<T>): NetworkResult<T> {
         return try {
             val response = request()

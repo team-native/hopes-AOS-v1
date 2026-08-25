@@ -7,6 +7,7 @@ import com.example.hopes.data.api.ChatApiService
 import com.example.hopes.data.api.ChatResponseDto
 import com.example.hopes.data.api.ContentRequestDto
 import com.example.hopes.data.api.CreateChatRequestDto
+import com.example.hopes.data.api.DeleteAccountRequestDto
 import com.example.hopes.data.api.EmailCodeRequestDto
 import com.example.hopes.data.api.EmailRequestDto
 import com.example.hopes.data.api.LoginRequestDto
@@ -118,6 +119,7 @@ class ChatRemoteDataSourceImpl @Inject constructor(
 /** 설정 API의 원격 호출 계약을 정의한다. */
 interface SettingsRemoteDataSource {
     suspend fun logout(): NetworkResult<MessageEnvelopeDto>
+    suspend fun deleteAccount(body: DeleteAccountRequestDto): NetworkResult<Unit>
     suspend fun updateTheme(body: ThemeRequestDto): NetworkResult<ThemeResponseDto>
     suspend fun getProfile(): NetworkResult<UserResponseDto>
     suspend fun updateProfile(body: MyPageUpdateRequestDto): NetworkResult<UserResponseDto>
@@ -133,6 +135,13 @@ class SettingsRemoteDataSourceImpl @Inject constructor(
 ) : SettingsRemoteDataSource {
     override suspend fun logout(): NetworkResult<MessageEnvelopeDto> = apiExecutor.execute {
         settingsApiService.logout()
+    }
+
+    /** 현재 비밀번호를 전송해 회원탈퇴를 요청하고 204 성공 응답을 공통 결과로 변환한다. */
+    override suspend fun deleteAccount(body: DeleteAccountRequestDto): NetworkResult<Unit> {
+        return apiExecutor.executeNoContent {
+            settingsApiService.deleteAccount(body)
+        }
     }
 
     override suspend fun updateTheme(body: ThemeRequestDto): NetworkResult<ThemeResponseDto> = apiExecutor.execute {

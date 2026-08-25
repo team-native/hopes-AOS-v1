@@ -1,5 +1,6 @@
 package com.example.hopes.feature.settings.presentation.component
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,6 +26,8 @@ import com.example.hopes.ui.theme.LocalHopesExtendedColors
 fun SettingsLogoutButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    @StringRes textResId: Int = R.string.logout,
+    enabled: Boolean = true,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
 
@@ -37,11 +40,11 @@ fun SettingsLogoutButton(
                 shape = RoundedCornerShape(14.dp),
             )
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
+            .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = stringResource(R.string.logout),
+            text = stringResource(textResId),
             color = extendedColors.logoutText,
             style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
         )

@@ -52,7 +52,10 @@ class AuthRepositoryImpl @Inject constructor(
         }
 
         if (result is AppResult.Success) {
-            sessionManager.saveAccessToken(result.value.accessToken)
+            sessionManager.saveSession(
+                accessToken = result.value.accessToken,
+                tokenType = result.value.tokenType,
+            )
         }
 
         return result
@@ -64,7 +67,10 @@ class AuthRepositoryImpl @Inject constructor(
         }
 
         if (result is AppResult.Success) {
-            sessionManager.saveAccessToken(result.value.accessToken)
+            sessionManager.saveSession(
+                accessToken = result.value.accessToken,
+                tokenType = result.value.tokenType,
+            )
         }
 
         return result

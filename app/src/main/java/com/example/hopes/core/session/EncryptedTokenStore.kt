@@ -19,43 +19,61 @@ import kotlinx.coroutines.flow.first
 
 private val Context.sessionDataStore by preferencesDataStore("secure_session")
 private val accessTokenPreferenceKey = stringPreferencesKey("encrypted_access_token")
+private val tokenTypePreferenceKey = stringPreferencesKey("encrypted_token_type")
 private const val KEY_ALIAS = "hopes_access_token_key"
 private const val GCM_AUTHENTICATION_TAG_LENGTH_BITS = 128
 private const val GCM_INITIALIZATION_VECTOR_LENGTH_BYTES = 12
 
-/** Android Keystore 키로 DataStore의 access token을 AES-GCM 암호화한다. */
+/** Android Keystore 키로 DataStore의 세션 인증 정보를 AES-GCM 암호화한다. */
 @Singleton
 class EncryptedTokenStore @Inject constructor(
     @param:ApplicationContext private val applicationContext: Context,
 ) {
-    /** 로그인 성공 후 access token을 암호화해 저장한다. */
-    suspend fun save(accessToken: String) {
+    /** 로그인 성공 후 access token과 tokenType을 함께 암호화해 저장한다. */
+    suspend fun save(
+        accessToken: String,
+        tokenType: String,
+    ) {
         applicationContext.sessionDataStore.edit { preferences ->
             preferences[accessTokenPreferenceKey] = encrypt(accessToken)
+            preferences[tokenTypePreferenceKey] = encrypt(tokenType)
         }
     }
 
-    /** 로그아웃 또는 인증 만료 시 저장된 access token을 제거한다. */
+    /** 로그아웃 또는 인증 만료 시 저장된 세션 인증 정보를 제거한다. */
     suspend fun clear() {
         applicationContext.sessionDataStore.edit { preferences ->
             preferences.remove(accessTokenPreferenceKey)
+            preferences.remove(tokenTypePreferenceKey)
         }
     }
 
-    /** 앱 시작 시 암호화된 access token을 복호화해 반환한다. */
-    suspend fun read(): String? {
-        val encryptedToken = applicationContext.sessionDataStore.data
-            .first()[accessTokenPreferenceKey]
+    /** 앱 시작 시 암호화된 access token과 tokenType을 복호화해 반환한다. */
+    suspend fun read(): StoredSession? {
+        val preferences = applicationContext.sessionDataStore.data.first()
+        val encryptedAccessToken = preferences[accessTokenPreferenceKey]
+        val encryptedTokenType = preferences[tokenTypePreferenceKey]
 
-        if (encryptedToken == null) {
+        if (encryptedAccessToken == null || encryptedTokenType == null) {
+            if (encryptedAccessToken != null || encryptedTokenType != null) {
+                clear()
+            }
             return null
         }
 
-        return decrypt(encryptedToken) ?: run {
+        val accessToken = decrypt(encryptedAccessToken)
+        val tokenType = decrypt(encryptedTokenType)
+
+        if (accessToken.isNullOrBlank() || tokenType.isNullOrBlank()) {
             // Keystore 키가 초기화되었거나 저장 값이 손상된 경우 잘못된 세션을 남기지 않는다.
             clear()
-            null
+            return null
         }
+
+        return StoredSession(
+            accessToken = accessToken,
+            tokenType = tokenType,
+        )
     }
 
     private fun secretKey(): SecretKey {

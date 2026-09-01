@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.chat.detail.view.component.ChatDetailMessageList
@@ -38,6 +39,8 @@ fun ChatDetailScreen(
                 onActionClick = {},
                 applySystemBarPadding = true,
                 subtitleSpacing = 3.dp,
+                titleFontSize = 20.sp,
+                titleLineHeight = 24.sp,
             )
         },
         fixedBottomContent = {

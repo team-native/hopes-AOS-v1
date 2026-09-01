@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppSpacing
@@ -33,6 +34,8 @@ fun FigmaDetailBackHeader(
     backOffsetX: Int = 18,
     applySystemBarPadding: Boolean = false,
     subtitleSpacing: Dp = 8.dp,
+    titleFontSize: TextUnit = 27.sp,
+    titleLineHeight: TextUnit = 32.sp,
 ) {
     // 뒤로가기 버튼(32.dp) + 버튼-타이틀 간격(16.dp)만큼 타이틀이 시작하는 위치와 같게 맞춘다.
     val textStartX = backOffsetX.dp + 32.dp + 16.dp
@@ -61,9 +64,9 @@ fun FigmaDetailBackHeader(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = TextStyle(
-                    fontSize = 27.sp,
+                    fontSize = titleFontSize,
                     fontWeight = FontWeight.Bold,
-                    lineHeight = 32.sp,
+                    lineHeight = titleLineHeight,
                 ),
             )
 

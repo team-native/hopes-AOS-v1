@@ -23,6 +23,27 @@ description: Compose의 색상, MaterialTheme, Light·Dark·System 테마 모드
 
 - 토큰과 UI 리소스 선언의 객체 생성·조건 분기를 한 줄로 압축하지 않는다.
 
+## 실행 Hook
+
+### `BeforeWork`
+
+- 기존 `MaterialTheme` semantic slot, `strings.xml`, spacing·radius·typography token을 먼저 검색한다.
+- 동일한 역할의 token이 있으면 새 값을 만들지 않고 기존 token을 재사용한다.
+
+### `BeforeMutation`
+
+- 새 색상·문자열·반복 수치가 정말 디자인 시스템 책임인지와 Light/Dark/System 동작을 확정한다.
+- feature에서 직접 색상·문자열·반복 dimension을 추가하지 않을 경로를 정한다.
+
+### `AfterChange`
+
+- feature 하드코딩, resource 누락, semantic 역할 불일치, Light/Dark 대비 문제를 확인한다.
+- 새 public token의 파일명·명명과 기존 Theme provider 연결을 확인한다.
+
+### `BeforeHandoff`
+
+- 가능한 Preview 또는 screenshot 검증과 resource·theme 빌드 결과를 기록한다.
+
 ## 색상 구조
 
 색상 원본과 의미 기반 사용 위치를 분리한다. 색상 값을 담는 별도 `object`를 만들어 화면에서 꺼내 쓰지 않는다. Light/Dark 테마에서 사용할 색상은 역할별 변수로 선언하고, 최상위 theme에서 `ColorScheme`에 매핑한다.
@@ -96,9 +117,14 @@ data class AppExtraTypography(
 val LocalAppExtraTypography = staticCompositionLocalOf<AppExtraTypography> {
     error("AppExtraTypography is not provided.")
 }
+
+val MaterialTheme.extraTypography: AppExtraTypography
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAppExtraTypography.current
 ```
 
-`AppTheme`은 `MaterialTheme`과 같은 범위에서 `LocalAppExtraTypography provides extraTypography`를 제공한다. feature는 `LocalAppExtraTypography.current.bookMeta` 또는 프로젝트의 읽기 전용 Composable accessor를 통해 역할 기반 스타일만 사용한다. 폰트는 `Typography`와 앱 전용 typography 모두에 일관되게 적용한다.
+`AppTheme`은 `MaterialTheme`과 같은 범위에서 `LocalAppExtraTypography provides extraTypography`를 제공한다. feature는 `LocalAppExtraTypography.current`를 직접 호출하지 않고, `MaterialTheme.extraTypography.bookMeta`처럼 `MaterialTheme` 확장 프로퍼티를 통해서만 역할 기반 스타일을 사용한다. 폰트는 `Typography`와 앱 전용 typography 모두에 일관되게 적용한다.
 
 표준 `ColorScheme` slot으로 역할을 정확히 표현할 수 없을 때만 커스텀 색상 확장을 만든다. `ColorScheme`에 필드를 직접 추가할 수 없으므로, 다음 구조를 사용한다.
 
@@ -111,6 +137,11 @@ data class AppExtraColors(
 val LocalAppExtraColors = staticCompositionLocalOf<AppExtraColors> {
     error("AppExtraColors is not provided.")
 }
+
+val MaterialTheme.extraColors: AppExtraColors
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalAppExtraColors.current
 ```
 
 `AppTheme`은 Light/Dark에 따라 같은 역할명의 `AppExtraColors` 값을 선택한 뒤, `MaterialTheme`을 감싼 `CompositionLocalProvider`에서 제공한다.
@@ -127,7 +158,7 @@ CompositionLocalProvider(
 }
 ```
 
-feature 코드는 `Light...`나 `Dark...` 색상 원본을 직접 참조하지 않고, `LocalAppExtraColors.current.bookCoverPlaceholder`처럼 역할 기반 이름만 사용한다. 표준 `MaterialTheme.colorScheme` slot으로 충분하면 커스텀 확장을 만들지 않는다.
+feature 코드는 `LocalAppExtraColors.current`를 직접 호출하지 않고, `MaterialTheme.extraColors.bookCoverPlaceholder`처럼 `MaterialTheme` 확장 프로퍼티를 통해서만 접근한다. `Light...`나 `Dark...` 색상 원본은 직접 참조하지 않는다. 표준 `MaterialTheme.colorScheme` slot으로 충분하면 커스텀 확장을 만들지 않는다.
 
 ## ThemeMode
 

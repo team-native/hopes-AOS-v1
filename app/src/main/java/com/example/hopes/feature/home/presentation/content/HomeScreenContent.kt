@@ -53,7 +53,7 @@ fun HomeScreenContent(
         scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
         Column(
-            modifier = Modifier.padding(start = 32.dp, top = AppSpacing.SystemBarToContent),
+            modifier = Modifier.padding(start = 32.dp, top = AppSpacing.SystemBarToContent, bottom = 32.dp),
         ) {
             FigmaBrandHeader(
                 isOnBlueBackground = true,
@@ -95,7 +95,7 @@ fun HomeScreenContent(
                 bottomText = stringResource(R.string.onboarding_tip_two_bottom),
             )
 
-            Spacer(modifier = Modifier.height(85.dp))
+            Spacer(modifier = Modifier.weight(1f))
 
             HomeStartChatButton(onClick = onStartChatClick)
         }

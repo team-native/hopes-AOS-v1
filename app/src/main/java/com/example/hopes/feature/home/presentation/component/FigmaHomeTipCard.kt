@@ -69,12 +69,12 @@ fun FigmaHomeTipCard(
                     ),
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(7.dp))
 
                 Text(
                     text = bottomText,
                     color = MaterialTheme.colorScheme.onSurface,
-                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp),
+                    style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.SemiBold, lineHeight = 26.sp),
                 )
             }
         }

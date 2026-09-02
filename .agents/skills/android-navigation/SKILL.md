@@ -8,13 +8,15 @@ description: 화면 전환, back stack, 화면 간 상태 공유를 다룰 때 �
 이 프로젝트는 Jetpack Navigation 3(`androidx.navigation3:navigation3-runtime`, `navigation3-ui`)를 사용한다.
 Navigation 2의 `NavHost`/`NavController`/`composable(route: String)`는 더 이상 쓰지 않는다.
 
+아래 클래스명(`<App>NavHost`, `<App>Destination` 등)의 `<App>`은 프로젝트 이름을 나타내는 자리표시자다. 실제 코드에서는 각 프로젝트의 실제 접두사를 쓴다 (예: hopes 프로젝트라면 `<App>` = `Hopes`, 즉 `<App>NavHost`/`<App>Destination`; 다른 프로젝트는 그 프로젝트의 실제 클래스명을 그대로 따른다).
+
 ## 기본 구조
 
 ```text
 MainActivity
-→ HopesNavHost (sessionState에 따라 둘 중 하나만 구성)
-  ├─ HopesAuthNavDisplay (로그인 전, 단일 back stack)
-  └─ HopesMainNavDisplay (로그인 후, 하단 탭마다 독립 back stack)
+→ <App>NavHost (sessionState에 따라 둘 중 하나만 구성)
+  ├─ <App>AuthNavDisplay (로그인 전, 단일 back stack)
+  └─ <App>MainNavDisplay (로그인 후, 하단 탭마다 독립 back stack)
 → Route
 → Screen
 ```
@@ -39,16 +41,16 @@ MainActivity
 
 ## NavKey 정의 규칙
 
-모든 화면은 `HopesDestination.kt`의 `@Serializable sealed interface HopesDestination : NavKey` 하위에 선언한다.
+모든 화면은 `<App>Destination.kt`의 `@Serializable sealed interface <App>Destination : NavKey` 하위에 선언한다.
 
 ```kotlin
-@Serializable data object Home : HopesDestination
-@Serializable data class ChatDetail(val chatId: Long, val question: String = "") : HopesDestination
+@Serializable data object Home : <App>Destination
+@Serializable data class Detail(val itemId: Long) : <App>Destination
 ```
 
 - 인자가 없으면 `data object`, 있으면 `data class`를 쓴다. Navigation 2 시절의 route 문자열과 `NavType`/`navArgument`는 만들지 않는다 — 인자는 항상 생성자 프로퍼티로 타입 안전하게 전달한다.
 - `@Serializable`을 반드시 붙인다. 프로세스 데스 이후 back stack을 복원하려면 모든 NavKey가 직렬화 가능해야 한다.
-- 인자가 있는 `data class` NavKey는 더 이상 싱글턴이 아니다. `HopesDestination.Chat`처럼 bare value로 쓰던 코드는 `HopesDestination.Chat()`(기본값 생성) 또는 `is HopesDestination.Chat`(when 분기)로 바꿔야 한다.
+- 인자가 있는 `data class` NavKey는 더 이상 싱글턴이 아니다. `<App>Destination.Detail`처럼 bare value로 쓰던 코드는 `<App>Destination.Detail()`(기본값 생성) 또는 `is <App>Destination.Detail`(when 분기)로 바꿔야 한다.
 - 새 목적지를 추가할 때 route 문자열이나 `NavType`/`navArgument`를 다루는 코드를 절대 새로 만들지 않는다. 그런 코드가 필요해 보인다면 설계가 Navigation 2 방식으로 되돌아가고 있다는 신호다.
 - ViewModel이 nav 인자를 받아야 하면 `SavedStateHandle`에 의존하지 않는다. Nav 3의 NavKey 생성자 프로퍼티는 `SavedStateHandle`에 자동으로 채워지지 않는다. 대신 Route가 `LaunchedEffect(key)`로 ViewModel의 `initialize(...)` 같은 1회성 메소드를 호출해 인자를 전달한다.
 
@@ -58,18 +60,17 @@ MainActivity
 
 ```kotlin
 entryProvider {
-    entry<HopesDestination.ChatDetail> { key ->
-        ChatDetailRoute(
-            chatId = key.chatId,
-            question = key.question,
+    entry<<App>Destination.Detail> { key ->
+        DetailRoute(
+            itemId = key.itemId,
             onBackClick = navigator::goBack,
         )
     }
 }
 ```
 
-- 인증 전 화면(Auth)은 `HopesAuthNavDisplay`의 entryProvider에, 인증 후 화면(Home/Chat/History/Settings와 그 하위 화면)은 `HopesMainNavDisplay`의 entryProvider에 둔다. 두 곳의 back stack은 완전히 분리되어 있으므로 서로의 목적지를 참조하지 않는다.
-- back stack 조작은 `backStack.add(key)`(push)와 `backStack.removeLastOrNull()`(pop)만 사용한다. Navigation 2의 `popUpTo`/`launchSingleTop`/`inclusive` 같은 `NavOptions` 개념은 없다 — 필요한 동작은 push/pop 조합과 `HopesMainNavigator` 같은 전용 클래스로 직접 구현한다.
+- 인증 전 화면(Auth)은 `<App>AuthNavDisplay`의 entryProvider에, 인증 후 화면(Home/List/Settings와 그 하위 화면, 프로젝트별 실제 탭 구성을 따른다)은 `<App>MainNavDisplay`의 entryProvider에 둔다. 두 곳의 back stack은 완전히 분리되어 있으므로 서로의 목적지를 참조하지 않는다.
+- back stack 조작은 `backStack.add(key)`(push)와 `backStack.removeLastOrNull()`(pop)만 사용한다. Navigation 2의 `popUpTo`/`launchSingleTop`/`inclusive` 같은 `NavOptions` 개념은 없다 — 필요한 동작은 push/pop 조합과 `<App>MainNavigator` 같은 전용 클래스로 직접 구현한다.
 
 ## 다이얼로그
 
@@ -98,16 +99,16 @@ Navigation 3(1.1.6 기준)는 다이얼로그와 달리 바텀시트 전용 `Sce
 
 ## 하단 탭 멀티 백스택
 
-탭마다 독립된 이동 기록이 필요한 하단 탭(Home/Chat/History/Settings)은 `HopesMainNavigationState`/`HopesMainNavigator`(`HopesMainNavigationState.kt`)가 관리한다.
+탭마다 독립된 이동 기록이 필요한 하단 탭(예: Home/List/Settings — 프로젝트별 실제 탭 구성을 따른다)은 `<App>MainNavigationState`/`<App>MainNavigator`(`<App>MainNavigationState.kt`)가 관리한다.
 
-- `hopesTabDestinations`(탭 목적지) 각각에 별도의 `NavBackStack`을 만들고, 현재 활성 탭(`topLevelRoute`)의 back stack만 `NavDisplay`에 전달한다.
-- 탭 전환은 `HopesMainNavigator.navigateToTab()`, 탭 내부 push는 `HopesMainNavigator.push()`, 뒤로가기는 `HopesMainNavigator.goBack()`을 사용한다. `goBack()`은 현재 탭 back stack이 시작 화면 하나만 남았을 때 시작 탭(Home)으로 되돌아간다 — 탭 내부 화면에서 시스템 뒤로가기를 눌러도 앱이 종료되지 않고 항상 예측 가능하게 동작해야 한다.
-- 현재 어떤 탭이 선택되어 있는지는 `NavKey` 객체 자체가 아니라 `hopesTabDestinations` 안에서의 index로 `rememberSaveable`에 저장한다. `@Serializable` NavKey는 Compose 기본 Saver로 담을 수 없으므로, 새로운 저장 상태를 추가할 때도 NavKey 값 자체를 직접 `rememberSaveable`에 넣지 않는다.
+- `tabDestinations`(탭 목적지) 각각에 별도의 `NavBackStack`을 만들고, 현재 활성 탭(`topLevelRoute`)의 back stack만 `NavDisplay`에 전달한다.
+- 탭 전환은 `<App>MainNavigator.navigateToTab()`, 탭 내부 push는 `<App>MainNavigator.push()`, 뒤로가기는 `<App>MainNavigator.goBack()`을 사용한다. `goBack()`은 현재 탭 back stack이 시작 화면 하나만 남았을 때 시작 탭(Home)으로 되돌아간다 — 탭 내부 화면에서 시스템 뒤로가기를 눌러도 앱이 종료되지 않고 항상 예측 가능하게 동작해야 한다.
+- 현재 어떤 탭이 선택되어 있는지는 `NavKey` 객체 자체가 아니라 `tabDestinations` 안에서의 index로 `rememberSaveable`에 저장한다. `@Serializable` NavKey는 Compose 기본 Saver로 담을 수 없으므로, 새로운 저장 상태를 추가할 때도 NavKey 값 자체를 직접 `rememberSaveable`에 넣지 않는다.
 - 새 목적지를 만들 때 이 화면이 탭별로 독립된 기록이 필요한지(=탭 back stack에 push) 아니면 로그인 전처럼 단일 흐름인지 먼저 판단한다.
 
 ## 인증 상태 전환
 
-- `SessionState`(로그인 화면뿐 아니라 임의 화면의 401 응답으로도 조용히 바뀔 수 있다 — `core/session`의 `expireSession()` 참고)를 `HopesNavHost`가 `key(sessionState) { ... }`로 감싸 관찰한다. 상태가 바뀌면 `HopesAuthNavDisplay`↔`HopesMainNavDisplay` 전체가 다시 구성되며, 각 NavDisplay 서브트리가 disposed/recreated되므로 별도의 명시적 `navigate(popUpTo(0))` 조작이 필요 없다.
+- `SessionState`(로그인 화면뿐 아니라 임의 화면의 401 응답으로도 조용히 바뀔 수 있다 — `core/session`의 `expireSession()` 참고)를 `<App>NavHost`가 `key(sessionState) { ... }`로 감싸 관찰한다. 상태가 바뀌면 `<App>AuthNavDisplay`↔`<App>MainNavDisplay` 전체가 다시 구성되며, 각 NavDisplay 서브트리가 disposed/recreated되므로 별도의 명시적 `navigate(popUpTo(0))` 조작이 필요 없다.
 - `AuthRoute`의 `onAuthenticated`나 `SettingsRoute`의 `onLogout` 같은 콜백에서 수동으로 back stack을 비우는 코드를 새로 만들지 않는다. `SessionManager`가 상태를 바꾸는 순간 `key(sessionState)`가 이미 처리한다.
 - 이 패턴은 세션 상태가 여러 화면에서 비동기로 바뀔 수 있는 프로젝트에 한정된 선택이다. 로그인/로그아웃 버튼 클릭에서만 인증 상태가 바뀌는 단순한 앱이라면 로컬 `rememberSaveable` boolean 토글이 더 간단할 수 있다 — 새로 도입하기 전에 세션 만료가 발생할 수 있는 경로를 먼저 확인한다.
 
@@ -134,12 +135,12 @@ val sharedViewModel: SomeFlowViewModel =
 
 ## 알려진 제약
 
-- Navigation 3는 이 스킬 작성 시점 기준 딥링크를 공식 지원하지 않는다. 딥링크가 필요해지면 백스택을 앱 시작 시점에 원하는 키 목록으로 미리 채워 넣는 방식(예: 알림 클릭 시 `[Home, ChatDetail(id)]`로 시작)으로 구현하고, 이 섹션을 갱신한다.
+- Navigation 3는 이 스킬 작성 시점 기준 딥링크를 공식 지원하지 않는다. 딥링크가 필요해지면 백스택을 앱 시작 시점에 원하는 키 목록으로 미리 채워 넣는 방식(예: 알림 클릭 시 `[Home, Detail(id)]`로 시작)으로 구현하고, 이 섹션을 갱신한다.
 - 목적지별로 서로 다른 전환 애니메이션은 `entry<T>(metadata = ...)`와 `NavDisplay.transitionSpec`/`popTransitionSpec`으로 구현할 수 있으나, 값 타입 추론 문제로 `mapOf(...)`를 바로 쓰면 컴파일이 깨지기 쉽다. 꼭 필요하면 먼저 최소 예제로 타입을 확인한 뒤 적용하고, 전역 `transitionSpec`으로 충분하면 그쪽을 우선한다.
 
 ## 완료 체크
 
-- 새 화면이 `HopesDestination`에 `@Serializable`로 선언되어 있다.
+- 새 화면이 `<App>Destination`에 `@Serializable`로 선언되어 있다.
 - route 문자열, `NavType`, `navArgument`를 새로 만들지 않았다.
 - Screen이 NavKey/back stack/NavDisplay를 참조하지 않는다.
 - ViewModel이 nav 인자를 받아야 하면 `SavedStateHandle`이 아니라 Route의 `LaunchedEffect(key)` + `initialize(...)` 방식을 썼다.

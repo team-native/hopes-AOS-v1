@@ -29,8 +29,8 @@ fun FigmaChatDetailBubble(
 
     Box(
         modifier = modifier
-            .widthIn(max = if (isUser) 265.dp else 354.dp)
-            .defaultMinSize(minHeight = 58.dp)
+            .widthIn(max = if (isUser) 235.dp else 354.dp)
+            .defaultMinSize(minHeight = 8.dp)
             .then(
                 if (isUser) {
                     Modifier
@@ -58,8 +58,8 @@ fun FigmaChatDetailBubble(
                 .padding(
                     start = if (isUser) 16.dp else 20.dp,
                     end = if (isUser) 16.dp else 20.dp,
-                    top = 18.dp,
-                    bottom = 18.dp,
+                    top = 14.dp,
+                    bottom = 14.dp,
                 ),
             color = if (isUser) {
                 MaterialTheme.colorScheme.onPrimary

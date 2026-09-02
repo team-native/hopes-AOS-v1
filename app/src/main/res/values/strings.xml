@@ -94,7 +94,6 @@
     <string name="chat_suggestion_advice">후배한테 해주고 싶은 조언 있어?</string>
     <string name="chat_new_message">선배에게 메시지 보내기</string>
     <string name="chat_additional_question">추가 질문 입력</string>
-    <string name="chat_save">저장</string>
     <string name="chat_answer_label">선배 답변 · 실제 경험 기반</string>
     <string name="chat_messages_loading">대화를 불러오는 중이에요.</string>
     <string name="chat_messages_error">대화를 불러오지 못했어요. 다시 시도해주세요.</string>

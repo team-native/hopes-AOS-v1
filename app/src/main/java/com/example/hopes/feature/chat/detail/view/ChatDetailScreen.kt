@@ -35,8 +35,6 @@ fun ChatDetailScreen(
                 title = uiState.title.ifBlank { stringResource(R.string.chat_detail_title) },
                 subtitle = stringResource(R.string.chat_answer_label),
                 onBackClick = { onEvent(ChatDetailScreenEvent.BackClicked) },
-                actionText = stringResource(R.string.chat_save),
-                onActionClick = {},
                 applySystemBarPadding = true,
                 subtitleSpacing = 3.dp,
                 titleFontSize = 20.sp,

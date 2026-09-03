@@ -26,3 +26,8 @@ object AppIconSize {
     val BottomNavigation = 24.dp
     val Logo = 40.dp
 }
+
+/** 오버레이가 표시될 때 배경의 시각적 깊이를 표현하는 blur 반경이다. */
+object AppBlurRadius {
+    val OverlayBackdrop = 8.dp
+}

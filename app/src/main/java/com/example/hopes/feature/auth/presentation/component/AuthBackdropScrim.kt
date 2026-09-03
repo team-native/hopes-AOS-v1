@@ -6,16 +6,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 로그인 시트 뒤에서 히어로 영역을 은은하게 어둡히는 스크림이다. */
 @Composable
-fun AuthBackdropScrim(modifier: Modifier = Modifier) {
+fun AuthBackdropScrim(
+    scrimHeight: Dp = 397.dp,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(397.dp)
+            .height(scrimHeight)
             .background(LocalHopesExtendedColors.current.authBackdropScrim),
     )
 }

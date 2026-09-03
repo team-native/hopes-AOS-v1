@@ -2,27 +2,17 @@ package com.example.hopes.feature.auth.presentation.content
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.example.hopes.feature.auth.presentation.component.AuthBackdropScrim
-import com.example.hopes.feature.auth.presentation.component.AuthHeroCopy
-import com.example.hopes.feature.auth.presentation.component.FigmaAuthBrandHeader
-import com.example.hopes.feature.auth.presentation.component.FigmaAuthLogoShadowStyle
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthSheet
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
@@ -54,18 +44,6 @@ fun AuthLoginSheetContent(
         // 닫히도록 한다. 조금 끌었다가 놓았을 때 열림 위치로 자연스럽게 되돌아간다.
         val dismissThreshold = maxHeight.value - 260f
         val sheetTopOffset = remember(maxHeight) { Animatable(expandedTopOffset) }
-
-        Box(modifier = Modifier.blur(8.dp)) {
-            Column(modifier = Modifier.padding(start = 24.dp, top = 25.dp)) {
-                FigmaAuthBrandHeader(logoShadowStyle = FigmaAuthLogoShadowStyle.Login)
-
-                Spacer(modifier = Modifier.height(74.dp))
-
-                AuthHeroCopy()
-            }
-        }
-
-        AuthBackdropScrim()
 
         // 시트 위치는 드래그로 매 프레임 바뀌는 값이라, layout을 다시 계산하는 offset 대신
         // draw 단계에서만 이동시키는 graphicsLayer translationY를 쓴다. padding과 달리 음수

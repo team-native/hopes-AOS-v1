@@ -41,8 +41,10 @@ fun AuthLoginFormContent(
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onForgotPasswordClick: () -> Unit,
+    onHandleDragStart: () -> Unit,
     onHandleDrag: (Float) -> Unit,
     onHandleDragEnd: () -> Unit,
+    onHandleDragCancel: () -> Unit,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
     val isLoginEnabled = emailText.isNotBlank() && passwordText.isNotBlank()
@@ -62,11 +64,13 @@ fun AuthLoginFormContent(
         Box(
             modifier = Modifier.pointerInput(Unit) {
                 detectDragGestures(
+                    onDragStart = { onHandleDragStart() },
                     onDrag = { change, dragAmount ->
                         change.consume()
                         onHandleDrag(dragAmount.y)
                     },
                     onDragEnd = { onHandleDragEnd() },
+                    onDragCancel = { onHandleDragCancel() },
                 )
             },
         ) {

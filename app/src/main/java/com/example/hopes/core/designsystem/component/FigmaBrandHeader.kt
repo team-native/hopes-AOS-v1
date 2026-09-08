@@ -66,7 +66,7 @@ fun FigmaBrandHeader(
             contentAlignment = Alignment.Center,
         ) {
             Image(
-                painter = painterResource(R.drawable.img_app),
+                painter = painterResource(R.drawable.hopes_logo),
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier

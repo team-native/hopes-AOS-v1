@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.hilt)
@@ -5,6 +7,24 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
 }
+
+// release 서명 정보는 local.properties(git 제외)에서만 읽는다. 비밀번호는 절대
+// BuildConfig로 앱 코드에 노출하지 않는다 — 이 Properties는 Gradle 스크립트
+// 범위에서만 signingConfigs 연결에 쓰인다.
+val releaseSigningProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+val releaseStoreFile = releaseSigningProperties.getProperty("RELEASE_STORE_FILE")
+val releaseStorePassword = releaseSigningProperties.getProperty("RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = releaseSigningProperties.getProperty("RELEASE_KEY_ALIAS")
+val releaseKeyPassword = releaseSigningProperties.getProperty("RELEASE_KEY_PASSWORD")
+val hasReleaseSigningConfig = !releaseStoreFile.isNullOrBlank() &&
+    !releaseStorePassword.isNullOrBlank() &&
+    !releaseKeyAlias.isNullOrBlank() &&
+    !releaseKeyPassword.isNullOrBlank()
 
 android {
     namespace = "com.example.hopes"
@@ -30,6 +50,17 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        if (hasReleaseSigningConfig) {
+            create("release") {
+                storeFile = file(releaseStoreFile!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"http://service.gsmsv.site:22116/\"")
@@ -45,6 +76,11 @@ android {
             buildConfigField("String", "BASE_URL", "\"http://service.gsmsv.site:22116/\"")
             buildConfigField("boolean", "ENABLE_LOG", "false")
             buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
+            if (hasReleaseSigningConfig) {
+                signingConfig = signingConfigs.getByName("release")
+            } else {
+                logger.warn("RELEASE 서명 키 정보(local.properties)가 없어 release 빌드가 서명되지 않습니다.")
+            }
         }
     }
 }

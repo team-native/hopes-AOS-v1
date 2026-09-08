@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -49,12 +48,11 @@ fun AuthLoginFormContent(
     val extendedColors = LocalHopesExtendedColors.current
     val isLoginEnabled = emailText.isNotBlank() && passwordText.isNotBlank()
 
-    // imePadding을 verticalScroll보다 바깥쪽에 둬야 키보드 높이만큼 뷰포트 자체가 줄어들어,
-    // verticalScroll이 실제로 남은 공간을 정확히 알고 그 안에서 포커스된 필드를 끝까지
-    // 끌어올릴 수 있다.
+    // 키보드가 열리면 AuthLoginSheetContent가 시트 자체를 키보드 높이만큼 위로 옮긴다.
+    // 여기서 다시 imePadding()을 적용하면 키보드 높이가 두 번 반영돼(시트 이동 + 내부
+    // 여백) 필드가 과하게 밀리므로 verticalScroll만 두고 imePadding은 쓰지 않는다.
     Column(
         modifier = Modifier
-            .imePadding()
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(modifier = Modifier.height(20.dp))

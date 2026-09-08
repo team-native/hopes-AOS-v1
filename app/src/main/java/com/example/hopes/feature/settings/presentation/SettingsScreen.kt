@@ -13,6 +13,7 @@ fun SettingsScreen(
     onBackClick: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
     uiState: SettingsUiState,
     onEvent: (SettingsScreenEvent) -> Unit,
 ) {
@@ -23,6 +24,7 @@ fun SettingsScreen(
         onBackClick = onBackClick,
         onNavigateToPersonalSettings = onNavigateToPersonalSettings,
         onNavigateToContact = onNavigateToContact,
+        onNavigateToPrivacyPolicy = onNavigateToPrivacyPolicy,
         uiState = uiState,
         onEvent = onEvent,
     )

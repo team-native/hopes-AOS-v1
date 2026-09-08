@@ -26,6 +26,7 @@ fun SettingsScreenContent(
     onBackClick: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToContact: () -> Unit,
+    onNavigateToPrivacyPolicy: () -> Unit,
     uiState: SettingsUiState,
     onEvent: (SettingsScreenEvent) -> Unit,
 ) {
@@ -51,6 +52,15 @@ fun SettingsScreenContent(
                 title = stringResource(R.string.contact),
                 description = stringResource(R.string.settings_contact_description),
                 onClick = onNavigateToContact,
+                modifier = Modifier.padding(start = 37.dp, end = 37.dp),
+            )
+
+            Spacer(modifier = Modifier.height(3.dp))
+
+            FigmaSettingsRow(
+                title = stringResource(R.string.privacy_policy),
+                description = stringResource(R.string.settings_privacy_policy_description),
+                onClick = onNavigateToPrivacyPolicy,
                 modifier = Modifier.padding(start = 37.dp, end = 37.dp),
             )
 

@@ -11,6 +11,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.R
+import com.example.hopes.feature.settings.presentation.component.PrivacyPolicyDialog
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionBottomSheet
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionConfirmDialog
 import com.example.hopes.navigation.HopesDestination
@@ -30,6 +31,7 @@ fun SettingsRoute(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isDeletionSheetVisible by rememberSaveable { mutableStateOf(false) }
     var isDeletionConfirmDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var isPrivacyPolicyVisible by rememberSaveable { mutableStateOf(false) }
     // 비밀번호 원문은 SavedState에 저장하지 않고 화면 생명주기 동안만 메모리에 유지한다.
     var deletionPassword by remember { mutableStateOf("") }
 
@@ -77,6 +79,7 @@ fun SettingsRoute(
         onBackClick = onBackClick,
         onNavigateToPersonalSettings = onNavigateToPersonalSettings,
         onNavigateToContact = onNavigateToContact,
+        onNavigateToPrivacyPolicy = { isPrivacyPolicyVisible = true },
         uiState = uiState,
         onEvent = { event ->
             when (event) {
@@ -123,6 +126,10 @@ fun SettingsRoute(
                 isDeletionSheetVisible = true
             },
         )
+    }
+
+    if (isPrivacyPolicyVisible) {
+        PrivacyPolicyDialog(onDismiss = { isPrivacyPolicyVisible = false })
     }
 }
 

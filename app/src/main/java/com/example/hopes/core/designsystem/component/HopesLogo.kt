@@ -1,10 +1,12 @@
 package com.example.hopes.core.designsystem.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +15,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
@@ -31,15 +35,18 @@ fun HopesLogo() {
             modifier = Modifier
                 .size(AppIconSize.Logo)
                 .background(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.surface,
                     shape = RoundedCornerShape(AppRadius.Logo),
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = stringResource(R.string.logo_mark),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = MaterialTheme.typography.titleMedium,
+            Image(
+                painter = painterResource(R.drawable.hopes_logo),
+                contentDescription = stringResource(R.string.app_name),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(14.dp),
             )
         }
         Column {
@@ -72,10 +79,13 @@ fun HopesLightLogo() {
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            Text(
-                text = stringResource(R.string.logo_mark),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.titleMedium,
+            Image(
+                painter = painterResource(R.drawable.hopes_logo),
+                contentDescription = stringResource(R.string.app_name),
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(14.dp),
             )
         }
         Column {
@@ -105,10 +115,13 @@ fun HopesLogoMark(modifier: Modifier = Modifier) {
             ),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = stringResource(R.string.logo_mark),
-            color = MaterialTheme.colorScheme.primary,
-            style = MaterialTheme.typography.headlineLarge,
+        Image(
+            painter = painterResource(R.drawable.hopes_logo),
+            contentDescription = stringResource(R.string.app_name),
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .height(44.dp)
+                .width(30.dp),
         )
     }
 }

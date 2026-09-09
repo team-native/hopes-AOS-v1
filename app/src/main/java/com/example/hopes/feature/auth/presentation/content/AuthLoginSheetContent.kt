@@ -173,8 +173,8 @@ fun AuthLoginSheetContent(
 // 계산되므로, 이 값을 조정해도 시트가 화면 밖으로 밀려나지 않는다 — AuthLoginFormContent의
 // verticalScroll이 내용 잘림의 최종 안전망이다.
 internal val AUTH_LOGIN_SHEET_EXPANDED_HEIGHT = 514.dp
-// 핸들·로그인 제목·설명까지만 보이도록 실제 기기에서 측정한 접힘 높이다.
-internal val AUTH_LOGIN_SHEET_PEEK_HEIGHT = 144.dp
+// 부제목이 시스템 내비게이션 영역과 겹치지 않고, 입력 필드는 숨겨지도록 실제 기기에서 측정한 접힘 높이다.
+internal val AUTH_LOGIN_SHEET_PEEK_HEIGHT = 156.dp
 private val loginSheetDismissThresholdHeight = 260.dp
 private const val LOGIN_SHEET_SETTLE_DURATION_MILLIS = 180
 

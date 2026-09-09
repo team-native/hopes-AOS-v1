@@ -66,7 +66,6 @@ fun AuthRoute(
         onSignupClick = { viewModel.onEvent(AuthScreenEvent.SignUpClicked) },
         onNavigateSignup = { viewModel.onEvent(AuthScreenEvent.SignUpRequested) },
         onNavigateLogin = { viewModel.onEvent(AuthScreenEvent.LoginRequested) },
-        onDismissLogin = { viewModel.onEvent(AuthScreenEvent.LoginDismissed) },
         onForgotPasswordClick = { viewModel.onEvent(AuthScreenEvent.ForgotPasswordClicked) },
         passwordResetUiState = PasswordResetUiState(
             email = uiState.value.passwordResetEmail,

@@ -4,8 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -33,7 +33,8 @@ interface SettingsApiService {
     @PATCH("api/setting") suspend fun updateSettings(@Body body: SettingUpdateRequestDto): Response<SettingMainResponseDto>
     @POST("api/setting/inquiry") suspend fun submitInquiry(@Body body: ContentRequestDto): Response<MessageEnvelopeDto>
     @POST("api/logout") suspend fun logout(): Response<MessageEnvelopeDto>
-    @DELETE("api/account") suspend fun deleteAccount(@Body body: DeleteAccountRequestDto): Response<Unit>
+    @HTTP(method = "DELETE", path = "api/account", hasBody = true)
+    suspend fun deleteAccount(@Body body: DeleteAccountRequestDto): Response<Unit>
 }
 @Serializable data class TokenResponseDto(@SerialName("accessToken") val accessToken: String, @SerialName("tokenType") val tokenType: String, @SerialName("message") val message: String? = null)
 @Serializable data class MessageEnvelopeDto(@SerialName("message") val message: String)

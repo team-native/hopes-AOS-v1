@@ -1,0 +1,125 @@
+package com.example.hopes.feature.auth.presentation.component
+
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.example.hopes.R
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
+
+/** 40dp 높이의 피그마 스타일 입력 필드다. 실제 폭은 호출부의 modifier가 결정한다. */
+@Composable
+fun FigmaAuthTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    labelRes: Int,
+    isPassword: Boolean = false,
+    onImeAction: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
+    val extendedColors = LocalHopesExtendedColors.current
+    // 비밀번호 원문은 저장하지 않고, 화면 회전 후에도 표시 상태만 유지한다.
+    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    val fieldTextStyle = TextStyle(
+        color = MaterialTheme.colorScheme.onSurface,
+        fontSize = 15.sp,
+        fontWeight = FontWeight.Normal,
+    )
+    val fieldDescription = stringResource(labelRes)
+    val passwordVisibilityDescription = stringResource(
+        if (isPasswordVisible) {
+            R.string.hide_password
+        } else {
+            R.string.show_password
+        },
+    )
+
+    Box(
+        modifier = modifier
+            .height(40.dp)
+            .border(
+                width = 1.dp,
+                color = extendedColors.authFieldBorder,
+                shape = RoundedCornerShape(14.dp),
+            )
+            .padding(horizontal = 16.dp),
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        if (value.isEmpty()) {
+            Text(
+                text = stringResource(labelRes),
+                color = extendedColors.authFieldHint,
+                style = fieldTextStyle,
+            )
+        }
+
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(end = if (isPassword) 40.dp else 0.dp)
+                .semantics { contentDescription = fieldDescription },
+            singleLine = true,
+            textStyle = fieldTextStyle,
+            keyboardOptions = KeyboardOptions(
+                imeAction = if (isPassword) ImeAction.Done else ImeAction.Next,
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { onImeAction?.invoke() },
+            ),
+            visualTransformation = if (isPassword && !isPasswordVisible) {
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            },
+        )
+
+        if (isPassword) {
+            IconButton(
+                onClick = { isPasswordVisible = !isPasswordVisible },
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(40.dp),
+            ) {
+                // 상태에 따라 눈 뜬 아이콘과 눈 감은 아이콘을 실제로 교체한다.
+                Icon(
+                    imageVector = if (isPasswordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                    contentDescription = passwordVisibilityDescription,
+                    tint = extendedColors.authFieldHint,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}

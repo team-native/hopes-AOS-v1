@@ -32,7 +32,7 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.hopes"
+        applicationId = "com.teamnative.hopes"
         minSdk = 34
         targetSdk = 36
         versionCode = 1

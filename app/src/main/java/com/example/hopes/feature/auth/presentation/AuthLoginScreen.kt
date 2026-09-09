@@ -2,10 +2,14 @@ package com.example.hopes.feature.auth.presentation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.example.hopes.core.designsystem.component.FigmaPhoneScreen
 import com.example.hopes.core.designsystem.component.overlay.overlayBackdropBlur
-import com.example.hopes.feature.auth.presentation.component.AuthLoginBackdrop
+import com.example.hopes.feature.auth.presentation.component.AuthSharedBackdrop
 import com.example.hopes.feature.auth.presentation.content.AuthLoginSheetContent
 
 /** 피그마 02 로그인 화면 진입점이다. */
@@ -19,16 +23,21 @@ fun AuthLoginScreen(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
-    onDismissLogin: () -> Unit,
     onForgotPasswordClick: () -> Unit,
+    isInitiallyExpanded: Boolean,
 ) {
+    var sheetExpansionProgress by remember(isInitiallyExpanded) {
+        mutableFloatStateOf(if (isInitiallyExpanded) 1f else 0f)
+    }
+
     FigmaPhoneScreen(
         applyStatusBarsPadding = true,
         background = {
-            AuthLoginBackdrop(
+            AuthSharedBackdrop(
+                sheetExpansionProgress = sheetExpansionProgress,
                 modifier = Modifier
                     .fillMaxSize()
-                    .overlayBackdropBlur(),
+                    .overlayBackdropBlur(sheetExpansionProgress),
             )
         },
     ) {
@@ -41,8 +50,9 @@ fun AuthLoginScreen(
             onPasswordChange = onPasswordChange,
             onLoginClick = onLoginClick,
             onNavigateSignup = onNavigateSignup,
-            onDismissLogin = onDismissLogin,
             onForgotPasswordClick = onForgotPasswordClick,
+            isInitiallyExpanded = isInitiallyExpanded,
+            onSheetExpansionProgressChanged = { sheetExpansionProgress = it },
         )
     }
 }

@@ -30,4 +30,7 @@ object AppIconSize {
 /** 오버레이가 표시될 때 배경의 시각적 깊이를 표현하는 blur 반경이다. */
 object AppBlurRadius {
     val OverlayBackdrop = 8.dp
+    // Modifier.blur()가 아니라 Window.setBackgroundBlurRadius() 기반이라 렌더링 방식이 달라,
+    // 같은 시각적 강도를 내려면 OverlayBackdrop보다 큰 값이 필요하다.
+    val DialogWindowBackdrop = 24.dp
 }

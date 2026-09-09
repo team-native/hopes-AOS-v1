@@ -25,6 +25,12 @@ fun FigmaDetailTextArea(
     height: Int,
     modifier: Modifier = Modifier,
 ) {
+    val inputTextStyle = TextStyle(
+        fontSize = 15.sp,
+        color = MaterialTheme.colorScheme.onSurface,
+        lineHeight = 22.sp,
+    )
+
     Box(
         modifier = modifier
             .width(306.dp)
@@ -32,17 +38,6 @@ fun FigmaDetailTextArea(
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
     ) {
-        if (value.isEmpty()) {
-            Text(
-                text = hint,
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 14.dp)
-                    .width(260.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = TextStyle(fontSize = 15.sp, lineHeight = 22.sp),
-            )
-        }
-
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
@@ -50,11 +45,18 @@ fun FigmaDetailTextArea(
                 .padding(start = 16.dp, top = 14.dp)
                 .width(274.dp)
                 .height((height - 28).dp),
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-                lineHeight = 22.sp,
-            ),
+            textStyle = inputTextStyle,
+            decorationBox = { innerTextField ->
+                if (value.isEmpty()) {
+                    Text(
+                        text = hint,
+                        modifier = Modifier.width(260.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = inputTextStyle,
+                    )
+                }
+                innerTextField()
+            },
         )
     }
 }

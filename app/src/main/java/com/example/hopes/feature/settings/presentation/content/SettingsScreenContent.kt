@@ -14,7 +14,7 @@ import com.example.hopes.feature.settings.presentation.SettingsScreenEvent
 import com.example.hopes.feature.settings.presentation.SettingsUiState
 import com.example.hopes.feature.settings.presentation.component.FigmaSettingsRow
 import com.example.hopes.feature.settings.presentation.component.SettingsHeader
-import com.example.hopes.feature.settings.presentation.component.SettingsLogoutButton
+import com.example.hopes.feature.settings.presentation.component.SettingsAccountSection
 import com.example.hopes.navigation.HopesDestination
 
 /** 피그마 11 설정 화면의 설정 행과 로컬 토글 상태를 표시한다. */
@@ -66,17 +66,10 @@ fun SettingsScreenContent(
 
             Spacer(modifier = Modifier.height(26.dp))
 
-            SettingsLogoutButton(
-                onClick = { onEvent(SettingsScreenEvent.LogoutClicked) },
-                modifier = Modifier.padding(start = 29.dp, end = 29.dp),
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            SettingsLogoutButton(
-                onClick = { onEvent(SettingsScreenEvent.DeleteAccountClicked) },
-                textResId = R.string.delete_account,
-                enabled = !uiState.isDeletingAccount,
+            SettingsAccountSection(
+                onLogoutClick = { onEvent(SettingsScreenEvent.LogoutClicked) },
+                onDeleteAccountClick = { onEvent(SettingsScreenEvent.DeleteAccountClicked) },
+                isDeleteAccountEnabled = !uiState.isDeletingAccount,
                 modifier = Modifier.padding(start = 29.dp, end = 29.dp),
             )
         }

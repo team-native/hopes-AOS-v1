@@ -46,7 +46,7 @@ fun SettingsScreenContent(
                 modifier = Modifier.padding(start = 37.dp, end = 37.dp),
             )
 
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             FigmaSettingsRow(
                 title = stringResource(R.string.contact),
@@ -55,7 +55,7 @@ fun SettingsScreenContent(
                 modifier = Modifier.padding(start = 37.dp, end = 37.dp),
             )
 
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             FigmaSettingsRow(
                 title = stringResource(R.string.privacy_policy),

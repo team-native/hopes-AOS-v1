@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppBlurRadius
+import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
 
 /** 조항 하나(제목 + 본문)를 나타낸다. */
 private data class PrivacyPolicyArticle(
@@ -96,9 +98,8 @@ private val privacyPolicyArticles = listOf(
     PrivacyPolicyArticle(
         heading = "제9조 개인정보 보호책임자",
         body = "개인정보 처리에 관한 문의, 불만 처리, 피해 구제 등을 위해 담당자를 지정하고 있습니다.\n\n" +
-            "담당자: [담당자 이름]\n" +
-            "이메일: [문의받을 이메일 주소]\n\n" +
-            "위 담당자 정보는 배포 전 실제 연락처로 교체해 주세요.",
+            "담당자: 박지성\n" +
+            "이메일: ttagno4230@gmail.com",
     ),
     PrivacyPolicyArticle(
         heading = "제10조 고지의 의무",
@@ -117,6 +118,8 @@ fun PrivacyPolicyDialog(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
+        ApplyDialogWindowBackgroundBlur(blurRadius = AppBlurRadius.DialogWindowBackdrop)
+
         Surface(
             modifier = Modifier
                 .fillMaxWidth()

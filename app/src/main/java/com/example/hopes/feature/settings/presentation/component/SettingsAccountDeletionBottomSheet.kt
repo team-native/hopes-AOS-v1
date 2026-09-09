@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.AppBlurRadius
+import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
@@ -40,7 +42,10 @@ fun SettingsAccountDeletionBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
+        ApplyDialogWindowBackgroundBlur(blurRadius = AppBlurRadius.DialogWindowBackdrop)
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()

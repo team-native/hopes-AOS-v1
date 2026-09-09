@@ -18,7 +18,7 @@ import com.example.hopes.feature.settings.presentation.component.SettingsAccount
 import com.example.hopes.navigation.HopesDestination
 
 /** 개인정보처리방침 전문을 호스팅하는 외부 URL. */
-private const val PRIVACY_POLICY_URL = "https://claude.ai/code/artifact/3c6f9f41-2394-4041-9cdf-2948ffc3f6c1"
+private const val PRIVACY_POLICY_URL = "https://spotless-beret-a3e.notion.site/Hopes-3c497507c37c8052ba2cd6fb48f568a3"
 
 private const val PRIVACY_POLICY_LOG_TAG = "SettingsRoute"
 

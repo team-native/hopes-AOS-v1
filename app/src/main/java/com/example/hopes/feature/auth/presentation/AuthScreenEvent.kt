@@ -11,7 +11,6 @@ sealed interface AuthScreenEvent {
     data object SignUpClicked : AuthScreenEvent
     data object SignUpRequested : AuthScreenEvent
     data object LoginRequested : AuthScreenEvent
-    data object LoginDismissed : AuthScreenEvent
     data object ForgotPasswordClicked : AuthScreenEvent
     data class PasswordResetEmailChanged(val value: String) : AuthScreenEvent
     data class PasswordResetCodeChanged(val value: String) : AuthScreenEvent

@@ -31,14 +31,14 @@ fun AuthScreen(
     onSignupClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
-    onDismissLogin: () -> Unit,
     onForgotPasswordClick: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
     when (authStep) {
-        AuthStep.Guide -> AuthGuideScreen(onNavigateLogin = onNavigateLogin)
-        AuthStep.Login -> AuthLoginScreen(
+        AuthStep.Guide,
+        AuthStep.Login,
+        -> AuthLoginScreen(
             emailText = emailText,
             passwordText = passwordText,
             loginErrorMessage = loginErrorMessage,
@@ -47,8 +47,8 @@ fun AuthScreen(
             onPasswordChange = onPasswordChange,
             onLoginClick = onLoginClick,
             onNavigateSignup = onNavigateSignup,
-            onDismissLogin = onDismissLogin,
             onForgotPasswordClick = onForgotPasswordClick,
+            isInitiallyExpanded = authStep == AuthStep.Login,
         )
         AuthStep.PasswordResetRequest -> PasswordResetScreen(
             uiState = passwordResetUiState,

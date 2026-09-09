@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,8 +35,9 @@ fun AuthLoginSheetContent(
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
     onNavigateSignup: () -> Unit,
-    onDismissLogin: () -> Unit,
     onForgotPasswordClick: () -> Unit,
+    isInitiallyExpanded: Boolean,
+    onSheetExpansionProgressChanged: (Float) -> Unit,
 ) {
     val animationScope = rememberCoroutineScope()
     val loginDensity = LocalDensity.current
@@ -53,10 +55,10 @@ fun AuthLoginSheetContent(
         // 가로 모드·분할 화면처럼 maxHeight가 작아지는 경우 시트 상단이 화면 밖(상태바 위)으로
         // 밀려나지 않도록 0 미만으로는 내려가지 않게 고정한다.
         val expandedTopOffsetPx = with(loginDensity) {
-            (maxHeight - loginSheetExpandedHeight).toPx()
+            (maxHeight - AUTH_LOGIN_SHEET_EXPANDED_HEIGHT).toPx()
         }.coerceAtLeast(0f)
         val dismissedTopOffsetPx = with(loginDensity) {
-            (maxHeight - loginSheetPeekHeight).toPx()
+            (maxHeight - AUTH_LOGIN_SHEET_PEEK_HEIGHT).toPx()
         }
         // 임계값을 닫힘 위치 쪽으로 옮겨, 살짝만 내려도 바로 닫히던 것을 더 많이 내려야
         // 닫히도록 한다. 조금 끌었다가 놓았을 때 열림 위치로 자연스럽게 되돌아간다.
@@ -64,9 +66,36 @@ fun AuthLoginSheetContent(
             (maxHeight - loginSheetDismissThresholdHeight).toPx()
         }
         var sheetTopOffsetPx by remember(maxHeight, loginDensity) {
-            mutableFloatStateOf(expandedTopOffsetPx)
+            mutableFloatStateOf(
+                if (isInitiallyExpanded) {
+                    expandedTopOffsetPx
+                } else {
+                    dismissedTopOffsetPx
+                },
+            )
         }
         var sheetSettleJob by remember { mutableStateOf<Job?>(null) }
+
+        fun updateSheetTopOffset(offsetPx: Float) {
+            sheetTopOffsetPx = offsetPx.coerceIn(expandedTopOffsetPx, dismissedTopOffsetPx)
+            onSheetExpansionProgressChanged(
+                calculateLoginSheetExpansionProgress(
+                    sheetTopOffsetPx = sheetTopOffsetPx,
+                    expandedTopOffsetPx = expandedTopOffsetPx,
+                    dismissedTopOffsetPx = dismissedTopOffsetPx,
+                ),
+            )
+        }
+
+        SideEffect {
+            onSheetExpansionProgressChanged(
+                calculateLoginSheetExpansionProgress(
+                    sheetTopOffsetPx = sheetTopOffsetPx,
+                    expandedTopOffsetPx = expandedTopOffsetPx,
+                    dismissedTopOffsetPx = dismissedTopOffsetPx,
+                ),
+            )
+        }
 
         /** 현재 위치를 기준으로 시트를 열림 또는 닫힘 위치까지 한 번만 이동시킨다. */
         fun settleLoginSheet() {
@@ -84,11 +113,7 @@ fun AuthLoginSheetContent(
                     targetValue = targetOffsetPx,
                     animationSpec = tween(LOGIN_SHEET_SETTLE_DURATION_MILLIS),
                 ) { animatedOffsetPx, _ ->
-                    sheetTopOffsetPx = animatedOffsetPx
-                }
-
-                if (shouldDismiss) {
-                    onDismissLogin()
+                    updateSheetTopOffset(animatedOffsetPx)
                 }
             }
         }
@@ -116,7 +141,7 @@ fun AuthLoginSheetContent(
                     translationY = sheetTopOffsetPx - keyboardShiftPx
                 }
                 .fillMaxWidth()
-                .height(loginSheetExpandedHeight),
+                .height(AUTH_LOGIN_SHEET_EXPANDED_HEIGHT),
             isPeekSheet = false,
         ) {
             AuthLoginFormContent(
@@ -134,8 +159,7 @@ fun AuthLoginSheetContent(
                     sheetSettleJob = null
                 },
                 onHandleDrag = { deltaPx ->
-                    sheetTopOffsetPx = (sheetTopOffsetPx + deltaPx)
-                        .coerceIn(expandedTopOffsetPx, dismissedTopOffsetPx)
+                    updateSheetTopOffset(sheetTopOffsetPx + deltaPx)
                 },
                 onHandleDragEnd = ::settleLoginSheet,
                 onHandleDragCancel = ::settleLoginSheet,
@@ -148,7 +172,21 @@ fun AuthLoginSheetContent(
 // 줄여 514dp로 조정한다. 시트 하단은 이 값과 무관하게 항상 화면 하단(maxHeight)에 닿도록
 // 계산되므로, 이 값을 조정해도 시트가 화면 밖으로 밀려나지 않는다 — AuthLoginFormContent의
 // verticalScroll이 내용 잘림의 최종 안전망이다.
-private val loginSheetExpandedHeight = 514.dp
-private val loginSheetPeekHeight = 190.dp
+internal val AUTH_LOGIN_SHEET_EXPANDED_HEIGHT = 514.dp
+// 핸들·로그인 제목·설명까지만 보이도록 실제 기기에서 측정한 접힘 높이다.
+internal val AUTH_LOGIN_SHEET_PEEK_HEIGHT = 144.dp
 private val loginSheetDismissThresholdHeight = 260.dp
 private const val LOGIN_SHEET_SETTLE_DURATION_MILLIS = 180
+
+/** 로그인 시트 위치를 접힘 0에서 펼침 1 사이의 진행률로 변환한다. */
+internal fun calculateLoginSheetExpansionProgress(
+    sheetTopOffsetPx: Float,
+    expandedTopOffsetPx: Float,
+    dismissedTopOffsetPx: Float,
+): Float {
+    val draggableDistancePx = dismissedTopOffsetPx - expandedTopOffsetPx
+    if (draggableDistancePx <= 0f) return 1f
+
+    return ((dismissedTopOffsetPx - sheetTopOffsetPx) / draggableDistancePx)
+        .coerceIn(0f, 1f)
+}

@@ -2,7 +2,6 @@ package com.example.hopes.feature.settings.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 개인 설정·문의 같은 설정 항목으로 이동하는 행이다. */
 @Composable
@@ -35,13 +35,15 @@ fun FigmaSettingsRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val rowShape = RoundedCornerShape(14.dp)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick)
+            .background(MaterialTheme.colorScheme.surface, rowShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
+            .shapeClickable(shape = rowShape, onClick = onClick)
             .padding(start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

@@ -2,7 +2,6 @@ package com.example.hopes.feature.auth.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 이메일 필드 아래에서 인증번호 입력과 발송 요청을 함께 제공한다. 회원가입과 비밀번호 재설정 화면이 공유한다. */
@@ -43,6 +43,7 @@ fun AuthVerificationCodeField(
     val extendedColors = LocalHopesExtendedColors.current
     val contentDescription = stringResource(R.string.verification_code)
     val sendDescription = stringResource(R.string.verification_send)
+    val sendButtonShape = RoundedCornerShape(AppRadius.Button)
 
     // 좌우 여백은 화면마다 다른 상위 컨테이너 패딩과 맞춰야 하므로 내장하지 않고 호출부의 modifier에 맡긴다.
     Row(modifier = modifier.fillMaxWidth()) {
@@ -95,9 +96,13 @@ fun AuthVerificationCodeField(
                     } else {
                         MaterialTheme.colorScheme.primary
                     },
-                    shape = RoundedCornerShape(AppRadius.Button),
+                    shape = sendButtonShape,
                 )
-                .clickable(enabled = !isSending, onClick = onSendClick)
+                .shapeClickable(
+                    shape = sendButtonShape,
+                    enabled = !isSending,
+                    onClick = onSendClick,
+                )
                 .semantics { this.contentDescription = sendDescription }
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center,

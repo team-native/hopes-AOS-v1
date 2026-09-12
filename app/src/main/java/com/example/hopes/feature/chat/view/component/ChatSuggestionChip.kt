@@ -2,7 +2,6 @@ package com.example.hopes.feature.chat.view.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 채팅 홈의 추천 질문 한 개를 아이콘 배지와 함께 보여주는 클릭 가능한 카드다. */
 @Composable
@@ -40,15 +40,17 @@ fun ChatSuggestionChip(
     modifier: Modifier = Modifier,
     iconRotationDegrees: Float = 0f,
 ) {
+    val chipShape = RoundedCornerShape(AppRadius.Card)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(72.dp)
-            .figmaSubtleShadow(RoundedCornerShape(AppRadius.Card))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(AppRadius.Card))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(AppRadius.Card))
+            .figmaSubtleShadow(chipShape)
+            .background(MaterialTheme.colorScheme.surface, chipShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, chipShape)
             .semantics { role = Role.Button }
-            .clickable(enabled = !isLoading, onClick = onClick)
+            .shapeClickable(shape = chipShape, enabled = !isLoading, onClick = onClick)
             .padding(horizontal = 14.dp),
         contentAlignment = Alignment.CenterStart,
     ) {

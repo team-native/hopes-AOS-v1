@@ -2,7 +2,6 @@ package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,19 +27,20 @@ fun FigmaBackButton(
     onClick: () -> Unit,
 ) {
     val backDescription = stringResource(R.string.back)
+    val buttonShape = RoundedCornerShape(13.dp)
 
     Box(
         modifier = modifier
             // 헤더 타이틀(27.sp, lineHeight 32.sp)의 세로 길이와 같게 맞춘다.
             .size(32.dp)
-            .figmaSubtleShadow(RoundedCornerShape(13.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(13.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(13.dp))
+            .figmaSubtleShadow(buttonShape)
+            .background(MaterialTheme.colorScheme.surface, buttonShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, buttonShape)
             .semantics {
                 role = Role.Button
                 contentDescription = backDescription
             }
-            .clickable(onClick = onClick),
+            .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(

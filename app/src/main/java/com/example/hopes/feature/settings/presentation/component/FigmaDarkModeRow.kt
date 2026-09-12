@@ -2,7 +2,6 @@ package com.example.hopes.feature.settings.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
+import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 다크 모드를 켜고 끄는 설정 행이다. */
@@ -35,15 +35,16 @@ fun FigmaDarkModeRow(
     modifier: Modifier = Modifier,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
+    val rowShape = RoundedCornerShape(18.dp)
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
-            .figmaSubtleShadow(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp))
-            .clickable(onClick = onToggle)
+            .figmaSubtleShadow(rowShape)
+            .background(MaterialTheme.colorScheme.surface, rowShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
+            .shapeClickable(shape = rowShape, onClick = onToggle)
             .padding(start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

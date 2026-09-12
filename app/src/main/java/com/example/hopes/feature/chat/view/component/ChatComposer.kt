@@ -2,7 +2,6 @@ package com.example.hopes.feature.chat.view.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.R
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 메인 채팅 화면에서 Scaffold 하단에 고정되는 질문 입력창이다. */
 @Composable
@@ -92,19 +91,21 @@ fun ChatComposer(
                     .align(Alignment.CenterEnd)
                     .padding(end = 18.dp)
                     .size(48.dp)
+                    // 48dp 접근성 터치 영역은 유지하되, 잘린 사각 ripple이 30dp 원형 버튼과
+                    // 어긋나지 않도록 눌림 indication은 표시하지 않는다.
+                    .shapeClickable(shape = CircleShape, enabled = !isLoading, onClick = onSubmitClick)
                     .semantics {
                         role = Role.Button
                         contentDescription = sendDescription
-                    }
-                    .clickable(enabled = !isLoading, onClick = onSubmitClick),
+                    },
                 contentAlignment = Alignment.Center,
             ) {
                 // 시각적 버튼은 30.dp로 유지하고, 바깥 48.dp 영역으로 터치 접근성을 보장한다.
                 Box(
                     modifier = Modifier
                         .size(30.dp)
-                        .figmaRaisedShadow(RoundedCornerShape(15.dp))
-                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(15.dp)),
+                        .figmaRaisedShadow(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary, CircleShape),
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(

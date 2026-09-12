@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.example.hopes.R
+import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 40dp 높이의 피그마 스타일 입력 필드다. 실제 폭은 호출부의 modifier가 결정한다. */
@@ -106,11 +107,15 @@ fun FigmaAuthTextField(
         )
 
         if (isPassword) {
-            IconButton(
-                onClick = { isPasswordVisible = !isPasswordVisible },
+            Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .size(40.dp),
+                    .size(40.dp)
+                    .shapeClickable(
+                        shape = CircleShape,
+                        onClick = { isPasswordVisible = !isPasswordVisible },
+                    ),
+                contentAlignment = Alignment.Center,
             ) {
                 // 상태에 따라 눈 뜬 아이콘과 눈 감은 아이콘을 실제로 교체한다.
                 Icon(

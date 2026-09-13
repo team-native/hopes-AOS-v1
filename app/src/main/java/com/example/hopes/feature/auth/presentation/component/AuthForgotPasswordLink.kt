@@ -11,7 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 로그인 폼 안에서 비밀번호 재설정 화면으로 이동하는 우측 정렬 링크다. */
 @Composable

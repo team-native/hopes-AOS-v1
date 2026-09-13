@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.navigation.hopesTabDestinations
 import com.example.hopes.ui.theme.LocalHopesExtendedColors

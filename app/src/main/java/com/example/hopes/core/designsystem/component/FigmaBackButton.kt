@@ -2,7 +2,6 @@ package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +18,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 설정 화면과 상세 화면에서 동일하게 사용하는 피그마 뒤로가기 버튼이다. */
 @Composable
@@ -28,19 +27,20 @@ fun FigmaBackButton(
     onClick: () -> Unit,
 ) {
     val backDescription = stringResource(R.string.back)
+    val buttonShape = RoundedCornerShape(13.dp)
 
     Box(
         modifier = modifier
             // 헤더 타이틀(27.sp, lineHeight 32.sp)의 세로 길이와 같게 맞춘다.
             .size(32.dp)
-            .figmaSubtleShadow(RoundedCornerShape(13.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(13.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(13.dp))
+            .figmaSubtleShadow(buttonShape)
+            .background(MaterialTheme.colorScheme.surface, buttonShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, buttonShape)
             .semantics {
                 role = Role.Button
                 contentDescription = backDescription
             }
-            .clickable(onClick = onClick),
+            .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(

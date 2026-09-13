@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.chat.detail.view.component.ChatDetailMessageList
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
@@ -35,10 +35,8 @@ fun ChatDetailScreen(
                 title = uiState.title.ifBlank { stringResource(R.string.chat_detail_title) },
                 subtitle = stringResource(R.string.chat_answer_label),
                 onBackClick = { onEvent(ChatDetailScreenEvent.BackClicked) },
-                actionText = stringResource(R.string.chat_save),
-                onActionClick = {},
                 applySystemBarPadding = true,
-                subtitleSpacing = 3.dp,
+                subtitleSpacing = 0.dp,
                 titleFontSize = 20.sp,
                 titleLineHeight = 24.sp,
             )

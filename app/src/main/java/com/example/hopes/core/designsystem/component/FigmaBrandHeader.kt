@@ -22,7 +22,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 피그마 상단의 42dp 브랜드 마크와 두 줄 서비스명을 동일한 비율로 표시한다. */

@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 
 import androidx.compose.foundation.layout.Arrangement
 
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 마이페이지 계정 정보 카드다. */
 @Composable

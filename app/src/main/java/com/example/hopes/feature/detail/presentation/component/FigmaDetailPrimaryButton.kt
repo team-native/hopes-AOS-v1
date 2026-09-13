@@ -1,7 +1,6 @@
 package com.example.hopes.feature.detail.presentation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 상세 화면의 파란 저장·전송 버튼이다. */
 @Composable
@@ -24,17 +24,19 @@ fun FigmaDetailPrimaryButton(
     onClick: () -> Unit,
     shadowStyle: FigmaDetailPrimaryButtonShadow = FigmaDetailPrimaryButtonShadow.Subtle,
 ) {
+    val buttonShape = RoundedCornerShape(14.dp)
+
     Box(
         modifier = modifier
             .then(
                 if (shadowStyle == FigmaDetailPrimaryButtonShadow.Raised) {
-                    Modifier.figmaRaisedShadow(RoundedCornerShape(14.dp))
+                    Modifier.figmaRaisedShadow(buttonShape)
                 } else {
-                    Modifier.figmaSubtleShadow(RoundedCornerShape(14.dp))
+                    Modifier.figmaSubtleShadow(buttonShape)
                 },
             )
-            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
+            .background(MaterialTheme.colorScheme.primary, buttonShape)
+            .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -74,5 +75,18 @@ class HopesScaffoldTest {
             .onNodeWithText("채팅 시작하기")
             .performScrollTo()
             .assertIsDisplayed()
+
+        val tipCardWidth = composeRule
+            .onNodeWithTag("home_tip_card_1")
+            .fetchSemanticsNode()
+            .boundsInRoot
+            .width
+        val startChatButtonWidth = composeRule
+            .onNodeWithTag("home_start_chat_button")
+            .fetchSemanticsNode()
+            .boundsInRoot
+            .width
+
+        assertEquals(tipCardWidth, startChatButtonWidth, 0.5f)
     }
 }

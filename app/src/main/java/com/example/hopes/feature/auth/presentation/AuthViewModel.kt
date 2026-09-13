@@ -96,7 +96,7 @@ class AuthViewModel @Inject constructor(
     private fun login() {
         val currentState = _uiState.value
         if (currentState.email.isBlank() || currentState.password.isBlank()) {
-            updateState { copy(errorMessage = "") }
+            // 필수 입력이 비어 있으면 서버 요청과 로그인 실패 문구 표시를 모두 하지 않는다.
             return
         }
 

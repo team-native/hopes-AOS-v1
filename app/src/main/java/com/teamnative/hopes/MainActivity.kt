@@ -1,4 +1,4 @@
-package com.example.hopes
+package com.teamnative.hopes
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -4,9 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
@@ -53,7 +55,15 @@ fun HomeScreenContent(
         scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
         Column(
-            modifier = Modifier.padding(start = 32.dp, top = AppSpacing.SystemBarToContent, bottom = 32.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(
+                    start = AppSpacing.Large,
+                    top = AppSpacing.SystemBarToContent,
+                    end = AppSpacing.Large,
+                    bottom = AppSpacing.Large,
+                ),
         ) {
             FigmaBrandHeader(
                 isOnBlueBackground = true,
@@ -65,7 +75,7 @@ fun HomeScreenContent(
 
             Text(
                 text = stringResource(R.string.onboarding_title),
-                modifier = Modifier.width(318.dp),
+                modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 43.sp),
             )
@@ -74,7 +84,7 @@ fun HomeScreenContent(
 
             Text(
                 text = stringResource(R.string.onboarding_description),
-                modifier = Modifier.width(306.dp),
+                modifier = Modifier.fillMaxWidth(),
                 color = extendedColors.authDescription,
                 style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, lineHeight = 26.sp),
             )

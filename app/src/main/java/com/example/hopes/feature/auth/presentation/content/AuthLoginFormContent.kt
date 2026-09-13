@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +15,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthForgotPasswordLink
 import com.example.hopes.feature.auth.presentation.component.AuthLoginErrorMessage
@@ -53,6 +52,7 @@ fun AuthLoginFormContent(
     // 여백) 필드가 과하게 밀리므로 verticalScroll만 두고 imePadding은 쓰지 않는다.
     Column(
         modifier = Modifier
+            .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
     ) {
         Spacer(modifier = Modifier.height(20.dp))
@@ -98,7 +98,7 @@ fun AuthLoginFormContent(
             value = emailText,
             onValueChange = onEmailChange,
             labelRes = R.string.auth_email,
-            modifier = Modifier.width(332.dp),
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(15.dp))
@@ -113,27 +113,27 @@ fun AuthLoginFormContent(
             labelRes = R.string.password,
             isPassword = true,
             onImeAction = if (isLoginEnabled) onLoginClick else null,
-            modifier = Modifier.width(332.dp),
+            modifier = Modifier.fillMaxWidth(),
         )
 
         Spacer(modifier = Modifier.height(13.dp))
 
         AuthForgotPasswordLink(
             onClick = onForgotPasswordClick,
-            modifier = Modifier.width(332.dp),
+            modifier = Modifier.fillMaxWidth(),
         )
 
         if (errorMessage != null) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            AuthLoginErrorMessage(message = errorMessage, modifier = Modifier.width(332.dp))
+            AuthLoginErrorMessage(message = errorMessage, modifier = Modifier.fillMaxWidth())
         } else if (statusMessage != null) {
             Spacer(modifier = Modifier.height(8.dp))
 
             AuthStatusText(
                 message = statusMessage.ifBlank { stringResource(R.string.signup_success_message) },
                 isError = false,
-                modifier = Modifier.width(332.dp),
+                modifier = Modifier.fillMaxWidth(),
             )
         }
 

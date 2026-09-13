@@ -3,7 +3,6 @@ package com.example.hopes.feature.detail.presentation.component
 import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.height
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 상세 화면 상단의 피그마 원본 54×36 액션 버튼이다. */
 @Composable
@@ -26,13 +26,15 @@ fun FigmaDetailTopAction(
     modifier: Modifier,
     onClick: () -> Unit,
 ) {
+    val actionShape = RoundedCornerShape(14.dp)
+
     Box(
         modifier = modifier
             .width(54.dp)
             .height(36.dp)
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
+            .background(MaterialTheme.colorScheme.surface, actionShape)
+            .border(1.dp, MaterialTheme.colorScheme.outline, actionShape)
+            .shapeClickable(shape = actionShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

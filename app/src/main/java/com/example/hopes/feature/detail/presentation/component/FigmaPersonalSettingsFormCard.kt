@@ -16,7 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 피그마 13 개인 설정의 시스템 프롬프트 편집 카드다. */
 @Composable
@@ -33,7 +33,7 @@ fun FigmaPersonalSettingsFormCard(
 ) {
     FigmaDetailCard(
         modifier = modifier
-            .width(354.dp)
+            .fillMaxWidth()
             .height(408.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {

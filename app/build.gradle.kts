@@ -27,7 +27,8 @@ val hasReleaseSigningConfig = !releaseStoreFile.isNullOrBlank() &&
     !releaseKeyPassword.isNullOrBlank()
 
 android {
-    namespace = "com.example.hopes"
+    // Android Studio의 실행 패키지와 실제 설치 applicationId를 일치시킨다.
+    namespace = "com.teamnative.hopes"
     // Compose dependencies require API 37 at compile time; runtime target remains unchanged.
     compileSdk = 37
 
@@ -35,8 +36,8 @@ android {
         applicationId = "com.teamnative.hopes"
         minSdk = 34
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

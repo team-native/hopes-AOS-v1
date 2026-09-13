@@ -9,7 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 로그인 실패 시 사용자에게 원인을 알리는 오류 문구다. 서버 메시지가 없으면 기본 문구로 대신한다. */
 @Composable

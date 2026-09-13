@@ -4,8 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +33,7 @@ fun FigmaDetailTextArea(
 
     Box(
         modifier = modifier
-            .width(306.dp)
+            .fillMaxWidth()
             .height(height.dp)
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
@@ -42,15 +42,15 @@ fun FigmaDetailTextArea(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
-                .padding(start = 16.dp, top = 14.dp)
-                .width(274.dp)
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 14.dp, end = 16.dp)
                 .height((height - 28).dp),
             textStyle = inputTextStyle,
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {
                     Text(
                         text = hint,
-                        modifier = Modifier.width(260.dp),
+                        modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = inputTextStyle,
                     )

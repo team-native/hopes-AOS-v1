@@ -13,7 +13,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 이름과 개인화 소개를 편집하는 마이페이지 프로필 카드다. */
 @Composable

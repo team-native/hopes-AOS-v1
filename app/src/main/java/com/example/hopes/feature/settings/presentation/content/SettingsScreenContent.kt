@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.settings.presentation.SettingsScreenEvent
 import com.example.hopes.feature.settings.presentation.SettingsUiState
@@ -43,7 +44,7 @@ fun SettingsScreenContent(
                 title = stringResource(R.string.personal_settings),
                 description = stringResource(R.string.settings_personal_description),
                 onClick = onNavigateToPersonalSettings,
-                modifier = Modifier.padding(start = 37.dp, end = 37.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.SettingsHorizontal),
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -52,7 +53,7 @@ fun SettingsScreenContent(
                 title = stringResource(R.string.contact),
                 description = stringResource(R.string.settings_contact_description),
                 onClick = onNavigateToContact,
-                modifier = Modifier.padding(start = 37.dp, end = 37.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.SettingsHorizontal),
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -61,7 +62,7 @@ fun SettingsScreenContent(
                 title = stringResource(R.string.privacy_policy),
                 description = stringResource(R.string.settings_privacy_policy_description),
                 onClick = onNavigateToPrivacyPolicy,
-                modifier = Modifier.padding(start = 37.dp, end = 37.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.SettingsHorizontal),
             )
 
             Spacer(modifier = Modifier.height(26.dp))
@@ -70,7 +71,7 @@ fun SettingsScreenContent(
                 onLogoutClick = { onEvent(SettingsScreenEvent.LogoutClicked) },
                 onDeleteAccountClick = { onEvent(SettingsScreenEvent.DeleteAccountClicked) },
                 isDeleteAccountEnabled = !uiState.isDeletingAccount,
-                modifier = Modifier.padding(start = 29.dp, end = 29.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.SettingsHorizontal),
             )
         }
     }

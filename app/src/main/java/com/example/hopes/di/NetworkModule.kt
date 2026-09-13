@@ -1,6 +1,6 @@
 package com.example.hopes.di
 
-import com.example.hopes.BuildConfig
+import com.teamnative.hopes.BuildConfig
 import com.example.hopes.core.network.AuthorizationInterceptor
 import com.example.hopes.data.api.AuthApiService
 import com.example.hopes.data.api.ChatApiService

@@ -18,7 +18,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 
 /** 설정 화면과 상세 화면에서 동일하게 사용하는 피그마 뒤로가기 버튼이다. */
 @Composable

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,7 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailUiState
 import com.example.hopes.feature.chat.view.component.ChatMessageStateText
@@ -34,11 +35,12 @@ fun ChatDetailMessageList(
 
     Column(
         modifier = Modifier
+            .fillMaxWidth()
             .padding(
-                start = 24.dp,
+                start = AppSpacing.ScreenHorizontal,
                 // 상세 헤더의 subtitle과 첫 채팅 메시지 사이를 20.dp로 유지한다.
                 top = AppSpacing.ScreenVertical,
-                end = 24.dp,
+                end = AppSpacing.ScreenHorizontal,
                 bottom = 16.dp,
             )
             .verticalScroll(scrollState),

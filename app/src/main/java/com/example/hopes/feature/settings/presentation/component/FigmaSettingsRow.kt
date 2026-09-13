@@ -18,13 +18,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 개인 설정·문의 같은 설정 항목으로 이동하는 행이다. */
@@ -41,6 +42,7 @@ fun FigmaSettingsRow(
         modifier = modifier
             .fillMaxWidth()
             .height(64.dp)
+            .testTag("settings_option_row")
             .background(MaterialTheme.colorScheme.surface, rowShape)
             .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
             .shapeClickable(shape = rowShape, onClick = onClick)

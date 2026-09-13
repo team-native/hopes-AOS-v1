@@ -8,7 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.detail.presentation.ContactScreenEvent
 import com.example.hopes.feature.detail.presentation.ContactUiState
@@ -48,13 +49,17 @@ fun ContactScreenContent(
                 onContactEmailChange = { onEvent(ContactScreenEvent.ContactEmailChanged(it)) },
                 onContactMessageChange = { onEvent(ContactScreenEvent.ContactMessageChanged(it)) },
                 onSendClick = { onEvent(ContactScreenEvent.ContactSendClicked) },
-                modifier = Modifier.padding(start = 24.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
             )
 
             Spacer(modifier = Modifier.height(70.dp))
 
             FigmaContactInformationCard(
-                modifier = Modifier.padding(start = 24.dp, bottom = 24.dp),
+                modifier = Modifier.padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    end = AppSpacing.ScreenHorizontal,
+                    bottom = 24.dp,
+                ),
             )
 
             Spacer(modifier = Modifier.height(10.dp))

@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.figmaPeekSheetShadow
 
@@ -39,7 +40,9 @@ fun FigmaAuthSheet(
         shape = sheetShape,
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 32.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = AppSpacing.Large),
             content = content,
         )
     }

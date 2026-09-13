@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 인증 단계 화면(비밀번호 재설정 등)에서 쓰는, 배경·테두리 없이 화살표만 보이는 뒤로가기 버튼이다. */

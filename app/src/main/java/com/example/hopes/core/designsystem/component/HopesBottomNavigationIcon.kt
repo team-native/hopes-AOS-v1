@@ -1,7 +1,7 @@
 package com.example.hopes.core.designsystem.component
 
 import androidx.annotation.DrawableRes
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.navigation.HopesDestination
 
 /** 바텀바 목적지와 제공된 아이콘 리소스를 일관되게 연결한다. */

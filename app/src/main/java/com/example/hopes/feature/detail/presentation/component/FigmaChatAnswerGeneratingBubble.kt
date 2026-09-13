@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 
 /** 추가 질문 전송 후 AI 답변을 기다리는 동안 표시하는 로딩 말풍선이다. 왼쪽 스피너는 계속 회전한다. */

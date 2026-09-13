@@ -29,8 +29,6 @@ fun FigmaDetailBackHeader(
     title: String,
     subtitle: String,
     onBackClick: () -> Unit,
-    actionText: String? = null,
-    onActionClick: (() -> Unit)? = null,
     backOffsetX: Int = 18,
     applySystemBarPadding: Boolean = false,
     subtitleSpacing: Dp = 8.dp,
@@ -70,15 +68,6 @@ fun FigmaDetailBackHeader(
                 ),
             )
 
-            if (actionText != null && onActionClick != null) {
-                Spacer(modifier = Modifier.width(12.dp))
-
-                FigmaDetailTopAction(
-                    text = actionText,
-                    modifier = Modifier,
-                    onClick = onActionClick,
-                )
-            }
         }
 
         // 시스템바 패딩을 적용하는 화면은 헤더 행 바로 아래에 subtitleSpacing만큼만 띄운다.

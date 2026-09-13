@@ -14,6 +14,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.content.AUTH_LOGIN_SHEET_PEEK_HEIGHT
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import kotlin.random.Random
@@ -41,7 +42,13 @@ fun AuthSharedBackdrop(
                 .padding(bottom = AUTH_LOGIN_SHEET_PEEK_HEIGHT)
                 .statusBarsPadding(),
         ) {
-            Column(modifier = Modifier.padding(start = 24.dp, top = 25.dp)) {
+            Column(
+                modifier = Modifier.padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = 25.dp,
+                    end = AppSpacing.ScreenHorizontal,
+                ),
+            ) {
                 FigmaAuthBrandHeader(logoShadowStyle = FigmaAuthLogoShadowStyle.Login)
 
                 Spacer(modifier = Modifier.height(74.dp))

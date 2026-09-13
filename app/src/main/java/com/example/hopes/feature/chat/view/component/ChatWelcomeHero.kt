@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 
 /** 채팅 홈의 로고, 환영 문구, 서버 대화 생성 오류 안내를 세로로 배치한다. */
@@ -38,9 +39,10 @@ fun ChatWelcomeHero(
     ) {
         Box(
             modifier = Modifier
-                .size(74.dp)
-                .figmaRaisedShadow(RoundedCornerShape(18.dp))
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp)),
+                .size(60.dp)
+                .testTag("chat_welcome_logo_mark")
+                .figmaRaisedShadow(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp)),
             contentAlignment = Alignment.Center,
         ) {
             Image(
@@ -48,8 +50,8 @@ fun ChatWelcomeHero(
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .height(44.dp)
-                    .width(30.dp),
+                    .height(36.dp)
+                    .width(24.dp),
             )
         }
 

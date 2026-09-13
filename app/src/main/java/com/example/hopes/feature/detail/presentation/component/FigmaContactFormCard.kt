@@ -3,13 +3,14 @@ package com.example.hopes.feature.detail.presentation.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 
 /** 피그마 14 문의 이메일·내용 입력과 전송 버튼을 포함한 카드다. */
 @Composable
@@ -26,11 +27,19 @@ fun FigmaContactFormCard(
 ) {
     FigmaDetailCard(
         modifier = modifier
-            .width(354.dp)
+            .fillMaxWidth()
             .height(420.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {
-        Column(modifier = Modifier.padding(start = 24.dp, top = 42.dp)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = 42.dp,
+                    end = AppSpacing.ScreenHorizontal,
+                ),
+        ) {
             FigmaDetailFieldLabel(text = stringResource(R.string.email))
 
             Spacer(modifier = Modifier.height(9.dp))
@@ -64,7 +73,7 @@ fun FigmaContactFormCard(
                     else -> stringResource(R.string.send_contact)
                 },
                 modifier = Modifier
-                    .width(306.dp)
+                    .fillMaxWidth()
                     .height(48.dp),
                 onClick = onSendClick,
             )

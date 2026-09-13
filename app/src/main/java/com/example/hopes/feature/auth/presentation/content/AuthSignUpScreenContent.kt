@@ -19,7 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.feature.auth.presentation.SignupValidationUiState
 import com.example.hopes.feature.auth.presentation.component.AuthSignUpBackground
@@ -83,13 +84,17 @@ fun AuthSignUpScreenContent(
                             .statusBarsPadding(),
                     ) {
                         FigmaBrandHeader(
-                            modifier = Modifier.padding(start = 32.dp, top = 25.dp),
+                            modifier = Modifier.padding(
+                                start = AppSpacing.Large,
+                                top = 25.dp,
+                                end = AppSpacing.Large,
+                            ),
                             isOnBlueBackground = true,
                         )
 
                         Spacer(modifier = Modifier.height(87.dp))
 
-                        AuthSignUpHeroTitle(modifier = Modifier.padding(start = 32.dp))
+                        AuthSignUpHeroTitle(modifier = Modifier.padding(horizontal = AppSpacing.Large))
 
                         Spacer(modifier = Modifier.height(52.dp))
 

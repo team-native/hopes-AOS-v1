@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 키보드 상태와 관계없이 하나의 입력창을 하단 또는 키보드 위에 표시한다. */

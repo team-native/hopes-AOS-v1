@@ -168,10 +168,6 @@ fun AuthLoginSheetContent(
     }
 }
 
-// 502dp에서 접근성 글자 확대 등을 위해 560dp까지 늘렸었는데, 늘린 폭(58dp)의 80%를 다시
-// 줄여 514dp로 조정한다. 시트 하단은 이 값과 무관하게 항상 화면 하단(maxHeight)에 닿도록
-// 계산되므로, 이 값을 조정해도 시트가 화면 밖으로 밀려나지 않는다 — AuthLoginFormContent의
-// verticalScroll이 내용 잘림의 최종 안전망이다.
 internal val AUTH_LOGIN_SHEET_EXPANDED_HEIGHT = 514.dp
 // 부제목이 시스템 내비게이션 영역과 겹치지 않고, 입력 필드는 숨겨지도록 실제 기기에서 측정한 접힘 높이다.
 internal val AUTH_LOGIN_SHEET_PEEK_HEIGHT = 156.dp

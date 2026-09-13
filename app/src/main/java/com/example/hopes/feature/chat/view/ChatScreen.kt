@@ -52,7 +52,11 @@ fun ChatScreen(
                 isLoading = false,
                 modifier = Modifier
                     .imePadding()
-                    .padding(bottom = 10.dp),
+                    .padding(
+                        start = AppSpacing.ScreenHorizontal,
+                        end = AppSpacing.ScreenHorizontal,
+                        bottom = 10.dp,
+                    ),
             )
         },
         isBottomNavigationVisible = !isImeVisible,
@@ -67,7 +71,11 @@ fun ChatScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, top = AppSpacing.SystemBarToContent, end = 24.dp),
+                    .padding(
+                        start = AppSpacing.ScreenHorizontal,
+                        top = AppSpacing.SystemBarToContent,
+                        end = AppSpacing.ScreenHorizontal,
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -85,7 +93,7 @@ fun ChatScreen(
             ChatSuggestionList(
                 onSuggestionClick = { onEvent(ChatScreenEvent.SuggestionClicked(it)) },
                 isLoading = false,
-                modifier = Modifier.padding(horizontal = 24.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
             )
 
             Spacer(modifier = Modifier.height(27.dp))

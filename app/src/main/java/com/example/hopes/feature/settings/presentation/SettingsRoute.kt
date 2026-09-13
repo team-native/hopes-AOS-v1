@@ -12,7 +12,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionBottomSheet
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionConfirmDialog
 import com.example.hopes.navigation.HopesDestination

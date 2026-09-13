@@ -26,12 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 설정 화면에서 로그아웃과 회원탈퇴 동작을 하나의 계정 카드로 제공한다. */
@@ -42,7 +43,9 @@ fun SettingsAccountSection(
     isDeleteAccountEnabled: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.testTag("settings_account_section"),
+    ) {
         Text(
             text = stringResource(R.string.account),
             modifier = Modifier.padding(start = 8.dp),

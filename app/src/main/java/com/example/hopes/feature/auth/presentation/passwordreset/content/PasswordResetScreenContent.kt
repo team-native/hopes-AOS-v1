@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton

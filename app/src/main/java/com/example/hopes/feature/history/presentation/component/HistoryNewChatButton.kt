@@ -2,7 +2,6 @@ package com.example.hopes.feature.history.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,9 +17,10 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 빈 채팅 화면으로 이동하는 기록 화면의 새 대화 버튼이다. */
 @Composable
@@ -46,7 +46,7 @@ fun HistoryNewChatButton(onClick: () -> Unit) {
                 shape = buttonShape,
             )
             .semantics { role = Role.Button }
-            .clickable(onClick = onClick),
+            .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

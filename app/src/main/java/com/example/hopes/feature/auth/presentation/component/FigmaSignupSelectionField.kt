@@ -2,7 +2,6 @@ package com.example.hopes.feature.auth.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -26,6 +25,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 회원가입의 학과·기수 선택값을 같은 규격으로 표시하는 필드다. */
@@ -38,6 +38,7 @@ fun FigmaSignupSelectionField(
     modifier: Modifier = Modifier,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
+    val selectionFieldShape = RoundedCornerShape(14.dp)
 
     Row(
         modifier = modifier
@@ -55,10 +56,10 @@ fun FigmaSignupSelectionField(
                     } else {
                         extendedColors.authFieldBorder
                     },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = selectionFieldShape,
                 )
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-                .clickable(role = Role.Button, onClick = onClick)
+                .background(MaterialTheme.colorScheme.surface, selectionFieldShape)
+                .shapeClickable(shape = selectionFieldShape, role = Role.Button, onClick = onClick)
                 .semantics { contentDescription = placeholder },
             contentAlignment = Alignment.CenterStart,
         ) {

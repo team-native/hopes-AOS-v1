@@ -1,7 +1,6 @@
 package com.example.hopes.feature.auth.presentation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +15,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
+import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 회원가입 버튼은 카드의 가변 높이와 분리해 항상 하단 기준을 유지한다. */
 @Composable
@@ -25,6 +26,8 @@ fun SignupActionButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val buttonShape = RoundedCornerShape(AppRadius.Button)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -35,9 +38,9 @@ fun SignupActionButton(
                 } else {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
                 },
-                shape = RoundedCornerShape(14.dp),
+                shape = buttonShape,
             )
-            .clickable(enabled = isEnabled, onClick = onClick),
+            .shapeClickable(shape = buttonShape, enabled = isEnabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

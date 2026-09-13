@@ -10,7 +10,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 회원가입 화면 하단에서 로그인 화면으로 돌아가는 링크다. */

@@ -1,7 +1,6 @@
 package com.example.hopes.feature.auth.presentation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,9 +15,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
+import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 로그인 시트의 46dp 기본 액션 버튼이다. */
 @Composable
@@ -27,20 +27,22 @@ fun FigmaLoginButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val buttonShape = RoundedCornerShape(AppRadius.Button)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(46.dp)
-            .figmaSheetShadow(RoundedCornerShape(AppRadius.Button))
+            .figmaSheetShadow(buttonShape)
             .background(
                 color = if (isEnabled) {
                     MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
                 },
-                shape = RoundedCornerShape(AppRadius.Button),
+                shape = buttonShape,
             )
-            .clickable(enabled = isEnabled, onClick = onClick),
+            .shapeClickable(shape = buttonShape, enabled = isEnabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

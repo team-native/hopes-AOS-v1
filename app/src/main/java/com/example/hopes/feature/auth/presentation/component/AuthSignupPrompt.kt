@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
-import com.example.hopes.R
+import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** 로그인 폼 하단에서 회원가입 화면으로 유도하는 문구다. "회원가입" 부분만 강조 밑줄로 표시한다. */

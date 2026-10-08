@@ -17,8 +17,11 @@ data class ChatSummaryUiModel(
 
 sealed interface HistoryContentState {
     data object Loading : HistoryContentState
+
     data object Content : HistoryContentState
+
     data object Empty : HistoryContentState
+
     data object Error : HistoryContentState
 }
 

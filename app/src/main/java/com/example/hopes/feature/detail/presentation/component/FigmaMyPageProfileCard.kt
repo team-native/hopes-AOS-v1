@@ -25,9 +25,10 @@ fun FigmaMyPageProfileCard(
     modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(326.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(326.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {
         Column(modifier = Modifier.padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)) {

@@ -17,9 +17,10 @@ fun AuthBackdropScrim(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(scrimHeight)
-            .background(LocalHopesExtendedColors.current.authBackdropScrim),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(scrimHeight)
+                .background(LocalHopesExtendedColors.current.authBackdropScrim),
     )
 }

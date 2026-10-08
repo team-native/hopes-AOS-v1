@@ -12,15 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.teamnative.hopes.R
 
 /** 빈 채팅 화면으로 이동하는 기록 화면의 새 대화 버튼이다. */
 @Composable
@@ -28,32 +28,31 @@ fun HistoryNewChatButton(onClick: () -> Unit) {
     val buttonShape = RoundedCornerShape(AppRadius.Button)
 
     Box(
-        modifier = Modifier
-            .padding(
-                start = AppSpacing.ScreenHorizontal,
-                top = HISTORY_NEW_CHAT_TOP_PADDING,
-                end = AppSpacing.ScreenHorizontal,
-            )
-            .fillMaxWidth()
-            .height(HISTORY_NEW_CHAT_HEIGHT)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                shape = buttonShape,
-            )
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = buttonShape,
-            )
-            .semantics { role = Role.Button }
-            .shapeClickable(shape = buttonShape, onClick = onClick),
+        modifier =
+            Modifier
+                .padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = HISTORY_NEW_CHAT_TOP_PADDING,
+                    end = AppSpacing.ScreenHorizontal,
+                ).fillMaxWidth()
+                .height(HISTORY_NEW_CHAT_HEIGHT)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = buttonShape,
+                ).background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = buttonShape,
+                ).semantics { role = Role.Button }
+                .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = stringResource(
-                R.string.history_start_new_chat,
-                stringResource(R.string.new_chat),
-            ),
+            text =
+                stringResource(
+                    R.string.history_start_new_chat,
+                    stringResource(R.string.new_chat),
+                ),
             style = MaterialTheme.typography.labelMedium,
         )
     }

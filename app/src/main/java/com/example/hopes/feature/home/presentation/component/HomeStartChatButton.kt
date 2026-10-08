@@ -2,8 +2,8 @@ package com.example.hopes.feature.home.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,8 +19,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.teamnative.hopes.R
 
 /** 온보딩 화면 하단의 채팅 시작 CTA 버튼이다. */
 @Composable
@@ -31,13 +31,14 @@ fun HomeStartChatButton(
     val buttonShape = RoundedCornerShape(14.dp)
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(46.dp)
-            .testTag("home_start_chat_button")
-            .background(MaterialTheme.colorScheme.surface, buttonShape)
-            .semantics { role = Role.Button }
-            .shapeClickable(shape = buttonShape, onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(46.dp)
+                .testTag("home_start_chat_button")
+                .background(MaterialTheme.colorScheme.surface, buttonShape)
+                .semantics { role = Role.Button }
+                .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

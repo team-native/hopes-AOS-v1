@@ -19,9 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppBlurRadius
 import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
+import com.teamnative.hopes.R
 
 /** 입력한 비밀번호로 회원탈퇴를 최종 확인하는 Dialog다. */
 @Composable

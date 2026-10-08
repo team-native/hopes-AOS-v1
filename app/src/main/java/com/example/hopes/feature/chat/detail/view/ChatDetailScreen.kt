@@ -8,7 +8,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.chat.detail.view.component.ChatDetailMessageList
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
@@ -16,6 +15,7 @@ import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailUiState
 import com.example.hopes.feature.detail.presentation.component.FigmaChatReplyBar
 import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
 import com.example.hopes.navigation.HopesDestination
+import com.teamnative.hopes.R
 
 /** 서버 메시지 목록과 추가 질문 입력을 피그마 상세 화면에 표시한다. */
 @Composable

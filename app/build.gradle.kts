@@ -11,20 +11,22 @@ plugins {
 // release 서명 정보는 local.properties(git 제외)에서만 읽는다. 비밀번호는 절대
 // BuildConfig로 앱 코드에 노출하지 않는다 — 이 Properties는 Gradle 스크립트
 // 범위에서만 signingConfigs 연결에 쓰인다.
-val releaseSigningProperties = Properties().apply {
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localPropertiesFile.inputStream().use { load(it) }
+val releaseSigningProperties =
+    Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { load(it) }
+        }
     }
-}
 val releaseStoreFile = releaseSigningProperties.getProperty("RELEASE_STORE_FILE")
 val releaseStorePassword = releaseSigningProperties.getProperty("RELEASE_STORE_PASSWORD")
 val releaseKeyAlias = releaseSigningProperties.getProperty("RELEASE_KEY_ALIAS")
 val releaseKeyPassword = releaseSigningProperties.getProperty("RELEASE_KEY_PASSWORD")
-val hasReleaseSigningConfig = !releaseStoreFile.isNullOrBlank() &&
-    !releaseStorePassword.isNullOrBlank() &&
-    !releaseKeyAlias.isNullOrBlank() &&
-    !releaseKeyPassword.isNullOrBlank()
+val hasReleaseSigningConfig =
+    !releaseStoreFile.isNullOrBlank() &&
+        !releaseStorePassword.isNullOrBlank() &&
+        !releaseKeyAlias.isNullOrBlank() &&
+        !releaseKeyPassword.isNullOrBlank()
 
 android {
     // Android Studio의 실행 패키지와 실제 설치 applicationId를 일치시킨다.

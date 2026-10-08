@@ -38,41 +38,49 @@ fun AuthScreen(
     when (authStep) {
         AuthStep.Guide,
         AuthStep.Login,
-        -> AuthLoginScreen(
-            emailText = emailText,
-            passwordText = passwordText,
-            loginErrorMessage = loginErrorMessage,
-            loginStatusMessage = loginStatusMessage,
-            onEmailChange = onEmailChange,
-            onPasswordChange = onPasswordChange,
-            onLoginClick = onLoginClick,
-            onNavigateSignup = onNavigateSignup,
-            onForgotPasswordClick = onForgotPasswordClick,
-            isInitiallyExpanded = authStep == AuthStep.Login,
-        )
-        AuthStep.PasswordResetRequest -> PasswordResetScreen(
-            uiState = passwordResetUiState,
-            onEvent = onPasswordResetEvent,
-        )
-        AuthStep.SignUp -> AuthSignUpScreen(
-            emailText = emailText,
-            passwordText = passwordText,
-            nameText = nameText,
-            departmentText = departmentText,
-            generationText = generationText,
-            verificationCodeText = verificationCodeText,
-            signupValidation = signupValidation,
-            isLoading = isSignupLoading,
-            errorMessage = signupErrorMessage,
-            onEmailChange = onEmailChange,
-            onPasswordChange = onPasswordChange,
-            onNameChange = onNameChange,
-            onDepartmentClick = onDepartmentClick,
-            onGenerationClick = onGenerationClick,
-            onVerificationCodeChange = onVerificationCodeChange,
-            onSendVerificationCodeClick = onSendVerificationCodeClick,
-            onActionClick = onSignupClick,
-            onFooterClick = onNavigateLogin,
-        )
+        -> {
+            AuthLoginScreen(
+                emailText = emailText,
+                passwordText = passwordText,
+                loginErrorMessage = loginErrorMessage,
+                loginStatusMessage = loginStatusMessage,
+                onEmailChange = onEmailChange,
+                onPasswordChange = onPasswordChange,
+                onLoginClick = onLoginClick,
+                onNavigateSignup = onNavigateSignup,
+                onForgotPasswordClick = onForgotPasswordClick,
+                isInitiallyExpanded = authStep == AuthStep.Login,
+            )
+        }
+
+        AuthStep.PasswordResetRequest -> {
+            PasswordResetScreen(
+                uiState = passwordResetUiState,
+                onEvent = onPasswordResetEvent,
+            )
+        }
+
+        AuthStep.SignUp -> {
+            AuthSignUpScreen(
+                emailText = emailText,
+                passwordText = passwordText,
+                nameText = nameText,
+                departmentText = departmentText,
+                generationText = generationText,
+                verificationCodeText = verificationCodeText,
+                signupValidation = signupValidation,
+                isLoading = isSignupLoading,
+                errorMessage = signupErrorMessage,
+                onEmailChange = onEmailChange,
+                onPasswordChange = onPasswordChange,
+                onNameChange = onNameChange,
+                onDepartmentClick = onDepartmentClick,
+                onGenerationClick = onGenerationClick,
+                onVerificationCodeChange = onVerificationCodeChange,
+                onSendVerificationCodeClick = onSendVerificationCodeClick,
+                onActionClick = onSignupClick,
+                onFooterClick = onNavigateLogin,
+            )
+        }
     }
 }

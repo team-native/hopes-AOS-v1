@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton
@@ -23,6 +22,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthVerificationCod
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
+import com.teamnative.hopes.R
 
 /** 피그마 13 비밀번호 재설정 화면의 헤더, 이메일+인증번호 입력, 새 비밀번호 입력, 제출 버튼을 조합한다. */
 @Composable
@@ -31,11 +31,12 @@ fun PasswordResetScreenContent(
     onEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .systemBarsPadding()
-            .padding(horizontal = AppSpacing.ScreenHorizontal),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .systemBarsPadding()
+                .padding(horizontal = AppSpacing.ScreenHorizontal),
     ) {
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -78,12 +79,13 @@ fun PasswordResetScreenContent(
 
             // 인증번호 발송 성공 후 재설정 제출이 실패하는 경우도 있으므로, 에러가 있으면 항상 에러 문구를 우선 표시한다.
             AuthStatusText(
-                message = if (uiState.errorMessage != null) {
-                    uiState.errorMessage.ifBlank { stringResource(R.string.generic_error_message) }
-                } else {
-                    uiState.statusMessage?.ifBlank { stringResource(R.string.verification_sent_message) }
-                        ?: stringResource(R.string.verification_sent_message)
-                },
+                message =
+                    if (uiState.errorMessage != null) {
+                        uiState.errorMessage.ifBlank { stringResource(R.string.generic_error_message) }
+                    } else {
+                        uiState.statusMessage?.ifBlank { stringResource(R.string.verification_sent_message) }
+                            ?: stringResource(R.string.verification_sent_message)
+                    },
                 isError = uiState.errorMessage != null,
             )
         }
@@ -107,9 +109,10 @@ fun PasswordResetScreenContent(
 
         AuthPrimaryActionButton(
             text = stringResource(R.string.password_reset_complete),
-            isEnabled = uiState.code.isNotBlank() &&
-                uiState.newPassword.isNotBlank() &&
-                !uiState.isLoading,
+            isEnabled =
+                uiState.code.isNotBlank() &&
+                    uiState.newPassword.isNotBlank() &&
+                    !uiState.isLoading,
             onClick = { onEvent(PasswordResetScreenEvent.SubmitClicked) },
         )
 

@@ -1,7 +1,9 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,10 +15,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.layout.fillMaxHeight
-
-import androidx.compose.foundation.layout.Arrangement
-
 import com.teamnative.hopes.R
 
 /** 마이페이지 계정 정보 카드다. */
@@ -27,17 +25,18 @@ fun FigmaMyPageAccountCard(
     modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(128.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(128.dp),
         shadowStyle = FigmaDetailCardShadow.Raised,
     ) {
         Column(
-            modifier = Modifier
-                .padding(start = 24.dp, end = 24.dp)
-                .fillMaxHeight(),
+            modifier =
+                Modifier
+                    .padding(start = 24.dp, end = 24.dp)
+                    .fillMaxHeight(),
             verticalArrangement = Arrangement.Center,
-
         ) {
             Text(
                 text = stringResource(R.string.my_page_account),

@@ -7,10 +7,11 @@ import org.junit.Test
 class AuthorizationInterceptorTest {
     @Test
     fun `buildAuthorizationHeader uses the stored token type`() {
-        val header = buildAuthorizationHeader(
-            tokenType = "Custom",
-            accessToken = "access-token",
-        )
+        val header =
+            buildAuthorizationHeader(
+                tokenType = "Custom",
+                accessToken = "access-token",
+            )
 
         assertEquals("Custom access-token", header)
     }

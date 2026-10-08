@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.feature.auth.presentation.SignupValidationUiState
 import com.example.hopes.feature.auth.presentation.component.AuthSignupErrorBanner
@@ -24,6 +23,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthVerificationCod
 import com.example.hopes.feature.auth.presentation.component.FigmaSignupField
 import com.example.hopes.feature.auth.presentation.component.FigmaSignupSelectionField
 import com.example.hopes.feature.auth.presentation.component.SignupFormFieldGroup
+import com.teamnative.hopes.R
 
 /** 회원가입 카드의 입력 행을 세로로 배치한다. */
 @Composable
@@ -52,35 +52,42 @@ fun SignupFormSectionContent(
     onSendVerificationCodeClick: () -> Unit,
     onSignupClick: () -> Unit,
 ) {
-    val emailErrorMessage = signupValidation.emailError
-        ?.takeIf { signupValidation.isEmailTouched }
-        ?.let { stringResource(R.string.signup_error_email) }
-    val nameErrorMessage = signupValidation.nameError
-        ?.takeIf { signupValidation.isNameTouched }
-        ?.let { stringResource(R.string.signup_error_name) }
-    val generationErrorMessage = signupValidation.generationError
-        ?.takeIf { signupValidation.isGenerationTouched }
-        ?.let { stringResource(R.string.signup_error_generation) }
-    val passwordErrorMessage = signupValidation.passwordError
-        ?.takeIf { signupValidation.isPasswordTouched }
-        ?.let { stringResource(R.string.signup_error_password) }
-    val verificationCodeErrorMessage = signupValidation.verificationCodeError
-        ?.takeIf { signupValidation.isVerificationCodeTouched }
-        ?.let { stringResource(R.string.signup_error_verification_code) }
+    val emailErrorMessage =
+        signupValidation.emailError
+            ?.takeIf { signupValidation.isEmailTouched }
+            ?.let { stringResource(R.string.signup_error_email) }
+    val nameErrorMessage =
+        signupValidation.nameError
+            ?.takeIf { signupValidation.isNameTouched }
+            ?.let { stringResource(R.string.signup_error_name) }
+    val generationErrorMessage =
+        signupValidation.generationError
+            ?.takeIf { signupValidation.isGenerationTouched }
+            ?.let { stringResource(R.string.signup_error_generation) }
+    val passwordErrorMessage =
+        signupValidation.passwordError
+            ?.takeIf { signupValidation.isPasswordTouched }
+            ?.let { stringResource(R.string.signup_error_password) }
+    val verificationCodeErrorMessage =
+        signupValidation.verificationCodeError
+            ?.takeIf { signupValidation.isVerificationCodeTouched }
+            ?.let { stringResource(R.string.signup_error_verification_code) }
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .figmaRaisedShadow(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .figmaRaisedShadow(RoundedCornerShape(18.dp))
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
-                .padding(top = 29.dp, bottom = 27.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                    .padding(top = 29.dp, bottom = 27.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             if (errorMessage != null) {

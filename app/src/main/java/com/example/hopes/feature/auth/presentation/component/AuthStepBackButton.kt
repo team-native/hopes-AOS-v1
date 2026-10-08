@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.teamnative.hopes.R
 
 /** 인증 단계 화면(비밀번호 재설정 등)에서 쓰는, 배경·테두리 없이 화살표만 보이는 뒤로가기 버튼이다. */
 @Composable
@@ -23,9 +23,10 @@ fun AuthStepBackButton(
     onClick: () -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .size(40.dp)
-            .shapeClickable(shape = CircleShape, role = Role.Button, onClick = onClick),
+        modifier =
+            modifier
+                .size(40.dp)
+                .shapeClickable(shape = CircleShape, role = Role.Button, onClick = onClick),
         // 터치 영역(40dp)이 아이콘(20dp)보다 넓어 생기는 여백을, 아이콘을 중앙이 아닌 시작 쪽에
         // 정렬해서 흡수한다 — offset으로 박스를 당기는 대신, 아이콘이 화면 좌우 여백 기준선에
         // 그대로 맞도록 정렬만 바꾼다.

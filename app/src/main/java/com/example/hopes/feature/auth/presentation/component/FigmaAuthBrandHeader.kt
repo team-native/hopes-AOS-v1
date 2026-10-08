@@ -22,11 +22,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.component.figmaLoginLogoShadow
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 피그마 인증 화면의 42dp 브랜드 헤더다. */
 @Composable
@@ -41,28 +41,29 @@ fun FigmaAuthBrandHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .size(42.dp)
-                .then(
-                    if (logoShadowStyle == FigmaAuthLogoShadowStyle.Login) {
-                        Modifier.figmaLoginLogoShadow(RoundedCornerShape(AppRadius.Logo))
-                    } else {
-                        Modifier.figmaRaisedShadow(RoundedCornerShape(AppRadius.Logo))
-                    },
-                )
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(AppRadius.Logo),
-                ),
+            modifier =
+                Modifier
+                    .size(42.dp)
+                    .then(
+                        if (logoShadowStyle == FigmaAuthLogoShadowStyle.Login) {
+                            Modifier.figmaLoginLogoShadow(RoundedCornerShape(AppRadius.Logo))
+                        } else {
+                            Modifier.figmaRaisedShadow(RoundedCornerShape(AppRadius.Logo))
+                        },
+                    ).background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(AppRadius.Logo),
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(R.drawable.hopes_logo),
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(14.dp),
+                modifier =
+                    Modifier
+                        .height(20.dp)
+                        .width(14.dp),
             )
         }
 
@@ -72,19 +73,21 @@ fun FigmaAuthBrandHeader(
             Text(
                 text = stringResource(R.string.app_name),
                 color = MaterialTheme.colorScheme.onPrimary,
-                style = TextStyle(
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+                style =
+                    TextStyle(
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
             )
 
             Text(
                 text = stringResource(R.string.school_name),
                 color = extendedColors.brandSubtitleOnBlue,
-                style = TextStyle(
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
+                style =
+                    TextStyle(
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                    ),
             )
         }
     }

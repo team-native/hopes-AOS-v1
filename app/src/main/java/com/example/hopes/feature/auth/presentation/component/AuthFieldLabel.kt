@@ -11,7 +11,10 @@ import androidx.compose.ui.unit.sp
 
 /** 인증 화면 입력 필드 위에 붙는 12sp 라벨이다. */
 @Composable
-fun AuthFieldLabel(labelRes: Int, modifier: Modifier = Modifier) {
+fun AuthFieldLabel(
+    labelRes: Int,
+    modifier: Modifier = Modifier,
+) {
     Text(
         text = stringResource(labelRes),
         modifier = modifier,

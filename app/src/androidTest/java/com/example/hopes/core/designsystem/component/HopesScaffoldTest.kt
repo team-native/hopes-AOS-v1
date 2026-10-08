@@ -58,10 +58,11 @@ class HopesScaffoldTest {
         composeRule.setContent {
             HopesTheme {
                 Box(
-                    modifier = Modifier.size(
-                        width = 402.dp,
-                        height = 360.dp,
-                    ),
+                    modifier =
+                        Modifier.size(
+                            width = 402.dp,
+                            height = 360.dp,
+                        ),
                 ) {
                     HomeScreenContent(
                         onStartChatClick = {},
@@ -76,16 +77,18 @@ class HopesScaffoldTest {
             .performScrollTo()
             .assertIsDisplayed()
 
-        val tipCardWidth = composeRule
-            .onNodeWithTag("home_tip_card_1")
-            .fetchSemanticsNode()
-            .boundsInRoot
-            .width
-        val startChatButtonWidth = composeRule
-            .onNodeWithTag("home_start_chat_button")
-            .fetchSemanticsNode()
-            .boundsInRoot
-            .width
+        val tipCardWidth =
+            composeRule
+                .onNodeWithTag("home_tip_card_1")
+                .fetchSemanticsNode()
+                .boundsInRoot
+                .width
+        val startChatButtonWidth =
+            composeRule
+                .onNodeWithTag("home_start_chat_button")
+                .fetchSemanticsNode()
+                .boundsInRoot
+                .width
 
         assertEquals(tipCardWidth, startChatButtonWidth, 0.5f)
     }

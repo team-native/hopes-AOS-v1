@@ -25,9 +25,10 @@ fun FigmaAppFrame(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(scaffoldContainerColor),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(scaffoldContainerColor),
     ) {
         // 시스템바 아래까지 화면 배경을 그려 Scaffold의 inset 영역과 색이 달라지지 않게 한다.
 
@@ -43,16 +44,18 @@ fun FigmaAppFrame(
                 modifier = Modifier.padding(innerPadding),
                 background = {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(contentBackgroundColor),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(contentBackgroundColor),
                     )
                 },
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(contentBackgroundColor),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(contentBackgroundColor),
                 ) {
                     content()
                 }

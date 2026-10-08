@@ -35,9 +35,10 @@ fun AuthLoginScreen(
         background = {
             AuthSharedBackdrop(
                 sheetExpansionProgress = sheetExpansionProgress,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .overlayBackdropBlur(sheetExpansionProgress),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .overlayBackdropBlur(sheetExpansionProgress),
             )
         },
     ) {

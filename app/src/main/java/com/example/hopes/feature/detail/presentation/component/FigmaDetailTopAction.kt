@@ -4,7 +4,6 @@ import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,12 +29,13 @@ fun FigmaDetailTopAction(
     val actionShape = RoundedCornerShape(14.dp)
 
     Box(
-        modifier = modifier
-            .width(54.dp)
-            .height(36.dp)
-            .background(MaterialTheme.colorScheme.surface, actionShape)
-            .border(1.dp, MaterialTheme.colorScheme.outline, actionShape)
-            .shapeClickable(shape = actionShape, onClick = onClick),
+        modifier =
+            modifier
+                .width(54.dp)
+                .height(36.dp)
+                .background(MaterialTheme.colorScheme.surface, actionShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, actionShape)
+                .shapeClickable(shape = actionShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.detail.presentation.ContactScreenEvent
@@ -17,6 +16,7 @@ import com.example.hopes.feature.detail.presentation.component.FigmaContactFormC
 import com.example.hopes.feature.detail.presentation.component.FigmaContactInformationCard
 import com.example.hopes.feature.detail.presentation.component.FigmaDetailBackHeader
 import com.example.hopes.navigation.HopesDestination
+import com.teamnative.hopes.R
 
 /** 피그마 14 문의 폼과 이메일 안내 영역을 구성한다. */
 @Composable
@@ -55,11 +55,12 @@ fun ContactScreenContent(
             Spacer(modifier = Modifier.height(70.dp))
 
             FigmaContactInformationCard(
-                modifier = Modifier.padding(
-                    start = AppSpacing.ScreenHorizontal,
-                    end = AppSpacing.ScreenHorizontal,
-                    bottom = 24.dp,
-                ),
+                modifier =
+                    Modifier.padding(
+                        start = AppSpacing.ScreenHorizontal,
+                        end = AppSpacing.ScreenHorizontal,
+                        bottom = 24.dp,
+                    ),
             )
 
             Spacer(modifier = Modifier.height(10.dp))

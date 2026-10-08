@@ -11,10 +11,10 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -54,17 +54,20 @@ fun AuthLoginSheetContent(
         //
         // 가로 모드·분할 화면처럼 maxHeight가 작아지는 경우 시트 상단이 화면 밖(상태바 위)으로
         // 밀려나지 않도록 0 미만으로는 내려가지 않게 고정한다.
-        val expandedTopOffsetPx = with(loginDensity) {
-            (maxHeight - AUTH_LOGIN_SHEET_EXPANDED_HEIGHT).toPx()
-        }.coerceAtLeast(0f)
-        val dismissedTopOffsetPx = with(loginDensity) {
-            (maxHeight - AUTH_LOGIN_SHEET_PEEK_HEIGHT).toPx()
-        }
+        val expandedTopOffsetPx =
+            with(loginDensity) {
+                (maxHeight - AUTH_LOGIN_SHEET_EXPANDED_HEIGHT).toPx()
+            }.coerceAtLeast(0f)
+        val dismissedTopOffsetPx =
+            with(loginDensity) {
+                (maxHeight - AUTH_LOGIN_SHEET_PEEK_HEIGHT).toPx()
+            }
         // 임계값을 닫힘 위치 쪽으로 옮겨, 살짝만 내려도 바로 닫히던 것을 더 많이 내려야
         // 닫히도록 한다. 조금 끌었다가 놓았을 때 열림 위치로 자연스럽게 되돌아간다.
-        val dismissThresholdPx = with(loginDensity) {
-            (maxHeight - loginSheetDismissThresholdHeight).toPx()
-        }
+        val dismissThresholdPx =
+            with(loginDensity) {
+                (maxHeight - loginSheetDismissThresholdHeight).toPx()
+            }
         var sheetTopOffsetPx by remember(maxHeight, loginDensity) {
             mutableFloatStateOf(
                 if (isInitiallyExpanded) {
@@ -101,21 +104,23 @@ fun AuthLoginSheetContent(
         fun settleLoginSheet() {
             sheetSettleJob?.cancel()
             val shouldDismiss = sheetTopOffsetPx > dismissThresholdPx
-            val targetOffsetPx = if (shouldDismiss) {
-                dismissedTopOffsetPx
-            } else {
-                expandedTopOffsetPx
-            }
-
-            sheetSettleJob = animationScope.launch {
-                animate(
-                    initialValue = sheetTopOffsetPx,
-                    targetValue = targetOffsetPx,
-                    animationSpec = tween(LOGIN_SHEET_SETTLE_DURATION_MILLIS),
-                ) { animatedOffsetPx, _ ->
-                    updateSheetTopOffset(animatedOffsetPx)
+            val targetOffsetPx =
+                if (shouldDismiss) {
+                    dismissedTopOffsetPx
+                } else {
+                    expandedTopOffsetPx
                 }
-            }
+
+            sheetSettleJob =
+                animationScope.launch {
+                    animate(
+                        initialValue = sheetTopOffsetPx,
+                        targetValue = targetOffsetPx,
+                        animationSpec = tween(LOGIN_SHEET_SETTLE_DURATION_MILLIS),
+                    ) { animatedOffsetPx, _ ->
+                        updateSheetTopOffset(animatedOffsetPx)
+                    }
+                }
         }
 
         // 키보드 대응은 body-level 상태로 읽지 않고 이 block 안에서만 읽는다. graphicsLayer(block)
@@ -135,13 +140,13 @@ fun AuthLoginSheetContent(
         // 시트 전체에 붙이면 필드 목록의 verticalScroll과 제스처가 경합해 드래그로 시트를
         // 내릴 수 없게 되기 때문이다.
         FigmaAuthSheet(
-            modifier = Modifier
-                .graphicsLayer {
-                    val keyboardShiftPx = imeInsets.getBottom(this)
-                    translationY = sheetTopOffsetPx - keyboardShiftPx
-                }
-                .fillMaxWidth()
-                .height(AUTH_LOGIN_SHEET_EXPANDED_HEIGHT),
+            modifier =
+                Modifier
+                    .graphicsLayer {
+                        val keyboardShiftPx = imeInsets.getBottom(this)
+                        translationY = sheetTopOffsetPx - keyboardShiftPx
+                    }.fillMaxWidth()
+                    .height(AUTH_LOGIN_SHEET_EXPANDED_HEIGHT),
             isPeekSheet = false,
         ) {
             AuthLoginFormContent(
@@ -169,6 +174,7 @@ fun AuthLoginSheetContent(
 }
 
 internal val AUTH_LOGIN_SHEET_EXPANDED_HEIGHT = 514.dp
+
 // 부제목이 시스템 내비게이션 영역과 겹치지 않고, 입력 필드는 숨겨지도록 실제 기기에서 측정한 접힘 높이다.
 internal val AUTH_LOGIN_SHEET_PEEK_HEIGHT = 156.dp
 private val loginSheetDismissThresholdHeight = 260.dp

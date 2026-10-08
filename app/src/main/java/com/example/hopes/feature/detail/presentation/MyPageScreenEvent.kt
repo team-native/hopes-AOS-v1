@@ -4,9 +4,13 @@ package com.example.hopes.feature.detail.presentation
 sealed interface MyPageScreenEvent {
     data object AppSettingsClicked : MyPageScreenEvent
 
-    data class ProfileNameChanged(val value: String) : MyPageScreenEvent
+    data class ProfileNameChanged(
+        val value: String,
+    ) : MyPageScreenEvent
 
-    data class ProfileIntroductionChanged(val value: String) : MyPageScreenEvent
+    data class ProfileIntroductionChanged(
+        val value: String,
+    ) : MyPageScreenEvent
 
     data object ProfileSaveClicked : MyPageScreenEvent
 

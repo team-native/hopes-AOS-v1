@@ -20,11 +20,12 @@ fun HistoryItem(
 ) {
     Text(
         text = question,
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics { role = Role.Button }
-            .clickable(onClick = onClick)
-            .padding(vertical = HISTORY_ITEM_VERTICAL_PADDING),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .semantics { role = Role.Button }
+                .clickable(onClick = onClick)
+                .padding(vertical = HISTORY_ITEM_VERTICAL_PADDING),
         color = MaterialTheme.colorScheme.onSurface,
         style = MaterialTheme.typography.bodyMedium,
     )

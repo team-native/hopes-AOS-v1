@@ -22,71 +22,80 @@ import com.example.hopes.domain.model.UserSettings
 
 fun TokenResponseDto.toDomain(): AuthToken = AuthToken(accessToken, tokenType, message)
 
-fun MainResponseDto.toDomain(): ChatPage = ChatPage(
-    chats = chatList.map { summary ->
-        com.example.hopes.domain.model.ChatSummary(summary.id, summary.title, summary.updatedAt)
-    },
-    hasNextPage = hasNext,
-)
+fun MainResponseDto.toDomain(): ChatPage =
+    ChatPage(
+        chats =
+            chatList.map { summary ->
+                com.example.hopes.domain.model
+                    .ChatSummary(summary.id, summary.title, summary.updatedAt)
+            },
+        hasNextPage = hasNext,
+    )
 
-fun ChatResponseDto.toDomain(): Chat = Chat(
-    id = id,
-    title = title,
-    messages = messages.map(MessageDto::toDomain),
-    hasMoreMessages = hasMoreMessages,
-)
+fun ChatResponseDto.toDomain(): Chat =
+    Chat(
+        id = id,
+        title = title,
+        messages = messages.map(MessageDto::toDomain),
+        hasMoreMessages = hasMoreMessages,
+    )
 
-fun MessageDto.toDomain(): ChatMessage = ChatMessage(
-    id = id,
-    role = role.toChatMessageRole(),
-    content = content,
-    createdAt = createdAt,
-)
+fun MessageDto.toDomain(): ChatMessage =
+    ChatMessage(
+        id = id,
+        role = role.toChatMessageRole(),
+        content = content,
+        createdAt = createdAt,
+    )
 
-private fun String.toChatMessageRole(): ChatMessageRole {
-    return when (this) {
+private fun String.toChatMessageRole(): ChatMessageRole =
+    when (this) {
         "USER" -> ChatMessageRole.User
         "ASSISTANT" -> ChatMessageRole.Assistant
         else -> ChatMessageRole.Unknown
     }
-}
 
-fun UserResponseDto.toDomain(): UserProfile = UserProfile(
-    username = username,
-    email = email,
-    nickname = nickname,
-    profileInfo = profileInfo,
-    profileImage = profileImage,
-    major = major,
-)
+fun UserResponseDto.toDomain(): UserProfile =
+    UserProfile(
+        username = username,
+        email = email,
+        nickname = nickname,
+        profileInfo = profileInfo,
+        profileImage = profileImage,
+        major = major,
+    )
 
-fun SettingMainResponseDto.toDomain(): UserSettings = UserSettings(
-    profile = accountSetting.toDomain(),
-    theme = theme,
-    customPrompt = customPrompt,
-)
+fun SettingMainResponseDto.toDomain(): UserSettings =
+    UserSettings(
+        profile = accountSetting.toDomain(),
+        theme = theme,
+        customPrompt = customPrompt,
+    )
 
-fun SignUpRequest.toDto(): SignupRequestDto = SignupRequestDto(
-    email = email,
-    username = username,
-    password = password,
-    passwordConfirm = passwordConfirm,
-    verificationCode = verificationCode,
-    gender = gender,
-    major = major,
-    cohort = cohort,
-)
+fun SignUpRequest.toDto(): SignupRequestDto =
+    SignupRequestDto(
+        email = email,
+        username = username,
+        password = password,
+        passwordConfirm = passwordConfirm,
+        verificationCode = verificationCode,
+        gender = gender,
+        major = major,
+        cohort = cohort,
+    )
 
-fun PasswordResetRequest.toDto(): PasswordResetRequestDto = PasswordResetRequestDto(
-    email = email,
-    code = code,
-    password = password,
-    passwordConfirm = passwordConfirm,
-)
+fun PasswordResetRequest.toDto(): PasswordResetRequestDto =
+    PasswordResetRequestDto(
+        email = email,
+        code = code,
+        password = password,
+        passwordConfirm = passwordConfirm,
+    )
 
-fun ProfileUpdateRequest.toDto(): MyPageUpdateRequestDto = MyPageUpdateRequestDto(
-    username = username,
-    nickname = nickname,
-    profileInfo = profileInfo,
-    profileImage = profileImage,
-)
+fun ProfileUpdateRequest.toDto(): MyPageUpdateRequestDto =
+    MyPageUpdateRequestDto(
+        username = username,
+        nickname = nickname,
+        profileInfo = profileInfo,
+        profileImage = profileImage,
+    )

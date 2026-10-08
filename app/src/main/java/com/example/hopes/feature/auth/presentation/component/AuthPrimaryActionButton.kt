@@ -29,19 +29,20 @@ fun AuthPrimaryActionButton(
     val buttonShape = RoundedCornerShape(AppRadius.Button)
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(46.dp)
-            .figmaSheetShadow(buttonShape)
-            .background(
-                color = if (isEnabled) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
-                },
-                shape = buttonShape,
-            )
-            .shapeClickable(shape = buttonShape, enabled = isEnabled, onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(46.dp)
+                .figmaSheetShadow(buttonShape)
+                .background(
+                    color =
+                        if (isEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+                        },
+                    shape = buttonShape,
+                ).shapeClickable(shape = buttonShape, enabled = isEnabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

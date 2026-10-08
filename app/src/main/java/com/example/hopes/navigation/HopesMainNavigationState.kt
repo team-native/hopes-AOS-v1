@@ -67,20 +67,22 @@ internal fun HopesMainNavigationState.toEntries(
     val viewModelStoreDecorator = rememberViewModelStoreNavEntryDecorator<NavKey>()
     val savedStateDecorator = rememberSaveableStateHolderNavEntryDecorator<NavKey>()
 
-    val decoratedEntries = backStacks.mapValues { (_, stack) ->
-        rememberDecoratedNavEntries(
-            backStack = stack,
-            entryDecorators = listOf(savedStateDecorator, viewModelStoreDecorator),
-            entryProvider = entryProvider,
-        )
-    }
+    val decoratedEntries =
+        backStacks.mapValues { (_, stack) ->
+            rememberDecoratedNavEntries(
+                backStack = stack,
+                entryDecorators = listOf(savedStateDecorator, viewModelStoreDecorator),
+                entryProvider = entryProvider,
+            )
+        }
 
     return decoratedEntries.getValue(topLevelRoute).toMutableStateList()
 }
 
 /** 탭 전환/화면 push/pop을 담당한다. NavController를 대체한다. */
-internal class HopesMainNavigator(private val state: HopesMainNavigationState) {
-
+internal class HopesMainNavigator(
+    private val state: HopesMainNavigationState,
+) {
     /** 하단 탭 선택 시 호출한다. */
     fun navigateToTab(destination: HopesDestination) {
         if (destination in state.backStacks.keys) {

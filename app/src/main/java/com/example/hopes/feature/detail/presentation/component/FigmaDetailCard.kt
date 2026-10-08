@@ -27,16 +27,16 @@ fun FigmaDetailCard(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = modifier
-            .then(
-                when (shadowStyle) {
-                    FigmaDetailCardShadow.Raised -> Modifier.figmaRaisedShadow(shape)
-                    FigmaDetailCardShadow.Subtle -> Modifier.figmaSubtleShadow(shape)
-                    FigmaDetailCardShadow.None -> Modifier
-                },
-            )
-            .background(MaterialTheme.colorScheme.surface, shape)
-            .border(1.dp, MaterialTheme.colorScheme.outline, shape),
+        modifier =
+            modifier
+                .then(
+                    when (shadowStyle) {
+                        FigmaDetailCardShadow.Raised -> Modifier.figmaRaisedShadow(shape)
+                        FigmaDetailCardShadow.Subtle -> Modifier.figmaSubtleShadow(shape)
+                        FigmaDetailCardShadow.None -> Modifier
+                    },
+                ).background(MaterialTheme.colorScheme.surface, shape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, shape),
     ) {
         content()
     }

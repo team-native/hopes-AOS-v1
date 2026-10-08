@@ -37,19 +37,21 @@ fun FigmaSignupField(
 
     // 카드 좌우 여백을 제외한 나머지 폭을 1f로 배분해 기기 폭 변화에도 필드 비율을 유지한다.
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 17.dp, end = 18.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(start = 17.dp, end = 18.dp),
     ) {
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(43.dp)
-                .border(
-                    width = 1.dp,
-                    color = if (isError) MaterialTheme.colorScheme.error else extendedColors.authFieldBorder,
-                    shape = RoundedCornerShape(14.dp),
-                ),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .height(43.dp)
+                    .border(
+                        width = 1.dp,
+                        color = if (isError) MaterialTheme.colorScheme.error else extendedColors.authFieldBorder,
+                        shape = RoundedCornerShape(14.dp),
+                    ),
         ) {
             if (value.isEmpty()) {
                 Text(
@@ -63,22 +65,26 @@ fun FigmaSignupField(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
-                modifier = Modifier
-                    .padding(top = 11.dp)
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, end = 12.dp)
-                    .height(24.dp),
+                modifier =
+                    Modifier
+                        .padding(top = 11.dp)
+                        .fillMaxWidth()
+                        .padding(start = 12.dp, end = 12.dp)
+                        .height(24.dp),
                 singleLine = true,
-                textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 15.sp,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = if (isPassword) ImeAction.Done else ImeAction.Next,
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onImeAction?.invoke() },
-                ),
+                textStyle =
+                    TextStyle(
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 15.sp,
+                    ),
+                keyboardOptions =
+                    KeyboardOptions(
+                        imeAction = if (isPassword) ImeAction.Done else ImeAction.Next,
+                    ),
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = { onImeAction?.invoke() },
+                    ),
                 visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
             )
         }

@@ -17,13 +17,14 @@ import com.example.hopes.ui.theme.LocalHopesExtendedColors
 fun AuthSheetHandle(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         Box(
-            modifier = Modifier
-                .width(86.dp)
-                .height(5.dp)
-                .background(
-                    color = LocalHopesExtendedColors.current.authHandle,
-                    shape = RoundedCornerShape(3.dp),
-                ),
+            modifier =
+                Modifier
+                    .width(86.dp)
+                    .height(5.dp)
+                    .background(
+                        color = LocalHopesExtendedColors.current.authHandle,
+                        shape = RoundedCornerShape(3.dp),
+                    ),
         )
     }
 }

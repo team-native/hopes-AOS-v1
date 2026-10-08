@@ -25,9 +25,10 @@ fun FigmaPhoneScreen(
     applyStatusBarsPadding: Boolean = false,
     background: @Composable BoxScope.() -> Unit = {
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background),
         )
     },
     content: @Composable () -> Unit,
@@ -43,9 +44,10 @@ fun FigmaPhoneScreen(
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(if (applyStatusBarsPadding) Modifier.statusBarsPadding() else Modifier),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .then(if (applyStatusBarsPadding) Modifier.statusBarsPadding() else Modifier),
             contentAlignment = Alignment.TopCenter,
         ) {
             content()

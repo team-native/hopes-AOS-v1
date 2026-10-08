@@ -12,8 +12,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
+import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 
 /** 상세 화면의 파란 저장·전송 버튼이다. */
@@ -27,16 +27,16 @@ fun FigmaDetailPrimaryButton(
     val buttonShape = RoundedCornerShape(14.dp)
 
     Box(
-        modifier = modifier
-            .then(
-                if (shadowStyle == FigmaDetailPrimaryButtonShadow.Raised) {
-                    Modifier.figmaRaisedShadow(buttonShape)
-                } else {
-                    Modifier.figmaSubtleShadow(buttonShape)
-                },
-            )
-            .background(MaterialTheme.colorScheme.primary, buttonShape)
-            .shapeClickable(shape = buttonShape, onClick = onClick),
+        modifier =
+            modifier
+                .then(
+                    if (shadowStyle == FigmaDetailPrimaryButtonShadow.Raised) {
+                        Modifier.figmaRaisedShadow(buttonShape)
+                    } else {
+                        Modifier.figmaSubtleShadow(buttonShape)
+                    },
+                ).background(MaterialTheme.colorScheme.primary, buttonShape)
+                .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

@@ -2,10 +2,10 @@ package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,10 +13,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.navigation.hopesTabDestinations
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 최상위 네 화면으로 이동하는 공통 하단 탐색 바다. */
 @Composable
@@ -42,24 +42,30 @@ fun HopesBottomNavigation(
                 label = {
                     Text(text = stringResource(destination.labelResourceId()))
                 },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = LocalHopesExtendedColors.current.bottomNavigationSelectedIcon,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    // 선택 상태는 아이콘과 라벨 색상으로만 구분하고 배경 pill은 표시하지 않는다.
-                    indicatorColor = Color.Transparent,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
+                colors =
+                    NavigationBarItemDefaults.colors(
+                        selectedIconColor = LocalHopesExtendedColors.current.bottomNavigationSelectedIcon,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        // 선택 상태는 아이콘과 라벨 색상으로만 구분하고 배경 pill은 표시하지 않는다.
+                        indicatorColor = Color.Transparent,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
             )
         }
     }
 }
 
-private fun HopesDestination.labelResourceId() = when (this) {
-    HopesDestination.Home -> R.string.navigation_home
-    is HopesDestination.Chat -> R.string.navigation_chat
-    HopesDestination.History -> R.string.navigation_history
-    // Settings 라우트는 실제로 MyPageRoute(마이페이지)를 보여주므로 라벨도 그에 맞춘다.
-    HopesDestination.Settings -> R.string.my_page
-    else -> R.string.navigation_home
-}
+private fun HopesDestination.labelResourceId() =
+    when (this) {
+        HopesDestination.Home -> R.string.navigation_home
+
+        is HopesDestination.Chat -> R.string.navigation_chat
+
+        HopesDestination.History -> R.string.navigation_history
+
+        // Settings 라우트는 실제로 MyPageRoute(마이페이지)를 보여주므로 라벨도 그에 맞춘다.
+        HopesDestination.Settings -> R.string.my_page
+
+        else -> R.string.navigation_home
+    }

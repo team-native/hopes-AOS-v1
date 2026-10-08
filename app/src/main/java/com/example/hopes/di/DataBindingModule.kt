@@ -22,32 +22,20 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class DataBindingModule {
     @Binds
-    abstract fun bindAuthRemoteDataSource(
-        implementation: AuthRemoteDataSourceImpl,
-    ): AuthRemoteDataSource
+    abstract fun bindAuthRemoteDataSource(implementation: AuthRemoteDataSourceImpl): AuthRemoteDataSource
 
     @Binds
-    abstract fun bindChatRemoteDataSource(
-        implementation: ChatRemoteDataSourceImpl,
-    ): ChatRemoteDataSource
+    abstract fun bindChatRemoteDataSource(implementation: ChatRemoteDataSourceImpl): ChatRemoteDataSource
 
     @Binds
-    abstract fun bindSettingsRemoteDataSource(
-        implementation: SettingsRemoteDataSourceImpl,
-    ): SettingsRemoteDataSource
+    abstract fun bindSettingsRemoteDataSource(implementation: SettingsRemoteDataSourceImpl): SettingsRemoteDataSource
 
     @Binds
-    abstract fun bindAuthRepository(
-        implementation: AuthRepositoryImpl,
-    ): AuthRepository
+    abstract fun bindAuthRepository(implementation: AuthRepositoryImpl): AuthRepository
 
     @Binds
-    abstract fun bindChatRepository(
-        implementation: ChatRepositoryImpl,
-    ): ChatRepository
+    abstract fun bindChatRepository(implementation: ChatRepositoryImpl): ChatRepository
 
     @Binds
-    abstract fun bindSettingsRepository(
-        implementation: SettingsRepositoryImpl,
-    ): SettingsRepository
+    abstract fun bindSettingsRepository(implementation: SettingsRepositoryImpl): SettingsRepository
 }

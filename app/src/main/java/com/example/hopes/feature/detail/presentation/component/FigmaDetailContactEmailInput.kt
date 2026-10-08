@@ -3,8 +3,8 @@ package com.example.hopes.feature.detail.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -28,11 +28,12 @@ fun FigmaDetailContactEmailInput(
     val extendedColors = LocalHopesExtendedColors.current
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(40.dp)
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-            .border(1.dp, extendedColors.authFieldBorder, RoundedCornerShape(14.dp)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+                .border(1.dp, extendedColors.authFieldBorder, RoundedCornerShape(14.dp)),
     ) {
         if (value.isEmpty()) {
             Text(
@@ -46,15 +47,17 @@ fun FigmaDetailContactEmailInput(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 10.dp, end = 16.dp)
-                .height(24.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 10.dp, end = 16.dp)
+                    .height(24.dp),
             singleLine = true,
-            textStyle = TextStyle(
-                fontSize = 15.sp,
-                color = MaterialTheme.colorScheme.onSurface,
-            ),
+            textStyle =
+                TextStyle(
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
         )
     }
 }

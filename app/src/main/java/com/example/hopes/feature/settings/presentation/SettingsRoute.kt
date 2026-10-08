@@ -8,14 +8,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.teamnative.hopes.R
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionBottomSheet
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionConfirmDialog
 import com.example.hopes.navigation.HopesDestination
+import com.teamnative.hopes.R
 
 /** 개인정보처리방침 전문을 호스팅하는 외부 URL. */
 private const val PRIVACY_POLICY_URL = "https://spotless-beret-a3e.notion.site/Hopes-3c497507c37c8052ba2cd6fb48f568a3"
@@ -63,20 +63,28 @@ fun SettingsRoute(
         }
     }
 
-    val accountDeletionErrorMessage = uiState.accountDeletionError?.let { error ->
-        when (error) {
-            is AccountDeletionError.Http -> error.serverMessage ?: stringResource(
-                if (error.statusCode == UNAUTHORIZED_STATUS_CODE) {
-                    R.string.account_deletion_password_error
-                } else {
-                    R.string.account_deletion_request_error
-                },
-            )
+    val accountDeletionErrorMessage =
+        uiState.accountDeletionError?.let { error ->
+            when (error) {
+                is AccountDeletionError.Http -> {
+                    error.serverMessage ?: stringResource(
+                        if (error.statusCode == UNAUTHORIZED_STATUS_CODE) {
+                            R.string.account_deletion_password_error
+                        } else {
+                            R.string.account_deletion_request_error
+                        },
+                    )
+                }
 
-            AccountDeletionError.Network -> stringResource(R.string.account_deletion_network_error)
-            AccountDeletionError.Serialization -> stringResource(R.string.account_deletion_request_error)
+                AccountDeletionError.Network -> {
+                    stringResource(R.string.account_deletion_network_error)
+                }
+
+                AccountDeletionError.Serialization -> {
+                    stringResource(R.string.account_deletion_request_error)
+                }
+            }
         }
-    }
 
     SettingsScreen(
         onNavigate = onNavigate,
@@ -97,7 +105,10 @@ fun SettingsRoute(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                SettingsScreenEvent.LogoutClicked -> viewModel.logout()
+                SettingsScreenEvent.LogoutClicked -> {
+                    viewModel.logout()
+                }
+
                 SettingsScreenEvent.DeleteAccountClicked -> {
                     viewModel.onEvent(event)
                     isDeletionSheetVisible = true

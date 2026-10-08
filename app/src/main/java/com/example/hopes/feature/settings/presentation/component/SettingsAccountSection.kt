@@ -32,8 +32,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 설정 화면에서 로그아웃과 회원탈퇴 동작을 하나의 계정 카드로 제공한다. */
 @Composable
@@ -56,9 +56,10 @@ fun SettingsAccountSection(
         Spacer(modifier = Modifier.height(10.dp))
 
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp)),
             shape = RoundedCornerShape(18.dp),
             color = MaterialTheme.colorScheme.surface,
         ) {
@@ -96,12 +97,13 @@ private fun SettingsAccountRow(
     val accountActionColor = LocalHopesExtendedColors.current.logoutText
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .clickable(enabled = enabled, onClick = onClick)
-            .alpha(if (enabled) 1f else 0.5f)
-            .padding(horizontal = 20.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .clickable(enabled = enabled, onClick = onClick)
+                .alpha(if (enabled) 1f else 0.5f)
+                .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(

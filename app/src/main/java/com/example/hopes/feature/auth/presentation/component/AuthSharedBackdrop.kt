@@ -31,23 +31,26 @@ fun AuthSharedBackdrop(
         AuthBackground(modifier = Modifier.fillMaxSize())
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .authBackgroundNoise(),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .authBackgroundNoise(),
         )
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = AUTH_LOGIN_SHEET_PEEK_HEIGHT)
-                .statusBarsPadding(),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(bottom = AUTH_LOGIN_SHEET_PEEK_HEIGHT)
+                    .statusBarsPadding(),
         ) {
             Column(
-                modifier = Modifier.padding(
-                    start = AppSpacing.ScreenHorizontal,
-                    top = 25.dp,
-                    end = AppSpacing.ScreenHorizontal,
-                ),
+                modifier =
+                    Modifier.padding(
+                        start = AppSpacing.ScreenHorizontal,
+                        top = 25.dp,
+                        end = AppSpacing.ScreenHorizontal,
+                    ),
             ) {
                 FigmaAuthBrandHeader(logoShadowStyle = FigmaAuthLogoShadowStyle.Login)
 
@@ -60,9 +63,10 @@ fun AuthSharedBackdrop(
 
             AuthSwipeHint(
                 extendedColors = extendedColors,
-                modifier = Modifier.graphicsLayer {
-                    alpha = 1f - sheetExpansionProgress
-                },
+                modifier =
+                    Modifier.graphicsLayer {
+                        alpha = 1f - sheetExpansionProgress
+                    },
             )
 
             Spacer(modifier = Modifier.weight(5f))
@@ -71,24 +75,26 @@ fun AuthSharedBackdrop(
 }
 
 /** 완만한 공용 배경 위에 blur가 식별될 수 있는 옅은 점 노이즈를 캐시해 그린다. */
-private fun Modifier.authBackgroundNoise(): Modifier = drawWithCache {
-    val random = Random(20260821)
-    val dotCount = (size.width * size.height / 4000f).toInt().coerceAtLeast(1)
-    val dots = List(dotCount) {
-        Triple(
-            Offset(random.nextFloat() * size.width, random.nextFloat() * size.height),
-            random.nextFloat() * 2.5f + 0.5f,
-            random.nextFloat() * 0.12f + 0.04f,
-        )
-    }
+private fun Modifier.authBackgroundNoise(): Modifier =
+    drawWithCache {
+        val random = Random(20260821)
+        val dotCount = (size.width * size.height / 4000f).toInt().coerceAtLeast(1)
+        val dots =
+            List(dotCount) {
+                Triple(
+                    Offset(random.nextFloat() * size.width, random.nextFloat() * size.height),
+                    random.nextFloat() * 2.5f + 0.5f,
+                    random.nextFloat() * 0.12f + 0.04f,
+                )
+            }
 
-    onDrawBehind {
-        dots.forEach { (offset, radius, alpha) ->
-            drawCircle(
-                color = Color.White.copy(alpha = alpha),
-                radius = radius,
-                center = offset,
-            )
+        onDrawBehind {
+            dots.forEach { (offset, radius, alpha) ->
+                drawCircle(
+                    color = Color.White.copy(alpha = alpha),
+                    radius = radius,
+                    center = offset,
+                )
+            }
         }
     }
-}

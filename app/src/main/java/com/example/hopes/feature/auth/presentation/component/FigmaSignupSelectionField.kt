@@ -41,36 +41,39 @@ fun FigmaSignupSelectionField(
     val selectionFieldShape = RoundedCornerShape(14.dp)
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 17.dp, end = 18.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(start = 17.dp, end = 18.dp),
     ) {
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(43.dp)
-                .border(
-                    width = 1.dp,
-                    color = if (isError) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        extendedColors.authFieldBorder
-                    },
-                    shape = selectionFieldShape,
-                )
-                .background(MaterialTheme.colorScheme.surface, selectionFieldShape)
-                .shapeClickable(shape = selectionFieldShape, role = Role.Button, onClick = onClick)
-                .semantics { contentDescription = placeholder },
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .height(43.dp)
+                    .border(
+                        width = 1.dp,
+                        color =
+                            if (isError) {
+                                MaterialTheme.colorScheme.error
+                            } else {
+                                extendedColors.authFieldBorder
+                            },
+                        shape = selectionFieldShape,
+                    ).background(MaterialTheme.colorScheme.surface, selectionFieldShape)
+                    .shapeClickable(shape = selectionFieldShape, role = Role.Button, onClick = onClick)
+                    .semantics { contentDescription = placeholder },
             contentAlignment = Alignment.CenterStart,
         ) {
             Text(
                 text = selectedValue.ifBlank { placeholder },
                 modifier = Modifier.padding(start = 12.dp, end = 40.dp),
-                color = if (selectedValue.isBlank()) {
-                    extendedColors.authFieldHint
-                } else {
-                    MaterialTheme.colorScheme.onSurface
-                },
+                color =
+                    if (selectedValue.isBlank()) {
+                        extendedColors.authFieldHint
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
                 style = TextStyle(fontSize = 15.sp),
             )
 
@@ -78,9 +81,10 @@ fun FigmaSignupSelectionField(
             // 실제 크기가 고정된 Icon으로 대체해 세로 중앙 정렬을 보장한다.
             SelectionFieldDropdownIcon(
                 tint = extendedColors.authFieldHint,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 13.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 13.dp),
             )
         }
     }

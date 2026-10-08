@@ -44,9 +44,10 @@ class ChatScreenTest {
         composeRule.setContent {
             HopesTheme {
                 Box(
-                    modifier = Modifier
-                        .width(360.dp)
-                        .fillMaxHeight(),
+                    modifier =
+                        Modifier
+                            .width(360.dp)
+                            .fillMaxHeight(),
                 ) {
                     ChatScreen(
                         questionText = "",

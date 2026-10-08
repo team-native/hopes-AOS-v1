@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.history.presentation.HistoryContentState
 import com.example.hopes.feature.history.presentation.HistoryUiState
+import com.teamnative.hopes.R
 
 /** 서버 목록의 로딩·성공·빈 결과·오류 상태와 다음 페이지 로드를 표시한다. */
 @Composable
@@ -36,25 +36,33 @@ fun HistoryConversationList(
     onLoadNextPageRetryClick: () -> Unit,
 ) {
     when (uiState.contentState) {
-        HistoryContentState.Loading -> HistoryListStateMessage(
-            text = stringResource(R.string.history_loading),
-        )
+        HistoryContentState.Loading -> {
+            HistoryListStateMessage(
+                text = stringResource(R.string.history_loading),
+            )
+        }
 
-        HistoryContentState.Empty -> HistoryListStateMessage(
-            text = stringResource(R.string.history_empty),
-        )
+        HistoryContentState.Empty -> {
+            HistoryListStateMessage(
+                text = stringResource(R.string.history_empty),
+            )
+        }
 
-        HistoryContentState.Error -> HistoryListStateMessage(
-            text = stringResource(R.string.history_error),
-            onClick = onRetryClick,
-        )
+        HistoryContentState.Error -> {
+            HistoryListStateMessage(
+                text = stringResource(R.string.history_error),
+                onClick = onRetryClick,
+            )
+        }
 
-        HistoryContentState.Content -> HistoryConversationContent(
-            uiState = uiState,
-            onChatClick = onChatClick,
-            onLoadNextPage = onLoadNextPage,
-            onLoadNextPageRetryClick = onLoadNextPageRetryClick,
-        )
+        HistoryContentState.Content -> {
+            HistoryConversationContent(
+                uiState = uiState,
+                onChatClick = onChatClick,
+                onLoadNextPage = onLoadNextPage,
+                onLoadNextPageRetryClick = onLoadNextPageRetryClick,
+            )
+        }
     }
 }
 
@@ -68,7 +76,10 @@ private fun HistoryConversationContent(
     val listState = rememberLazyListState()
     val shouldLoadNextPage by remember(uiState.chats.size) {
         derivedStateOf {
-            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+            val lastVisibleIndex =
+                listState.layoutInfo.visibleItemsInfo
+                    .lastOrNull()
+                    ?.index
             lastVisibleIndex != null && lastVisibleIndex >= uiState.chats.lastIndex
         }
     }
@@ -80,14 +91,14 @@ private fun HistoryConversationContent(
     }
 
     LazyColumn(
-        modifier = Modifier
-            .padding(
-                start = AppSpacing.ScreenHorizontal,
-                top = HISTORY_LIST_TOP_PADDING,
-                end = AppSpacing.ScreenHorizontal,
-            )
-            .fillMaxWidth()
-            .padding(bottom = HISTORY_LIST_BOTTOM_PADDING),
+        modifier =
+            Modifier
+                .padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = HISTORY_LIST_TOP_PADDING,
+                    end = AppSpacing.ScreenHorizontal,
+                ).fillMaxWidth()
+                .padding(bottom = HISTORY_LIST_BOTTOM_PADDING),
         state = listState,
         verticalArrangement = Arrangement.spacedBy(AppSpacing.Small),
     ) {
@@ -105,9 +116,10 @@ private fun HistoryConversationContent(
         if (uiState.isLoadingNextPage) {
             item {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = AppSpacing.Item),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = AppSpacing.Item),
                     contentAlignment = Alignment.Center,
                 ) {
                     CircularProgressIndicator()
@@ -119,10 +131,11 @@ private fun HistoryConversationContent(
             item {
                 Text(
                     text = stringResource(R.string.history_load_next_page_error),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable(onClick = onLoadNextPageRetryClick)
-                        .padding(vertical = AppSpacing.Item),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = onLoadNextPageRetryClick)
+                            .padding(vertical = AppSpacing.Item),
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyMedium,
@@ -139,20 +152,20 @@ private fun HistoryListStateMessage(
 ) {
     Text(
         text = text,
-        modifier = Modifier
-            .padding(
-                start = AppSpacing.ScreenHorizontal,
-                top = HISTORY_LIST_TOP_PADDING,
-                end = AppSpacing.ScreenHorizontal,
-            )
-            .fillMaxSize()
-            .then(
-                if (onClick == null) {
-                    Modifier
-                } else {
-                    Modifier.clickable(onClick = onClick)
-                },
-            ),
+        modifier =
+            Modifier
+                .padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = HISTORY_LIST_TOP_PADDING,
+                    end = AppSpacing.ScreenHorizontal,
+                ).fillMaxSize()
+                .then(
+                    if (onClick == null) {
+                        Modifier
+                    } else {
+                        Modifier.clickable(onClick = onClick)
+                    },
+                ),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.bodyMedium,

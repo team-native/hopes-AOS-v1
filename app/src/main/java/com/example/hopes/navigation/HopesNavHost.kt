@@ -68,12 +68,13 @@ private fun HopesAuthNavDisplay() {
         transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
         popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
         predictivePopTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
-        entryProvider = entryProvider {
-            entry<HopesDestination.Auth> {
-                // 인증 성공은 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
-                AuthRoute(onAuthenticated = {})
-            }
-        },
+        entryProvider =
+            entryProvider {
+                entry<HopesDestination.Auth> {
+                    // 인증 성공은 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
+                    AuthRoute(onAuthenticated = {})
+                }
+            },
     )
 }
 
@@ -82,78 +83,80 @@ private fun HopesMainNavDisplay(
     isDarkThemeEnabled: Boolean,
     onDarkThemeChange: (Boolean) -> Unit,
 ) {
-    val navigationState = rememberHopesMainNavigationState(
-        startRoute = HopesDestination.Home,
-        topLevelRoutes = hopesTabDestinations,
-    )
+    val navigationState =
+        rememberHopesMainNavigationState(
+            startRoute = HopesDestination.Home,
+            topLevelRoutes = hopesTabDestinations,
+        )
     val navigator = remember(navigationState) { HopesMainNavigator(navigationState) }
 
     NavDisplay(
-        entries = navigationState.toEntries(
-            entryProvider {
-                entry<HopesDestination.Home> {
-                    HomeRoute(onNavigate = navigator::navigateToTab)
-                }
-                entry<HopesDestination.Chat> { key ->
-                    ChatRoute(
-                        onNavigate = navigator::navigateToTab,
-                        onNavigateToNewChatDetail = { question ->
-                            navigator.push(HopesDestination.ChatDetail(chatId = NEW_CHAT_ID, question = question))
-                        },
-                        isNewChatRequested = key.isNewChatRequested,
-                    )
-                }
-                entry<HopesDestination.History> {
-                    HistoryRoute(
-                        onNavigate = navigator::navigateToTab,
-                        onNavigateToChatDetail = { chatId ->
-                            navigator.push(HopesDestination.ChatDetail(chatId = chatId))
-                        },
-                        onStartNewChat = navigator::navigateToNewChat,
-                    )
-                }
-                entry<HopesDestination.Settings> {
-                    MyPageRoute(
-                        onNavigate = navigator::navigateToTab,
-                        // 설정은 마이페이지 하위 화면이라 top-level 탐색이 아닌 일반 push로 진입시켜,
-                        // 뒤로가기 시 홈이 아닌 마이페이지로 돌아오게 한다.
-                        onNavigateToAppSettings = { navigator.push(HopesDestination.AppSettings) },
-                    )
-                }
-                entry<HopesDestination.AppSettings> {
-                    SettingsRoute(
-                        onNavigate = navigator::navigateToTab,
-                        isDarkModeEnabled = isDarkThemeEnabled,
-                        onDarkModeChange = onDarkThemeChange,
-                        onBackClick = navigator::goBack,
-                        onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
-                        onNavigateToContact = { navigator.push(HopesDestination.Contact) },
-                        // 로그아웃도 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
-                        onLogout = {},
-                    )
-                }
-                entry<HopesDestination.PersonalSettings> {
-                    PersonalSettingsRoute(
-                        onNavigate = navigator::navigateToTab,
-                        onBackClick = navigator::goBack,
-                    )
-                }
-                entry<HopesDestination.Contact> {
-                    ContactRoute(
-                        onNavigate = navigator::navigateToTab,
-                        onBackClick = navigator::goBack,
-                    )
-                }
-                entry<HopesDestination.ChatDetail> { key ->
-                    ChatDetailRoute(
-                        chatId = key.chatId,
-                        question = key.question,
-                        onBackClick = navigator::goBack,
-                        onNavigate = navigator::navigateToTab,
-                    )
-                }
-            },
-        ),
+        entries =
+            navigationState.toEntries(
+                entryProvider {
+                    entry<HopesDestination.Home> {
+                        HomeRoute(onNavigate = navigator::navigateToTab)
+                    }
+                    entry<HopesDestination.Chat> { key ->
+                        ChatRoute(
+                            onNavigate = navigator::navigateToTab,
+                            onNavigateToNewChatDetail = { question ->
+                                navigator.push(HopesDestination.ChatDetail(chatId = NEW_CHAT_ID, question = question))
+                            },
+                            isNewChatRequested = key.isNewChatRequested,
+                        )
+                    }
+                    entry<HopesDestination.History> {
+                        HistoryRoute(
+                            onNavigate = navigator::navigateToTab,
+                            onNavigateToChatDetail = { chatId ->
+                                navigator.push(HopesDestination.ChatDetail(chatId = chatId))
+                            },
+                            onStartNewChat = navigator::navigateToNewChat,
+                        )
+                    }
+                    entry<HopesDestination.Settings> {
+                        MyPageRoute(
+                            onNavigate = navigator::navigateToTab,
+                            // 설정은 마이페이지 하위 화면이라 top-level 탐색이 아닌 일반 push로 진입시켜,
+                            // 뒤로가기 시 홈이 아닌 마이페이지로 돌아오게 한다.
+                            onNavigateToAppSettings = { navigator.push(HopesDestination.AppSettings) },
+                        )
+                    }
+                    entry<HopesDestination.AppSettings> {
+                        SettingsRoute(
+                            onNavigate = navigator::navigateToTab,
+                            isDarkModeEnabled = isDarkThemeEnabled,
+                            onDarkModeChange = onDarkThemeChange,
+                            onBackClick = navigator::goBack,
+                            onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
+                            onNavigateToContact = { navigator.push(HopesDestination.Contact) },
+                            // 로그아웃도 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
+                            onLogout = {},
+                        )
+                    }
+                    entry<HopesDestination.PersonalSettings> {
+                        PersonalSettingsRoute(
+                            onNavigate = navigator::navigateToTab,
+                            onBackClick = navigator::goBack,
+                        )
+                    }
+                    entry<HopesDestination.Contact> {
+                        ContactRoute(
+                            onNavigate = navigator::navigateToTab,
+                            onBackClick = navigator::goBack,
+                        )
+                    }
+                    entry<HopesDestination.ChatDetail> { key ->
+                        ChatDetailRoute(
+                            chatId = key.chatId,
+                            question = key.question,
+                            onBackClick = navigator::goBack,
+                            onNavigate = navigator::navigateToTab,
+                        )
+                    }
+                },
+            ),
         onBack = navigator::goBack,
         transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
         popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },

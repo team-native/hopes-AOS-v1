@@ -15,7 +15,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthForgotPasswordLink
 import com.example.hopes.feature.auth.presentation.component.AuthLoginErrorMessage
@@ -26,6 +25,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthStatusText
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.feature.auth.presentation.component.FigmaLoginButton
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 로그인 시트 안쪽의 입력 폼이다. 핸들부터 회원가입 유도 문구까지 세로로 배치한다. */
 @Composable
@@ -51,26 +51,28 @@ fun AuthLoginFormContent(
     // 여기서 다시 imePadding()을 적용하면 키보드 높이가 두 번 반영돼(시트 이동 + 내부
     // 여백) 필드가 과하게 밀리므로 verticalScroll만 두고 imePadding은 쓰지 않는다.
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
         // 핸들에만 드래그 제스처를 붙여, 아래 필드 목록의 verticalScroll과 제스처가
         // 충돌해 시트를 끌어내릴 수 없게 되는 문제를 막는다.
         Box(
-            modifier = Modifier.pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { onHandleDragStart() },
-                    onDrag = { change, dragAmount ->
-                        change.consume()
-                        onHandleDrag(dragAmount.y)
-                    },
-                    onDragEnd = { onHandleDragEnd() },
-                    onDragCancel = { onHandleDragCancel() },
-                )
-            },
+            modifier =
+                Modifier.pointerInput(Unit) {
+                    detectDragGestures(
+                        onDragStart = { onHandleDragStart() },
+                        onDrag = { change, dragAmount ->
+                            change.consume()
+                            onHandleDrag(dragAmount.y)
+                        },
+                        onDragEnd = { onHandleDragEnd() },
+                        onDragCancel = { onHandleDragCancel() },
+                    )
+                },
         ) {
             AuthSheetHandle()
         }

@@ -10,8 +10,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 회원가입 화면 하단에서 로그인 화면으로 돌아가는 링크다. */
 @Composable
@@ -21,9 +21,10 @@ fun AuthSignUpFooterLink(
 ) {
     Text(
         text = stringResource(R.string.has_account),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
         color = LocalHopesExtendedColors.current.authFieldHint,
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),

@@ -43,31 +43,34 @@ fun ChatSuggestionChip(
     val chipShape = RoundedCornerShape(AppRadius.Card)
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(72.dp)
-            .figmaSubtleShadow(chipShape)
-            .background(MaterialTheme.colorScheme.surface, chipShape)
-            .border(1.dp, MaterialTheme.colorScheme.outline, chipShape)
-            .semantics { role = Role.Button }
-            .shapeClickable(shape = chipShape, enabled = !isLoading, onClick = onClick)
-            .padding(horizontal = 14.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(72.dp)
+                .figmaSubtleShadow(chipShape)
+                .background(MaterialTheme.colorScheme.surface, chipShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, chipShape)
+                .semantics { role = Role.Button }
+                .shapeClickable(shape = chipShape, enabled = !isLoading, onClick = onClick)
+                .padding(horizontal = 14.dp),
         contentAlignment = Alignment.CenterStart,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
-                modifier = Modifier
-                    .width(36.dp)
-                    .height(36.dp)
-                    .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(13.dp)),
+                modifier =
+                    Modifier
+                        .width(36.dp)
+                        .height(36.dp)
+                        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(13.dp)),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .rotate(iconRotationDegrees),
+                    modifier =
+                        Modifier
+                            .size(20.dp)
+                            .rotate(iconRotationDegrees),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 )
             }

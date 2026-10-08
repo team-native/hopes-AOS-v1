@@ -19,27 +19,30 @@ import com.example.hopes.ui.theme.LocalHopesExtendedColors
 @Composable
 fun AuthSignUpBackground(modifier: Modifier = Modifier) {
     val extendedColors = LocalHopesExtendedColors.current
-    val statusBarHeight = with(LocalDensity.current) {
-        WindowInsets.statusBars.getTop(this).toDp()
-    }
+    val statusBarHeight =
+        with(LocalDensity.current) {
+            WindowInsets.statusBars.getTop(this).toDp()
+        }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
     )
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            // 콘텐츠 좌표계 기준 250dp를 유지하도록 상태바 높이만큼 더 그린다.
-            .height(250.dp + statusBarHeight)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        extendedColors.signupGradientStart,
-                        extendedColors.signupGradientEnd,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                // 콘텐츠 좌표계 기준 250dp를 유지하도록 상태바 높이만큼 더 그린다.
+                .height(250.dp + statusBarHeight)
+                .background(
+                    Brush.verticalGradient(
+                        listOf(
+                            extendedColors.signupGradientStart,
+                            extendedColors.signupGradientEnd,
+                        ),
                     ),
                 ),
-            ),
     )
 }

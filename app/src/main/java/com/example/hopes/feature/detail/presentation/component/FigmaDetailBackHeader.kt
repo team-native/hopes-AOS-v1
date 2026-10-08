@@ -39,15 +39,17 @@ fun FigmaDetailBackHeader(
     val textStartX = backOffsetX.dp + 32.dp + 16.dp
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .then(if (applySystemBarPadding) Modifier.statusBarsPadding() else Modifier),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = backOffsetX.dp, end = 24.dp)
-                .height(39.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = backOffsetX.dp, end = 24.dp)
+                    .height(39.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             FigmaBackButton(
@@ -61,13 +63,13 @@ fun FigmaDetailBackHeader(
                 modifier = Modifier.weight(1f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = TextStyle(
-                    fontSize = titleFontSize,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = titleLineHeight,
-                ),
+                style =
+                    TextStyle(
+                        fontSize = titleFontSize,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = titleLineHeight,
+                    ),
             )
-
         }
 
         // 시스템바 패딩을 적용하는 화면은 헤더 행 바로 아래에 subtitleSpacing만큼만 띄운다.

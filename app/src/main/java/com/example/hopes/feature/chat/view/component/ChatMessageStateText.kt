@@ -17,9 +17,10 @@ fun ChatMessageStateText(
 ) {
     Text(
         text = stringResource(textResId),
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick)),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick)),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.Center,
     )

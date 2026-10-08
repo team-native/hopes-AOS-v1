@@ -15,10 +15,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.teamnative.hopes.R
 
 /** 로그인 시트의 46dp 기본 액션 버튼이다. */
 @Composable
@@ -30,19 +30,20 @@ fun FigmaLoginButton(
     val buttonShape = RoundedCornerShape(AppRadius.Button)
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(46.dp)
-            .figmaSheetShadow(buttonShape)
-            .background(
-                color = if (isEnabled) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
-                },
-                shape = buttonShape,
-            )
-            .shapeClickable(shape = buttonShape, enabled = isEnabled, onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(46.dp)
+                .figmaSheetShadow(buttonShape)
+                .background(
+                    color =
+                        if (isEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+                        },
+                    shape = buttonShape,
+                ).shapeClickable(shape = buttonShape, enabled = isEnabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

@@ -32,13 +32,13 @@ fun FigmaSingleSelectionDialog(
             Column {
                 options.forEach { option ->
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                role = Role.RadioButton,
-                                onClick = { onValueSelected(option) },
-                            )
-                            .padding(vertical = 4.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    role = Role.RadioButton,
+                                    onClick = { onValueSelected(option) },
+                                ).padding(vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         RadioButton(

@@ -30,13 +30,14 @@ class MainActivity : ComponentActivity() {
             }
 
             SideEffect {
-                WindowCompat.getInsetsController(
-                    window,
-                    window.decorView,
-                ).apply {
-                    isAppearanceLightStatusBars = !isDarkThemeEnabled
-                    isAppearanceLightNavigationBars = !isDarkThemeEnabled
-                }
+                WindowCompat
+                    .getInsetsController(
+                        window,
+                        window.decorView,
+                    ).apply {
+                        isAppearanceLightStatusBars = !isDarkThemeEnabled
+                        isAppearanceLightNavigationBars = !isDarkThemeEnabled
+                    }
             }
 
             HopesTheme(darkTheme = isDarkThemeEnabled) {

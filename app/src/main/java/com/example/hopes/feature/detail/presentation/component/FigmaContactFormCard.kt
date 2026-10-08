@@ -2,15 +2,15 @@ package com.example.hopes.feature.detail.presentation.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
+import com.teamnative.hopes.R
 
 /** 피그마 14 문의 이메일·내용 입력과 전송 버튼을 포함한 카드다. */
 @Composable
@@ -26,19 +26,21 @@ fun FigmaContactFormCard(
     modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(420.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(420.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = AppSpacing.ScreenHorizontal,
-                    top = 42.dp,
-                    end = AppSpacing.ScreenHorizontal,
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = AppSpacing.ScreenHorizontal,
+                        top = 42.dp,
+                        end = AppSpacing.ScreenHorizontal,
+                    ),
         ) {
             FigmaDetailFieldLabel(text = stringResource(R.string.email))
 
@@ -66,15 +68,17 @@ fun FigmaContactFormCard(
             Spacer(modifier = Modifier.height(30.dp))
 
             FigmaDetailPrimaryButton(
-                text = when {
-                    isSending -> stringResource(R.string.contact_sending)
-                    isContactSent -> stringResource(R.string.sent)
-                    isSendFailed -> stringResource(R.string.contact_send_error)
-                    else -> stringResource(R.string.send_contact)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
+                text =
+                    when {
+                        isSending -> stringResource(R.string.contact_sending)
+                        isContactSent -> stringResource(R.string.sent)
+                        isSendFailed -> stringResource(R.string.contact_send_error)
+                        else -> stringResource(R.string.send_contact)
+                    },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                 onClick = onSendClick,
             )
         }

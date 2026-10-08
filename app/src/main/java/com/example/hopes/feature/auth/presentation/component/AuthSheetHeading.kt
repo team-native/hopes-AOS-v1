@@ -30,10 +30,11 @@ fun AuthSheetHeading(
         Text(
             text = title,
             color = titleColor,
-            style = TextStyle(
-                fontSize = titleFontSize,
-                fontWeight = FontWeight.Bold,
-            ),
+            style =
+                TextStyle(
+                    fontSize = titleFontSize,
+                    fontWeight = FontWeight.Bold,
+                ),
         )
 
         Spacer(modifier = Modifier.height(spacing))
@@ -41,10 +42,11 @@ fun AuthSheetHeading(
         Text(
             text = subtitle,
             color = subtitleColor,
-            style = TextStyle(
-                fontSize = subtitleFontSize,
-                lineHeight = subtitleLineHeight,
-            ),
+            style =
+                TextStyle(
+                    fontSize = subtitleFontSize,
+                    lineHeight = subtitleLineHeight,
+                ),
         )
     }
 }

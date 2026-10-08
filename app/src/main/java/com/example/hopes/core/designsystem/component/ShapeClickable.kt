@@ -17,10 +17,11 @@ fun Modifier.shapeClickable(
     enabled: Boolean = true,
     role: Role? = Role.Button,
     onClick: () -> Unit,
-): Modifier = clip(shape).clickable(
-    interactionSource = null,
-    indication = null,
-    enabled = enabled,
-    role = role,
-    onClick = onClick,
-)
+): Modifier =
+    clip(shape).clickable(
+        interactionSource = null,
+        indication = null,
+        enabled = enabled,
+        role = role,
+        onClick = onClick,
+    )

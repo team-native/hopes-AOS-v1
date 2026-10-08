@@ -19,14 +19,15 @@ class AuthViewModelTest {
     @Test
     fun loginWithBlankCredentials_doesNotShowServerErrorMessage() {
         val repository = RecordingAuthRepository()
-        val viewModel = AuthViewModel(
-            loginUseCase = LoginUseCase(repository),
-            requestPasswordResetUseCase = RequestPasswordResetUseCase(repository),
-            resetPasswordUseCase = ResetPasswordUseCase(repository),
-            sendSignupVerificationUseCase = SendSignupVerificationUseCase(repository),
-            confirmSignupVerificationUseCase = ConfirmSignupVerificationUseCase(repository),
-            signUpUseCase = SignUpUseCase(repository),
-        )
+        val viewModel =
+            AuthViewModel(
+                loginUseCase = LoginUseCase(repository),
+                requestPasswordResetUseCase = RequestPasswordResetUseCase(repository),
+                resetPasswordUseCase = ResetPasswordUseCase(repository),
+                sendSignupVerificationUseCase = SendSignupVerificationUseCase(repository),
+                confirmSignupVerificationUseCase = ConfirmSignupVerificationUseCase(repository),
+                signUpUseCase = SignUpUseCase(repository),
+            )
 
         viewModel.onEvent(AuthScreenEvent.LoginClicked)
 
@@ -38,28 +39,25 @@ class AuthViewModelTest {
 private class RecordingAuthRepository : AuthRepository {
     var loginCallCount: Int = 0
 
-    override suspend fun login(username: String, password: String): AppResult<AuthToken> {
+    override suspend fun login(
+        username: String,
+        password: String,
+    ): AppResult<AuthToken> {
         loginCallCount += 1
         return AppResult.Success(AuthToken(accessToken = "access-token", tokenType = "Bearer"))
     }
 
-    override suspend fun signUp(request: SignUpRequest): AppResult<AuthToken> {
-        return AppResult.Success(AuthToken(accessToken = "access-token", tokenType = "Bearer"))
-    }
+    override suspend fun signUp(request: SignUpRequest): AppResult<AuthToken> =
+        AppResult.Success(AuthToken(accessToken = "access-token", tokenType = "Bearer"))
 
-    override suspend fun sendSignupCode(email: String): AppResult<Unit> {
-        return AppResult.Success(Unit)
-    }
+    override suspend fun sendSignupCode(email: String): AppResult<Unit> = AppResult.Success(Unit)
 
-    override suspend fun confirmSignupCode(email: String, code: String): AppResult<Unit> {
-        return AppResult.Success(Unit)
-    }
+    override suspend fun confirmSignupCode(
+        email: String,
+        code: String,
+    ): AppResult<Unit> = AppResult.Success(Unit)
 
-    override suspend fun requestPasswordReset(email: String): AppResult<String> {
-        return AppResult.Success("")
-    }
+    override suspend fun requestPasswordReset(email: String): AppResult<String> = AppResult.Success("")
 
-    override suspend fun resetPassword(request: PasswordResetRequest): AppResult<Unit> {
-        return AppResult.Success(Unit)
-    }
+    override suspend fun resetPassword(request: PasswordResetRequest): AppResult<Unit> = AppResult.Success(Unit)
 }

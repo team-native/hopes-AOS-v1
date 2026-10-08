@@ -25,9 +25,10 @@ class SettingsResponsiveTest {
         composeRule.setContent {
             HopesTheme {
                 Box(
-                    modifier = Modifier
-                        .width(402.dp)
-                        .fillMaxHeight(),
+                    modifier =
+                        Modifier
+                            .width(402.dp)
+                            .fillMaxHeight(),
                 ) {
                     SettingsScreenContent(
                         onNavigate = {},
@@ -44,28 +45,37 @@ class SettingsResponsiveTest {
             }
         }
 
-        val settingsOptionRows = composeRule
-            .onAllNodesWithTag("settings_option_row")
-            .assertCountEquals(3)
-        val expectedWidth = settingsOptionRows
-            .get(0)
-            .fetchSemanticsNode()
-            .boundsInRoot
-            .width
+        val settingsOptionRows =
+            composeRule
+                .onAllNodesWithTag("settings_option_row")
+                .assertCountEquals(3)
+        val expectedWidth =
+            settingsOptionRows
+                .get(0)
+                .fetchSemanticsNode()
+                .boundsInRoot
+                .width
 
         assertEquals(
             expectedWidth,
-            settingsOptionRows.get(1).fetchSemanticsNode().boundsInRoot.width,
+            settingsOptionRows
+                .get(1)
+                .fetchSemanticsNode()
+                .boundsInRoot.width,
             0.5f,
         )
         assertEquals(
             expectedWidth,
-            settingsOptionRows.get(2).fetchSemanticsNode().boundsInRoot.width,
+            settingsOptionRows
+                .get(2)
+                .fetchSemanticsNode()
+                .boundsInRoot.width,
             0.5f,
         )
         assertEquals(
             expectedWidth,
-            composeRule.onNodeWithTag("settings_account_section")
+            composeRule
+                .onNodeWithTag("settings_account_section")
                 .fetchSemanticsNode()
                 .boundsInRoot
                 .width,

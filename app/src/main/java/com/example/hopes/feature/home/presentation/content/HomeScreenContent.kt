@@ -21,7 +21,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
@@ -30,6 +29,7 @@ import com.example.hopes.feature.home.presentation.component.FigmaHomeTipCard
 import com.example.hopes.feature.home.presentation.component.HomeStartChatButton
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 피그마 04 온보딩 프레임을 로그인 뒤 홈 탭의 첫 화면으로 표시한다. */
 @Composable
@@ -55,15 +55,16 @@ fun HomeScreenContent(
         scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
-                .padding(
-                    start = AppSpacing.Large,
-                    top = AppSpacing.SystemBarToContent,
-                    end = AppSpacing.Large,
-                    bottom = AppSpacing.Large,
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        start = AppSpacing.Large,
+                        top = AppSpacing.SystemBarToContent,
+                        end = AppSpacing.Large,
+                        bottom = AppSpacing.Large,
+                    ),
         ) {
             FigmaBrandHeader(
                 isOnBlueBackground = true,

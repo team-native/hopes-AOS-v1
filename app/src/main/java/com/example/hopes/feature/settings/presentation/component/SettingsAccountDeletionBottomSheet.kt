@@ -19,11 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppBlurRadius
 import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
 import com.example.hopes.feature.auth.presentation.component.FigmaAuthTextField
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 현재 비밀번호를 입력받는 회원탈퇴 BottomSheet다. */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,10 +47,11 @@ fun SettingsAccountDeletionBottomSheet(
         ApplyDialogWindowBackgroundBlur(blurRadius = AppBlurRadius.DialogWindowBackdrop)
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(horizontal = 24.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Text(
@@ -106,10 +107,11 @@ fun SettingsAccountDeletionBottomSheet(
                 Button(
                     onClick = onDeleteClick,
                     enabled = password.isNotBlank() && !isDeletingAccount,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = extendedColors.logoutContainer,
-                        contentColor = extendedColors.logoutText,
-                    ),
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = extendedColors.logoutContainer,
+                            contentColor = extendedColors.logoutText,
+                        ),
                     modifier = Modifier.weight(1f),
                 ) {
                     if (isDeletingAccount) {

@@ -50,13 +50,14 @@ fun ChatScreen(
                 onValueChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
                 onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
                 isLoading = false,
-                modifier = Modifier
-                    .imePadding()
-                    .padding(
-                        start = AppSpacing.ScreenHorizontal,
-                        end = AppSpacing.ScreenHorizontal,
-                        bottom = 10.dp,
-                    ),
+                modifier =
+                    Modifier
+                        .imePadding()
+                        .padding(
+                            start = AppSpacing.ScreenHorizontal,
+                            end = AppSpacing.ScreenHorizontal,
+                            bottom = 10.dp,
+                        ),
             )
         },
         isBottomNavigationVisible = !isImeVisible,
@@ -64,18 +65,20 @@ fun ChatScreen(
         // 키보드가 올라와 가용 높이가 줄어들 때도 콘텐츠가 잘리지 않도록 스크롤 가능하게 하고,
         // imePadding으로 키보드 높이만큼 하단 여백을 확보해 마지막 카드까지 스크롤해 볼 수 있게 한다.
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .imePadding(),
+            modifier =
+                Modifier
+                    .verticalScroll(rememberScrollState())
+                    .imePadding(),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = AppSpacing.ScreenHorizontal,
-                        top = AppSpacing.SystemBarToContent,
-                        end = AppSpacing.ScreenHorizontal,
-                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            start = AppSpacing.ScreenHorizontal,
+                            top = AppSpacing.SystemBarToContent,
+                            end = AppSpacing.ScreenHorizontal,
+                        ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {

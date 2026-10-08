@@ -26,15 +26,17 @@ class ChatDetailScreenTest {
         composeRule.setContent {
             HopesTheme {
                 Box(
-                    modifier = Modifier
-                        .width(402.dp)
-                        .fillMaxHeight(),
+                    modifier =
+                        Modifier
+                            .width(402.dp)
+                            .fillMaxHeight(),
                 ) {
                     ChatDetailScreen(
-                        uiState = ChatDetailUiState(
-                            title = "기숙사 생활",
-                            isLoading = false,
-                        ),
+                        uiState =
+                            ChatDetailUiState(
+                                title = "기숙사 생활",
+                                isLoading = false,
+                            ),
                         onEvent = { _: ChatDetailScreenEvent -> },
                         onNavigate = {},
                     )

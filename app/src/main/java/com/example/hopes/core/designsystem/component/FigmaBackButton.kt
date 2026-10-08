@@ -30,17 +30,17 @@ fun FigmaBackButton(
     val buttonShape = RoundedCornerShape(13.dp)
 
     Box(
-        modifier = modifier
-            // 헤더 타이틀(27.sp, lineHeight 32.sp)의 세로 길이와 같게 맞춘다.
-            .size(32.dp)
-            .figmaSubtleShadow(buttonShape)
-            .background(MaterialTheme.colorScheme.surface, buttonShape)
-            .border(1.dp, MaterialTheme.colorScheme.outline, buttonShape)
-            .semantics {
-                role = Role.Button
-                contentDescription = backDescription
-            }
-            .shapeClickable(shape = buttonShape, onClick = onClick),
+        modifier =
+            modifier
+                // 헤더 타이틀(27.sp, lineHeight 32.sp)의 세로 길이와 같게 맞춘다.
+                .size(32.dp)
+                .figmaSubtleShadow(buttonShape)
+                .background(MaterialTheme.colorScheme.surface, buttonShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, buttonShape)
+                .semantics {
+                    role = Role.Button
+                    contentDescription = backDescription
+                }.shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Icon(

@@ -22,8 +22,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 피그마 상단의 42dp 브랜드 마크와 두 줄 서비스명을 동일한 비율로 표시한다. */
 @Composable
@@ -33,45 +33,48 @@ fun FigmaBrandHeader(
     logoShadow: FigmaBrandLogoShadow = FigmaBrandLogoShadow.Raised,
 ) {
     val extendedColors = LocalHopesExtendedColors.current
-    val titleColor = if (isOnBlueBackground) {
-        MaterialTheme.colorScheme.onPrimary
-    } else {
-        MaterialTheme.colorScheme.onSurface
-    }
-    val subtitleColor = if (isOnBlueBackground) {
-        extendedColors.brandSubtitleOnBlue
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
+    val titleColor =
+        if (isOnBlueBackground) {
+            MaterialTheme.colorScheme.onPrimary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
+    val subtitleColor =
+        if (isOnBlueBackground) {
+            extendedColors.brandSubtitleOnBlue
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
 
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .size(42.dp)
-                // 화면별로 Figma 원본에 지정된 로고 그림자 값을 선택한다.
-                .then(
-                    if (logoShadow == FigmaBrandLogoShadow.Subtle) {
-                        Modifier.figmaSubtleShadow(RoundedCornerShape(12.dp))
-                    } else {
-                        Modifier.figmaRaisedShadow(RoundedCornerShape(12.dp))
-                    },
-                )
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(12.dp),
-                ),
+            modifier =
+                Modifier
+                    .size(42.dp)
+                    // 화면별로 Figma 원본에 지정된 로고 그림자 값을 선택한다.
+                    .then(
+                        if (logoShadow == FigmaBrandLogoShadow.Subtle) {
+                            Modifier.figmaSubtleShadow(RoundedCornerShape(12.dp))
+                        } else {
+                            Modifier.figmaRaisedShadow(RoundedCornerShape(12.dp))
+                        },
+                    ).background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(12.dp),
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(R.drawable.hopes_logo),
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(14.dp),
+                modifier =
+                    Modifier
+                        .height(20.dp)
+                        .width(14.dp),
             )
         }
 
@@ -81,19 +84,21 @@ fun FigmaBrandHeader(
             Text(
                 text = stringResource(R.string.app_name),
                 color = titleColor,
-                style = TextStyle(
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+                style =
+                    TextStyle(
+                        fontSize = 17.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
             )
 
             Text(
                 text = stringResource(R.string.school_name),
                 color = subtitleColor,
-                style = TextStyle(
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
+                style =
+                    TextStyle(
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Medium,
+                    ),
             )
         }
     }

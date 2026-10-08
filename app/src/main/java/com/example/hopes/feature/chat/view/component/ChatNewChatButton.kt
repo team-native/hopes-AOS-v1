@@ -16,8 +16,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.teamnative.hopes.R
 
 /** 채팅 홈 헤더 우측의 새 채팅 시작 버튼이다. */
 @Composable
@@ -28,12 +28,13 @@ fun ChatNewChatButton(
     val buttonShape = RoundedCornerShape(14.dp)
 
     Box(
-        modifier = modifier
-            .width(70.dp)
-            .height(38.dp)
-            .border(1.dp, MaterialTheme.colorScheme.outline, buttonShape)
-            .background(MaterialTheme.colorScheme.surface, buttonShape)
-            .shapeClickable(shape = buttonShape, onClick = onClick),
+        modifier =
+            modifier
+                .width(70.dp)
+                .height(38.dp)
+                .border(1.dp, MaterialTheme.colorScheme.outline, buttonShape)
+                .background(MaterialTheme.colorScheme.surface, buttonShape)
+                .shapeClickable(shape = buttonShape, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Text(

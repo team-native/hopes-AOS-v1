@@ -17,13 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.teamnative.hopes.R
 
 /** 입력이 멈추면 서버의 지난 대화 검색을 시작하는 검색 필드다. */
 @Composable
@@ -35,30 +35,30 @@ fun HistorySearchField(
     val fieldShape = RoundedCornerShape(AppRadius.Field)
 
     Box(
-        modifier = Modifier
-            .padding(
-                start = AppSpacing.ScreenHorizontal,
-                top = HISTORY_SEARCH_TOP_PADDING,
-                end = AppSpacing.ScreenHorizontal,
-            )
-            .fillMaxWidth()
-            .height(HISTORY_SEARCH_HEIGHT)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                shape = fieldShape,
-            )
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = fieldShape,
-            ),
+        modifier =
+            Modifier
+                .padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = HISTORY_SEARCH_TOP_PADDING,
+                    end = AppSpacing.ScreenHorizontal,
+                ).fillMaxWidth()
+                .height(HISTORY_SEARCH_HEIGHT)
+                .border(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.outline,
+                    shape = fieldShape,
+                ).background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = fieldShape,
+                ),
     ) {
         if (value.isEmpty()) {
             Text(
                 text = searchLabel,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = HISTORY_SEARCH_HORIZONTAL_PADDING),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = HISTORY_SEARCH_HORIZONTAL_PADDING),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -67,23 +67,26 @@ fun HistorySearchField(
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = HISTORY_SEARCH_HORIZONTAL_PADDING)
-                .width(HISTORY_SEARCH_TEXT_WIDTH)
-                .semantics { contentDescription = searchLabel },
+            modifier =
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = HISTORY_SEARCH_HORIZONTAL_PADDING)
+                    .width(HISTORY_SEARCH_TEXT_WIDTH)
+                    .semantics { contentDescription = searchLabel },
             singleLine = true,
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                color = MaterialTheme.colorScheme.onSurface,
-            ),
+            textStyle =
+                MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
         )
 
         Icon(
             imageVector = Icons.Outlined.Search,
             contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = HISTORY_SEARCH_HORIZONTAL_PADDING),
+            modifier =
+                Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = HISTORY_SEARCH_HORIZONTAL_PADDING),
             tint = MaterialTheme.colorScheme.onSurface,
         )
     }

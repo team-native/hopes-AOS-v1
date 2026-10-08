@@ -1,7 +1,7 @@
 package com.example.hopes.feature.detail.presentation.component
 
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -18,9 +18,10 @@ import com.teamnative.hopes.R
 @Composable
 fun FigmaContactInformationCard(modifier: Modifier = Modifier) {
     FigmaDetailCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(70.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(70.dp),
         shadowStyle = FigmaDetailCardShadow.None,
         shape = RoundedCornerShape(16.dp),
     ) {

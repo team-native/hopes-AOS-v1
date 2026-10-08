@@ -22,10 +22,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 다크 모드를 켜고 끄는 설정 행이다. */
 @Composable
@@ -38,14 +38,15 @@ fun FigmaDarkModeRow(
     val rowShape = RoundedCornerShape(18.dp)
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .figmaSubtleShadow(rowShape)
-            .background(MaterialTheme.colorScheme.surface, rowShape)
-            .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
-            .shapeClickable(shape = rowShape, onClick = onToggle)
-            .padding(start = 20.dp, end = 20.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .figmaSubtleShadow(rowShape)
+                .background(MaterialTheme.colorScheme.surface, rowShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
+                .shapeClickable(shape = rowShape, onClick = onToggle)
+                .padding(start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -65,24 +66,26 @@ fun FigmaDarkModeRow(
         }
 
         Box(
-            modifier = Modifier
-                .width(44.dp)
-                .height(25.dp)
-                .background(
-                    if (isEnabled) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        extendedColors.toggleTrackOff
-                    },
-                    RoundedCornerShape(50.dp),
-                ),
+            modifier =
+                Modifier
+                    .width(44.dp)
+                    .height(25.dp)
+                    .background(
+                        if (isEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            extendedColors.toggleTrackOff
+                        },
+                        RoundedCornerShape(50.dp),
+                    ),
         ) {
             Box(
-                modifier = Modifier
-                    .padding(start = if (isEnabled) 12.dp else 3.dp, top = 3.dp)
-                    .width(29.dp)
-                    .height(19.dp)
-                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(50.dp)),
+                modifier =
+                    Modifier
+                        .padding(start = if (isEnabled) 12.dp else 3.dp, top = 3.dp)
+                        .width(29.dp)
+                        .height(19.dp)
+                        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(50.dp)),
             )
         }
     }

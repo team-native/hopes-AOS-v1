@@ -3,8 +3,8 @@ package com.example.hopes.feature.detail.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -25,26 +25,29 @@ fun FigmaDetailTextArea(
     height: Int,
     modifier: Modifier = Modifier,
 ) {
-    val inputTextStyle = TextStyle(
-        fontSize = 15.sp,
-        color = MaterialTheme.colorScheme.onSurface,
-        lineHeight = 22.sp,
-    )
+    val inputTextStyle =
+        TextStyle(
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            lineHeight = 22.sp,
+        )
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(height.dp)
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(height.dp)
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
     ) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, top = 14.dp, end = 16.dp)
-                .height((height - 28).dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 14.dp, end = 16.dp)
+                    .height((height - 28).dp),
             textStyle = inputTextStyle,
             decorationBox = { innerTextField ->
                 if (value.isEmpty()) {

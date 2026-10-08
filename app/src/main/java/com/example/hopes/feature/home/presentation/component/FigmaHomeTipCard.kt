@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,21 +35,23 @@ fun FigmaHomeTipCard(
     val extendedColors = LocalHopesExtendedColors.current
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(78.dp)
-            .testTag("home_tip_card_$index")
-            .figmaSubtleShadow(RoundedCornerShape(18.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp))
-            .padding(start = 14.dp, top = 14.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(78.dp)
+                .testTag("home_tip_card_$index")
+                .figmaSubtleShadow(RoundedCornerShape(18.dp))
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(18.dp))
+                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(18.dp))
+                .padding(start = 14.dp, top = 14.dp),
     ) {
         Row {
             Box(
-                modifier = Modifier
-                    .width(24.dp)
-                    .height(24.dp)
-                    .background(extendedColors.onboardingStepContainer, RoundedCornerShape(12.dp)),
+                modifier =
+                    Modifier
+                        .width(24.dp)
+                        .height(24.dp)
+                        .background(extendedColors.onboardingStepContainer, RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -65,11 +67,12 @@ fun FigmaHomeTipCard(
                 Text(
                     text = topText,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = TextStyle(
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        lineHeight = 20.sp,
-                    ),
+                    style =
+                        TextStyle(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            lineHeight = 20.sp,
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(7.dp))

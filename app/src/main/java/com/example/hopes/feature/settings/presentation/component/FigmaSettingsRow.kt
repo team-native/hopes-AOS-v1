@@ -25,8 +25,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.teamnative.hopes.R
 
 /** 개인 설정·문의 같은 설정 항목으로 이동하는 행이다. */
 @Composable
@@ -39,14 +39,15 @@ fun FigmaSettingsRow(
     val rowShape = RoundedCornerShape(14.dp)
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(64.dp)
-            .testTag("settings_option_row")
-            .background(MaterialTheme.colorScheme.surface, rowShape)
-            .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
-            .shapeClickable(shape = rowShape, onClick = onClick)
-            .padding(start = 20.dp, end = 20.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(64.dp)
+                .testTag("settings_option_row")
+                .background(MaterialTheme.colorScheme.surface, rowShape)
+                .border(1.dp, MaterialTheme.colorScheme.outline, rowShape)
+                .shapeClickable(shape = rowShape, onClick = onClick)
+                .padding(start = 20.dp, end = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -66,11 +67,12 @@ fun FigmaSettingsRow(
         }
 
         Box(
-            modifier = Modifier
-                .width(48.dp)
-                .height(32.dp)
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
-                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
+            modifier =
+                Modifier
+                    .width(48.dp)
+                    .height(32.dp)
+                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(14.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp)),
             contentAlignment = Alignment.Center,
         ) {
             Text(

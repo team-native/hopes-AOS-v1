@@ -16,8 +16,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaBackButton
+import com.teamnative.hopes.R
 
 /** 설정 화면 상단의 뒤로가기, 제목, 설명 영역이다. */
 @Composable

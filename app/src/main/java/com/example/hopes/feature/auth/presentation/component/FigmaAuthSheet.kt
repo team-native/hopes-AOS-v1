@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.figmaPeekSheetShadow
+import com.example.hopes.core.designsystem.component.figmaSheetShadow
 
 /** 피그마 인증 화면의 상단 모서리만 둥근 하단 시트다. */
 @Composable
@@ -21,28 +21,31 @@ fun FigmaAuthSheet(
     isPeekSheet: Boolean,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val sheetShape = RoundedCornerShape(
-        topStart = 28.dp,
-        topEnd = 28.dp,
-    )
+    val sheetShape =
+        RoundedCornerShape(
+            topStart = 28.dp,
+            topEnd = 28.dp,
+        )
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                if (isPeekSheet) {
-                    Modifier.figmaPeekSheetShadow(sheetShape)
-                } else {
-                    Modifier.figmaSheetShadow(sheetShape)
-                },
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .then(
+                    if (isPeekSheet) {
+                        Modifier.figmaPeekSheetShadow(sheetShape)
+                    } else {
+                        Modifier.figmaSheetShadow(sheetShape)
+                    },
+                ),
         color = MaterialTheme.colorScheme.surface,
         shape = sheetShape,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = AppSpacing.Large),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = AppSpacing.Large),
             content = content,
         )
     }

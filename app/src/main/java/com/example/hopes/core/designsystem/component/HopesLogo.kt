@@ -19,10 +19,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.teamnative.hopes.R
 
 /** hopes 서비스명을 표시하는 공통 브랜드 로고다. */
 @Composable
@@ -32,21 +32,23 @@ fun HopesLogo() {
         horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
     ) {
         Box(
-            modifier = Modifier
-                .size(AppIconSize.Logo)
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(AppRadius.Logo),
-                ),
+            modifier =
+                Modifier
+                    .size(AppIconSize.Logo)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(AppRadius.Logo),
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(R.drawable.hopes_logo),
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(14.dp),
+                modifier =
+                    Modifier
+                        .height(20.dp)
+                        .width(14.dp),
             )
         }
         Column {
@@ -71,21 +73,23 @@ fun HopesLightLogo() {
         horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
     ) {
         Box(
-            modifier = Modifier
-                .size(AppIconSize.Logo)
-                .background(
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = RoundedCornerShape(AppRadius.Logo),
-                ),
+            modifier =
+                Modifier
+                    .size(AppIconSize.Logo)
+                    .background(
+                        color = MaterialTheme.colorScheme.surface,
+                        shape = RoundedCornerShape(AppRadius.Logo),
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             Image(
                 painter = painterResource(R.drawable.hopes_logo),
                 contentDescription = stringResource(R.string.app_name),
                 contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(14.dp),
+                modifier =
+                    Modifier
+                        .height(20.dp)
+                        .width(14.dp),
             )
         }
         Column {
@@ -107,21 +111,23 @@ fun HopesLightLogo() {
 @Composable
 fun HopesLogoMark(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier
-            .size(74.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(AppRadius.Card),
-            ),
+        modifier =
+            modifier
+                .size(74.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(AppRadius.Card),
+                ),
         contentAlignment = Alignment.Center,
     ) {
         Image(
             painter = painterResource(R.drawable.hopes_logo),
             contentDescription = stringResource(R.string.app_name),
             contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .height(44.dp)
-                .width(30.dp),
+            modifier =
+                Modifier
+                    .height(44.dp)
+                    .width(30.dp),
         )
     }
 }

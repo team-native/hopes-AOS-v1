@@ -15,8 +15,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 로그인 폼 하단에서 회원가입 화면으로 유도하는 문구다. "회원가입" 부분만 강조 밑줄로 표시한다. */
 @Composable
@@ -27,23 +27,27 @@ fun AuthSignupPrompt(
     val extendedColors = LocalHopesExtendedColors.current
     val accountPrompt = stringResource(R.string.no_account)
     val signupText = stringResource(R.string.signup)
-    val accountPromptAnnotated = AnnotatedString.Builder().apply {
-        append(accountPrompt.removeSuffix(signupText))
-        withStyle(
-            SpanStyle(
-                color = MaterialTheme.colorScheme.primary,
-                textDecoration = TextDecoration.Underline,
-            ),
-        ) {
-            append(signupText)
-        }
-    }.toAnnotatedString()
+    val accountPromptAnnotated =
+        AnnotatedString
+            .Builder()
+            .apply {
+                append(accountPrompt.removeSuffix(signupText))
+                withStyle(
+                    SpanStyle(
+                        color = MaterialTheme.colorScheme.primary,
+                        textDecoration = TextDecoration.Underline,
+                    ),
+                ) {
+                    append(signupText)
+                }
+            }.toAnnotatedString()
 
     Text(
         text = accountPromptAnnotated,
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
         color = extendedColors.authFieldHint,
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),

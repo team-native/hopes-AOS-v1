@@ -9,10 +9,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.teamnative.hopes.R
 import com.example.hopes.feature.auth.presentation.component.FigmaSingleSelectionDialog
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
+import com.teamnative.hopes.R
 
 /** 인증 데모의 화면 전환과 입력 상태를 소유한다. */
 @Composable
@@ -23,16 +23,18 @@ fun AuthRoute(
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     var isDepartmentDialogVisible by rememberSaveable { mutableStateOf(false) }
     var isGenerationDialogVisible by rememberSaveable { mutableStateOf(false) }
-    val departmentOptions = listOf(
-        stringResource(R.string.signup_department_software),
-        stringResource(R.string.signup_department_iot),
-        stringResource(R.string.signup_department_ai),
-    )
-    val generationOptions = listOf(
-        stringResource(R.string.signup_generation_eighth),
-        stringResource(R.string.signup_generation_ninth),
-        stringResource(R.string.signup_generation_tenth),
-    )
+    val departmentOptions =
+        listOf(
+            stringResource(R.string.signup_department_software),
+            stringResource(R.string.signup_department_iot),
+            stringResource(R.string.signup_department_ai),
+        )
+    val generationOptions =
+        listOf(
+            stringResource(R.string.signup_generation_eighth),
+            stringResource(R.string.signup_generation_ninth),
+            stringResource(R.string.signup_generation_tenth),
+        )
 
     LaunchedEffect(viewModel) {
         viewModel.effect.collect { effect ->
@@ -67,28 +69,40 @@ fun AuthRoute(
         onNavigateSignup = { viewModel.onEvent(AuthScreenEvent.SignUpRequested) },
         onNavigateLogin = { viewModel.onEvent(AuthScreenEvent.LoginRequested) },
         onForgotPasswordClick = { viewModel.onEvent(AuthScreenEvent.ForgotPasswordClicked) },
-        passwordResetUiState = PasswordResetUiState(
-            email = uiState.value.passwordResetEmail,
-            code = uiState.value.passwordResetCode,
-            newPassword = uiState.value.passwordResetNewPassword,
-            isLoading = uiState.value.isLoading,
-            errorMessage = uiState.value.errorMessage,
-            statusMessage = uiState.value.statusMessage,
-        ),
+        passwordResetUiState =
+            PasswordResetUiState(
+                email = uiState.value.passwordResetEmail,
+                code = uiState.value.passwordResetCode,
+                newPassword = uiState.value.passwordResetNewPassword,
+                isLoading = uiState.value.isLoading,
+                errorMessage = uiState.value.errorMessage,
+                statusMessage = uiState.value.statusMessage,
+            ),
         onPasswordResetEvent = { event ->
             when (event) {
-                is PasswordResetScreenEvent.EmailChanged ->
+                is PasswordResetScreenEvent.EmailChanged -> {
                     viewModel.onEvent(AuthScreenEvent.PasswordResetEmailChanged(event.value))
-                is PasswordResetScreenEvent.CodeChanged ->
+                }
+
+                is PasswordResetScreenEvent.CodeChanged -> {
                     viewModel.onEvent(AuthScreenEvent.PasswordResetCodeChanged(event.value))
-                is PasswordResetScreenEvent.NewPasswordChanged ->
+                }
+
+                is PasswordResetScreenEvent.NewPasswordChanged -> {
                     viewModel.onEvent(AuthScreenEvent.PasswordResetNewPasswordChanged(event.value))
-                PasswordResetScreenEvent.RequestCodeClicked ->
+                }
+
+                PasswordResetScreenEvent.RequestCodeClicked -> {
                     viewModel.onEvent(AuthScreenEvent.PasswordResetRequestClicked)
-                PasswordResetScreenEvent.SubmitClicked ->
+                }
+
+                PasswordResetScreenEvent.SubmitClicked -> {
                     viewModel.onEvent(AuthScreenEvent.PasswordResetSubmitClicked)
-                PasswordResetScreenEvent.BackClicked ->
+                }
+
+                PasswordResetScreenEvent.BackClicked -> {
                     viewModel.onEvent(AuthScreenEvent.PasswordResetBackClicked)
+                }
             }
         },
     )

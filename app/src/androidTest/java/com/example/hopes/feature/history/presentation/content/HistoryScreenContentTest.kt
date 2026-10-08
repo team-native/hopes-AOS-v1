@@ -25,13 +25,15 @@ class HistoryScreenContentTest {
         composeRule.setContent {
             HopesTheme {
                 HistoryScreenContent(
-                    uiState = HistoryUiState(
-                        chats = listOf(
-                            ChatSummaryUiModel(id = 1L, title = "기숙사 하루 일과가 어떻게 돼?"),
-                            ChatSummaryUiModel(id = 2L, title = "전공 선택은 어떻게 하는 게 좋아?"),
+                    uiState =
+                        HistoryUiState(
+                            chats =
+                                listOf(
+                                    ChatSummaryUiModel(id = 1L, title = "기숙사 하루 일과가 어떻게 돼?"),
+                                    ChatSummaryUiModel(id = 2L, title = "전공 선택은 어떻게 하는 게 좋아?"),
+                                ),
+                            contentState = HistoryContentState.Content,
                         ),
-                        contentState = HistoryContentState.Content,
-                    ),
                     onEvent = {},
                     onNavigate = {},
                 )
@@ -52,12 +54,14 @@ class HistoryScreenContentTest {
         composeRule.setContent {
             HopesTheme {
                 HistoryScreenContent(
-                    uiState = HistoryUiState(
-                        chats = listOf(
-                            ChatSummaryUiModel(id = 42L, title = "대화 제목"),
+                    uiState =
+                        HistoryUiState(
+                            chats =
+                                listOf(
+                                    ChatSummaryUiModel(id = 42L, title = "대화 제목"),
+                                ),
+                            contentState = HistoryContentState.Content,
                         ),
-                        contentState = HistoryContentState.Content,
-                    ),
                     onEvent = { event ->
                         emittedEvent = event
                     },
@@ -72,7 +76,8 @@ class HistoryScreenContentTest {
             assertEquals(HistoryScreenEvent.NewChatClicked, emittedEvent)
         }
 
-        composeRule.onNodeWithContentDescription("지난 대화 검색")
+        composeRule
+            .onNodeWithContentDescription("지난 대화 검색")
             .performClick()
             .performTextInput("전공")
 
@@ -92,9 +97,10 @@ class HistoryScreenContentTest {
         composeRule.setContent {
             HopesTheme {
                 HistoryScreenContent(
-                    uiState = HistoryUiState(
-                        contentState = HistoryContentState.Loading,
-                    ),
+                    uiState =
+                        HistoryUiState(
+                            contentState = HistoryContentState.Loading,
+                        ),
                     onEvent = {},
                     onNavigate = {},
                 )
@@ -106,9 +112,10 @@ class HistoryScreenContentTest {
         composeRule.setContent {
             HopesTheme {
                 HistoryScreenContent(
-                    uiState = HistoryUiState(
-                        contentState = HistoryContentState.Empty,
-                    ),
+                    uiState =
+                        HistoryUiState(
+                            contentState = HistoryContentState.Empty,
+                        ),
                     onEvent = {},
                     onNavigate = {},
                 )
@@ -120,9 +127,10 @@ class HistoryScreenContentTest {
         composeRule.setContent {
             HopesTheme {
                 HistoryScreenContent(
-                    uiState = HistoryUiState(
-                        contentState = HistoryContentState.Error,
-                    ),
+                    uiState =
+                        HistoryUiState(
+                            contentState = HistoryContentState.Error,
+                        ),
                     onEvent = {},
                     onNavigate = {},
                 )

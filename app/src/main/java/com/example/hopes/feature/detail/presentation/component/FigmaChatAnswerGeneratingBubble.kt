@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
+import com.teamnative.hopes.R
 
 /** 추가 질문 전송 후 AI 답변을 기다리는 동안 표시하는 로딩 말풍선이다. 왼쪽 스피너는 계속 회전한다. */
 @Composable
@@ -28,12 +28,13 @@ fun FigmaChatAnswerGeneratingBubble(modifier: Modifier = Modifier) {
     val bubbleShape = RoundedCornerShape(18.dp)
 
     Row(
-        modifier = modifier
-            .figmaSubtleShadow(bubbleShape)
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface, shape = bubbleShape)
-            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = bubbleShape)
-            .padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 18.dp),
+        modifier =
+            modifier
+                .figmaSubtleShadow(bubbleShape)
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.surface, shape = bubbleShape)
+                .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = bubbleShape)
+                .padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CircularProgressIndicator(

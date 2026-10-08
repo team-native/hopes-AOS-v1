@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.detail.presentation.MyPageScreenEvent
 import com.example.hopes.feature.detail.presentation.MyPageUiState
@@ -27,6 +26,7 @@ import com.example.hopes.feature.detail.presentation.component.FigmaMyPageAccoun
 import com.example.hopes.feature.detail.presentation.component.FigmaMyPageHeader
 import com.example.hopes.feature.detail.presentation.component.FigmaMyPageProfileCard
 import com.example.hopes.navigation.HopesDestination
+import com.teamnative.hopes.R
 
 /** 피그마 10 마이페이지의 계정·프로필 편집 영역을 구성한다. */
 @Composable
@@ -51,11 +51,12 @@ fun MyPageScreenContent(
         }
 
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .verticalScroll(scrollState)
-                .imePadding()
-                .padding(bottom = 24.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+                    .imePadding()
+                    .padding(bottom = 24.dp),
         ) {
             FigmaMyPageHeader(
                 onAppSettingsClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
@@ -80,18 +81,20 @@ fun MyPageScreenContent(
                 Spacer(modifier = Modifier.height(18.dp))
 
                 FigmaDetailPrimaryButton(
-                    text = when {
-                        uiState.isProfileLoading -> stringResource(R.string.profile_loading)
-                        uiState.isProfileLoadFailed -> stringResource(R.string.profile_load_error)
-                        uiState.isProfileSaving -> stringResource(R.string.profile_saving)
-                        uiState.isProfileSaved -> stringResource(R.string.saved)
-                        uiState.isProfileSaveFailed -> stringResource(R.string.profile_save_error)
-                        else -> stringResource(R.string.save)
-                    },
-                    modifier = Modifier
-                        .padding(start = 6.dp)
-                        .width(96.dp)
-                        .height(44.dp),
+                    text =
+                        when {
+                            uiState.isProfileLoading -> stringResource(R.string.profile_loading)
+                            uiState.isProfileLoadFailed -> stringResource(R.string.profile_load_error)
+                            uiState.isProfileSaving -> stringResource(R.string.profile_saving)
+                            uiState.isProfileSaved -> stringResource(R.string.saved)
+                            uiState.isProfileSaveFailed -> stringResource(R.string.profile_save_error)
+                            else -> stringResource(R.string.save)
+                        },
+                    modifier =
+                        Modifier
+                            .padding(start = 6.dp)
+                            .width(96.dp)
+                            .height(44.dp),
                     onClick = {
                         if (uiState.isProfileLoadFailed) {
                             onEvent(MyPageScreenEvent.ProfileRetryClicked)

@@ -25,11 +25,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 이메일 필드 아래에서 인증번호 입력과 발송 요청을 함께 제공한다. 회원가입과 비밀번호 재설정 화면이 공유한다. */
 @Composable
@@ -48,15 +48,15 @@ fun AuthVerificationCodeField(
     // 좌우 여백은 화면마다 다른 상위 컨테이너 패딩과 맞춰야 하므로 내장하지 않고 호출부의 modifier에 맡긴다.
     Row(modifier = modifier.fillMaxWidth()) {
         Box(
-            modifier = Modifier
-                .weight(1f)
-                .height(43.dp)
-                .border(
-                    width = 1.dp,
-                    color = extendedColors.authFieldBorder,
-                    shape = RoundedCornerShape(AppRadius.Field),
-                )
-                .padding(horizontal = 12.dp),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .height(43.dp)
+                    .border(
+                        width = 1.dp,
+                        color = extendedColors.authFieldBorder,
+                        shape = RoundedCornerShape(AppRadius.Field),
+                    ).padding(horizontal = 12.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
             if (value.isEmpty()) {
@@ -70,41 +70,44 @@ fun AuthVerificationCodeField(
             BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .semantics { this.contentDescription = contentDescription },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .semantics { this.contentDescription = contentDescription },
                 singleLine = true,
-                textStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 15.sp,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Done,
-                ),
+                textStyle =
+                    TextStyle(
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 15.sp,
+                    ),
+                keyboardOptions =
+                    KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done,
+                    ),
                 keyboardActions = KeyboardActions(onDone = { onSendClick() }),
             )
         }
 
         Box(
-            modifier = Modifier
-                .padding(start = AppSpacing.Compact)
-                .height(43.dp)
-                .background(
-                    color = if (isSending) {
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
-                    } else {
-                        MaterialTheme.colorScheme.primary
-                    },
-                    shape = sendButtonShape,
-                )
-                .shapeClickable(
-                    shape = sendButtonShape,
-                    enabled = !isSending,
-                    onClick = onSendClick,
-                )
-                .semantics { this.contentDescription = sendDescription }
-                .padding(horizontal = 16.dp),
+            modifier =
+                Modifier
+                    .padding(start = AppSpacing.Compact)
+                    .height(43.dp)
+                    .background(
+                        color =
+                            if (isSending) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+                            } else {
+                                MaterialTheme.colorScheme.primary
+                            },
+                        shape = sendButtonShape,
+                    ).shapeClickable(
+                        shape = sendButtonShape,
+                        enabled = !isSending,
+                        onClick = onSendClick,
+                    ).semantics { this.contentDescription = sendDescription }
+                    .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center,
         ) {
             Text(

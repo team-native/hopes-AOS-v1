@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaBrandHeader
 import com.example.hopes.feature.auth.presentation.SignupValidationUiState
@@ -27,6 +26,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthSignUpBackgroun
 import com.example.hopes.feature.auth.presentation.component.AuthSignUpFooterLink
 import com.example.hopes.feature.auth.presentation.component.AuthSignUpHeroTitle
 import com.example.hopes.feature.auth.presentation.component.SignupActionButton
+import com.teamnative.hopes.R
 
 /** 피그마 03 회원가입 화면 콘텐츠다. 헤더부터 로그인 유도 문구까지 세로로 배치한다. */
 @Composable
@@ -62,33 +62,37 @@ fun AuthSignUpScreenContent(
     // 페이지 아래의 로그인 링크는 LazyColumn의 다음 아이템으로 배치한다.
     // 페이지에 배경을 함께 넣어 스크롤 시 파랑-하얀 경계도 콘텐츠와 같이 이동한다.
     BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-            .navigationBarsPadding(),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding()
+                .navigationBarsPadding(),
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
         ) {
             item {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(maxHeight),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(maxHeight),
                 ) {
                     AuthSignUpBackground(modifier = Modifier.fillMaxSize())
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding(),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .statusBarsPadding(),
                     ) {
                         FigmaBrandHeader(
-                            modifier = Modifier.padding(
-                                start = AppSpacing.Large,
-                                top = 25.dp,
-                                end = AppSpacing.Large,
-                            ),
+                            modifier =
+                                Modifier.padding(
+                                    start = AppSpacing.Large,
+                                    top = 25.dp,
+                                    end = AppSpacing.Large,
+                                ),
                             isOnBlueBackground = true,
                         )
 
@@ -99,10 +103,11 @@ fun AuthSignUpScreenContent(
                         Spacer(modifier = Modifier.height(52.dp))
 
                         SignupFormSectionContent(
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth()
-                                .padding(horizontal = 24.dp),
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 24.dp),
                             emailText = emailText,
                             passwordText = passwordText,
                             nameText = nameText,
@@ -133,9 +138,10 @@ fun AuthSignUpScreenContent(
                             SignupActionButton(
                                 isEnabled = isSignupEnabled,
                                 onClick = onActionClick,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 24.dp),
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 24.dp),
                             )
                         }
                     }

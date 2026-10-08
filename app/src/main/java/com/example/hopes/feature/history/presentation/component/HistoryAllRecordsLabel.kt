@@ -1,7 +1,6 @@
 package com.example.hopes.feature.history.presentation.component
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.sp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,21 +8,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
+import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppSpacing
+import com.teamnative.hopes.R
 
 /** 검색창과 목록 사이에 표시하는 "모든 기록" 섹션 라벨이다. */
 @Composable
 fun HistoryAllRecordsLabel() {
     Text(
         text = stringResource(R.string.history_all_records),
-        modifier = Modifier.padding(
-            start = AppSpacing.ScreenHorizontal,
-            top = HISTORY_ALL_RECORDS_TOP_PADDING,
-        ),
+        modifier =
+            Modifier.padding(
+                start = AppSpacing.ScreenHorizontal,
+                top = HISTORY_ALL_RECORDS_TOP_PADDING,
+            ),
         fontSize = 12.sp,
         color = Color(0xFF6B7A94),
-        fontWeight = FontWeight.W600
+        fontWeight = FontWeight.W600,
     )
 }
 

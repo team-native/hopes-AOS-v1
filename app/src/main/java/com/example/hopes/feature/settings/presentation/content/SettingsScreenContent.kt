@@ -8,15 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.teamnative.hopes.R
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.feature.settings.presentation.SettingsScreenEvent
 import com.example.hopes.feature.settings.presentation.SettingsUiState
 import com.example.hopes.feature.settings.presentation.component.FigmaSettingsRow
-import com.example.hopes.feature.settings.presentation.component.SettingsHeader
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountSection
+import com.example.hopes.feature.settings.presentation.component.SettingsHeader
 import com.example.hopes.navigation.HopesDestination
+import com.teamnative.hopes.R
 
 /** 피그마 11 설정 화면의 설정 행과 로컬 토글 상태를 표시한다. */
 @Composable

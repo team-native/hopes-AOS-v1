@@ -16,10 +16,11 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun BoxScope.FigmaNavigationBarBackground(color: Color) {
     Box(
-        modifier = Modifier
-            .align(Alignment.BottomCenter)
-            .fillMaxWidth()
-            .windowInsetsBottomHeight(WindowInsets.navigationBars)
-            .background(color),
+        modifier =
+            Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .windowInsetsBottomHeight(WindowInsets.navigationBars)
+                .background(color),
     )
 }

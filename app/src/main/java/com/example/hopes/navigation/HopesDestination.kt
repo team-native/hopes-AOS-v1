@@ -8,7 +8,9 @@ import kotlinx.serialization.Serializable
 sealed interface HopesDestination : NavKey {
     @Serializable data object Home : HopesDestination
 
-    @Serializable data class Chat(val isNewChatRequested: Boolean = false) : HopesDestination
+    @Serializable data class Chat(
+        val isNewChatRequested: Boolean = false,
+    ) : HopesDestination
 
     @Serializable data object History : HopesDestination
 
@@ -21,18 +23,22 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object Contact : HopesDestination
 
-    @Serializable data class ChatDetail(val chatId: Long, val question: String = "") : HopesDestination
+    @Serializable data class ChatDetail(
+        val chatId: Long,
+        val question: String = "",
+    ) : HopesDestination
 
     @Serializable data object Auth : HopesDestination
 }
 
 /** 하단 탭에 표시되는 최상위 목적지 4개를 기본 순서대로 제공한다. */
-val hopesTabDestinations: List<HopesDestination> = listOf(
-    HopesDestination.Home,
-    HopesDestination.Chat(),
-    HopesDestination.History,
-    HopesDestination.Settings,
-)
+val hopesTabDestinations: List<HopesDestination> =
+    listOf(
+        HopesDestination.Home,
+        HopesDestination.Chat(),
+        HopesDestination.History,
+        HopesDestination.Settings,
+    )
 
 /** 아직 서버에 생성되지 않은 대화를 상세 화면에서 바로 만들 때 쓰는 chatId 자리값이다. */
 const val NEW_CHAT_ID = -1L

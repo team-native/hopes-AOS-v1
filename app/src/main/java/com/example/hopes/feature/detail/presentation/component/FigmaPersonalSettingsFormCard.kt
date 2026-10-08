@@ -32,16 +32,18 @@ fun FigmaPersonalSettingsFormCard(
     modifier: Modifier = Modifier,
 ) {
     FigmaDetailCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(408.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(408.dp),
         shadowStyle = FigmaDetailCardShadow.Subtle,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
-                .padding(top = 32.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 32.dp),
         ) {
             Text(
                 text = stringResource(R.string.personal_settings),
@@ -68,17 +70,19 @@ fun FigmaPersonalSettingsFormCard(
                 horizontalArrangement = Arrangement.End,
             ) {
                 FigmaDetailPrimaryButton(
-                    text = when {
-                        isPromptLoading -> stringResource(R.string.prompt_loading)
-                        isPromptLoadFailed -> stringResource(R.string.prompt_load_error)
-                        isPromptSaving -> stringResource(R.string.prompt_saving)
-                        isPromptSaved -> stringResource(R.string.saved)
-                        isPromptSaveFailed -> stringResource(R.string.prompt_save_error)
-                        else -> stringResource(R.string.prompt_save)
-                    },
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(46.dp),
+                    text =
+                        when {
+                            isPromptLoading -> stringResource(R.string.prompt_loading)
+                            isPromptLoadFailed -> stringResource(R.string.prompt_load_error)
+                            isPromptSaving -> stringResource(R.string.prompt_saving)
+                            isPromptSaved -> stringResource(R.string.saved)
+                            isPromptSaveFailed -> stringResource(R.string.prompt_save_error)
+                            else -> stringResource(R.string.prompt_save)
+                        },
+                    modifier =
+                        Modifier
+                            .width(100.dp)
+                            .height(46.dp),
                     onClick = onSaveClick,
                 )
             }

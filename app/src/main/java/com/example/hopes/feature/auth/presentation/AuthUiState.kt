@@ -31,11 +31,12 @@ data class SignupValidationUiState(
     val verificationCodeError: SignupInputError? = null,
 ) {
     val hasError: Boolean
-        get() = emailError != null ||
-            nameError != null ||
-            generationError != null ||
-            passwordError != null ||
-            verificationCodeError != null
+        get() =
+            emailError != null ||
+                nameError != null ||
+                generationError != null ||
+                passwordError != null ||
+                verificationCodeError != null
 }
 
 enum class SignupInputError {

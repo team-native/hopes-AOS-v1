@@ -21,9 +21,10 @@ fun AuthForgotPasswordLink(
 ) {
     Text(
         text = stringResource(R.string.forgot_password),
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
         color = MaterialTheme.colorScheme.primary,
         textAlign = TextAlign.End,
         style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Medium),

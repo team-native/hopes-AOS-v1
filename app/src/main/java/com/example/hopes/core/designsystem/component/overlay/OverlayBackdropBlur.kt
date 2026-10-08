@@ -5,8 +5,7 @@ import androidx.compose.ui.draw.blur
 import com.example.hopes.core.designsystem.AppBlurRadius
 
 /** 오버레이 뒤에 유지되는 화면 전체 배경에 공통 blur 효과를 적용한다. */
-fun Modifier.overlayBackdropBlur(progress: Float): Modifier {
-    return blur(
+fun Modifier.overlayBackdropBlur(progress: Float): Modifier =
+    blur(
         radius = AppBlurRadius.OverlayBackdrop * progress.coerceIn(0f, 1f),
     )
-}

@@ -21,8 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 import com.example.hopes.ui.theme.HopesExtendedColors
+import com.teamnative.hopes.R
 
 /**
  * 안내 시트가 접힌 위치 바로 위에 위로 스와이프하라는 화살표·문구를 띄운다. 시트 위치와 무관한
@@ -41,19 +41,21 @@ fun AuthSwipeHint(
             Image(
                 painter = painterResource(R.drawable.figma_auth_swipe_arrow_two),
                 contentDescription = null,
-                modifier = Modifier
-                    .width(22.dp)
-                    .height(39.dp)
-                    .rotate(90f),
+                modifier =
+                    Modifier
+                        .width(22.dp)
+                        .height(39.dp)
+                        .rotate(90f),
             )
             Image(
                 painter = painterResource(R.drawable.figma_auth_swipe_arrow_one),
                 contentDescription = null,
-                modifier = Modifier
-                    .padding(top = 18.dp)
-                    .width(22.dp)
-                    .height(39.dp)
-                    .rotate(90f),
+                modifier =
+                    Modifier
+                        .padding(top = 18.dp)
+                        .width(22.dp)
+                        .height(39.dp)
+                        .rotate(90f),
             )
         }
 
@@ -61,10 +63,11 @@ fun AuthSwipeHint(
             text = stringResource(R.string.auth_swipe_title),
             color = MaterialTheme.colorScheme.onPrimary,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-            ),
+            style =
+                TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                ),
         )
 
         Spacer(modifier = Modifier.height(30.dp))

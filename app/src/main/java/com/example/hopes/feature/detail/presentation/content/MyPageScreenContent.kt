@@ -50,12 +50,13 @@ fun MyPageScreenContent(
             }
         }
 
+        // imePadding은 verticalScroll 앞에 둬야 키보드 높이만큼 스크롤 영역이 줄어들어 입력창과 저장 버튼이 가려지지 않는다.
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .verticalScroll(scrollState)
                     .imePadding()
+                    .verticalScroll(scrollState)
                     .padding(bottom = 24.dp),
         ) {
             FigmaMyPageHeader(

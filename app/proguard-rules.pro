@@ -12,9 +12,12 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Navigation 3 NavKeySerializer는 back stack 키의 클래스 binary name을 저장하고
+# Class.forName으로 복원하므로, 목적지 클래스 이름이 난독화되면 상태 복원이 깨진다.
+-keepnames class com.example.hopes.navigation.HopesDestination** { *; }
+
+# 난독화된 크래시 스택트레이스를 mapping.txt로 복원할 수 있도록 줄 번호 정보를 보존한다.
+-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.

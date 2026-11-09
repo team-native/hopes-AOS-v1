@@ -4,8 +4,11 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -150,5 +153,9 @@ fun AuthLoginFormContent(
         Spacer(modifier = Modifier.height(21.dp))
 
         AuthSignupPrompt(onClick = onNavigateSignup)
+
+        // 시트가 화면 하단까지 내려와 시스템 내비게이션 바 뒤에 놓이므로, 마지막 항목이 바에 가려지지 않도록
+        // 내비게이션 바 높이만큼 스크롤 끝에 여백을 둔다. 키보드 여백은 시트 이동이 담당하므로 imePadding은 쓰지 않는다.
+        Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
     }
 }

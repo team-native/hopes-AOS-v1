@@ -71,7 +71,7 @@ android {
             buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
         }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

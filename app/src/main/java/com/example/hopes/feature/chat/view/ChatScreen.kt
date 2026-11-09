@@ -62,13 +62,11 @@ fun ChatScreen(
         },
         isBottomNavigationVisible = !isImeVisible,
     ) {
-        // 키보드가 올라와 가용 높이가 줄어들 때도 콘텐츠가 잘리지 않도록 스크롤 가능하게 하고,
-        // imePadding으로 키보드 높이만큼 하단 여백을 확보해 마지막 카드까지 스크롤해 볼 수 있게 한다.
+        // 키보드가 올라와 가용 높이가 줄어들 때도 콘텐츠가 잘리지 않도록 스크롤 가능하게 한다.
+        // 키보드 높이만큼 줄어든 영역은 bottomBar(composer의 imePadding 포함)가 innerPadding으로
+        // 전달하므로, 여기서 imePadding을 다시 적용하면 여백이 두 번 반영된다.
         Column(
-            modifier =
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .imePadding(),
+            modifier = Modifier.verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier =

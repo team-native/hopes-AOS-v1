@@ -1,6 +1,7 @@
 package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,7 +31,9 @@ import com.teamnative.hopes.R
 
 /**
  * 빨간 아이콘 제목, 회색 설명, 밑줄 "다시 시도" 링크로 된 실패 안내다
- * (피그마 08-3 답변 생성 실패, 12 자료 분석 실패, 30-3 인기글 불러오기 실패).
+ * (피그마 08-3 답변 생성 실패, 12 자료 분석 실패, 23 위치 확인 실패, 30-3 인기글 불러오기 실패).
+ *
+ * @param secondaryActionText 있으면 "다시 시도" 앞에 같은 모양의 링크를 하나 더 둔다(예: "설정 열기").
  */
 @Composable
 fun HopesRetryMessage(
@@ -38,6 +41,8 @@ fun HopesRetryMessage(
     description: String,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
+    secondaryActionText: String? = null,
+    onSecondaryActionClick: () -> Unit = {},
 ) {
     Column(
         modifier =
@@ -70,14 +75,28 @@ fun HopesRetryMessage(
             style = HopesTextStyles.Subtitle,
         )
 
-        Text(
-            text = stringResource(R.string.retry),
-            modifier =
-                Modifier
-                    .clickable(role = Role.Button, onClick = onRetryClick)
-                    .padding(vertical = AppSpacing.Compact),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.Label.copy(textDecoration = TextDecoration.Underline),
-        )
+        Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
+            if (secondaryActionText != null) {
+                RetryMessageLink(text = secondaryActionText, onClick = onSecondaryActionClick)
+            }
+
+            RetryMessageLink(text = stringResource(R.string.retry), onClick = onRetryClick)
+        }
     }
+}
+
+@Composable
+private fun RetryMessageLink(
+    text: String,
+    onClick: () -> Unit,
+) {
+    Text(
+        text = text,
+        modifier =
+            Modifier
+                .clickable(role = Role.Button, onClick = onClick)
+                .padding(vertical = AppSpacing.Compact),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = HopesTextStyles.Label.copy(textDecoration = TextDecoration.Underline),
+    )
 }

@@ -39,7 +39,7 @@
     <string name="save">저장</string>
     <string name="personal_settings">개인 설정</string>
     <string name="contact">문의하기</string>
-    <string name="privacy_policy">개인정보처리방침</string>
+    <string name="privacy_policy">개인정보 처리방침</string>
     <string name="dark_mode">다크 모드</string>
     <string name="logout">로그아웃</string>
     <string name="account">계정</string>
@@ -63,9 +63,7 @@
     <string name="detail_notice">입력한 내용은 이 데모 화면에서만 유지됩니다.</string>
     <string name="history_recent">지난 7일</string>
     <string name="history_previous">이전</string>
-    <string name="settings_personal_description">시스템 프롬프트 관리</string>
     <string name="settings_contact_description">gsm-chatbot@gsm.hs.kr</string>
-    <string name="settings_privacy_policy_description">수집하는 정보와 이용 목적을 확인해요</string>
     <string name="chat_welcome">무엇이 궁금한가요?</string>
     <string name="chat_welcome_description">광주소프트웨어마이스터고 선배에게 편하게 물어보세요.</string>
     <string name="chat_suggestion_dormitory">기숙사 하루 일과가 어떻게 돼?</string>
@@ -258,4 +256,21 @@
     <string name="contact_sent_title_highlight">보냈어요</string>
     <string name="contact_sent_description">%1$s로 답변을 보내드릴게요.</string>
     <string name="contact_sent_confirm">확인</string>
+    <string name="cancel">취소</string>
+    <string name="settings_subtitle">앱 설정과 도움말을 관리해요.</string>
+    <string name="settings_notification">알림 받기</string>
+    <string name="settings_notification_description">새 답변 · 공지 알림</string>
+    <string name="settings_app_version">v%1$s</string>
+    <string name="logout_confirm_title">로그아웃할까요?</string>
+    <string name="logout_confirm_message">다시 로그인하면 대화 기록을 그대로 볼 수 있어요.</string>
+    <string name="session_expired_title">다시 로그인해 주세요</string>
+    <string name="session_expired_message">보안을 위해 로그인이 만료됐어요.</string>
+    <string name="session_expired_login">로그인</string>
+    <string name="app_info">앱 정보</string>
+    <string name="app_info_name">hopes</string>
+    <string name="app_info_version">버전 %1$s</string>
+    <string name="app_info_latest_version">최신 버전</string>
+    <string name="app_info_in_use">사용 중</string>
+    <string name="app_info_contact">문의</string>
+    <string name="app_info_footer">광주소프트웨어마이스터고 · hopes</string>
 </resources>

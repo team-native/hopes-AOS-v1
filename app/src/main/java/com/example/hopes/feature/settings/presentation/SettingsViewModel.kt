@@ -37,19 +37,11 @@ class SettingsViewModel
         private val _effect = MutableSharedFlow<SettingsEffect>()
         val effect: SharedFlow<SettingsEffect> = _effect.asSharedFlow()
 
-        /** 로그아웃 버튼에서 호출되어 세션 종료 후 인증 화면 전환 효과를 전달한다. */
+        /** 로그아웃 확인 다이얼로그에서 호출되어 세션 종료 후 인증 화면 전환 효과를 전달한다. */
         fun logout() {
             viewModelScope.launch {
                 logoutUseCase()
                 _effect.emit(SettingsEffect.LoggedOut)
-            }
-        }
-
-        /** 화면 이벤트에 따라 로그아웃과 회원탈퇴 요청을 분기한다. */
-        fun onEvent(event: SettingsScreenEvent) {
-            when (event) {
-                SettingsScreenEvent.LogoutClicked -> logout()
-                SettingsScreenEvent.DeleteAccountClicked -> clearAccountDeletionError()
             }
         }
 

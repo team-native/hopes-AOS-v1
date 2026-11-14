@@ -29,6 +29,8 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object Notifications : HopesDestination
 
+    @Serializable data object AppInfo : HopesDestination
+
     @Serializable data class ChatDetail(
         val chatId: Long,
         val question: String = "",

@@ -16,11 +16,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.example.hopes.core.designsystem.component.HopesAlertDialog
 import com.example.hopes.core.session.SessionState
 import com.example.hopes.feature.auth.presentation.AuthRoute
 import com.example.hopes.feature.auth.presentation.SessionViewModel
@@ -34,7 +36,10 @@ import com.example.hopes.feature.detail.presentation.ProfileEditRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
 import com.example.hopes.feature.notification.presentation.NotificationRoute
+import com.example.hopes.feature.settings.presentation.AppInfoScreen
 import com.example.hopes.feature.settings.presentation.SettingsRoute
+import com.teamnative.hopes.BuildConfig
+import com.teamnative.hopes.R
 
 /** 인증·탭·설정 및 서버 채팅 상세의 단일 탐색 그래프다. */
 @Composable
@@ -50,10 +55,13 @@ fun HopesNavHost(
         return
     }
 
-    // SessionState가 로그인/로그아웃뿐 아니라 임의 화면의 401 응답으로도 조용히 바뀔 수 있어(RepositoryImpls의
-    // expireSessionOnUnauthorized), 로컬 boolean 토글이 아니라 sessionState 자체를 key로 삼아 전체를 다시 구성한다.
-    key(sessionState) {
-        if (sessionState is SessionState.Authenticated) {
+    // 401 응답으로 세션이 끊기면(Expired) 보던 화면을 그대로 둔 채 로그인 만료 안내를 띄우므로,
+    // Authenticated와 Expired는 같은 메인 화면으로 묶어 key가 바뀌지 않게 한다.
+    // 로그인/로그아웃처럼 메인↔인증이 바뀔 때만 전체를 다시 구성한다.
+    val isMainVisible = sessionState is SessionState.Authenticated || sessionState is SessionState.Expired
+
+    key(isMainVisible) {
+        if (isMainVisible) {
             HopesMainNavDisplay(
                 isDarkThemeEnabled = isDarkThemeEnabled,
                 onDarkThemeChange = onDarkThemeChange,
@@ -61,6 +69,19 @@ fun HopesNavHost(
         } else {
             HopesAuthNavDisplay()
         }
+    }
+
+    if (sessionState is SessionState.Expired) {
+        HopesAlertDialog(
+            title = stringResource(R.string.session_expired_title),
+            message = stringResource(R.string.session_expired_message),
+            dismissText = stringResource(R.string.close),
+            confirmText = stringResource(R.string.session_expired_login),
+            // 세션이 이미 끊겨 메인 화면을 계속 쓸 수 없으므로 닫기와 로그인 모두 인증 화면으로 보낸다.
+            onDismiss = sessionViewModel::acknowledgeExpiredSession,
+            onConfirm = sessionViewModel::acknowledgeExpiredSession,
+            isDismissibleByOutside = false,
+        )
     }
 }
 
@@ -145,12 +166,10 @@ private fun HopesMainNavDisplay(
                     }
                     entry<HopesDestination.AppSettings> {
                         SettingsRoute(
-                            onNavigate = navigator::navigateToTab,
                             isDarkModeEnabled = isDarkThemeEnabled,
                             onDarkModeChange = onDarkThemeChange,
                             onBackClick = navigator::goBack,
-                            onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
-                            onNavigateToContact = { navigator.push(HopesDestination.Contact) },
+                            onNavigateToAppInfo = { navigator.push(HopesDestination.AppInfo) },
                             // 로그아웃도 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
                             onLogout = {},
                         )
@@ -168,6 +187,12 @@ private fun HopesMainNavDisplay(
                                 isProfileSavedToastVisible = true
                                 navigator.goBack()
                             },
+                        )
+                    }
+                    entry<HopesDestination.AppInfo> {
+                        AppInfoScreen(
+                            appVersion = BuildConfig.VERSION_NAME,
+                            onBackClick = navigator::goBack,
                         )
                     }
                     entry<HopesDestination.Notifications> {

@@ -53,6 +53,70 @@ class ChatDetailScreenTest {
         }
     }
 
+    @Test
+    fun generatingAnswer_showsStopButtonThatSendsStop() {
+        val events = mutableListOf<ChatDetailScreenEvent>()
+        setDetailContent(
+            uiState =
+                ChatDetailUiState(
+                    title = "전공 공부",
+                    isLoading = false,
+                    messages = listOf(ChatMessageUiModel(id = null, content = "질문", isUser = true)),
+                    isSending = true,
+                ),
+            onEvent = { events += it },
+        )
+
+        composeRule.onNodeWithText("답변 중지").performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(listOf(ChatDetailScreenEvent.StopClicked), events)
+        }
+    }
+
+    @Test
+    fun offline_showsBannerPendingStatusAndOfflinePlaceholder() {
+        setDetailContent(
+            uiState =
+                ChatDetailUiState(
+                    title = "전공 공부",
+                    isLoading = false,
+                    messages = listOf(ChatMessageUiModel(id = null, content = "기숙사 외출은 어떻게 해?", isUser = true)),
+                    pendingQuestion = "기숙사 외출은 어떻게 해?",
+                    isOffline = true,
+                ),
+            onEvent = {},
+        )
+
+        composeRule.onNodeWithText("인터넷 연결이 끊겼어요. 연결되면 자동으로 다시 시도해요.").assertIsDisplayed()
+        composeRule.onNodeWithText("연결되면 전송돼요").assertIsDisplayed()
+        composeRule.onNodeWithText("오프라인 상태예요").assertIsDisplayed()
+    }
+
+    @Test
+    fun newChatHeaderAction_asksForConfirmation() {
+        var isNewChatConfirmed = false
+        composeRule.setContent {
+            HopesTheme {
+                ChatDetailScreen(
+                    uiState = ChatDetailUiState(title = "전공 공부", isLoading = false),
+                    subtitle = "선배 답변 · 실제 경험 기반",
+                    onEvent = {},
+                    onCopyAnswer = {},
+                    onShareAnswer = {},
+                    onCopyCode = {},
+                    onNewChatConfirm = { isNewChatConfirmed = true },
+                )
+            }
+        }
+
+        composeRule.onNodeWithText("새 대화").performClick()
+        composeRule.onNodeWithText("새 대화를 시작할까요?").assertIsDisplayed()
+        composeRule.onAllNodesWithText("새 대화")[1].performClick()
+
+        composeRule.runOnIdle { assertEquals(true, isNewChatConfirmed) }
+    }
+
     private fun setDetailContent(
         uiState: ChatDetailUiState,
         onEvent: (ChatDetailScreenEvent) -> Unit,

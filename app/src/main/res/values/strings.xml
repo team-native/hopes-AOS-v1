@@ -171,4 +171,18 @@
         <item>알림 설정</item>
         <item>문의하기</item>
     </string-array>
+    <!-- 인증 시작 화면(01)과 로그인 화면(02) -->
+    <string name="auth_hero_highlight_senior">선배</string>
+    <string name="auth_hero_first_line_suffix">에게 묻는</string>
+    <string name="auth_hero_second_line">가장 솔직한</string>
+    <string name="auth_hero_third_line">학교 이야기</string>
+    <string name="auth_start_description">광주소프트웨어마이스터고 학교생활·전공·취업 질문에\n선배들이 남긴 경험으로 답해요.</string>
+    <string name="auth_start_button">시작하기</string>
+    <string name="auth_has_account_prompt">이미 계정이 있으신가요?</string>
+    <string name="auth_no_account_prompt">계정이 없으신가요?</string>
+    <string name="auth_keep_login">로그인 유지</string>
+    <string name="auth_find_password">비밀번호 찾기</string>
+    <string name="auth_login_loading">로그인 중…</string>
+    <string name="auth_login_failure_message">이메일 또는 비밀번호가 맞지 않아요. 다시 확인해 주세요.</string>
+    <string name="auth_login_offline_message">인터넷 연결이 끊겼어요. 연결되면 다시 로그인할 수 있어요.</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.hopes.feature.auth.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,6 +45,11 @@ fun AuthRoute(
         }
     }
 
+    // 시작 화면과 로그인 화면이 분리되면서, 로그인에서 뒤로가기는 앱 종료 대신 시작 화면으로 돌아간다.
+    BackHandler(enabled = uiState.value.authStep == AuthStep.Login) {
+        viewModel.onEvent(AuthScreenEvent.GuideRequested)
+    }
+
     AuthScreen(
         authStep = uiState.value.authStep,
         emailText = uiState.value.email,
@@ -55,8 +61,43 @@ fun AuthRoute(
         signupValidation = uiState.value.signupValidation,
         isSignupLoading = uiState.value.isLoading,
         signupErrorMessage = uiState.value.errorMessage,
-        loginErrorMessage = uiState.value.errorMessage,
-        loginStatusMessage = uiState.value.statusMessage,
+        loginUiState =
+            AuthLoginUiState(
+                emailText = uiState.value.email,
+                passwordText = uiState.value.password,
+                isKeepLoginChecked = uiState.value.isKeepLoginChecked,
+                isLoading = uiState.value.isLoading,
+                failureMessage = uiState.value.errorMessage,
+                statusMessage = uiState.value.statusMessage,
+                isOffline = uiState.value.isLoginOffline,
+            ),
+        onLoginEvent = { event ->
+            when (event) {
+                is AuthLoginScreenEvent.EmailChanged -> {
+                    viewModel.onEvent(AuthScreenEvent.EmailChanged(event.value))
+                }
+
+                is AuthLoginScreenEvent.PasswordChanged -> {
+                    viewModel.onEvent(AuthScreenEvent.PasswordChanged(event.value))
+                }
+
+                is AuthLoginScreenEvent.KeepLoginChanged -> {
+                    viewModel.onEvent(AuthScreenEvent.KeepLoginChanged(event.isChecked))
+                }
+
+                AuthLoginScreenEvent.LoginClicked -> {
+                    viewModel.onEvent(AuthScreenEvent.LoginClicked)
+                }
+
+                AuthLoginScreenEvent.FindPasswordClicked -> {
+                    viewModel.onEvent(AuthScreenEvent.ForgotPasswordClicked)
+                }
+
+                AuthLoginScreenEvent.SignUpClicked -> {
+                    viewModel.onEvent(AuthScreenEvent.SignUpRequested)
+                }
+            }
+        },
         onEmailChange = { value -> viewModel.onEvent(AuthScreenEvent.EmailChanged(value)) },
         onPasswordChange = { value -> viewModel.onEvent(AuthScreenEvent.PasswordChanged(value)) },
         onNameChange = { value -> viewModel.onEvent(AuthScreenEvent.NameChanged(value)) },
@@ -64,11 +105,9 @@ fun AuthRoute(
         onGenerationClick = { isGenerationDialogVisible = true },
         onVerificationCodeChange = { value -> viewModel.onEvent(AuthScreenEvent.VerificationCodeChanged(value)) },
         onSendVerificationCodeClick = { viewModel.onEvent(AuthScreenEvent.SendSignupVerificationClicked) },
-        onLoginClick = { viewModel.onEvent(AuthScreenEvent.LoginClicked) },
         onSignupClick = { viewModel.onEvent(AuthScreenEvent.SignUpClicked) },
         onNavigateSignup = { viewModel.onEvent(AuthScreenEvent.SignUpRequested) },
         onNavigateLogin = { viewModel.onEvent(AuthScreenEvent.LoginRequested) },
-        onForgotPasswordClick = { viewModel.onEvent(AuthScreenEvent.ForgotPasswordClicked) },
         passwordResetUiState =
             PasswordResetUiState(
                 email = uiState.value.passwordResetEmail,

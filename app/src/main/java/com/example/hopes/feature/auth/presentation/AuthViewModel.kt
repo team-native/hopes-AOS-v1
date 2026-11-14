@@ -88,8 +88,18 @@ class AuthViewModel
 
                 AuthScreenEvent.LoginRequested -> {
                     updateState {
-                        copy(authStep = AuthStep.Login, errorMessage = null)
+                        copy(authStep = AuthStep.Login, errorMessage = null, isLoginOffline = false)
                     }
+                }
+
+                AuthScreenEvent.GuideRequested -> {
+                    updateState {
+                        copy(authStep = AuthStep.Guide, errorMessage = null, isLoginOffline = false)
+                    }
+                }
+
+                is AuthScreenEvent.KeepLoginChanged -> {
+                    updateState { copy(isKeepLoginChecked = event.isChecked) }
                 }
 
                 AuthScreenEvent.ForgotPasswordClicked -> {
@@ -156,12 +166,17 @@ class AuthViewModel
             }
 
             viewModelScope.launch {
-                updateState { copy(isLoading = true, errorMessage = null) }
+                updateState { copy(isLoading = true, errorMessage = null, isLoginOffline = false) }
                 val result = loginUseCase(currentState.email, currentState.password)
                 when (result) {
                     is AppResult.Success -> {
                         updateState { copy(isLoading = false) }
                         _effect.emit(AuthEffect.Authenticated)
+                    }
+
+                    // 네트워크 오류는 입력값 문제가 아니므로 필드 오류 대신 오프라인 배너로 안내한다.
+                    AppResult.NetworkError -> {
+                        updateState { copy(isLoading = false, isLoginOffline = true) }
                     }
 
                     else -> {
@@ -177,6 +192,7 @@ class AuthViewModel
                 copy(
                     email = email,
                     errorMessage = null,
+                    isLoginOffline = false,
                     signupValidation =
                         signupValidation.copy(
                             isEmailTouched = true,
@@ -221,6 +237,7 @@ class AuthViewModel
                 copy(
                     password = password,
                     errorMessage = null,
+                    isLoginOffline = false,
                     signupValidation =
                         signupValidation.copy(
                             isPasswordTouched = true,

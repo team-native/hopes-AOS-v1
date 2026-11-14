@@ -18,8 +18,8 @@ fun AuthScreen(
     signupValidation: SignupValidationUiState,
     isSignupLoading: Boolean,
     signupErrorMessage: String?,
-    loginErrorMessage: String?,
-    loginStatusMessage: String?,
+    loginUiState: AuthLoginUiState,
+    onLoginEvent: (AuthLoginScreenEvent) -> Unit,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onNameChange: (String) -> Unit,
@@ -27,29 +27,24 @@ fun AuthScreen(
     onGenerationClick: () -> Unit,
     onVerificationCodeChange: (String) -> Unit,
     onSendVerificationCodeClick: () -> Unit,
-    onLoginClick: () -> Unit,
     onSignupClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
-    onForgotPasswordClick: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
 ) {
     when (authStep) {
-        AuthStep.Guide,
-        AuthStep.Login,
-        -> {
+        AuthStep.Guide -> {
+            AuthStartScreen(
+                onStartClick = onNavigateSignup,
+                onLoginClick = onNavigateLogin,
+            )
+        }
+
+        AuthStep.Login -> {
             AuthLoginScreen(
-                emailText = emailText,
-                passwordText = passwordText,
-                loginErrorMessage = loginErrorMessage,
-                loginStatusMessage = loginStatusMessage,
-                onEmailChange = onEmailChange,
-                onPasswordChange = onPasswordChange,
-                onLoginClick = onLoginClick,
-                onNavigateSignup = onNavigateSignup,
-                onForgotPasswordClick = onForgotPasswordClick,
-                isInitiallyExpanded = authStep == AuthStep.Login,
+                uiState = loginUiState,
+                onEvent = onLoginEvent,
             )
         }
 

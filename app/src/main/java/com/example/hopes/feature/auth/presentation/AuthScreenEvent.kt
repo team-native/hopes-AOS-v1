@@ -33,6 +33,12 @@ sealed interface AuthScreenEvent {
 
     data object LoginRequested : AuthScreenEvent
 
+    data object GuideRequested : AuthScreenEvent
+
+    data class KeepLoginChanged(
+        val isChecked: Boolean,
+    ) : AuthScreenEvent
+
     data object ForgotPasswordClicked : AuthScreenEvent
 
     data class PasswordResetEmailChanged(

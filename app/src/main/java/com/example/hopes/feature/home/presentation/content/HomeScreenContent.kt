@@ -8,17 +8,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
+import com.example.hopes.core.designsystem.component.HopesRetryMessage
 import com.example.hopes.feature.home.presentation.HomePopularPost
+import com.example.hopes.feature.home.presentation.HomePopularPostsState
 import com.example.hopes.feature.home.presentation.HomeScreenEvent
 import com.example.hopes.feature.home.presentation.HomeUiState
 import com.example.hopes.feature.home.presentation.component.HomeGreetingHeader
 import com.example.hopes.feature.home.presentation.component.HomeHeroCard
+import com.example.hopes.feature.home.presentation.component.HomeLoadingContent
 import com.example.hopes.feature.home.presentation.component.HomePopularPostCard
 import com.example.hopes.feature.home.presentation.component.HomeQuestionTipCard
 import com.example.hopes.feature.home.presentation.component.HomeSectionHeader
@@ -49,6 +56,21 @@ fun HomeScreenContent(
                         bottom = AppSpacing.Section,
                     ),
         ) {
+            if (uiState.isLoading) {
+                // 30-2: 인사말 대신 알림 버튼만 오른쪽에 두고 나머지는 자리 표시로 채운다.
+                HopesHeaderIconButton(
+                    imageVector = Icons.Outlined.Notifications,
+                    contentDescription = stringResource(R.string.home_notification),
+                    onClick = { onEvent(HomeScreenEvent.NotificationClicked) },
+                    modifier = Modifier.align(Alignment.End),
+                )
+
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
+
+                HomeLoadingContent()
+                return@Column
+            }
+
             HomeGreetingHeader(
                 userName = uiState.userName,
                 hasUnreadNotification = uiState.hasUnreadNotification,
@@ -79,7 +101,19 @@ fun HomeScreenContent(
                 )
             }
 
-            if (uiState.popularPosts.isNotEmpty()) {
+            if (uiState.popularPostsState == HomePopularPostsState.LoadError) {
+                Spacer(modifier = Modifier.height(AppSpacing.Section))
+
+                HomeSectionHeader(title = stringResource(R.string.home_popular_posts_title))
+
+                Spacer(modifier = Modifier.height(AppSpacing.Item))
+
+                HopesRetryMessage(
+                    title = stringResource(R.string.home_popular_posts_error_title),
+                    description = stringResource(R.string.home_popular_posts_error_description),
+                    onRetryClick = { onEvent(HomeScreenEvent.PopularPostsRetryClicked) },
+                )
+            } else if (uiState.popularPosts.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(AppSpacing.Section))
 
                 HomeSectionHeader(
@@ -100,6 +134,35 @@ fun HomeScreenContent(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true, name = "30-2 홈 로딩")
+@Composable
+private fun HomeScreenContentLoadingPreview() {
+    HopesTheme {
+        HomeScreenContent(
+            uiState = HomeUiState(isLoading = true),
+            onEvent = {},
+            onNavigate = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "30-3 인기글 불러오기 실패")
+@Composable
+private fun HomeScreenContentPopularErrorPreview() {
+    HopesTheme {
+        HomeScreenContent(
+            uiState =
+                HomeUiState(
+                    userName = "서하",
+                    hasUnreadNotification = true,
+                    popularPostsState = HomePopularPostsState.LoadError,
+                ),
+            onEvent = {},
+            onNavigate = {},
+        )
     }
 }
 

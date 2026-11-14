@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesRetryMessage
 import com.example.hopes.core.designsystem.component.HopesSubScreenFrame
 import com.example.hopes.core.designsystem.component.HopesToast
 import com.example.hopes.feature.chat.detail.view.component.ChatAnswerCard
 import com.example.hopes.feature.chat.detail.view.component.ChatAnswerGenerating
-import com.example.hopes.feature.chat.detail.view.component.ChatErrorMessage
 import com.example.hopes.feature.chat.detail.view.component.ChatUserBubble
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailUiState
@@ -90,7 +90,7 @@ fun ChatDetailScreen(
                 }
 
                 uiState.isLoadError -> {
-                    ChatErrorMessage(
+                    HopesRetryMessage(
                         title = stringResource(R.string.chat_load_failed_title),
                         description = stringResource(R.string.chat_load_failed_description),
                         onRetryClick = { onEvent(ChatDetailScreenEvent.RetryClicked) },
@@ -119,7 +119,7 @@ fun ChatDetailScreen(
                     }
 
                     if (uiState.failedQuestion != null) {
-                        ChatErrorMessage(
+                        HopesRetryMessage(
                             title = stringResource(R.string.chat_answer_failed_title),
                             description = stringResource(R.string.chat_answer_failed_description),
                             onRetryClick = { onEvent(ChatDetailScreenEvent.ResendClicked) },

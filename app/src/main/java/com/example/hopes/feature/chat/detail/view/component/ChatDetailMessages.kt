@@ -162,59 +162,6 @@ fun ChatAnswerGenerating(modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * 빨간 아이콘 제목, 회색 설명, 밑줄 "다시 시도" 링크로 된 실패 안내다(피그마 08-3).
- */
-@Composable
-fun ChatErrorMessage(
-    title: String,
-    description: String,
-    onRetryClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .semantics { liveRegion = LiveRegionMode.Polite },
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Outlined.ErrorOutline,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.size(AppIconSize.Small),
-            )
-
-            Spacer(modifier = Modifier.width(AppSpacing.Small + AppSpacing.XSmall))
-
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.error,
-                style = HopesTextStyles.BodyStrong,
-            )
-        }
-
-        Spacer(modifier = Modifier.height(AppSpacing.Small))
-
-        Text(
-            text = description,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.Subtitle,
-        )
-
-        Text(
-            text = stringResource(R.string.chat_retry),
-            modifier =
-                Modifier
-                    .clickable(role = Role.Button, onClick = onRetryClick)
-                    .padding(vertical = AppSpacing.Compact),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.Label.copy(textDecoration = TextDecoration.Underline),
-        )
-    }
-}
-
 @Composable
 private fun ChatAnswerActionButton(
     icon: ImageVector,

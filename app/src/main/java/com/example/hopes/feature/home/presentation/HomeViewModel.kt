@@ -19,7 +19,7 @@ class HomeViewModel
     constructor(
         private val getProfileUseCase: GetProfileUseCase,
     ) : ViewModel() {
-        private val _uiState = MutableStateFlow(HomeUiState())
+        private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
         val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
         init {
@@ -29,10 +29,11 @@ class HomeViewModel
         private fun loadUserName() {
             viewModelScope.launch {
                 val result = getProfileUseCase()
-                if (result is AppResult.Success) {
-                    _uiState.update { state ->
-                        state.copy(userName = result.value.nickname.toHomeGreetingName())
-                    }
+                _uiState.update { state ->
+                    state.copy(
+                        userName = (result as? AppResult.Success)?.value?.nickname?.toHomeGreetingName(),
+                        isLoading = false,
+                    )
                 }
             }
         }

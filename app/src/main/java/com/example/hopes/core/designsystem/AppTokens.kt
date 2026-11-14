@@ -23,6 +23,8 @@ object AppRadius {
     val Logo = 14.dp
     val Field = 14.dp
     val Sheet = 28.dp
+    val SmallButton = 10.dp
+    val HeaderButton = 12.dp
 }
 
 object AppIconSize {
@@ -41,6 +43,8 @@ object AppSize {
     val Field = 48.dp
     val ListItem = 48.dp
     val Button = 46.dp
+    val SmallButton = 36.dp
+    val Chip = 32.dp
     val TopBar = 56.dp
     val BottomNavigation = 64.dp
     val IconButton = 40.dp

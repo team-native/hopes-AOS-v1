@@ -23,6 +23,7 @@ import com.example.hopes.feature.auth.presentation.AuthRoute
 import com.example.hopes.feature.auth.presentation.SessionViewModel
 import com.example.hopes.feature.chat.detail.view.ChatDetailRoute
 import com.example.hopes.feature.chat.view.ChatRoute
+import com.example.hopes.feature.community.presentation.CommunityRoute
 import com.example.hopes.feature.detail.presentation.ContactRoute
 import com.example.hopes.feature.detail.presentation.MyPageRoute
 import com.example.hopes.feature.detail.presentation.PersonalSettingsRoute
@@ -105,6 +106,9 @@ private fun HopesMainNavDisplay(
                             },
                             isNewChatRequested = key.isNewChatRequested,
                         )
+                    }
+                    entry<HopesDestination.Community> {
+                        CommunityRoute(onNavigate = navigator::navigateToTab)
                     }
                     entry<HopesDestination.History> {
                         HistoryRoute(

@@ -18,7 +18,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 
 /**
- * 하단 탭(Home/Chat/History/Settings)마다 독립된 back stack을 유지한다.
+ * 하단 탭(Home/Chat/Community/History/Settings)마다 독립된 back stack을 유지한다.
  * 탭을 전환해도 이전에 그 탭에서 쌓아 둔 화면들이 그대로 보존된다.
  */
 internal class HopesMainNavigationState(

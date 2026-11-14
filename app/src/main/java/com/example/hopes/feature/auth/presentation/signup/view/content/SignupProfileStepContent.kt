@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthCheckboxRow
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
-import com.example.hopes.feature.auth.presentation.component.AuthInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthTextInputField
 import com.example.hopes.feature.auth.presentation.signup.view.component.SignupHintText
 import com.example.hopes.feature.auth.presentation.signup.view.component.SignupSelectionField
@@ -97,7 +97,7 @@ fun SignupProfileStepContent(
         if (generationErrorMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-            AuthInlineErrorMessage(message = generationErrorMessage)
+            HopesInlineErrorMessage(message = generationErrorMessage)
         }
 
         Spacer(modifier = Modifier.height(AppSpacing.Item))
@@ -111,7 +111,7 @@ fun SignupProfileStepContent(
         if (requestErrorMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-            AuthInlineErrorMessage(message = requestErrorMessage)
+            HopesInlineErrorMessage(message = requestErrorMessage)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.hopes.feature.auth.presentation.component
+package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,9 +19,9 @@ import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.ui.theme.HopesTextStyles
 
-/** 입력 필드 바로 아래에 붙는 아이콘 + 빨간 오류 문구다. 로그인·회원가입 화면이 함께 쓴다. */
+/** 입력 필드 바로 아래에 붙는 아이콘 + 빨간 오류 문구다. 인증·마이페이지 화면이 함께 쓴다. */
 @Composable
-fun AuthInlineErrorMessage(
+fun HopesInlineErrorMessage(
     message: String,
     modifier: Modifier = Modifier,
 ) {

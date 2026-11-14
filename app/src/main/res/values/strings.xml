@@ -316,4 +316,24 @@
     <string name="chat_offline_placeholder">오프라인 상태예요</string>
     <string name="chat_new_chat_confirm_title">새 대화를 시작할까요?</string>
     <string name="chat_new_chat_confirm_message">지금 대화는 기록 탭에 저장돼요.</string>
+    <string name="chat_attach_sheet_title">자료 첨부</string>
+    <string name="chat_attach_photo">사진 보관함</string>
+    <string name="chat_attach_photo_description">이미지를 여러 장 선택할 수 있어요</string>
+    <string name="chat_attach_camera">카메라 촬영</string>
+    <string name="chat_attach_camera_description">지금 찍어서 바로 질문해요</string>
+    <string name="chat_attach_pdf">파일에서 PDF 선택</string>
+    <string name="chat_attach_pdf_description">PDF 문서를 첨부해요</string>
+    <string name="chat_attach_sheet_footer">이미지와 PDF를 첨부해서 질문할 수 있어요.</string>
+    <string name="chat_attach_count">첨부 %1$d개</string>
+    <string name="chat_attach_remove">%1$s 첨부 빼기</string>
+    <string name="chat_attach_image">이미지</string>
+    <string name="chat_attach_pdf_pages">PDF · %1$d쪽</string>
+    <string name="chat_attach_pdf_label">PDF</string>
+    <string name="chat_attach_analyzing">자료를 분석하고 있어요…</string>
+    <string name="chat_attach_upload_summary">업로드 완료 · %1$s</string>
+    <string name="chat_attach_summary_images">이미지 %1$d장</string>
+    <string name="chat_attach_summary_pdfs">PDF %1$d개</string>
+    <string name="chat_attach_failed_title">자료를 분석하지 못했어요</string>
+    <string name="chat_attach_failed_description">네트워크 상태를 확인한 뒤 다시 시도해 주세요. 첨부한 자료는 그대로 남아 있어요.</string>
+    <string name="chat_attach_camera_unavailable">카메라 앱을 열 수 없어요</string>
 </resources>

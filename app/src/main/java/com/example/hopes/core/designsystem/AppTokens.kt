@@ -19,6 +19,7 @@ object AppSpacing {
 
 object AppRadius {
     val Card = 20.dp
+    val ListCard = 16.dp
     val Button = 14.dp
     val Logo = 14.dp
     val Field = 14.dp

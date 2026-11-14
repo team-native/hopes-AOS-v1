@@ -87,9 +87,15 @@ class ChatDetailViewModel
                 ChatDetailScreenEvent.ReplySubmitted -> {
                     val state = _uiState.value
                     val trimmedReply = state.replyText.trim()
-                    if (trimmedReply.isNotEmpty() && state.isReplyEnabled) {
+                    if (trimmedReply.isNotEmpty() && state.isReplyEnabled && state.canSendDraftAttachments) {
                         _uiState.update { it.copy(replyText = "", draftAttachments = emptyList()) }
-                        sendQuestion(trimmedReply, attachments = state.draftAttachments, baseMessages = state.messages)
+                        // 업로드에 실패한 첨부는 빼고 보낸다(피그마 10-3 "빼고 보낼 수 있어요").
+                        val sendableAttachments =
+                            state.draftAttachments.filter {
+                                it.status ==
+                                    ChatAttachmentStatus.Ready
+                            }
+                        sendQuestion(trimmedReply, attachments = sendableAttachments, baseMessages = state.messages)
                     }
                 }
 
@@ -100,17 +106,35 @@ class ChatDetailViewModel
                 is ChatDetailScreenEvent.AttachmentsAdded -> {
                     _uiState.update { state ->
                         val existingUris = state.draftAttachments.map { it.uri }.toSet()
-                        state.copy(
-                            draftAttachments =
-                                state.draftAttachments + event.attachments.filter { it.uri !in existingUris },
-                        )
+                        val newAttachments = event.attachments.filter { it.uri !in existingUris }
+                        state.copy(draftAttachments = (state.draftAttachments + newAttachments).limitAttachmentCount())
                     }
                 }
 
                 is ChatDetailScreenEvent.AttachmentRemoved -> {
+                    // 하나를 빼면 개수 제한에 걸렸던 첨부가 다시 들어갈 수 있다.
                     _uiState.update { state ->
-                        state.copy(draftAttachments = state.draftAttachments.filterNot { it.uri == event.uri })
+                        state.copy(
+                            draftAttachments =
+                                state.draftAttachments.filterNot { it.uri == event.uri }.limitAttachmentCount(),
+                        )
                     }
+                }
+
+                // 업로드 API 연동 전이라 업로드 실패 상태가 생기지 않는다. 연동 시 여기서 다시 올린다.
+                is ChatDetailScreenEvent.AttachmentRetryClicked -> {
+                    Unit
+                }
+
+                // 위치 기능 연동 전이라 권한 요청·측정은 아직 없다. 연동 시 여기서 권한을 묻고 위치를 측정한다.
+                ChatDetailScreenEvent.LocationAllowClicked,
+                ChatDetailScreenEvent.LocationRetryClicked,
+                -> {
+                    Unit
+                }
+
+                ChatDetailScreenEvent.LocationLaterClicked -> {
+                    _uiState.update { it.copy(location = null) }
                 }
 
                 is ChatDetailScreenEvent.LikeClicked -> {
@@ -307,3 +331,39 @@ class ChatDetailViewModel
             const val MESSAGE_PAGE_SIZE = 20
         }
     }
+
+/**
+ * 첨부 개수 제한을 넘은 첨부를 [ChatAttachmentStatus.OverLimit]로 바꾼다(피그마 10-5).
+ * 형식·용량·손상 때문에 이미 막힌 첨부는 개수에 넣지 않는다.
+ */
+internal fun List<ChatAttachmentUiModel>.limitAttachmentCount(): List<ChatAttachmentUiModel> {
+    var acceptedCount = 0
+    return map { attachment ->
+        val isRejectedForOtherReason =
+            attachment.status.isRejected && attachment.status != ChatAttachmentStatus.OverLimit
+        when {
+            isRejectedForOtherReason -> {
+                attachment
+            }
+
+            acceptedCount < MAX_ATTACHMENT_COUNT -> {
+                acceptedCount++
+                if (attachment.status == ChatAttachmentStatus.OverLimit) {
+                    attachment.copy(status = ChatAttachmentStatus.Ready)
+                } else {
+                    attachment
+                }
+            }
+
+            else -> {
+                attachment.copy(status = ChatAttachmentStatus.OverLimit)
+            }
+        }
+    }
+}
+
+// 피그마 10-5에서 네 번째 이미지가 막히는 것을 기준으로 정했다. 서버 제한이 정해지면 맞춘다.
+internal const val MAX_ATTACHMENT_COUNT = 3
+
+// 파일 한 개 용량 제한이다. 서버 제한이 정해지면 맞춘다.
+internal const val MAX_ATTACHMENT_SIZE_BYTES = 20L * 1024 * 1024

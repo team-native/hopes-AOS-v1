@@ -35,10 +35,13 @@ import com.example.hopes.feature.chat.detail.view.component.ChatUserBubble
 import com.example.hopes.feature.chat.detail.view.component.chatAttachmentSummary
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAnswerFailureReason
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentKind
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentStatus
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentUiModel
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailUiState
 import com.example.hopes.feature.chat.detail.viewmodel.ChatMessageUiModel
+import com.example.hopes.feature.chat.detail.viewmodel.MAX_ATTACHMENT_COUNT
+import com.example.hopes.feature.chat.detail.viewmodel.limitAttachmentCount
 import com.example.hopes.feature.chat.view.component.ChatComposer
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
@@ -90,6 +93,7 @@ fun ChatDetailScreen(
                     ChatDraftAttachments(
                         attachments = uiState.draftAttachments,
                         onRemove = { onEvent(ChatDetailScreenEvent.AttachmentRemoved(it.uri)) },
+                        onRetry = { onEvent(ChatDetailScreenEvent.AttachmentRetryClicked(it.uri)) },
                     )
                 }
 
@@ -99,11 +103,24 @@ fun ChatDetailScreen(
                     onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
                     placeholder =
                         when {
-                            uiState.isOffline -> stringResource(R.string.chat_offline_placeholder)
-                            uiState.isSending -> stringResource(R.string.chat_generating_placeholder)
-                            else -> stringResource(R.string.chat_additional_question)
+                            uiState.isOffline -> {
+                                stringResource(R.string.chat_offline_placeholder)
+                            }
+
+                            uiState.isSending -> {
+                                stringResource(R.string.chat_generating_placeholder)
+                            }
+
+                            uiState.draftAttachments.isNotEmpty() -> {
+                                stringResource(R.string.chat_attach_question_placeholder)
+                            }
+
+                            else -> {
+                                stringResource(R.string.chat_additional_question)
+                            }
                         },
                     isEnabled = uiState.isReplyEnabled,
+                    isSubmitAllowed = uiState.canSendDraftAttachments,
                     onAttachClick = onAttachClick,
                 )
             }
@@ -170,6 +187,7 @@ fun ChatDetailScreen(
                         } else {
                             ChatAnswerCard(
                                 text = message.content,
+                                sources = message.sources,
                                 onCopyClick = { onCopyAnswer(message.content) },
                                 onShareClick = { onShareAnswer(message.content) },
                                 onCopyCode = onCopyCode,
@@ -400,6 +418,123 @@ private val previewAttachments =
             pageCount = 12,
         ),
     )
+
+@Composable
+private fun DraftStatePreview(attachments: List<ChatAttachmentUiModel>) {
+    HopesTheme {
+        ChatDetailScreen(
+            uiState =
+                ChatDetailUiState(
+                    title = "기숙사 생활",
+                    isLoading = false,
+                    replyText = "이 자료 요약해줘",
+                    draftAttachments = attachments,
+                ),
+            subtitle = "선배 답변 · 실제 경험 기반",
+            onEvent = {},
+            onCopyAnswer = {},
+            onShareAnswer = {},
+            onCopyCode = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "10-2 첨부 업로드 중")
+@Composable
+private fun ChatDetailUploadingPreview() {
+    DraftStatePreview(
+        previewAttachments.map { it.copy(status = ChatAttachmentStatus.Uploading(progress = 0.3f)) },
+    )
+}
+
+@Preview(showBackground = true, name = "10-3 일부 업로드 실패")
+@Composable
+private fun ChatDetailUploadFailedPreview() {
+    DraftStatePreview(
+        previewAttachments.mapIndexed { index, attachment ->
+            if (index == 1) attachment.copy(status = ChatAttachmentStatus.UploadFailed) else attachment
+        },
+    )
+}
+
+@Preview(showBackground = true, name = "10-4 지원하지 않는 형식")
+@Composable
+private fun ChatDetailUnsupportedPreview() {
+    DraftStatePreview(
+        listOf(
+            previewAttachments.first(),
+            ChatAttachmentUiModel(
+                uri = "content://file/1",
+                kind = ChatAttachmentKind.Pdf,
+                name = "발표자료.pptx",
+                status = ChatAttachmentStatus.Unsupported,
+            ),
+        ),
+    )
+}
+
+@Preview(showBackground = true, name = "10-5 첨부 개수·용량 초과")
+@Composable
+private fun ChatDetailOverLimitPreview() {
+    DraftStatePreview(
+        List(MAX_ATTACHMENT_COUNT + 1) { index ->
+            ChatAttachmentUiModel(
+                uri = "content://image/$index",
+                kind = ChatAttachmentKind.Image,
+                name = "사진$index.jpg",
+            )
+        }.limitAttachmentCount(),
+    )
+}
+
+@Preview(showBackground = true, name = "10-6 열 수 없는 PDF")
+@Composable
+private fun ChatDetailUnreadablePreview() {
+    DraftStatePreview(
+        listOf(
+            ChatAttachmentUiModel(
+                uri = "content://pdf/2",
+                kind = ChatAttachmentKind.Pdf,
+                name = "성적표.pdf",
+                status = ChatAttachmentStatus.Unreadable,
+            ),
+        ),
+    )
+}
+
+@Preview(showBackground = true, name = "11-3 첨부 기반 답변 완료")
+@Composable
+private fun ChatDetailSourceAnswerPreview() {
+    HopesTheme {
+        ChatDetailScreen(
+            uiState =
+                ChatDetailUiState(
+                    title = "기숙사 생활",
+                    isLoading = false,
+                    messages =
+                        listOf(
+                            ChatMessageUiModel(
+                                id = 1,
+                                content = "이 자료에서 외출 규정만 정리해줘",
+                                isUser = true,
+                                attachments = previewAttachments.drop(1),
+                            ),
+                            ChatMessageUiModel(
+                                id = 2,
+                                content = "## 외출 규정 요약\n- 평일 외출은 사감 선생님 승인 후 가능해요.\n- 주말 외출은 금요일까지 신청해야 해요.",
+                                isUser = false,
+                                sources = listOf("생활수칙.pdf · 4~5쪽"),
+                            ),
+                        ),
+                ),
+            subtitle = "선배 답변 · 실제 경험 기반",
+            onEvent = {},
+            onCopyAnswer = {},
+            onShareAnswer = {},
+            onCopyCode = {},
+        )
+    }
+}
 
 @Preview(showBackground = true, name = "10 첨부 미리보기")
 @Composable

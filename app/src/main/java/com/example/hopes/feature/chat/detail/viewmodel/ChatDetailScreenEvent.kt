@@ -34,4 +34,16 @@ sealed interface ChatDetailScreenEvent {
     data class AttachmentRemoved(
         val uri: String,
     ) : ChatDetailScreenEvent
+
+    /** 업로드에 실패한 첨부를 눌러 다시 올린다(10-3). */
+    data class AttachmentRetryClicked(
+        val uri: String,
+    ) : ChatDetailScreenEvent
+
+    data object LocationAllowClicked : ChatDetailScreenEvent
+
+    data object LocationLaterClicked : ChatDetailScreenEvent
+
+    /** 위치 다시 측정(21-3) 또는 다시 시도(23)다. */
+    data object LocationRetryClicked : ChatDetailScreenEvent
 }

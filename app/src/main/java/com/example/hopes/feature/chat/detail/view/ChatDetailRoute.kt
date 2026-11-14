@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.hopes.core.designsystem.component.HopesAlertDialog
 import com.example.hopes.feature.chat.detail.view.component.ChatAttachmentSheet
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentKind
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
@@ -69,6 +71,7 @@ fun ChatDetailRoute(
     var isAttachmentSheetVisible by rememberSaveable { mutableStateOf(false) }
     // 카메라 앱이 사진을 저장할 자리다. 화면 회전으로 Route가 다시 만들어져도 결과를 받을 수 있게 저장해 둔다.
     var pendingCameraUri by rememberSaveable { mutableStateOf<String?>(null) }
+    var isMediaPermissionDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     fun addAttachments(
         uris: List<Uri>,
@@ -154,6 +157,10 @@ fun ChatDetailRoute(
                 } catch (exception: ActivityNotFoundException) {
                     pendingCameraUri = null
                     toastMessageResId = R.string.chat_attach_camera_unavailable
+                } catch (exception: SecurityException) {
+                    // 기기 정책 등으로 카메라 접근이 막히면 설정에서 허용하도록 안내한다(피그마 09-2).
+                    pendingCameraUri = null
+                    isMediaPermissionDialogVisible = true
                 }
             },
             onPdfClick = {
@@ -162,6 +169,32 @@ fun ChatDetailRoute(
             },
             onDismiss = { isAttachmentSheetVisible = false },
         )
+    }
+
+    if (isMediaPermissionDialogVisible) {
+        HopesAlertDialog(
+            title = stringResource(R.string.chat_attach_permission_title),
+            message = stringResource(R.string.chat_attach_permission_message),
+            dismissText = stringResource(R.string.cancel),
+            confirmText = stringResource(R.string.open_settings),
+            onDismiss = { isMediaPermissionDialogVisible = false },
+            onConfirm = {
+                isMediaPermissionDialogVisible = false
+                context.openAppSettings()
+            },
+        )
+    }
+}
+
+/** 이 앱의 시스템 설정 화면을 연다. 권한을 직접 허용하도록 안내할 때 쓴다. */
+internal fun Context.openAppSettings() {
+    val intent =
+        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    try {
+        startActivity(intent)
+    } catch (exception: ActivityNotFoundException) {
+        startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 }
 

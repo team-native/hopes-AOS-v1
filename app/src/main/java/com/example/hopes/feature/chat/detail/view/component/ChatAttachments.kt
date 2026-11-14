@@ -26,8 +26,10 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -48,10 +50,12 @@ import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesErrorBanner
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentKind
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentStatus
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentUiModel
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
@@ -125,17 +129,73 @@ fun ChatAttachmentSheet(
 }
 
 /**
- * 입력창 바로 위에 붙는 "첨부 N개" 미리보기다(피그마 10). 항목마다 X로 뺄 수 있다.
+ * 입력창 바로 위에 붙는 첨부 미리보기다(피그마 10, 10-2 ~ 10-6).
+ * 막힌 첨부가 있으면 위쪽에 이유를 알려주는 빨간 배너를 띄우고, 항목마다 X로 뺄 수 있다.
  */
 @Composable
 fun ChatDraftAttachments(
     attachments: List<ChatAttachmentUiModel>,
     onRemove: (ChatAttachmentUiModel) -> Unit,
+    onRetry: (ChatAttachmentUiModel) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val statuses = attachments.map { it.status }
+    val failedCount = statuses.count { it == ChatAttachmentStatus.UploadFailed }
+    val isOverLimit = statuses.any { it == ChatAttachmentStatus.OverLimit || it == ChatAttachmentStatus.TooLarge }
+    val bannerMessage =
+        when {
+            statuses.any { it == ChatAttachmentStatus.Unreadable } -> {
+                stringResource(
+                    R.string.chat_attach_unreadable_banner,
+                )
+            }
+
+            statuses.any { it == ChatAttachmentStatus.Unsupported } -> {
+                stringResource(
+                    R.string.chat_attach_unsupported_banner,
+                )
+            }
+
+            isOverLimit -> {
+                stringResource(R.string.chat_attach_over_limit_banner)
+            }
+
+            failedCount > 0 -> {
+                stringResource(R.string.chat_attach_upload_failed_banner, failedCount)
+            }
+
+            else -> {
+                null
+            }
+        }
+    val countText =
+        when {
+            isOverLimit -> {
+                stringResource(R.string.chat_attach_over_limit_count)
+            }
+
+            statuses.any { it is ChatAttachmentStatus.Uploading } -> {
+                stringResource(R.string.chat_attach_uploading_count, attachments.size)
+            }
+
+            failedCount > 0 -> {
+                stringResource(R.string.chat_attach_failed_count, attachments.size, failedCount)
+            }
+
+            else -> {
+                stringResource(R.string.chat_attach_count, attachments.size)
+            }
+        }
+
     Column(modifier = modifier.fillMaxWidth()) {
+        if (bannerMessage != null) {
+            HopesErrorBanner(message = bannerMessage)
+
+            Spacer(modifier = Modifier.height(AppSpacing.Item))
+        }
+
         Text(
-            text = stringResource(R.string.chat_attach_count, attachments.size),
+            text = countText,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = HopesTextStyles.CaptionStrong,
         )
@@ -149,13 +209,16 @@ fun ChatDraftAttachments(
                     .horizontalScroll(rememberScrollState())
                     .padding(top = REMOVE_BADGE_OVERFLOW, end = REMOVE_BADGE_OVERFLOW),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
         ) {
             attachments.forEach { attachment ->
                 when (attachment.kind) {
                     ChatAttachmentKind.Image -> {
                         Box {
-                            ChatImageTile(size = DRAFT_IMAGE_SIZE)
+                            ChatDraftImageTile(
+                                attachment = attachment,
+                                onRetry = { onRetry(attachment) },
+                            )
                             ChatRemoveAttachmentBadge(
                                 name = attachment.name,
                                 onClick = { onRemove(attachment) },
@@ -292,6 +355,65 @@ private fun ChatImageTile(size: Dp) {
     }
 }
 
+/**
+ * 미리보기의 이미지 타일이다. 업로드 중이면 아래에 진행 막대를(10-2),
+ * 업로드 실패·범위 초과면 다시 시도 아이콘을(10-3, 10-5) 보여준다.
+ */
+@Composable
+private fun ChatDraftImageTile(
+    attachment: ChatAttachmentUiModel,
+    onRetry: () -> Unit,
+) {
+    val status = attachment.status
+    val tileShape = RoundedCornerShape(AppRadius.Field)
+    val isBlocked =
+        status == ChatAttachmentStatus.UploadFailed ||
+            status == ChatAttachmentStatus.OverLimit ||
+            status == ChatAttachmentStatus.TooLarge
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        if (isBlocked) {
+            Box(
+                modifier =
+                    Modifier
+                        .size(DRAFT_IMAGE_SIZE)
+                        .background(MaterialTheme.colorScheme.primaryContainer, tileShape)
+                        .shapeClickable(
+                            shape = tileShape,
+                            enabled = status == ChatAttachmentStatus.UploadFailed,
+                            role = Role.Button,
+                            onClick = onRetry,
+                        ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Refresh,
+                    contentDescription = stringResource(R.string.chat_attach_retry_upload, attachment.name),
+                    tint = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.size(AppIconSize.Medium),
+                )
+            }
+        } else {
+            ChatImageTile(size = DRAFT_IMAGE_SIZE)
+        }
+
+        if (status is ChatAttachmentStatus.Uploading) {
+            Spacer(modifier = Modifier.height(AppSpacing.Small))
+
+            LinearProgressIndicator(
+                progress = { status.progress },
+                modifier =
+                    Modifier
+                        .width(DRAFT_IMAGE_SIZE - AppSpacing.Compact)
+                        .height(PROGRESS_HEIGHT),
+                color = MaterialTheme.colorScheme.primary,
+                trackColor = MaterialTheme.colorScheme.outline,
+                drawStopIndicator = {},
+            )
+        }
+    }
+}
+
 @Composable
 private fun ChatPdfChip(
     attachment: ChatAttachmentUiModel,
@@ -299,6 +421,8 @@ private fun ChatPdfChip(
     onRemove: (() -> Unit)?,
 ) {
     val chipShape = RoundedCornerShape(AppRadius.Field)
+    val status = attachment.status
+    val isProblem = status == ChatAttachmentStatus.Unsupported || status == ChatAttachmentStatus.Unreadable
 
     Row(
         modifier =
@@ -313,7 +437,7 @@ private fun ChatPdfChip(
         Icon(
             imageVector = Icons.Outlined.Description,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = if (isProblem) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(AppIconSize.Small),
         )
 
@@ -331,9 +455,35 @@ private fun ChatPdfChip(
             if (showsDetail) {
                 Text(
                     text =
-                        attachment.pageCount?.let { stringResource(R.string.chat_attach_pdf_pages, it) }
-                            ?: stringResource(R.string.chat_attach_pdf_label),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        when (status) {
+                            is ChatAttachmentStatus.Uploading -> {
+                                stringResource(
+                                    R.string.chat_attach_uploading_progress,
+                                    (status.progress * PERCENT).toInt(),
+                                )
+                            }
+
+                            ChatAttachmentStatus.Unsupported -> {
+                                stringResource(R.string.chat_attach_unsupported)
+                            }
+
+                            ChatAttachmentStatus.Unreadable -> {
+                                stringResource(R.string.chat_attach_unreadable)
+                            }
+
+                            else -> {
+                                attachment.pageCount?.let { stringResource(R.string.chat_attach_pdf_pages, it) }
+                                    ?: stringResource(R.string.chat_attach_pdf_label)
+                            }
+                        },
+                    color =
+                        if (status == ChatAttachmentStatus.Unsupported) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     style = HopesTextStyles.Caption,
                 )
             }
@@ -391,3 +541,5 @@ private val REMOVE_TOUCH_SIZE = 32.dp
 private val REMOVE_BADGE_SIZE = 20.dp
 private val REMOVE_BADGE_ICON_SIZE = 12.dp
 private val REMOVE_BADGE_OVERFLOW = 6.dp
+private val PROGRESS_HEIGHT = 3.dp
+private const val PERCENT = 100

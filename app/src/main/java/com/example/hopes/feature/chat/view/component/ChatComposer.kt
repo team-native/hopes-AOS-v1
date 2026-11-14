@@ -44,6 +44,7 @@ import com.teamnative.hopes.R
  * 채팅 홈·상세 하단의 알약 모양 질문 입력창이다. 왼쪽 자료 첨부(+), 가운데 입력, 오른쪽 음성 입력·전송 버튼으로 된다.
  *
  * @param isEnabled false면 입력과 버튼을 모두 막고 [placeholder]를 회색으로 보여준다(답변 생성 중, 오프라인).
+ * @param isSubmitAllowed false면 입력은 그대로 두고 전송 버튼만 막는다(보낼 수 없는 첨부가 있을 때).
  */
 @Composable
 fun ChatComposer(
@@ -53,10 +54,11 @@ fun ChatComposer(
     placeholder: String,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
+    isSubmitAllowed: Boolean = true,
     onAttachClick: () -> Unit = {},
     onVoiceClick: () -> Unit = {},
 ) {
-    val isSubmitEnabled = isEnabled && value.isNotBlank()
+    val isSubmitEnabled = isEnabled && isSubmitAllowed && value.isNotBlank()
     val sendDescription = stringResource(R.string.chat_send)
 
     Row(

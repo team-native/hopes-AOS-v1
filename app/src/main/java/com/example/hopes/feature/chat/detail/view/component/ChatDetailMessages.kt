@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -74,10 +75,13 @@ fun ChatUserBubble(
 
 /**
  * 선배 답변 카드다. 답변을 문단으로 나눠 그리고, 아래에 복사·공유 버튼을 둔다(피그마 08, 08-6).
+ *
+ * @param sources 첨부 자료 기반 답변이면 "생활수칙.pdf · 4~5쪽"처럼 근거 자료를 넘긴다. 카드 맨 위에 칩으로 보인다(11-3).
  */
 @Composable
 fun ChatAnswerCard(
     text: String,
+    sources: List<String>,
     onCopyClick: () -> Unit,
     onShareClick: () -> Unit,
     onCopyCode: (String) -> Unit,
@@ -87,9 +91,7 @@ fun ChatAnswerCard(
     val blocks = remember(text) { parseChatAnswerBlocks(text) }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        ChatAnswerContent(
-            blocks = blocks,
-            onCopyCode = onCopyCode,
+        Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
@@ -98,7 +100,16 @@ fun ChatAnswerCard(
                         color = MaterialTheme.colorScheme.surface,
                         shape = cardShape,
                     ).padding(AppSpacing.Medium),
-        )
+            verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+        ) {
+            sources.forEach { source -> ChatAnswerSourceChip(source = source) }
+
+            ChatAnswerContent(
+                blocks = blocks,
+                onCopyCode = onCopyCode,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
 
         Row {
             ChatAnswerActionButton(
@@ -177,6 +188,33 @@ fun ChatAnswerGenerating(
                 )
             }
         }
+    }
+}
+
+/** 답변 근거 자료 칩이다(피그마 11-3 "생활수칙.pdf · 4~5쪽 기반"). */
+@Composable
+private fun ChatAnswerSourceChip(source: String) {
+    Row(
+        modifier =
+            Modifier
+                .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
+                .padding(horizontal = AppSpacing.Compact, vertical = AppSpacing.XSmall + AppSpacing.XSmall),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Description,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(AppIconSize.Inline),
+        )
+
+        Spacer(modifier = Modifier.width(AppSpacing.Small))
+
+        Text(
+            text = stringResource(R.string.chat_answer_source, source),
+            color = MaterialTheme.colorScheme.primary,
+            style = HopesTextStyles.Tag,
+        )
     }
 }
 

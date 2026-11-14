@@ -132,8 +132,15 @@ private fun HopesMainNavDisplay(
                     entry<HopesDestination.Chat> { key ->
                         ChatRoute(
                             onNavigate = navigator::navigateToTab,
-                            onNavigateToNewChatDetail = { question ->
-                                navigator.push(HopesDestination.ChatDetail(chatId = NEW_CHAT_ID, question = question))
+                            onNavigateToNewChatDetail = { question, department, major ->
+                                navigator.push(
+                                    HopesDestination.ChatDetail(
+                                        chatId = NEW_CHAT_ID,
+                                        question = question,
+                                        department = department,
+                                        major = major,
+                                    ),
+                                )
                             },
                             isNewChatRequested = key.isNewChatRequested,
                         )

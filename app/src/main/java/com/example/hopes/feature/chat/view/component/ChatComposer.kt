@@ -3,68 +3,97 @@ package com.example.hopes.feature.chat.view.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppBorderWidth
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSize
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
-/** 메인 채팅 화면에서 Scaffold 하단에 고정되는 질문 입력창이다. */
+/**
+ * 채팅 홈·상세 하단의 알약 모양 질문 입력창이다. 왼쪽 자료 첨부(+), 가운데 입력, 오른쪽 음성 입력·전송 버튼으로 된다.
+ *
+ * @param isEnabled false면 입력과 버튼을 모두 막고 [placeholder]를 회색으로 보여준다(답변 생성 중, 오프라인).
+ */
 @Composable
 fun ChatComposer(
     value: String,
     onValueChange: (String) -> Unit,
     onSubmitClick: () -> Unit,
-    isLoading: Boolean,
+    placeholder: String,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
+    onAttachClick: () -> Unit = {},
+    onVoiceClick: () -> Unit = {},
 ) {
+    val isSubmitEnabled = isEnabled && value.isNotBlank()
     val sendDescription = stringResource(R.string.chat_send)
 
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center,
+    Row(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = AppSize.Field + AppSpacing.Small)
+                .testTag("chat_composer_surface")
+                .figmaRaisedShadow(CircleShape)
+                .background(MaterialTheme.colorScheme.surface, CircleShape)
+                .border(AppBorderWidth.Default, MaterialTheme.colorScheme.outline, CircleShape)
+                .padding(horizontal = AppSpacing.Small),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
+        ChatComposerIconButton(
+            onClick = onAttachClick,
+            isEnabled = isEnabled,
+            contentDescription = stringResource(R.string.chat_attach),
+        ) { tint ->
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier.size(AppIconSize.Medium),
+            )
+        }
+
         Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(52.dp)
-                    .testTag("chat_composer_surface")
-                    .figmaRaisedShadow(RoundedCornerShape(41.dp))
-                    .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(41.dp))
-                    .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(41.dp)),
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterStart,
         ) {
             if (value.isEmpty()) {
                 Text(
-                    text = stringResource(R.string.chat_new_message),
-                    modifier =
-                        Modifier
-                            .align(Alignment.CenterStart)
-                            .fillMaxWidth()
-                            .padding(start = 20.dp, end = 80.dp),
+                    text = placeholder,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = TextStyle(fontSize = 14.sp),
+                    maxLines = 1,
+                    style = HopesTextStyles.Body,
                 )
             }
 
@@ -73,57 +102,93 @@ fun ChatComposer(
                 onValueChange = onValueChange,
                 modifier =
                     Modifier
-                        .align(Alignment.CenterStart)
                         .fillMaxWidth()
-                        .padding(start = 20.dp, end = 80.dp),
+                        .semantics { contentDescription = placeholder },
+                enabled = isEnabled,
                 singleLine = true,
-                textStyle =
-                    TextStyle(
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 14.sp,
-                    ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        innerTextField()
-                    }
-                },
+                textStyle = HopesTextStyles.Body.copy(color = MaterialTheme.colorScheme.onSurface),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                keyboardActions = KeyboardActions(onSend = { if (isSubmitEnabled) onSubmitClick() }),
             )
+        }
 
+        ChatComposerIconButton(
+            onClick = onVoiceClick,
+            isEnabled = isEnabled,
+            contentDescription = stringResource(R.string.chat_voice_input),
+        ) { tint ->
+            Icon(
+                imageVector = Icons.Outlined.Mic,
+                contentDescription = null,
+                tint = tint,
+                modifier = Modifier.size(AppIconSize.Medium),
+            )
+        }
+
+        Box(
+            modifier =
+                Modifier
+                    .size(AppSize.IconButton)
+                    .shapeClickable(
+                        shape = CircleShape,
+                        enabled = isSubmitEnabled,
+                        role = Role.Button,
+                        onClick = onSubmitClick,
+                    ).semantics { contentDescription = sendDescription },
+            contentAlignment = Alignment.Center,
+        ) {
             Box(
                 modifier =
                     Modifier
-                        .align(Alignment.CenterEnd)
-                        .padding(end = 18.dp)
-                        .size(48.dp)
-                        // 48dp 접근성 터치 영역은 유지하되, 잘린 사각 ripple이 30dp 원형 버튼과
-                        // 어긋나지 않도록 눌림 indication은 표시하지 않는다.
-                        .shapeClickable(shape = CircleShape, enabled = !isLoading, onClick = onSubmitClick)
-                        .semantics {
-                            role = Role.Button
-                            contentDescription = sendDescription
-                        },
+                        .size(SEND_BUTTON_SIZE)
+                        .background(
+                            color =
+                                if (isSubmitEnabled) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.primary.copy(alpha = DISABLED_SEND_ALPHA)
+                                },
+                            shape = CircleShape,
+                        ),
                 contentAlignment = Alignment.Center,
             ) {
-                // 시각적 버튼은 30.dp로 유지하고, 바깥 48.dp 영역으로 터치 접근성을 보장한다.
-                Box(
-                    modifier =
-                        Modifier
-                            .size(30.dp)
-                            .figmaRaisedShadow(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary, CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.img),
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Filled.ArrowUpward,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(AppIconSize.Small),
+                )
             }
         }
     }
 }
+
+@Composable
+private fun ChatComposerIconButton(
+    onClick: () -> Unit,
+    isEnabled: Boolean,
+    contentDescription: String,
+    icon: @Composable (tint: Color) -> Unit,
+) {
+    Box(
+        modifier =
+            Modifier
+                .size(AppSize.IconButton)
+                .shapeClickable(shape = CircleShape, enabled = isEnabled, role = Role.Button, onClick = onClick)
+                .semantics { this.contentDescription = contentDescription },
+        contentAlignment = Alignment.Center,
+    ) {
+        icon(
+            if (isEnabled) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = DISABLED_ICON_ALPHA)
+            },
+        )
+    }
+}
+
+private val SEND_BUTTON_SIZE = 32.dp
+private const val DISABLED_SEND_ALPHA = 0.38f
+private const val DISABLED_ICON_ALPHA = 0.5f

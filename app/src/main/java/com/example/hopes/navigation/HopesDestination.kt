@@ -1,6 +1,8 @@
 package com.example.hopes.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.example.hopes.feature.chat.viewmodel.ChatDepartment
+import com.example.hopes.feature.chat.viewmodel.ChatMajor
 import kotlinx.serialization.Serializable
 
 /** 앱의 모든 화면을 나타내는 Navigation 3 back stack 키다. */
@@ -31,9 +33,14 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object AppInfo : HopesDestination
 
+    /**
+     * @param department 채팅 홈에서 고른 학과다. 상세 화면 부제목("소프트웨어개발과 · Frontend")에 쓴다.
+     */
     @Serializable data class ChatDetail(
         val chatId: Long,
         val question: String = "",
+        val department: ChatDepartment? = null,
+        val major: ChatMajor? = null,
     ) : HopesDestination
 
     @Serializable data object Auth : HopesDestination

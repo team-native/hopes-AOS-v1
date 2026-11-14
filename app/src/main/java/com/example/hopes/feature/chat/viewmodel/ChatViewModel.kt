@@ -16,6 +16,8 @@ sealed interface ChatEffect {
     /** 대화 생성은 상세 화면 자체에서 진행하므로, 질문만 들고 곧바로 상세 화면으로 이동한다. */
     data class NavigateToNewChat(
         val question: String,
+        val department: ChatDepartment?,
+        val major: ChatMajor?,
     ) : ChatEffect
 }
 
@@ -43,11 +45,24 @@ class ChatViewModel
                 }
 
                 is ChatScreenEvent.SuggestionClicked -> {
-                    navigateToNewChat(event.question)
+                    updateState { copy(questionText = event.question) }
                 }
 
                 ChatScreenEvent.NewChatClicked -> {
                     updateState { copy(questionText = "") }
+                }
+
+                is ChatScreenEvent.DepartmentSelected -> {
+                    updateState { copy(department = event.department) }
+                }
+
+                is ChatScreenEvent.MajorSelected -> {
+                    updateState { copy(major = event.major) }
+                }
+
+                // 추천 질문 API 연동 전이라 학과·전공에 맞춘 고정 질문을 그대로 둔다. 연동 시 여기서 다시 불러온다.
+                ChatScreenEvent.RecommendationsRefreshClicked -> {
+                    Unit
                 }
             }
         }
@@ -61,7 +76,14 @@ class ChatViewModel
 
             viewModelScope.launch {
                 updateState { copy(questionText = "") }
-                _effect.emit(ChatEffect.NavigateToNewChat(trimmedQuestion))
+                val currentState = _uiState.value
+                _effect.emit(
+                    ChatEffect.NavigateToNewChat(
+                        question = trimmedQuestion,
+                        department = currentState.department,
+                        major = currentState.major,
+                    ),
+                )
             }
         }
 

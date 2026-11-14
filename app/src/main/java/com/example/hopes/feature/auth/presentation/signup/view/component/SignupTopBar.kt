@@ -18,8 +18,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.component.AuthStepBackButton
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
 /** 회원가입 화면 상단의 뒤로가기 버튼과 "회원가입" 제목이다. */
@@ -32,7 +34,7 @@ fun SignupTopBar(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(AppSize.TopBar)
                 .padding(horizontal = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -44,11 +46,7 @@ fun SignupTopBar(
             text = stringResource(R.string.signup),
             modifier = Modifier.semantics { heading() },
             color = MaterialTheme.colorScheme.onSurface,
-            style =
-                TextStyle(
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.SemiBold,
-                ),
+            style = HopesTextStyles.TopBarTitle,
         )
     }
 }

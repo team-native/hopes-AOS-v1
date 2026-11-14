@@ -23,6 +23,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 import java.util.Locale
 
@@ -65,19 +68,15 @@ fun SignupCodeTimerRow(
                 imageVector = Icons.Outlined.Schedule,
                 contentDescription = null,
                 tint = timerColor,
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(AppIconSize.Inline),
             )
 
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(AppSpacing.Small))
 
             Text(
                 text = timerText,
                 color = timerColor,
-                style =
-                    TextStyle(
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    ),
+                style = HopesTextStyles.LabelStrong,
             )
         }
 
@@ -89,13 +88,9 @@ fun SignupCodeTimerRow(
                         enabled = isResendEnabled,
                         role = Role.Button,
                         onClick = onResendClick,
-                    ).padding(horizontal = 4.dp, vertical = 8.dp),
+                    ).padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Compact),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style =
-                TextStyle(
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
+            style = HopesTextStyles.Label,
         )
     }
 }

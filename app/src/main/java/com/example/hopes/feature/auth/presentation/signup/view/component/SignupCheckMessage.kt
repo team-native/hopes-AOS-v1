@@ -20,6 +20,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /**
  * 체크(✓) 또는 엑스(✕) 아이콘이 붙은 한 줄 문구다. 비밀번호 조건 목록과 "이메일 인증이 완료됐어요" 문구가 쓴다.
@@ -48,17 +51,16 @@ fun SignupCheckMessage(
                 },
             contentDescription = null,
             tint = color,
-            modifier = Modifier.size(14.dp),
+            modifier = Modifier.size(AppIconSize.Inline),
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(AppSpacing.Small))
 
         Text(
             text = text,
             color = color,
             style =
-                TextStyle(
-                    fontSize = 12.sp,
+                HopesTextStyles.Caption.copy(
                     fontWeight =
                         if (isEmphasized) {
                             FontWeight.SemiBold

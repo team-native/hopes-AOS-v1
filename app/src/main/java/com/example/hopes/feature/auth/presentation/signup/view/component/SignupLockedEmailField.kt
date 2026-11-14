@@ -20,6 +20,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSize
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
@@ -37,11 +40,11 @@ fun SignupLockedEmailField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(AppSize.Field)
                 .background(
                     color = extendedColors.replyFieldBackground,
                     shape = RoundedCornerShape(AppRadius.Field),
-                ).padding(start = 16.dp, end = 4.dp),
+                ).padding(start = AppSpacing.Medium, end = AppSpacing.Small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -50,7 +53,7 @@ fun SignupLockedEmailField(
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = TextStyle(fontSize = 15.sp),
+            style = HopesTextStyles.Field,
         )
 
         Text(
@@ -61,13 +64,9 @@ fun SignupLockedEmailField(
                         enabled = isChangeEnabled,
                         role = Role.Button,
                         onClick = onChangeClick,
-                    ).padding(horizontal = 12.dp, vertical = 12.dp),
+                    ).padding(AppSpacing.Item),
             color = MaterialTheme.colorScheme.primary,
-            style =
-                TextStyle(
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                ),
+            style = HopesTextStyles.LabelStrong,
         )
     }
 }

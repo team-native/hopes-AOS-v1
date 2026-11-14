@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.signup.viewmodel.SignupStep
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
@@ -56,7 +57,7 @@ fun SignupStepProgress(
                     modifier =
                         Modifier
                             .weight(1f)
-                            .height(3.dp)
+                            .height(PROGRESS_BAR_HEIGHT)
                             .background(
                                 color =
                                     if (entry.number <= step.number) {
@@ -64,7 +65,7 @@ fun SignupStepProgress(
                                     } else {
                                         extendedColors.authHandle
                                     },
-                                shape = RoundedCornerShape(2.dp),
+                                shape = RoundedCornerShape(PROGRESS_BAR_RADIUS),
                             ),
                 )
             }
@@ -75,14 +76,14 @@ fun SignupStepProgress(
         Text(
             text = progressText,
             color = MaterialTheme.colorScheme.primary,
-            style =
-                TextStyle(
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
+            style = HopesTextStyles.Overline,
         )
     }
 }
+
+// 피그마 진행 바의 두께와 모서리다.
+private val PROGRESS_BAR_HEIGHT = 3.dp
+private val PROGRESS_BAR_RADIUS = 2.dp
 
 private fun SignupStep.labelResId(): Int =
     when (this) {

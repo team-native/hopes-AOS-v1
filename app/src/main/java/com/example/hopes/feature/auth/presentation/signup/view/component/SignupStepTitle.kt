@@ -11,6 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /** 단계별 두 줄 제목이다. [highlight]와 일치하는 첫 구간만 primary 색으로 강조한다. */
 @Composable
@@ -37,11 +38,6 @@ fun SignupStepTitle(
         text = title,
         modifier = modifier.semantics { heading() },
         color = MaterialTheme.colorScheme.onSurface,
-        style =
-            TextStyle(
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 30.sp,
-            ),
+        style = HopesTextStyles.ScreenTitle,
     )
 }

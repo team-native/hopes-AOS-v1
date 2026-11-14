@@ -31,9 +31,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.signup.viewmodel.SIGNUP_VERIFICATION_CODE_LENGTH
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
@@ -113,9 +115,9 @@ fun SignupCodeInput(
                                 ).border(
                                     width =
                                         if (isCurrentBox || errorMessage != null) {
-                                            1.5.dp
+                                            AppBorderWidth.Emphasized
                                         } else {
-                                            1.dp
+                                            AppBorderWidth.Default
                                         },
                                     color = borderColor,
                                     shape = boxShape,
@@ -125,11 +127,7 @@ fun SignupCodeInput(
                         Text(
                             text = digit,
                             color = MaterialTheme.colorScheme.onSurface,
-                            style =
-                                TextStyle(
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                ),
+                            style = HopesTextStyles.CodeDigit,
                         )
                     }
                 }

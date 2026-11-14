@@ -23,8 +23,13 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppBorderWidth
+import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSize
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /**
@@ -49,16 +54,16 @@ fun SignupSelectionField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(AppSize.Field)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = fieldShape,
                 ).border(
                     width =
                         if (errorMessage != null) {
-                            1.5.dp
+                            AppBorderWidth.Emphasized
                         } else {
-                            1.dp
+                            AppBorderWidth.Default
                         },
                     color =
                         if (errorMessage != null) {
@@ -76,7 +81,7 @@ fun SignupSelectionField(
                     if (errorMessage != null) {
                         error(errorMessage)
                     }
-                }.padding(start = 16.dp, end = 12.dp),
+                }.padding(start = AppSpacing.Medium, end = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -88,14 +93,14 @@ fun SignupSelectionField(
                 } else {
                     extendedColors.authFieldHint
                 },
-            style = TextStyle(fontSize = 15.sp),
+            style = HopesTextStyles.Field,
         )
 
         Icon(
             imageVector = Icons.Filled.KeyboardArrowDown,
             contentDescription = null,
             tint = extendedColors.authFieldHint,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(AppIconSize.Medium),
         )
     }
 }

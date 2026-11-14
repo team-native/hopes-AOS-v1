@@ -37,9 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppBlurRadius
+import com.example.hopes.core.designsystem.AppBorderWidth
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
@@ -78,11 +82,7 @@ fun SignupOptionBottomSheet(
                 text = title,
                 modifier = Modifier.semantics { heading() },
                 color = MaterialTheme.colorScheme.onSurface,
-                style =
-                    TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
+                style = HopesTextStyles.SheetTitle,
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Item))
@@ -95,7 +95,7 @@ fun SignupOptionBottomSheet(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .height(48.dp)
+                                .height(AppSize.ListItem)
                                 .selectable(
                                     selected = isSelected,
                                     role = Role.RadioButton,
@@ -113,15 +113,11 @@ fun SignupOptionBottomSheet(
                                     MaterialTheme.colorScheme.onSurface
                                 },
                             style =
-                                TextStyle(
-                                    fontSize = 15.sp,
-                                    fontWeight =
-                                        if (isSelected) {
-                                            FontWeight.SemiBold
-                                        } else {
-                                            FontWeight.Normal
-                                        },
-                                ),
+                                if (isSelected) {
+                                    HopesTextStyles.FieldStrong
+                                } else {
+                                    HopesTextStyles.Field
+                                },
                         )
 
                         if (isSelected) {
@@ -129,15 +125,15 @@ fun SignupOptionBottomSheet(
                                 imageVector = Icons.Filled.CheckCircle,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(22.dp),
+                                modifier = Modifier.size(AppIconSize.Large),
                             )
                         } else {
                             Box(
                                 modifier =
                                     Modifier
-                                        .size(20.dp)
+                                        .size(AppIconSize.Medium)
                                         .border(
-                                            width = 1.5.dp,
+                                            width = AppBorderWidth.Emphasized,
                                             color = extendedColors.authFieldBorder,
                                             shape = CircleShape,
                                         ),

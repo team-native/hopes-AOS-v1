@@ -28,7 +28,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.hopes.core.designsystem.AppBlurRadius
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSize
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.overlay.ApplyDialogWindowBackgroundBlur
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
@@ -43,7 +46,7 @@ fun SignupAlreadyRegisteredDialog(onDismiss: () -> Unit) {
         Column(
             modifier =
                 Modifier
-                    .widthIn(max = 280.dp)
+                    .widthIn(max = DIALOG_MAX_WIDTH)
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.colorScheme.surface,
@@ -51,34 +54,30 @@ fun SignupAlreadyRegisteredDialog(onDismiss: () -> Unit) {
                     ),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(DIALOG_TOP_PADDING))
 
             Text(
                 text = stringResource(R.string.signup_already_registered_title),
                 modifier =
                     Modifier
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = AppSpacing.Medium)
                         .semantics { heading() },
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                style =
-                    TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
+                style = HopesTextStyles.DialogTitle,
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Small))
 
             Text(
                 text = stringResource(R.string.signup_already_registered_message),
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(horizontal = AppSpacing.Medium),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
-                style = TextStyle(fontSize = 13.sp),
+                style = HopesTextStyles.Subtitle,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
             HorizontalDivider(color = extendedColors.authFieldBorder)
 
@@ -86,7 +85,7 @@ fun SignupAlreadyRegisteredDialog(onDismiss: () -> Unit) {
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(AppSize.ListItem)
                         .clickable(
                             role = Role.Button,
                             onClick = onDismiss,
@@ -96,13 +95,13 @@ fun SignupAlreadyRegisteredDialog(onDismiss: () -> Unit) {
                 Text(
                     text = stringResource(R.string.signup_dialog_confirm),
                     color = MaterialTheme.colorScheme.primary,
-                    style =
-                        TextStyle(
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                        ),
+                    style = HopesTextStyles.FieldStrong,
                 )
             }
         }
     }
 }
+
+// 피그마 03-2 다이얼로그의 최대 폭과 제목 위 여백이다.
+private val DIALOG_MAX_WIDTH = 280.dp
+private val DIALOG_TOP_PADDING = 20.dp

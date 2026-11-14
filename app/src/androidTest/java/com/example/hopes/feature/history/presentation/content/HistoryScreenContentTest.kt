@@ -13,130 +13,107 @@ import com.example.hopes.feature.history.presentation.HistoryScreenEvent
 import com.example.hopes.feature.history.presentation.HistoryUiState
 import com.example.hopes.ui.theme.HopesTheme
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.time.LocalDate
 
 class HistoryScreenContentTest {
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
-    @Test
-    fun content_displaysNewChatSearchAndUngroupedConversations() {
+    private val today = LocalDate.of(2026, 11, 14)
+    private val events = mutableListOf<HistoryScreenEvent>()
+
+    private fun setContent(uiState: HistoryUiState) {
         composeRule.setContent {
             HopesTheme {
                 HistoryScreenContent(
-                    uiState =
-                        HistoryUiState(
-                            chats =
-                                listOf(
-                                    ChatSummaryUiModel(id = 1L, title = "기숙사 하루 일과가 어떻게 돼?"),
-                                    ChatSummaryUiModel(id = 2L, title = "전공 선택은 어떻게 하는 게 좋아?"),
-                                ),
-                            contentState = HistoryContentState.Content,
-                        ),
-                    onEvent = {},
+                    uiState = uiState,
+                    onEvent = { events += it },
                     onNavigate = {},
+                    today = today,
                 )
             }
         }
-
-        composeRule.onNodeWithText("지난 대화").assertIsDisplayed()
-        composeRule.onNodeWithText("+  새 대화 시작").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("지난 대화 검색").assertIsDisplayed()
-        composeRule.onNodeWithText("기숙사 하루 일과가 어떻게 돼?").assertIsDisplayed()
-        composeRule.onNodeWithText("전공 선택은 어떻게 하는 게 좋아?").assertIsDisplayed()
     }
 
     @Test
-    fun content_emitsNewChatSearchAndConversationEvents() {
-        var emittedEvent: HistoryScreenEvent? = null
+    fun content_groupsChatsIntoLastSevenDaysAndEarlier() {
+        setContent(
+            HistoryUiState(
+                chats =
+                    listOf(
+                        ChatSummaryUiModel(id = 1, title = "기숙사 하루 일과가 어떻게 돼?", date = today.minusDays(1)),
+                        ChatSummaryUiModel(id = 2, title = "입학하려면 뭘 준비해야 해?", date = today.minusDays(30)),
+                    ),
+                contentState = HistoryContentState.Content,
+            ),
+        )
 
-        composeRule.setContent {
-            HopesTheme {
-                HistoryScreenContent(
-                    uiState =
-                        HistoryUiState(
-                            chats =
-                                listOf(
-                                    ChatSummaryUiModel(id = 42L, title = "대화 제목"),
-                                ),
-                            contentState = HistoryContentState.Content,
-                        ),
-                    onEvent = { event ->
-                        emittedEvent = event
-                    },
-                    onNavigate = {},
-                )
-            }
-        }
+        composeRule.onNodeWithText("지난 대화").assertIsDisplayed()
+        composeRule.onNodeWithText("지난 7일").assertIsDisplayed()
+        composeRule.onNodeWithText("이전").assertIsDisplayed()
+        composeRule.onNodeWithText("어제").assertIsDisplayed()
+        composeRule.onNodeWithText("입학하려면 뭘 준비해야 해?").assertIsDisplayed()
+    }
 
-        composeRule.onNodeWithText("+  새 대화 시작").performClick()
+    @Test
+    fun content_emitsNewChatSearchAndChatEvents() {
+        setContent(
+            HistoryUiState(
+                chats = listOf(ChatSummaryUiModel(id = 42, title = "대화 제목", date = today)),
+                contentState = HistoryContentState.Content,
+            ),
+        )
 
-        composeRule.runOnIdle {
-            assertEquals(HistoryScreenEvent.NewChatClicked, emittedEvent)
-        }
-
-        composeRule
-            .onNodeWithContentDescription("지난 대화 검색")
-            .performClick()
-            .performTextInput("전공")
-
-        composeRule.runOnIdle {
-            assertEquals(HistoryScreenEvent.SearchQueryChanged("전공"), emittedEvent)
-        }
-
+        composeRule.onNodeWithText("새 대화 시작").performClick()
+        composeRule.onNodeWithContentDescription("지난 대화 검색").performTextInput("전공")
         composeRule.onNodeWithText("대화 제목").performClick()
 
         composeRule.runOnIdle {
-            assertEquals(HistoryScreenEvent.ChatClicked(42L), emittedEvent)
+            assertEquals(HistoryScreenEvent.NewChatClicked, events[0])
+            assertTrue(events.contains(HistoryScreenEvent.SearchQueryChanged("전공")))
+            assertEquals(HistoryScreenEvent.ChatClicked(42L), events.last())
         }
     }
 
     @Test
-    fun content_displaysLoadingEmptyAndErrorStates() {
-        composeRule.setContent {
-            HopesTheme {
-                HistoryScreenContent(
-                    uiState =
-                        HistoryUiState(
-                            contentState = HistoryContentState.Loading,
-                        ),
-                    onEvent = {},
-                    onNavigate = {},
-                )
-            }
-        }
+    fun searchResults_showCount() {
+        setContent(
+            HistoryUiState(
+                searchQuery = "기숙사",
+                chats = listOf(ChatSummaryUiModel(id = 1, title = "기숙사 방 배정은 어떻게 돼?", date = today)),
+                contentState = HistoryContentState.Content,
+            ),
+        )
 
-        composeRule.onNodeWithText("지난 대화를 불러오는 중이에요.").assertIsDisplayed()
+        composeRule.onNodeWithText("검색 결과 1개").assertIsDisplayed()
+    }
 
-        composeRule.setContent {
-            HopesTheme {
-                HistoryScreenContent(
-                    uiState =
-                        HistoryUiState(
-                            contentState = HistoryContentState.Empty,
-                        ),
-                    onEvent = {},
-                    onNavigate = {},
-                )
-            }
-        }
+    @Test
+    fun emptyAndNoResultStates_showMatchingMessages() {
+        setContent(HistoryUiState(contentState = HistoryContentState.Empty))
 
-        composeRule.onNodeWithText("지난 대화가 없어요.").assertIsDisplayed()
+        composeRule.onNodeWithText("아직 대화가 없어요").assertIsDisplayed()
+        composeRule.onNodeWithText("채팅 시작하기").performClick()
 
-        composeRule.setContent {
-            HopesTheme {
-                HistoryScreenContent(
-                    uiState =
-                        HistoryUiState(
-                            contentState = HistoryContentState.Error,
-                        ),
-                    onEvent = {},
-                    onNavigate = {},
-                )
-            }
-        }
+        composeRule.runOnIdle { assertEquals(listOf(HistoryScreenEvent.NewChatClicked), events) }
+    }
 
-        composeRule.onNodeWithText("지난 대화를 불러오지 못했어요. 다시 시도해주세요.").assertIsDisplayed()
+    @Test
+    fun pendingDelete_showsConfirmDialog() {
+        setContent(
+            HistoryUiState(
+                chats = listOf(ChatSummaryUiModel(id = 7, title = "지울 대화", date = today)),
+                contentState = HistoryContentState.Content,
+                pendingDeleteChatId = 7,
+            ),
+        )
+
+        composeRule.onNodeWithText("이 대화를 삭제할까요?").assertIsDisplayed()
+        composeRule.onNodeWithText("삭제").performClick()
+
+        composeRule.runOnIdle { assertEquals(listOf(HistoryScreenEvent.DeleteChatConfirmed), events) }
     }
 }

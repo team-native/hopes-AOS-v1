@@ -96,7 +96,11 @@ private fun HopesMainNavDisplay(
             navigationState.toEntries(
                 entryProvider {
                     entry<HopesDestination.Home> {
-                        HomeRoute(onNavigate = navigator::navigateToTab)
+                        HomeRoute(
+                            onNavigate = navigator::navigateToTab,
+                            // 알림 화면(피그마 25)은 마이페이지 하위 화면 작업 때 연결한다.
+                            onNotificationClick = {},
+                        )
                     }
                     entry<HopesDestination.Chat> { key ->
                         ChatRoute(

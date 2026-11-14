@@ -68,6 +68,36 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 | 추가로 많이 묻는 질문 (08) | 목록이 비어 카드가 숨겨짐 | 연관 질문 목록 | `ChatDetailUiState.followUpQuestions` |
 | 자료 첨부 (09~12) | 사진·카메라·PDF를 골라 화면에 보여주고, **서버에는 질문 글만 보냄** | 첨부 업로드 / 분석 | `ChatDetailViewModel.sendQuestion`의 `attachments` |
 
+## 자료 첨부 상태 (피그마 09-2 ~ 11-3)
+
+앱에서 바로 검사해서 동작하는 것: 지원하지 않는 형식(10-4), 개수 3개·파일 20MB 초과(10-5), 열 수 없는 PDF(10-6).
+제한 값은 시안 기준 임시값이라 서버 제한이 정해지면 `MAX_ATTACHMENT_COUNT` / `MAX_ATTACHMENT_SIZE_BYTES`를 맞춰 주세요.
+
+| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
+|---|---|---|---|
+| 업로드 진행률 (10-2) | 화면만 준비됨 | 업로드 진행률 → `ChatAttachmentStatus.Uploading(progress)` | `ChatAttachmentUiModel.status` |
+| 일부 업로드 실패 (10-3) | 화면만 준비됨 | 실패 시 `UploadFailed`, 다시 올리기 | `ChatDetailViewModel`의 `AttachmentRetryClicked` |
+| 답변 근거 자료 칩 (11-3) | 비어 있어 숨겨짐 | 답변의 출처 (파일명 · 쪽) | `ChatMessageUiModel.sources` |
+| 사진 권한 안내 (09-2) | 카메라 실행이 권한 문제로 막히면 표시 | — | `ChatDetailRoute`의 `isMediaPermissionDialogVisible` |
+
+## 현재 위치 (피그마 20 ~ 23)
+
+위치 안내 카드와 학교 지도 화면은 만들어 두었습니다. **위치 질문 감지, 권한 요청, 위치 측정은 아직 없습니다.**
+`ChatDetailUiState.location`에 상태를 넣으면 마지막 메시지 아래에 카드가 나옵니다.
+
+| 상태 | 화면 | 넣을 값 |
+|---|---|---|
+| `PermissionRequired` | 20 위치 권한 안내 ("나중에"는 카드 닫기, "위치 허용"은 `LocationAllowClicked`) | — |
+| `Locating(progress)` | 20-3 측정 중 | 0..1 진행률 |
+| `NearBuilding(buildingName, accuracyMeters)` | 21 위치 응답 카드 | 건물 이름, 정확도(m) |
+| `OutsideSchool(distanceKm)` | 21-2 학교 밖 | "2.3"처럼 표시할 거리 |
+| `LowAccuracy(accuracyMeters)` | 21-3 정확도 낮음 ("다시 측정"은 `LocationRetryClicked`) | 정확도(m) |
+| `Failed` | 23 위치 확인 실패 ("설정 열기"는 앱 설정을 엶) | — |
+
+- 위치 카드가 있으면 헤더 부제목이 "선배 답변 · 위치 안내"로 바뀝니다.
+- "지도 보기"는 학교 지도 화면(22, `HopesDestination.SchoolMap`)을 엽니다. 실내 도면이 없어 지도는 자리 표시(`SchoolMapPlaceholder`)이고, 층 칩을 골라도 바뀌지 않습니다. 지도 화면의 다시 측정 버튼도 아직 반응이 없습니다.
+- 위치 권한(`ACCESS_FINE_LOCATION` 등)은 매니페스트에 아직 추가하지 않았습니다.
+
 오프라인(08-5)은 앱 쪽에서 끝냈습니다. `NetworkMonitor`로 연결이 끊긴 걸 알면 안내를 띄우고, 못 보낸 질문은 다시 연결되면 자동으로 보냅니다.
 
 ## 연결 완료 (참고)

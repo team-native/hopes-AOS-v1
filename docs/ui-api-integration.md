@@ -11,6 +11,7 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 | 항목 | 지금 동작 | 필요한 API | 코드 위치 |
 |---|---|---|---|
 | 커뮤니티 인기글 | 시안 예시 글 2개 | 인기글 목록 (id, 기수, 제목, 좋아요 수) | `HomeRoute`의 `samplePopularPosts` → `HomeUiState.popularPosts` |
+| 인기글 불러오기 실패 (30-3) | 화면만 준비됨 | 위 API 실패 시 `LoadError` | `HomeUiState.popularPostsState`, `HomeRoute`의 `PopularPostsRetryClicked` |
 | 인기글 누르기 | 커뮤니티 탭으로 이동 | 게시글 상세 (화면 없음) | `HomeRoute`의 `PopularPostClicked` |
 | 알림 버튼 빨간 점 | 항상 꺼짐 | 읽지 않은 알림 여부 | `HomeUiState.hasUnreadNotification` |
 
@@ -55,16 +56,19 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 | 추천 로딩 · 실패 | 화면만 준비됨 (05-4, 05-2) | 위 API 상태를 `Loading` / `LoadError`로 | `ChatRecommendationState` |
 | 추천 새로 고침 | 반응 없음 | 위 API 다시 부르기 | `ChatViewModel`의 `RecommendationsRefreshClicked` |
 | 학과 · 전공 선택 | 화면에서만 기억, 서버에 안 보냄 | 질문과 함께 보내거나 프로필에 저장 | `ChatUiState.department` / `major` |
-| 입력창 + (자료 첨부) · 마이크 | 반응 없음 | 첨부 업로드 (HOP-01), 음성 입력 | `ChatComposer`의 `onAttachClick` / `onVoiceClick` |
+| 입력창 + · 마이크 | 반응 없음 (채팅 홈) | 홈에서 첨부할지 결정, 음성 입력 | `ChatScreen`의 `ChatComposer` |
 
 ## 채팅 상세 (피그마 08)
 
 | 항목 | 지금 동작 | 필요한 API | 코드 위치 |
 |---|---|---|---|
-| 답변 표시 | 답변이 다 오면 한 번에 표시, 마크다운을 문단으로 정리 | (선택) 스트리밍 | `ChatDetailViewModel.sendReply` |
-| 답변 중지 (08-2) | 화면 없음 | 생성 취소 | — |
-| 좋아요 · 더 물어보기 · 추가 질문 (08) | 화면 없음 | 피드백, 연관 질문 목록 | — |
-| 오프라인 (08-5) | 화면 없음 | 연결 상태 감시와 재전송 (앱 쪽 작업) | — |
+| 답변 표시 | 답변이 다 오면 한 번에 표시, 마크다운을 문단으로 정리 | (선택) 스트리밍 | `ChatDetailViewModel.sendQuestion` |
+| 답변 중지 (08-2) | 화면에서만 기다림을 끝냄 (서버는 계속 생성할 수 있음) | 생성 취소 | `ChatDetailViewModel.stopAnswer` |
+| 좋아요 (08) | 화면에서만 켜고 끔 | 답변 피드백 | `ChatDetailUiState.likedMessageIds` |
+| 추가로 많이 묻는 질문 (08) | 목록이 비어 카드가 숨겨짐 | 연관 질문 목록 | `ChatDetailUiState.followUpQuestions` |
+| 자료 첨부 (09~12) | 사진·카메라·PDF를 골라 화면에 보여주고, **서버에는 질문 글만 보냄** | 첨부 업로드 / 분석 | `ChatDetailViewModel.sendQuestion`의 `attachments` |
+
+오프라인(08-5)은 앱 쪽에서 끝냈습니다. `NetworkMonitor`로 연결이 끊긴 걸 알면 안내를 띄우고, 못 보낸 질문은 다시 연결되면 자동으로 보냅니다.
 
 ## 연결 완료 (참고)
 

@@ -1,5 +1,7 @@
 package com.example.hopes.di
 
+import com.example.hopes.core.connectivity.ConnectivityNetworkMonitor
+import com.example.hopes.core.connectivity.NetworkMonitor
 import com.example.hopes.data.remote.AuthRemoteDataSource
 import com.example.hopes.data.remote.AuthRemoteDataSourceImpl
 import com.example.hopes.data.remote.ChatRemoteDataSource
@@ -38,4 +40,7 @@ abstract class DataBindingModule {
 
     @Binds
     abstract fun bindSettingsRepository(implementation: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    abstract fun bindNetworkMonitor(implementation: ConnectivityNetworkMonitor): NetworkMonitor
 }

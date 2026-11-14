@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.Color
 /** 피그마 원본의 보조 색상을 의미 기반으로 제공한다. */
 @Immutable
 data class HopesExtendedColors(
-    val brandSubtitleOnBlue: Color,
     val authFieldBorder: Color,
     val authFieldHint: Color,
     val authHandle: Color,
@@ -25,7 +24,6 @@ val LocalHopesExtendedColors =
 
 internal val lightHopesExtendedColors =
     HopesExtendedColors(
-        brandSubtitleOnBlue = Color(0xFFD9F0FF),
         authFieldBorder = Color(0xFFD9D9D9),
         authFieldHint = Color(0xFF6B7A94),
         authHandle = Color(0xFFD1DEED),
@@ -38,7 +36,6 @@ internal val lightHopesExtendedColors =
 
 internal val darkHopesExtendedColors =
     HopesExtendedColors(
-        brandSubtitleOnBlue = Color(0xFFD9F0FF),
         authFieldBorder = Color(0xFF596878),
         authFieldHint = Color(0xFFB3C2D6),
         authHandle = Color(0xFF8FA8C2),

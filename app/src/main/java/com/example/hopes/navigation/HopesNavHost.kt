@@ -209,8 +209,9 @@ private fun HopesMainNavDisplay(
                         ChatDetailRoute(
                             chatId = key.chatId,
                             question = key.question,
+                            department = key.department,
+                            major = key.major,
                             onBackClick = navigator::goBack,
-                            onNavigate = navigator::navigateToTab,
                         )
                     }
                 },

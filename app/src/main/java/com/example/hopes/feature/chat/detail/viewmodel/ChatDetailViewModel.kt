@@ -27,7 +27,6 @@ class ChatDetailViewModel
     ) : ViewModel() {
         /** 대화가 생성되면 이후의 추가 질문 전송이 실제 chatId를 쓰도록 갱신한다. */
         private var chatId: Long = NEW_CHAT_ID
-        private var initialQuestion: String = ""
         private var isInitialized = false
 
         private val _uiState = MutableStateFlow(ChatDetailUiState())
@@ -43,7 +42,6 @@ class ChatDetailViewModel
             if (isInitialized) return
             isInitialized = true
             this.chatId = chatId
-            this.initialQuestion = question
             if (chatId == NEW_CHAT_ID && question.isNotEmpty()) {
                 createNewChat(question)
             } else {
@@ -56,7 +54,7 @@ class ChatDetailViewModel
             loadChatJob?.cancel()
             loadChatJob =
                 viewModelScope.launch {
-                    updateState { copy(isLoading = true, isLoadError = false, isSendError = false) }
+                    updateState { copy(isLoading = true, isLoadError = false, failedQuestion = null) }
                     when (val result = getChatUseCase(chatId, FIRST_MESSAGE_PAGE, MESSAGE_PAGE_SIZE)) {
                         is AppResult.Success -> {
                             updateState {
@@ -94,6 +92,7 @@ class ChatDetailViewModel
                             isLoadError = false,
                             messages = listOf(optimisticQuestion),
                             isSending = true,
+                            failedQuestion = null,
                         )
                     }
                     when (val createResult = createChatUseCase(question)) {
@@ -114,13 +113,13 @@ class ChatDetailViewModel
                                 }
 
                                 else -> {
-                                    updateState { copy(messages = emptyList(), isSending = false, isLoadError = true) }
+                                    updateState { copy(isSending = false, failedQuestion = question) }
                                 }
                             }
                         }
 
                         else -> {
-                            updateState { copy(messages = emptyList(), isSending = false, isLoadError = true) }
+                            updateState { copy(isSending = false, failedQuestion = question) }
                         }
                     }
                 }
@@ -134,52 +133,62 @@ class ChatDetailViewModel
                 }
 
                 ChatDetailScreenEvent.RetryClicked -> {
-                    retry()
+                    loadChat()
+                }
+
+                ChatDetailScreenEvent.ResendClicked -> {
+                    resendFailedQuestion()
                 }
 
                 is ChatDetailScreenEvent.ReplyChanged -> {
-                    updateState {
-                        copy(
-                            replyText = event.value,
-                            isSendError = false,
-                        )
-                    }
+                    updateState { copy(replyText = event.value) }
                 }
 
                 ChatDetailScreenEvent.ReplySubmitted -> {
-                    sendReply()
+                    val trimmedReply = _uiState.value.replyText.trim()
+                    if (trimmedReply.isNotEmpty() && _uiState.value.isReplyEnabled) {
+                        updateState { copy(replyText = "") }
+                        sendReply(trimmedReply, baseMessages = _uiState.value.messages)
+                    }
                 }
             }
         }
 
-        /** 대화 생성이 실패했다면 생성부터, 기존 대화 로드가 실패했다면 로드부터 다시 시도한다. */
-        private fun retry() {
-            if (chatId == NEW_CHAT_ID && initialQuestion.isNotEmpty()) {
-                createNewChat(initialQuestion)
-            } else {
-                loadChat()
-            }
-        }
+        /**
+         * 답변을 받지 못한 질문을 다시 보낸다. 대화 생성부터 실패했다면 생성부터 다시 하고,
+         * 아니면 화면에 남겨 둔 실패한 질문을 빼고 같은 질문을 다시 보낸다.
+         */
+        private fun resendFailedQuestion() {
+            val failedQuestion = _uiState.value.failedQuestion ?: return
+            if (_uiState.value.isSending) return
 
-        private fun sendReply() {
-            val trimmedReply = _uiState.value.replyText.trim()
-            if (trimmedReply.isEmpty()) {
+            if (chatId == NEW_CHAT_ID) {
+                createNewChat(failedQuestion)
                 return
             }
 
+            val messagesWithoutFailedQuestion =
+                _uiState.value.messages.let { messages ->
+                    if (messages.lastOrNull()?.isUser == true) messages.dropLast(1) else messages
+                }
+            sendReply(failedQuestion, baseMessages = messagesWithoutFailedQuestion)
+        }
+
+        private fun sendReply(
+            question: String,
+            baseMessages: List<ChatMessageUiModel>,
+        ) {
             viewModelScope.launch {
-                // 서버 응답 전에 내가 보낸 메시지를 먼저 보여준 뒤, 그 아래에 로딩 말풍선을 띄운다.
-                val messagesBeforeSend = _uiState.value.messages
-                val optimisticReply = ChatMessageUiModel(id = null, content = trimmedReply, isUser = true)
+                // 서버 응답 전에 내가 보낸 질문을 먼저 보여준 뒤, 그 아래에 답변 생성 중 표시를 띄운다.
+                val optimisticReply = ChatMessageUiModel(id = null, content = question, isUser = true)
                 updateState {
                     copy(
-                        messages = messagesBeforeSend + optimisticReply,
-                        replyText = "",
+                        messages = baseMessages + optimisticReply,
                         isSending = true,
-                        isSendError = false,
+                        failedQuestion = null,
                     )
                 }
-                when (val result = sendChatMessageUseCase(chatId, trimmedReply)) {
+                when (val result = sendChatMessageUseCase(chatId, question)) {
                     is AppResult.Success -> {
                         updateState {
                             copy(
@@ -194,14 +203,8 @@ class ChatDetailViewModel
                     }
 
                     else -> {
-                        updateState {
-                            copy(
-                                messages = messagesBeforeSend,
-                                replyText = trimmedReply,
-                                isSending = false,
-                                isSendError = true,
-                            )
-                        }
+                        // 질문은 화면에 남겨 두고 그 아래에 실패 안내와 다시 시도를 보여준다.
+                        updateState { copy(isSending = false, failedQuestion = question) }
                     }
                 }
             }

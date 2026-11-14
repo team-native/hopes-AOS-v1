@@ -217,6 +217,15 @@
     <string name="signup_already_registered_message">이미 가입된 계정이 있어요.</string>
     <string name="signup_dialog_confirm">확인</string>
     <string name="signup_network_error">인터넷 연결을 확인하고 다시 시도해 주세요.</string>
-    <string name="community_coming_soon_title">커뮤니티를 준비하고 있어요</string>
-    <string name="community_coming_soon_description">선배들과 이야기 나눌 수 있는 공간이 곧 열려요.</string>
+    <string name="community_title">커뮤니티</string>
+    <string name="community_search">게시글 검색</string>
+    <string name="community_my_activity">내 활동</string>
+    <string name="community_cohort_all">전체</string>
+    <string name="community_cohort">%1$d기</string>
+    <string name="community_empty_title">아직 게시글이 없어요</string>
+    <string name="community_empty_description">이 게시판의 첫 글을 남겨보세요.</string>
+    <string name="community_write">글쓰기</string>
+    <string name="community_load_error_title">게시글을 불러오지 못했어요</string>
+    <string name="community_load_error_description">네트워크 상태를 확인한 뒤 다시 시도해 주세요.</string>
+    <string name="community_retry">다시 시도</string>
 </resources>

@@ -43,8 +43,9 @@ class HopesScaffoldTest {
 
         composeRule.onNodeWithText("홈").assertIsDisplayed()
         composeRule.onNodeWithText("채팅").assertIsDisplayed()
+        composeRule.onNodeWithText("커뮤니티").assertIsDisplayed()
         composeRule.onNodeWithText("기록").assertIsDisplayed()
-        composeRule.onNodeWithText("설정").assertIsDisplayed()
+        composeRule.onNodeWithText("마이페이지").assertIsDisplayed()
 
         composeRule.onNodeWithText("채팅").performClick()
 

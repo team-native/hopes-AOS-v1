@@ -57,6 +57,7 @@ val HopesTypography =
  * 색은 담지 않으므로 Text의 color로 따로 지정한다.
  */
 object HopesTextStyles {
+    val PageTitle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp)
     val Hero = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold, lineHeight = 40.sp)
     val ScreenTitle = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold, lineHeight = 30.sp)
     val CodeDigit = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold)

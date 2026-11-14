@@ -35,6 +35,7 @@ import com.example.hopes.feature.detail.presentation.PersonalSettingsRoute
 import com.example.hopes.feature.detail.presentation.ProfileEditRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
+import com.example.hopes.feature.notification.presentation.NotificationDetailRoute
 import com.example.hopes.feature.notification.presentation.NotificationRoute
 import com.example.hopes.feature.schoolmap.presentation.SchoolMapScreen
 import com.example.hopes.feature.settings.presentation.AppInfoScreen
@@ -213,7 +214,16 @@ private fun HopesMainNavDisplay(
                         )
                     }
                     entry<HopesDestination.Notifications> {
-                        NotificationRoute(onBackClick = navigator::goBack)
+                        NotificationRoute(
+                            onBackClick = navigator::goBack,
+                            onNotificationClick = { id -> navigator.push(HopesDestination.NotificationDetail(id)) },
+                        )
+                    }
+                    entry<HopesDestination.NotificationDetail> { key ->
+                        NotificationDetailRoute(
+                            notificationId = key.notificationId,
+                            onBackClick = navigator::goBack,
+                        )
                     }
                     entry<HopesDestination.ChatDetail> { key ->
                         ChatDetailRoute(

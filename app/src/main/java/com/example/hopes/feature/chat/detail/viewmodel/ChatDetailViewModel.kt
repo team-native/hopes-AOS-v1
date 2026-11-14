@@ -2,6 +2,8 @@ package com.example.hopes.feature.chat.detail.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.hopes.core.connectivity.NetworkMonitor
+import com.example.hopes.domain.model.Chat
 import com.example.hopes.domain.model.ChatMessage
 import com.example.hopes.domain.model.ChatMessageRole
 import com.example.hopes.domain.result.AppResult
@@ -14,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,6 +27,7 @@ class ChatDetailViewModel
         private val createChatUseCase: CreateChatUseCase,
         private val getChatUseCase: GetChatUseCase,
         private val sendChatMessageUseCase: SendChatMessageUseCase,
+        private val networkMonitor: NetworkMonitor,
     ) : ViewModel() {
         /** 대화가 생성되면 이후의 추가 질문 전송이 실제 chatId를 쓰도록 갱신한다. */
         private var chatId: Long = NEW_CHAT_ID
@@ -33,6 +37,14 @@ class ChatDetailViewModel
         val uiState: StateFlow<ChatDetailUiState> = _uiState.asStateFlow()
 
         private var loadChatJob: Job? = null
+        private var sendJob: Job? = null
+
+        /** 지금 답변을 기다리는 질문이다. 답변 중지 시 다시 시도할 질문으로 남긴다. */
+        private var inFlightQuestion: String? = null
+
+        init {
+            observeNetwork()
+        }
 
         /** NavKey로 전달받은 chatId/question을 1회만 반영해 대화 생성 또는 로드를 시작한다. */
         fun initialize(
@@ -43,89 +55,13 @@ class ChatDetailViewModel
             isInitialized = true
             this.chatId = chatId
             if (chatId == NEW_CHAT_ID && question.isNotEmpty()) {
-                createNewChat(question)
+                _uiState.update { it.copy(isLoading = false) }
+                sendQuestion(question, baseMessages = emptyList())
             } else {
                 loadChat()
             }
         }
 
-        /** 상세 진입 또는 재시도 시 첫 메시지 페이지를 요청해 성공·오류 상태를 갱신한다. */
-        fun loadChat() {
-            loadChatJob?.cancel()
-            loadChatJob =
-                viewModelScope.launch {
-                    updateState { copy(isLoading = true, isLoadError = false, failedQuestion = null) }
-                    when (val result = getChatUseCase(chatId, FIRST_MESSAGE_PAGE, MESSAGE_PAGE_SIZE)) {
-                        is AppResult.Success -> {
-                            updateState {
-                                copy(
-                                    title = result.value.title,
-                                    messages =
-                                        result.value.messages.map { message ->
-                                            message.toChatMessageUiModel()
-                                        },
-                                    isLoading = false,
-                                )
-                            }
-                        }
-
-                        else -> {
-                            updateState { copy(isLoading = false, isLoadError = true) }
-                        }
-                    }
-                }
-        }
-
-        /**
-         * 채팅 홈에서 질문을 곧바로 상세 화면으로 들고 온 경우, 여기서 대화를 만들고 첫 질문을 보낸다.
-         * 서버 응답을 기다리는 동안에도 내가 보낸 질문을 먼저 보여준 뒤, 그 아래에 추가 질문 전송과
-         * 같은 로딩 말풍선(isSending)을 띄운다.
-         */
-        private fun createNewChat(question: String) {
-            loadChatJob?.cancel()
-            loadChatJob =
-                viewModelScope.launch {
-                    val optimisticQuestion = ChatMessageUiModel(id = null, content = question, isUser = true)
-                    updateState {
-                        copy(
-                            isLoading = false,
-                            isLoadError = false,
-                            messages = listOf(optimisticQuestion),
-                            isSending = true,
-                            failedQuestion = null,
-                        )
-                    }
-                    when (val createResult = createChatUseCase(question)) {
-                        is AppResult.Success -> {
-                            chatId = createResult.value.id
-                            when (val sendResult = sendChatMessageUseCase(chatId, question)) {
-                                is AppResult.Success -> {
-                                    updateState {
-                                        copy(
-                                            title = sendResult.value.title,
-                                            messages =
-                                                sendResult.value.messages.map { message ->
-                                                    message.toChatMessageUiModel()
-                                                },
-                                            isSending = false,
-                                        )
-                                    }
-                                }
-
-                                else -> {
-                                    updateState { copy(isSending = false, failedQuestion = question) }
-                                }
-                            }
-                        }
-
-                        else -> {
-                            updateState { copy(isSending = false, failedQuestion = question) }
-                        }
-                    }
-                }
-        }
-
-        /** 추가 질문 입력과 전송 의도를 처리하고, 전송 성공 시 서버 대화 응답으로 목록을 교체한다. */
         fun onEvent(event: ChatDetailScreenEvent) {
             when (event) {
                 ChatDetailScreenEvent.BackClicked -> {
@@ -140,75 +76,172 @@ class ChatDetailViewModel
                     resendFailedQuestion()
                 }
 
+                ChatDetailScreenEvent.StopClicked -> {
+                    stopAnswer()
+                }
+
                 is ChatDetailScreenEvent.ReplyChanged -> {
-                    updateState { copy(replyText = event.value) }
+                    _uiState.update { it.copy(replyText = event.value) }
                 }
 
                 ChatDetailScreenEvent.ReplySubmitted -> {
-                    val trimmedReply = _uiState.value.replyText.trim()
-                    if (trimmedReply.isNotEmpty() && _uiState.value.isReplyEnabled) {
-                        updateState { copy(replyText = "") }
-                        sendReply(trimmedReply, baseMessages = _uiState.value.messages)
+                    val state = _uiState.value
+                    val trimmedReply = state.replyText.trim()
+                    if (trimmedReply.isNotEmpty() && state.isReplyEnabled) {
+                        _uiState.update { it.copy(replyText = "") }
+                        sendQuestion(trimmedReply, baseMessages = state.messages)
+                    }
+                }
+
+                is ChatDetailScreenEvent.FollowUpQuestionClicked -> {
+                    _uiState.update { it.copy(replyText = event.question) }
+                }
+
+                is ChatDetailScreenEvent.LikeClicked -> {
+                    // 좋아요 API 연동 전이라 화면에서만 표시한다.
+                    _uiState.update { state ->
+                        val liked = state.likedMessageIds
+                        state.copy(
+                            likedMessageIds =
+                                if (event.messageId in
+                                    liked
+                                ) {
+                                    liked - event.messageId
+                                } else {
+                                    liked + event.messageId
+                                },
+                        )
                     }
                 }
             }
         }
 
+        /** 기존 대화의 첫 메시지 페이지를 불러온다. */
+        private fun loadChat() {
+            loadChatJob?.cancel()
+            loadChatJob =
+                viewModelScope.launch {
+                    _uiState.update { it.copy(isLoading = true, isLoadError = false, failedQuestion = null) }
+                    when (val result = getChatUseCase(chatId, FIRST_MESSAGE_PAGE, MESSAGE_PAGE_SIZE)) {
+                        is AppResult.Success -> {
+                            _uiState.update { it.copy(isLoading = false).withChat(result.value) }
+                        }
+
+                        else -> {
+                            _uiState.update { it.copy(isLoading = false, isLoadError = true) }
+                        }
+                    }
+                }
+        }
+
         /**
-         * 답변을 받지 못한 질문을 다시 보낸다. 대화 생성부터 실패했다면 생성부터 다시 하고,
-         * 아니면 화면에 남겨 둔 실패한 질문을 빼고 같은 질문을 다시 보낸다.
+         * 질문을 보내고 답변을 기다린다. 서버 응답 전에 질문을 먼저 보여주고, 그 아래에 답변 생성 중 표시를 띄운다.
+         * 아직 대화가 없으면(채팅 홈에서 바로 들어온 경우) 대화를 만든 뒤 보낸다.
          */
+        private fun sendQuestion(
+            question: String,
+            baseMessages: List<ChatMessageUiModel>,
+        ) {
+            sendJob?.cancel()
+            inFlightQuestion = question
+            sendJob =
+                viewModelScope.launch {
+                    val optimisticQuestion = ChatMessageUiModel(id = null, content = question, isUser = true)
+                    _uiState.update {
+                        it.copy(
+                            messages = baseMessages + optimisticQuestion,
+                            isSending = true,
+                            failedQuestion = null,
+                            pendingQuestion = null,
+                        )
+                    }
+
+                    when (val result = requestAnswer(question)) {
+                        is AppResult.Success -> {
+                            _uiState.update { it.copy(isSending = false).withChat(result.value) }
+                        }
+
+                        AppResult.NetworkError if _uiState.value.isOffline -> {
+                            // 기기 연결이 끊겨 못 보냈으면 질문을 남겨 두고, 다시 연결되면 자동으로 보낸다(피그마 08-5).
+                            _uiState.update { it.copy(isSending = false, pendingQuestion = question) }
+                        }
+
+                        else -> {
+                            _uiState.update {
+                                it.copy(
+                                    isSending = false,
+                                    failedQuestion = question,
+                                    failureReason = ChatAnswerFailureReason.Error,
+                                )
+                            }
+                        }
+                    }
+                    inFlightQuestion = null
+                }
+        }
+
+        private suspend fun requestAnswer(question: String): AppResult<Chat> {
+            if (chatId == NEW_CHAT_ID) {
+                when (val createResult = createChatUseCase(question)) {
+                    is AppResult.Success -> chatId = createResult.value.id
+                    is AppResult.HttpError -> return createResult
+                    AppResult.NetworkError -> return AppResult.NetworkError
+                    AppResult.SerializationError -> return AppResult.SerializationError
+                }
+            }
+            return sendChatMessageUseCase(chatId, question)
+        }
+
+        /**
+         * 답변 기다리기를 멈춘다(피그마 08-2 "답변 중지"). 서버 생성까지 취소하는 API는 없어서
+         * 화면에서만 기다림을 끝내고, 같은 질문을 다시 보낼 수 있게 남긴다.
+         */
+        private fun stopAnswer() {
+            val question = inFlightQuestion ?: return
+            sendJob?.cancel()
+            inFlightQuestion = null
+            _uiState.update {
+                it.copy(
+                    isSending = false,
+                    failedQuestion = question,
+                    failureReason = ChatAnswerFailureReason.Stopped,
+                )
+            }
+        }
+
+        /** 답변을 받지 못한 질문을 화면에서 빼고 같은 질문으로 다시 보낸다. */
         private fun resendFailedQuestion() {
             val failedQuestion = _uiState.value.failedQuestion ?: return
             if (_uiState.value.isSending) return
 
-            if (chatId == NEW_CHAT_ID) {
-                createNewChat(failedQuestion)
-                return
-            }
-
-            val messagesWithoutFailedQuestion =
-                _uiState.value.messages.let { messages ->
-                    if (messages.lastOrNull()?.isUser == true) messages.dropLast(1) else messages
-                }
-            sendReply(failedQuestion, baseMessages = messagesWithoutFailedQuestion)
+            sendQuestion(failedQuestion, baseMessages = _uiState.value.messages.withoutTrailingQuestion())
         }
 
-        private fun sendReply(
-            question: String,
-            baseMessages: List<ChatMessageUiModel>,
-        ) {
+        private fun resendPendingQuestion() {
+            val pendingQuestion = _uiState.value.pendingQuestion ?: return
+            if (_uiState.value.isSending) return
+
+            sendQuestion(pendingQuestion, baseMessages = _uiState.value.messages.withoutTrailingQuestion())
+        }
+
+        private fun observeNetwork() {
             viewModelScope.launch {
-                // 서버 응답 전에 내가 보낸 질문을 먼저 보여준 뒤, 그 아래에 답변 생성 중 표시를 띄운다.
-                val optimisticReply = ChatMessageUiModel(id = null, content = question, isUser = true)
-                updateState {
-                    copy(
-                        messages = baseMessages + optimisticReply,
-                        isSending = true,
-                        failedQuestion = null,
-                    )
-                }
-                when (val result = sendChatMessageUseCase(chatId, question)) {
-                    is AppResult.Success -> {
-                        updateState {
-                            copy(
-                                title = result.value.title,
-                                messages =
-                                    result.value.messages.map { message ->
-                                        message.toChatMessageUiModel()
-                                    },
-                                isSending = false,
-                            )
-                        }
-                    }
-
-                    else -> {
-                        // 질문은 화면에 남겨 두고 그 아래에 실패 안내와 다시 시도를 보여준다.
-                        updateState { copy(isSending = false, failedQuestion = question) }
-                    }
+                networkMonitor.isOnline.collect { isOnline ->
+                    _uiState.update { it.copy(isOffline = !isOnline) }
+                    if (isOnline) resendPendingQuestion()
                 }
             }
         }
+
+        /** 마지막 메시지가 아직 답을 못 받은 내 질문이면 뺀다. 다시 보낼 때 같은 질문이 두 번 보이지 않게 한다. */
+        private fun List<ChatMessageUiModel>.withoutTrailingQuestion(): List<ChatMessageUiModel> =
+            if (lastOrNull()?.isUser == true) dropLast(1) else this
+
+        private fun ChatDetailUiState.withChat(chat: Chat): ChatDetailUiState =
+            copy(
+                title = chat.title,
+                messages = chat.messages.map { message -> message.toChatMessageUiModel() },
+            )
 
         private fun ChatMessage.toChatMessageUiModel(): ChatMessageUiModel =
             ChatMessageUiModel(
@@ -216,10 +249,6 @@ class ChatDetailViewModel
                 content = content,
                 isUser = role == ChatMessageRole.User,
             )
-
-        private fun updateState(transform: ChatDetailUiState.() -> ChatDetailUiState) {
-            _uiState.value = _uiState.value.transform()
-        }
 
         private companion object {
             const val FIRST_MESSAGE_PAGE = 0

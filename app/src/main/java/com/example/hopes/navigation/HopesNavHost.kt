@@ -212,6 +212,7 @@ private fun HopesMainNavDisplay(
                             department = key.department,
                             major = key.major,
                             onBackClick = navigator::goBack,
+                            onStartNewChat = navigator::navigateToNewChat,
                         )
                     }
                 },

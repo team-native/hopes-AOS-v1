@@ -35,6 +35,7 @@ fun ChatDetailRoute(
     department: ChatDepartment?,
     major: ChatMajor?,
     onBackClick: () -> Unit,
+    onStartNewChat: () -> Unit,
     viewModel: ChatDetailViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(chatId, question) { viewModel.initialize(chatId, question) }
@@ -84,5 +85,6 @@ fun ChatDetailRoute(
         onCopyCode = { code -> copyToClipboard(code, R.string.chat_code_copied_toast) },
         toastMessage = toastMessageResId?.let { stringResource(it) },
         onToastDismiss = { toastMessageResId = null },
+        onNewChatConfirm = onStartNewChat,
     )
 }

@@ -19,7 +19,6 @@ data class HopesExtendedColors(
     val logoutText: Color,
     val onboardingStepContainer: Color,
     val onboardingStepText: Color,
-    val bottomNavigationSelectedIcon: Color,
 )
 
 val LocalHopesExtendedColors =
@@ -42,7 +41,6 @@ internal val lightHopesExtendedColors =
         // Figma node 14:524의 #0A5A96 15% 원형 배경과 숫자 색상이다.
         onboardingStepContainer = Color(0x260A5A96),
         onboardingStepText = Color(0xFF0A5A96),
-        bottomNavigationSelectedIcon = HopesBlue,
     )
 
 internal val darkHopesExtendedColors =
@@ -59,5 +57,4 @@ internal val darkHopesExtendedColors =
         logoutText = Color(0xFFFFB4AB),
         onboardingStepContainer = Color(0x403AA9E8),
         onboardingStepText = Color(0xFF8CD5FF),
-        bottomNavigationSelectedIcon = HopesBlue,
     )

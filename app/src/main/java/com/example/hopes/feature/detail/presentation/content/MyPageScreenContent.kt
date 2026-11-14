@@ -1,8 +1,10 @@
 package com.example.hopes.feature.detail.presentation.content
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
+import com.example.hopes.core.designsystem.component.HopesToast
 import com.example.hopes.feature.detail.presentation.MyPageActivityStats
 import com.example.hopes.feature.detail.presentation.MyPageScreenEvent
 import com.example.hopes.feature.detail.presentation.MyPageUiState
@@ -44,6 +47,8 @@ fun MyPageScreenContent(
     uiState: MyPageUiState,
     onEvent: (MyPageScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
+    toastMessage: String? = null,
+    onToastDismiss: () -> Unit = {},
 ) {
     val menuItems =
         listOf(
@@ -77,57 +82,70 @@ fun MyPageScreenContent(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
     ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(
-                        start = AppSpacing.ScreenHorizontal,
-                        top = AppSpacing.SystemBarToContent,
-                        end = AppSpacing.ScreenHorizontal,
-                        bottom = AppSpacing.Section,
-                    ),
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = AppSpacing.ScreenHorizontal,
+                            top = AppSpacing.SystemBarToContent,
+                            end = AppSpacing.ScreenHorizontal,
+                            bottom = AppSpacing.Section,
+                        ),
             ) {
-                Text(
-                    text = stringResource(R.string.my_page),
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .semantics { heading() },
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = HopesTextStyles.PageTitle,
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.my_page),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .semantics { heading() },
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = HopesTextStyles.PageTitle,
+                    )
+
+                    HopesHeaderIconButton(
+                        imageVector = Icons.Outlined.Settings,
+                        contentDescription = stringResource(R.string.navigation_settings),
+                        onClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
+
+                MyPageProfileSummaryCard(
+                    name = uiState.profileName,
+                    major = uiState.major,
+                    email = uiState.email,
+                    onProfileEditClick = { onEvent(MyPageScreenEvent.ProfileEditClicked) },
                 )
 
-                HopesHeaderIconButton(
-                    imageVector = Icons.Outlined.Settings,
-                    contentDescription = stringResource(R.string.navigation_settings),
-                    onClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
-                )
-            }
+                uiState.activityStats?.let { stats ->
+                    Spacer(modifier = Modifier.height(AppSpacing.Item))
 
-            Spacer(modifier = Modifier.height(AppSpacing.Medium))
+                    MyPageActivityStatsCard(stats = stats)
+                }
 
-            MyPageProfileSummaryCard(
-                name = uiState.profileName,
-                major = uiState.major,
-                email = uiState.email,
-                onProfileEditClick = { onEvent(MyPageScreenEvent.ProfileEditClicked) },
-            )
-
-            uiState.activityStats?.let { stats ->
                 Spacer(modifier = Modifier.height(AppSpacing.Item))
 
-                MyPageActivityStatsCard(stats = stats)
+                MyPageMenuCard(items = menuItems)
             }
 
-            Spacer(modifier = Modifier.height(AppSpacing.Item))
-
-            MyPageMenuCard(items = menuItems)
+            if (toastMessage != null) {
+                HopesToast(
+                    message = toastMessage,
+                    onDismiss = onToastDismiss,
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = AppSpacing.Medium),
+                )
+            }
         }
     }
 }

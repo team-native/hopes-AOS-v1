@@ -43,6 +43,10 @@ class PersonalSettingsViewModel
                 PersonalSettingsScreenEvent.PersonalPromptRetryClicked -> {
                     loadPrompt()
                 }
+
+                PersonalSettingsScreenEvent.SavedToastDismissed -> {
+                    updateState { copy(isPromptSaved = false) }
+                }
             }
         }
 
@@ -71,7 +75,7 @@ class PersonalSettingsViewModel
         /** PATCH /api/setting으로 시스템 프롬프트를 저장한다. */
         private fun savePrompt() {
             val currentState = _uiState.value
-            if (currentState.isPromptSaving) return
+            if (!currentState.isSaveEnabled) return
 
             viewModelScope.launch {
                 updateState { copy(isPromptSaving = true, isPromptSaved = false, isPromptSaveFailed = false) }

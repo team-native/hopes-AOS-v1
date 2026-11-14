@@ -2,151 +2,51 @@ package com.example.hopes.feature.detail.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hopes.domain.model.ProfileUpdateRequest
-import com.example.hopes.domain.model.UserProfile
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.GetProfileUseCase
-import com.example.hopes.domain.usecase.UpdateProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/** 마이페이지 프로필 조회와 저장의 단방향 상태 흐름을 관리한다. */
+/** 마이페이지 프로필 요약을 불러온다. 프로필 수정은 ProfileEditViewModel이 맡는다. */
 @HiltViewModel
 class MyPageViewModel
     @Inject
     constructor(
         private val getProfileUseCase: GetProfileUseCase,
-        private val updateProfileUseCase: UpdateProfileUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(MyPageUiState())
         val uiState: StateFlow<MyPageUiState> = _uiState.asStateFlow()
 
         init {
-            loadProfile()
+            refreshProfile()
         }
 
-        /** 입력 변경과 저장 요청을 처리한다. */
-        fun onEvent(event: MyPageScreenEvent) {
-            when (event) {
-                // 화면 이동 이벤트는 MyPageRoute가 처리한다.
-                MyPageScreenEvent.AppSettingsClicked,
-                MyPageScreenEvent.ProfileEditClicked,
-                MyPageScreenEvent.MyActivityClicked,
-                MyPageScreenEvent.PersonalSettingsClicked,
-                MyPageScreenEvent.NotificationClicked,
-                MyPageScreenEvent.ContactClicked,
-                -> {
-                    Unit
-                }
-
-                is MyPageScreenEvent.ProfileNameChanged -> {
-                    updateState {
-                        copy(
-                            profileName = event.value,
-                            isProfileSaved = false,
-                            isProfileSaveFailed = false,
-                        )
-                    }
-                }
-
-                is MyPageScreenEvent.ProfileIntroductionChanged -> {
-                    updateState {
-                        copy(
-                            profileIntroduction = event.value,
-                            isProfileSaved = false,
-                            isProfileSaveFailed = false,
-                        )
-                    }
-                }
-
-                MyPageScreenEvent.ProfileSaveClicked -> {
-                    saveProfile()
-                }
-
-                MyPageScreenEvent.ProfileRetryClicked -> {
-                    loadProfile()
-                }
-            }
-        }
-
-        /** GET /api/mypage 결과를 편집 화면에 반영한다. */
-        private fun loadProfile() {
+        /** 프로필 수정 화면에서 돌아왔을 때처럼 서버 프로필을 다시 읽어 요약을 갱신한다. */
+        fun refreshProfile() {
             viewModelScope.launch {
-                updateState { copy(isProfileLoading = true, isProfileLoadFailed = false) }
+                _uiState.update { it.copy(isProfileLoading = true, isProfileLoadFailed = false) }
                 when (val result = getProfileUseCase()) {
                     is AppResult.Success -> {
-                        updateProfileState(result.value)
+                        val profile = result.value
+                        _uiState.update {
+                            it.copy(
+                                profileName = profile.nickname,
+                                email = profile.email,
+                                major = profile.major,
+                                isProfileLoading = false,
+                            )
+                        }
                     }
 
                     else -> {
-                        updateState {
-                            copy(isProfileLoading = false, isProfileLoadFailed = true)
-                        }
+                        _uiState.update { it.copy(isProfileLoading = false, isProfileLoadFailed = true) }
                     }
                 }
             }
-        }
-
-        /** PATCH /api/mypage로 별명과 자기소개를 저장한다. */
-        private fun saveProfile() {
-            val currentState = _uiState.value
-            if (currentState.isProfileLoading || currentState.isProfileSaving) return
-
-            viewModelScope.launch {
-                updateState {
-                    copy(
-                        isProfileSaving = true,
-                        isProfileSaved = false,
-                        isProfileSaveFailed = false,
-                    )
-                }
-                when (
-                    val result =
-                        updateProfileUseCase(
-                            ProfileUpdateRequest(
-                                nickname = currentState.profileName,
-                                profileInfo = currentState.profileIntroduction,
-                            ),
-                        )
-                ) {
-                    is AppResult.Success -> {
-                        updateProfileState(result.value, isProfileSaved = true)
-                    }
-
-                    else -> {
-                        updateState {
-                            copy(isProfileSaving = false, isProfileSaveFailed = true)
-                        }
-                    }
-                }
-            }
-        }
-
-        /** 서버 프로필을 화면 모델로 변환하고 요청 상태를 종료한다. */
-        private fun updateProfileState(
-            profile: UserProfile,
-            isProfileSaved: Boolean = false,
-        ) {
-            updateState {
-                copy(
-                    profileName = profile.nickname,
-                    profileIntroduction = profile.profileInfo,
-                    email = profile.email,
-                    major = profile.major,
-                    isProfileLoading = false,
-                    isProfileLoadFailed = false,
-                    isProfileSaving = false,
-                    isProfileSaved = isProfileSaved,
-                    isProfileSaveFailed = false,
-                )
-            }
-        }
-
-        private fun updateState(transform: MyPageUiState.() -> MyPageUiState) {
-            _uiState.value = _uiState.value.transform()
         }
     }

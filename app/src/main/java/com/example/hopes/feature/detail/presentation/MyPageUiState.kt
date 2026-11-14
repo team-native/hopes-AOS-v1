@@ -1,16 +1,12 @@
 package com.example.hopes.feature.detail.presentation
 
-/** 서버 프로필과 마이페이지 요청 상태를 표현한다. */
+/** 마이페이지에 보여줄 서버 프로필 요약과 활동 통계다. */
 data class MyPageUiState(
     val profileName: String = "",
-    val profileIntroduction: String = "",
     val email: String = "",
     val major: String? = null,
     val isProfileLoading: Boolean = true,
     val isProfileLoadFailed: Boolean = false,
-    val isProfileSaving: Boolean = false,
-    val isProfileSaved: Boolean = false,
-    val isProfileSaveFailed: Boolean = false,
     val activityStats: MyPageActivityStats? = null,
 )
 

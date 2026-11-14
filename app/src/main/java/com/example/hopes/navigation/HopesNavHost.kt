@@ -10,7 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -27,8 +30,10 @@ import com.example.hopes.feature.community.presentation.CommunityRoute
 import com.example.hopes.feature.detail.presentation.ContactRoute
 import com.example.hopes.feature.detail.presentation.MyPageRoute
 import com.example.hopes.feature.detail.presentation.PersonalSettingsRoute
+import com.example.hopes.feature.detail.presentation.ProfileEditRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
+import com.example.hopes.feature.notification.presentation.NotificationRoute
 import com.example.hopes.feature.settings.presentation.SettingsRoute
 
 /** 인증·탭·설정 및 서버 채팅 상세의 단일 탐색 그래프다. */
@@ -90,6 +95,8 @@ private fun HopesMainNavDisplay(
             topLevelRoutes = hopesTabDestinations,
         )
     val navigator = remember(navigationState) { HopesMainNavigator(navigationState) }
+    // 프로필 수정 화면에서 저장하고 돌아온 직후 마이페이지에 "프로필을 저장했어요" 토스트를 띄우기 위한 신호다.
+    var isProfileSavedToastVisible by rememberSaveable { mutableStateOf(false) }
 
     NavDisplay(
         entries =
@@ -98,8 +105,7 @@ private fun HopesMainNavDisplay(
                     entry<HopesDestination.Home> {
                         HomeRoute(
                             onNavigate = navigator::navigateToTab,
-                            // 알림 화면(피그마 25)은 마이페이지 하위 화면 작업 때 연결한다.
-                            onNotificationClick = {},
+                            onNotificationClick = { navigator.push(HopesDestination.Notifications) },
                         )
                     }
                     entry<HopesDestination.Chat> { key ->
@@ -129,11 +135,12 @@ private fun HopesMainNavDisplay(
                             // 설정은 마이페이지 하위 화면이라 top-level 탐색이 아닌 일반 push로 진입시켜,
                             // 뒤로가기 시 홈이 아닌 마이페이지로 돌아오게 한다.
                             onNavigateToAppSettings = { navigator.push(HopesDestination.AppSettings) },
-                            // 프로필 수정(피그마 26)과 알림(피그마 25) 화면은 다음 작업에서 연결한다.
-                            onNavigateToProfileEdit = {},
+                            onNavigateToProfileEdit = { navigator.push(HopesDestination.ProfileEdit) },
                             onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
-                            onNavigateToNotifications = {},
+                            onNavigateToNotifications = { navigator.push(HopesDestination.Notifications) },
                             onNavigateToContact = { navigator.push(HopesDestination.Contact) },
+                            isProfileSavedToastVisible = isProfileSavedToastVisible,
+                            onProfileSavedToastDismiss = { isProfileSavedToastVisible = false },
                         )
                     }
                     entry<HopesDestination.AppSettings> {
@@ -149,16 +156,22 @@ private fun HopesMainNavDisplay(
                         )
                     }
                     entry<HopesDestination.PersonalSettings> {
-                        PersonalSettingsRoute(
-                            onNavigate = navigator::navigateToTab,
-                            onBackClick = navigator::goBack,
-                        )
+                        PersonalSettingsRoute(onBackClick = navigator::goBack)
                     }
                     entry<HopesDestination.Contact> {
-                        ContactRoute(
-                            onNavigate = navigator::navigateToTab,
+                        ContactRoute(onBackClick = navigator::goBack)
+                    }
+                    entry<HopesDestination.ProfileEdit> {
+                        ProfileEditRoute(
                             onBackClick = navigator::goBack,
+                            onProfileSaved = {
+                                isProfileSavedToastVisible = true
+                                navigator.goBack()
+                            },
                         )
+                    }
+                    entry<HopesDestination.Notifications> {
+                        NotificationRoute(onBackClick = navigator::goBack)
                     }
                     entry<HopesDestination.ChatDetail> { key ->
                         ChatDetailRoute(

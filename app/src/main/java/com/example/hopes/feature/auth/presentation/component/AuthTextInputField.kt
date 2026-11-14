@@ -46,18 +46,21 @@ import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
- * 로그인 화면 전용 입력 필드다. 포커스 시 primary, 오류 시 error 색 테두리를 표시한다.
+ * 로그인·회원가입 화면이 함께 쓰는 48dp 입력 필드다. 포커스 시 primary, 오류 시 error 색 테두리를 표시한다.
  * 비밀번호 재설정·설정 화면이 쓰는 FigmaAuthTextField와 분리해 두 화면에 영향을 주지 않는다.
+ *
+ * @param errorMessage null이 아니면 오류 상태로 그리고, 접근성 서비스에 이 문구를 오류로 알린다.
  */
 @Composable
-fun AuthLoginTextField(
+fun AuthTextInputField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholderRes: Int,
-    isError: Boolean,
+    errorMessage: String?,
     isEnabled: Boolean,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
+    keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: () -> Unit = {},
 ) {
@@ -66,6 +69,7 @@ fun AuthLoginTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     // 비밀번호 원문은 저장하지 않고, 화면 회전 후에도 표시 여부만 유지한다.
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+    val isError = errorMessage != null
     val fieldShape = RoundedCornerShape(AppRadius.Field)
     val borderColor =
         when {
@@ -79,7 +83,6 @@ fun AuthLoginTextField(
             fontSize = 15.sp,
         )
     val fieldDescription = stringResource(placeholderRes)
-    val errorDescription = stringResource(R.string.auth_login_failure_message)
     val passwordVisibilityDescription =
         stringResource(
             if (isPasswordVisible) {
@@ -98,7 +101,12 @@ fun AuthLoginTextField(
                     color = MaterialTheme.colorScheme.surface,
                     shape = fieldShape,
                 ).border(
-                    width = if (isFocused || isError) FOCUSED_BORDER_WIDTH else DEFAULT_BORDER_WIDTH,
+                    width =
+                        if (isFocused || isError) {
+                            FOCUSED_BORDER_WIDTH
+                        } else {
+                            DEFAULT_BORDER_WIDTH
+                        },
                     color = borderColor,
                     shape = fieldShape,
                 ).padding(horizontal = 16.dp),
@@ -127,8 +135,8 @@ fun AuthLoginTextField(
                             },
                     ).semantics {
                         contentDescription = fieldDescription
-                        if (isError) {
-                            error(errorDescription)
+                        if (errorMessage != null) {
+                            error(errorMessage)
                         }
                     },
             enabled = isEnabled,
@@ -142,7 +150,7 @@ fun AuthLoginTextField(
                         if (isPassword) {
                             KeyboardType.Password
                         } else {
-                            KeyboardType.Email
+                            keyboardType
                         },
                     imeAction = imeAction,
                 ),

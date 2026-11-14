@@ -13,13 +13,14 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.hopes.feature.auth.presentation.component.AuthCheckboxRow
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthFindPasswordLink
-import com.example.hopes.feature.auth.presentation.component.AuthKeepLoginCheckbox
-import com.example.hopes.feature.auth.presentation.component.AuthLoginFailureMessage
-import com.example.hopes.feature.auth.presentation.component.AuthLoginTextField
+import com.example.hopes.feature.auth.presentation.component.AuthInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthStatusText
+import com.example.hopes.feature.auth.presentation.component.AuthTextInputField
 import com.teamnative.hopes.R
 
 /** 로그인 화면의 이메일·비밀번호 입력, 로그인 유지/비밀번호 찾기 행, 실패·안내 문구를 묶는다. */
@@ -39,18 +40,20 @@ fun AuthLoginFieldsContent(
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
-    val isFailure = failureMessage != null
+    // 서버가 실패 사유를 보내지 않으면(빈 문자열) 기본 실패 문구로 대신한다.
+    val displayedFailureMessage = failureMessage?.ifBlank { stringResource(R.string.auth_login_failure_message) }
 
     Column(modifier = modifier.fillMaxWidth()) {
         AuthFieldLabel(labelRes = R.string.auth_email)
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        AuthLoginTextField(
+        AuthTextInputField(
             value = emailText,
             onValueChange = onEmailChange,
             placeholderRes = R.string.auth_email,
-            isError = isFailure,
+            keyboardType = KeyboardType.Email,
+            errorMessage = displayedFailureMessage,
             isEnabled = isEnabled,
             imeAction = ImeAction.Next,
             onImeAction = { focusManager.moveFocus(FocusDirection.Down) },
@@ -62,21 +65,21 @@ fun AuthLoginFieldsContent(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        AuthLoginTextField(
+        AuthTextInputField(
             value = passwordText,
             onValueChange = onPasswordChange,
             placeholderRes = R.string.password,
-            isError = isFailure,
+            errorMessage = displayedFailureMessage,
             isEnabled = isEnabled,
             isPassword = true,
             imeAction = ImeAction.Done,
             onImeAction = onPasswordImeDone,
         )
 
-        if (failureMessage != null) {
+        if (displayedFailureMessage != null) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            AuthLoginFailureMessage(message = failureMessage)
+            AuthInlineErrorMessage(message = displayedFailureMessage)
         } else if (statusMessage != null) {
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -94,7 +97,8 @@ fun AuthLoginFieldsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            AuthKeepLoginCheckbox(
+            AuthCheckboxRow(
+                text = stringResource(R.string.auth_keep_login),
                 isChecked = isKeepLoginChecked,
                 onCheckedChange = onKeepLoginChange,
             )

@@ -5,33 +5,21 @@ import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetSc
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
 
-/** 피그마 01~04 인증 화면을 단계에 맞는 Screen으로 라우팅한다. */
+/**
+ * 인증 단계에 맞는 Screen을 고른다.
+ *
+ * @param signupContent 회원가입은 자체 ViewModel을 가진 별도 Route라서, AuthRoute가 그 Route를 slot으로 넘긴다.
+ */
 @Composable
 fun AuthScreen(
     authStep: AuthStep,
-    emailText: String,
-    passwordText: String,
-    nameText: String,
-    departmentText: String,
-    generationText: String,
-    verificationCodeText: String,
-    signupValidation: SignupValidationUiState,
-    isSignupLoading: Boolean,
-    signupErrorMessage: String?,
     loginUiState: AuthLoginUiState,
     onLoginEvent: (AuthLoginScreenEvent) -> Unit,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onNameChange: (String) -> Unit,
-    onDepartmentClick: () -> Unit,
-    onGenerationClick: () -> Unit,
-    onVerificationCodeChange: (String) -> Unit,
-    onSendVerificationCodeClick: () -> Unit,
-    onSignupClick: () -> Unit,
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
+    signupContent: @Composable () -> Unit,
 ) {
     when (authStep) {
         AuthStep.Guide -> {
@@ -56,26 +44,7 @@ fun AuthScreen(
         }
 
         AuthStep.SignUp -> {
-            AuthSignUpScreen(
-                emailText = emailText,
-                passwordText = passwordText,
-                nameText = nameText,
-                departmentText = departmentText,
-                generationText = generationText,
-                verificationCodeText = verificationCodeText,
-                signupValidation = signupValidation,
-                isLoading = isSignupLoading,
-                errorMessage = signupErrorMessage,
-                onEmailChange = onEmailChange,
-                onPasswordChange = onPasswordChange,
-                onNameChange = onNameChange,
-                onDepartmentClick = onDepartmentClick,
-                onGenerationClick = onGenerationClick,
-                onVerificationCodeChange = onVerificationCodeChange,
-                onSendVerificationCodeClick = onSendVerificationCodeClick,
-                onActionClick = onSignupClick,
-                onFooterClick = onNavigateLogin,
-            )
+            signupContent()
         }
     }
 }

@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,11 +21,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
-import com.teamnative.hopes.R
 
-/** "로그인 유지" 체크박스다. 체크박스와 문구를 묶은 행 전체가 하나의 토글 영역이다. */
+/** "로그인 유지", 약관 동의처럼 체크박스와 문구를 묶은 행이다. 행 전체가 하나의 토글 영역이다. */
 @Composable
-fun AuthKeepLoginCheckbox(
+fun AuthCheckboxRow(
+    text: String,
     isChecked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -60,7 +59,7 @@ fun AuthKeepLoginCheckbox(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = stringResource(R.string.auth_keep_login),
+            text = text,
             color = MaterialTheme.colorScheme.onSurface,
             style =
                 TextStyle(

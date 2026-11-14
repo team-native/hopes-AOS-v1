@@ -5,12 +5,9 @@ import com.example.hopes.domain.model.PasswordResetRequest
 import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.repository.AuthRepository
 import com.example.hopes.domain.result.AppResult
-import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
 import com.example.hopes.domain.usecase.ResetPasswordUseCase
-import com.example.hopes.domain.usecase.SendSignupVerificationUseCase
-import com.example.hopes.domain.usecase.SignUpUseCase
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -24,9 +21,6 @@ class AuthViewModelTest {
                 loginUseCase = LoginUseCase(repository),
                 requestPasswordResetUseCase = RequestPasswordResetUseCase(repository),
                 resetPasswordUseCase = ResetPasswordUseCase(repository),
-                sendSignupVerificationUseCase = SendSignupVerificationUseCase(repository),
-                confirmSignupVerificationUseCase = ConfirmSignupVerificationUseCase(repository),
-                signUpUseCase = SignUpUseCase(repository),
             )
 
         viewModel.onEvent(AuthScreenEvent.LoginClicked)

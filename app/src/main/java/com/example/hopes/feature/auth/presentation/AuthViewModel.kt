@@ -2,18 +2,11 @@ package com.example.hopes.feature.auth.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hopes.core.validation.isValidSchoolEmail
-import com.example.hopes.core.validation.isValidSignupPassword
-import com.example.hopes.core.validation.isValidUsername
-import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.result.toDisplayMessage
-import com.example.hopes.domain.usecase.ConfirmSignupVerificationUseCase
 import com.example.hopes.domain.usecase.LoginUseCase
 import com.example.hopes.domain.usecase.RequestPasswordResetUseCase
 import com.example.hopes.domain.usecase.ResetPasswordUseCase
-import com.example.hopes.domain.usecase.SendSignupVerificationUseCase
-import com.example.hopes.domain.usecase.SignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,9 +28,6 @@ class AuthViewModel
         private val loginUseCase: LoginUseCase,
         private val requestPasswordResetUseCase: RequestPasswordResetUseCase,
         private val resetPasswordUseCase: ResetPasswordUseCase,
-        private val sendSignupVerificationUseCase: SendSignupVerificationUseCase,
-        private val confirmSignupVerificationUseCase: ConfirmSignupVerificationUseCase,
-        private val signUpUseCase: SignUpUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(AuthUiState())
         val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
@@ -49,35 +39,29 @@ class AuthViewModel
         fun onEvent(event: AuthScreenEvent) {
             when (event) {
                 is AuthScreenEvent.EmailChanged -> {
-                    updateSignupEmail(event.value)
+                    updateEmail(event.value)
                 }
 
                 is AuthScreenEvent.PasswordChanged -> {
-                    updateSignupPassword(event.value)
-                }
-
-                is AuthScreenEvent.NameChanged -> {
-                    updateSignupName(event.value)
-                }
-
-                is AuthScreenEvent.DepartmentChanged -> {
-                    updateState { copy(department = event.value) }
-                }
-
-                is AuthScreenEvent.GenerationChanged -> {
-                    updateSignupGeneration(event.value)
-                }
-
-                is AuthScreenEvent.VerificationCodeChanged -> {
-                    updateSignupVerificationCode(event.value)
+                    updatePassword(event.value)
                 }
 
                 AuthScreenEvent.LoginClicked -> {
                     login()
                 }
 
-                AuthScreenEvent.SignUpClicked -> {
-                    submitSignup()
+                is AuthScreenEvent.SignupCompleted -> {
+                    // 가입한 이메일을 로그인 입력란에 미리 채우고, 서버가 준 가입 완료 문구를 로그인 화면에 보여준다.
+                    updateState {
+                        copy(
+                            authStep = AuthStep.Login,
+                            email = event.email,
+                            password = "",
+                            errorMessage = null,
+                            isLoginOffline = false,
+                            statusMessage = event.message,
+                        )
+                    }
                 }
 
                 AuthScreenEvent.SignUpRequested -> {
@@ -150,10 +134,6 @@ class AuthViewModel
                         )
                     }
                 }
-
-                AuthScreenEvent.SendSignupVerificationClicked -> {
-                    sendSignupVerificationCode()
-                }
             }
         }
 
@@ -186,171 +166,25 @@ class AuthViewModel
             }
         }
 
-        /** 이메일 입력 시 학교 이메일 형식을 즉시 검사해 화면 상태에 반영한다. */
-        private fun updateSignupEmail(email: String) {
+        /** 로그인 이메일 입력을 반영한다. 입력이 바뀌면 직전 실패 문구와 오프라인 배너를 내린다. */
+        private fun updateEmail(email: String) {
             updateState {
                 copy(
                     email = email,
                     errorMessage = null,
                     isLoginOffline = false,
-                    signupValidation =
-                        signupValidation.copy(
-                            isEmailTouched = true,
-                            emailError = email.invalidSchoolEmailError(),
-                        ),
                 )
             }
         }
 
-        /** 이름 입력 시 필수 입력과 최대 길이를 즉시 검사해 화면 상태에 반영한다. */
-        private fun updateSignupName(name: String) {
-            updateState {
-                copy(
-                    name = name,
-                    errorMessage = null,
-                    signupValidation =
-                        signupValidation.copy(
-                            isNameTouched = true,
-                            nameError = name.invalidUsernameError(),
-                        ),
-                )
-            }
-        }
-
-        /** 기수 선택 시 필수 선택 오류를 해제하거나 표시한다. */
-        private fun updateSignupGeneration(generation: String) {
-            updateState {
-                copy(
-                    generation = generation,
-                    signupValidation =
-                        signupValidation.copy(
-                            isGenerationTouched = true,
-                            generationError = generation.requiredGenerationError(),
-                        ),
-                )
-            }
-        }
-
-        /** 비밀번호 입력 시 영문·숫자와 길이 조건을 즉시 검사한다. */
-        private fun updateSignupPassword(password: String) {
+        /** 로그인 비밀번호 입력을 반영한다. 입력이 바뀌면 직전 실패 문구와 오프라인 배너를 내린다. */
+        private fun updatePassword(password: String) {
             updateState {
                 copy(
                     password = password,
                     errorMessage = null,
                     isLoginOffline = false,
-                    signupValidation =
-                        signupValidation.copy(
-                            isPasswordTouched = true,
-                            passwordError = password.invalidSignupPasswordError(),
-                        ),
                 )
-            }
-        }
-
-        /** 인증번호 입력 시 숫자 여섯 자리만 유지하고 형식 오류를 갱신한다. */
-        private fun updateSignupVerificationCode(value: String) {
-            val numericCode = value.filter(Char::isDigit).take(VERIFICATION_CODE_LENGTH)
-
-            updateState {
-                copy(
-                    verificationCode = numericCode,
-                    errorMessage = null,
-                    signupValidation =
-                        signupValidation.copy(
-                            isVerificationCodeTouched = true,
-                            verificationCodeError = numericCode.invalidVerificationCodeError(),
-                        ),
-                )
-            }
-        }
-
-        /** 번호 발송 클릭 시 유효한 학교 이메일로만 회원가입 인증번호 발송 UseCase를 실행한다. */
-        private fun sendSignupVerificationCode() {
-            val currentState = _uiState.value
-            val emailError = currentState.email.invalidSchoolEmailError()
-            updateState {
-                copy(
-                    signupValidation = signupValidation.copy(isEmailTouched = true, emailError = emailError),
-                )
-            }
-
-            if (emailError != null) {
-                return
-            }
-
-            viewModelScope.launch {
-                updateState { copy(isLoading = true, errorMessage = null) }
-                val result = sendSignupVerificationUseCase(currentState.email)
-                when (result) {
-                    is AppResult.Success -> updateState { copy(isLoading = false) }
-                    else -> updateState { copy(isLoading = false, errorMessage = result.toDisplayMessage("")) }
-                }
-            }
-        }
-
-        /** 가입 클릭 시 모든 필드를 검사하고 유효할 때 회원가입 정보를 서버로 전송한다. */
-        private fun submitSignup() {
-            val currentState = _uiState.value
-            val validation =
-                SignupValidationUiState(
-                    isEmailTouched = true,
-                    isNameTouched = true,
-                    isGenerationTouched = true,
-                    isPasswordTouched = true,
-                    isVerificationCodeTouched = true,
-                    emailError = currentState.email.invalidSchoolEmailError(),
-                    nameError = currentState.name.invalidUsernameError(),
-                    generationError = currentState.generation.requiredGenerationError(),
-                    passwordError = currentState.password.invalidSignupPasswordError(),
-                    verificationCodeError = currentState.verificationCode.invalidVerificationCodeError(),
-                )
-
-            updateState { copy(signupValidation = validation) }
-
-            if (validation.hasError) {
-                return
-            }
-
-            viewModelScope.launch {
-                updateState { copy(isLoading = true, errorMessage = null) }
-
-                // "회원가입" 클릭 한 번으로 인증번호 확인과 최종 가입 요청을 순서대로 처리한다.
-                // 인증번호 확인이 실패하면 나머지 입력값은 전송하지 않는다.
-                val verificationResult =
-                    confirmSignupVerificationUseCase(currentState.email, currentState.verificationCode)
-                if (verificationResult !is AppResult.Success) {
-                    updateState { copy(isLoading = false, errorMessage = verificationResult.toDisplayMessage("")) }
-                    return@launch
-                }
-
-                // 회원가입 화면에는 별도의 비밀번호 확인 입력칸이 없어, 같은 비밀번호 값을 확인란으로도 함께 전송한다.
-                val request =
-                    SignUpRequest(
-                        email = currentState.email,
-                        username = currentState.name,
-                        password = currentState.password,
-                        passwordConfirm = currentState.password,
-                        verificationCode = currentState.verificationCode,
-                        major = currentState.department.toMajorCode(),
-                        cohort = currentState.generation.toCohort(),
-                    )
-                val signUpResult = signUpUseCase(request)
-                when (signUpResult) {
-                    is AppResult.Success -> {
-                        // 회원가입은 바로 인증하지 않고 로그인 화면으로 보내, 서버가 준 성공 메시지를 보여준다.
-                        updateState {
-                            copy(
-                                isLoading = false,
-                                authStep = AuthStep.Login,
-                                statusMessage = signUpResult.value.message ?: "",
-                            )
-                        }
-                    }
-
-                    else -> {
-                        updateState { copy(isLoading = false, errorMessage = signUpResult.toDisplayMessage("")) }
-                    }
-                }
             }
         }
 
@@ -426,32 +260,3 @@ class AuthViewModel
             _uiState.value = _uiState.value.transform()
         }
     }
-
-private const val VERIFICATION_CODE_LENGTH = 6
-
-/** 화면 표시용 학과명을 회원가입 API의 고정 코드로 변환한다. */
-private fun String.toMajorCode(): String? =
-    when (this) {
-        "소프트웨어개발과" -> "SOFTWARE"
-        "IoT과" -> "IOT"
-        "AI과" -> "AI"
-        else -> null
-    }
-
-/** 화면 표시용 기수에서 서버가 요구하는 숫자만 추출한다. */
-private fun String.toCohort(): Int? = filter(Char::isDigit).toIntOrNull()
-
-private fun String.invalidSchoolEmailError(): SignupInputError? =
-    if (isValidSchoolEmail()) null else SignupInputError.InvalidSchoolEmail
-
-private fun String.invalidUsernameError(): SignupInputError? =
-    if (isValidUsername()) null else SignupInputError.InvalidUsername
-
-private fun String.requiredGenerationError(): SignupInputError? =
-    if (isNotBlank()) null else SignupInputError.GenerationRequired
-
-private fun String.invalidSignupPasswordError(): SignupInputError? =
-    if (isValidSignupPassword()) null else SignupInputError.InvalidPassword
-
-private fun String.invalidVerificationCodeError(): SignupInputError? =
-    if (length == VERIFICATION_CODE_LENGTH) null else SignupInputError.InvalidVerificationCode

@@ -12,15 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.teamnative.hopes.R
 
-/** 로그인 실패 시 비밀번호 필드 아래에 표시하는 아이콘 + 오류 문구다. 서버 메시지가 없으면 기본 문구를 쓴다. */
+/** 입력 필드 바로 아래에 붙는 아이콘 + 빨간 오류 문구다. 로그인·회원가입 화면이 함께 쓴다. */
 @Composable
-fun AuthLoginFailureMessage(
+fun AuthInlineErrorMessage(
     message: String,
     modifier: Modifier = Modifier,
 ) {
@@ -39,7 +37,7 @@ fun AuthLoginFailureMessage(
         Spacer(modifier = Modifier.width(4.dp))
 
         Text(
-            text = message.ifBlank { stringResource(R.string.auth_login_failure_message) },
+            text = message,
             color = MaterialTheme.colorScheme.error,
             style =
                 TextStyle(

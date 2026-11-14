@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.auth.presentation.component.AuthCheckboxRow
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthFindPasswordLink
@@ -46,7 +47,7 @@ fun AuthLoginFieldsContent(
     Column(modifier = modifier.fillMaxWidth()) {
         AuthFieldLabel(labelRes = R.string.auth_email)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
         AuthTextInputField(
             value = emailText,
@@ -59,11 +60,11 @@ fun AuthLoginFieldsContent(
             onImeAction = { focusManager.moveFocus(FocusDirection.Down) },
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
         AuthFieldLabel(labelRes = R.string.password)
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
         AuthTextInputField(
             value = passwordText,
@@ -77,11 +78,11 @@ fun AuthLoginFieldsContent(
         )
 
         if (displayedFailureMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
             AuthInlineErrorMessage(message = displayedFailureMessage)
         } else if (statusMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
             AuthStatusText(
                 message = statusMessage.ifBlank { stringResource(R.string.signup_success_message) },
@@ -90,7 +91,7 @@ fun AuthLoginFieldsContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
         Row(
             modifier = Modifier.fillMaxWidth(),

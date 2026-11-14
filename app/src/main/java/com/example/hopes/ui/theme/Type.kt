@@ -73,4 +73,5 @@ object HopesTextStyles {
     val Caption = TextStyle(fontSize = 12.sp, lineHeight = 16.sp)
     val CaptionStrong = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold, lineHeight = 16.sp)
     val Overline = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium)
+    val NavigationLabel = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Medium)
 }

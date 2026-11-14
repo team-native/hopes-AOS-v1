@@ -22,9 +22,6 @@
     <string name="settings_title">설정</string>
     <string name="settings_description">서비스 이용 환경과 개인 정보를 관리해요.</string>
     <string name="dark_mode_description">시스템 설정에 맞춰 전환</string>
-    <string name="auth_title">선배에게 묻는\n가장 솔직한\n학교 이야기</string>
-    <string name="auth_description">재학생, 신입생, 입학 희망자를 위한 AI 선배 챗봇. 실제 선배들의 경험으로 답해드려요.</string>
-    <string name="auth_swipe">로그인 창을 올려 학교 이메일로 시작해요.</string>
     <string name="login">로그인</string>
     <string name="signup">회원가입</string>
     <string name="email">학교 이메일</string>
@@ -33,7 +30,6 @@
     <string name="show_password">비밀번호 표시</string>
     <string name="hide_password">비밀번호 숨기기</string>
     <string name="name">이름</string>
-    <string name="no_account">계정이 없으신가요? 회원가입</string>
     <string name="onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
     <string name="onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
     <string name="start_chat">채팅 시작하기</string>
@@ -131,7 +127,6 @@
     <string name="logout_description">앱 설정과 도움말을 관리해요.</string>
     <string name="login_subtitle">학교 이메일로 로그인하고 바로 질문을 시작하세요.</string>
     <string name="login_guide_subtitle">학교 이메일로 로그인하세요.</string>
-    <string name="login_error_message">이메일 또는 비밀번호를 확인해주세요.</string>
     <string name="signup_success_message">회원가입이 완료됐어요. 로그인해주세요.</string>
     <string name="signup_subtitle">학교 이메일로 간단히 시작하세요.</string>
     <string name="signup_email_hint">s20000@gsm.hs.kr</string>
@@ -141,9 +136,7 @@
     <string name="signup_generation_dialog_title">기수 선택</string>
     <string name="verification_code_hint">숫자 6자리</string>
     <string name="verification_send">번호 발송</string>
-    <string name="auth_swipe_title">위로 스와이프하기</string>
     <string name="prompt_save">프롬프트 저장</string>
-    <string name="forgot_password">비밀번호를 잊으셨나요?</string>
     <string name="password_reset_title">비밀번호 재설정</string>
     <string name="password_reset_subtitle">학교 이메일로 받은 인증번호를 입력해주세요.</string>
     <string name="verification_sent_message">인증번호를 전송했어요.</string>

@@ -14,6 +14,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.unit.dp
+import com.example.hopes.feature.home.presentation.HomeUiState
 import com.example.hopes.feature.home.presentation.content.HomeScreenContent
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.ui.theme.HopesTheme
@@ -43,8 +44,9 @@ class HopesScaffoldTest {
 
         composeRule.onNodeWithText("홈").assertIsDisplayed()
         composeRule.onNodeWithText("채팅").assertIsDisplayed()
+        composeRule.onNodeWithText("커뮤니티").assertIsDisplayed()
         composeRule.onNodeWithText("기록").assertIsDisplayed()
-        composeRule.onNodeWithText("설정").assertIsDisplayed()
+        composeRule.onNodeWithText("마이페이지").assertIsDisplayed()
 
         composeRule.onNodeWithText("채팅").performClick()
 
@@ -65,7 +67,8 @@ class HopesScaffoldTest {
                         ),
                 ) {
                     HomeScreenContent(
-                        onStartChatClick = {},
+                        uiState = HomeUiState(userName = "서하"),
+                        onEvent = {},
                         onNavigate = {},
                     )
                 }
@@ -73,23 +76,12 @@ class HopesScaffoldTest {
         }
 
         composeRule
-            .onNodeWithText("채팅 시작하기")
+            .onNodeWithTag("home_start_chat_button")
             .performScrollTo()
             .assertIsDisplayed()
-
-        val tipCardWidth =
-            composeRule
-                .onNodeWithTag("home_tip_card_1")
-                .fetchSemanticsNode()
-                .boundsInRoot
-                .width
-        val startChatButtonWidth =
-            composeRule
-                .onNodeWithTag("home_start_chat_button")
-                .fetchSemanticsNode()
-                .boundsInRoot
-                .width
-
-        assertEquals(tipCardWidth, startChatButtonWidth, 0.5f)
+        composeRule
+            .onNodeWithTag("home_tip_card_2")
+            .performScrollTo()
+            .assertIsDisplayed()
     }
 }

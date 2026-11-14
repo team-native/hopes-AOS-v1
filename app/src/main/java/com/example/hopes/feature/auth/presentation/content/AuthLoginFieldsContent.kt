@@ -16,10 +16,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthCheckboxRow
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
 import com.example.hopes.feature.auth.presentation.component.AuthFindPasswordLink
-import com.example.hopes.feature.auth.presentation.component.AuthInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthStatusText
 import com.example.hopes.feature.auth.presentation.component.AuthTextInputField
 import com.teamnative.hopes.R
@@ -80,7 +80,7 @@ fun AuthLoginFieldsContent(
         if (displayedFailureMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-            AuthInlineErrorMessage(message = displayedFailureMessage)
+            HopesInlineErrorMessage(message = displayedFailureMessage)
         } else if (statusMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 

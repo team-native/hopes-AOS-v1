@@ -23,4 +23,9 @@ class SessionViewModel
                 sessionManager.restoreSession()
             }
         }
+
+        /** 로그인 만료 안내 다이얼로그에서 확인을 눌렀을 때 인증 화면으로 넘긴다. */
+        fun acknowledgeExpiredSession() {
+            sessionManager.acknowledgeExpiredSession()
+        }
     }

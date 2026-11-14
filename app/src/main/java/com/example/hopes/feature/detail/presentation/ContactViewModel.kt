@@ -32,13 +32,13 @@ class ContactViewModel
             when (event) {
                 is ContactScreenEvent.ContactEmailChanged -> {
                     updateState {
-                        copy(email = event.value, isSent = false, isSendFailed = false)
+                        copy(email = event.value, isEmailError = false, isSendFailed = false)
                     }
                 }
 
                 is ContactScreenEvent.ContactMessageChanged -> {
                     updateState {
-                        copy(message = event.value, isSent = false, isSendFailed = false)
+                        copy(message = event.value, isMessageError = false, isSendFailed = false)
                     }
                 }
 
@@ -61,11 +61,18 @@ class ContactViewModel
         /** POST /api/setting/inquiry로 문의 내용을 전송한다. */
         private fun sendInquiry() {
             val currentState = _uiState.value
-            if (currentState.isSending || currentState.email.isBlank() || currentState.message.isBlank()) return
+            if (currentState.isSending) return
+
+            val isEmailError = !currentState.email.isValidContactEmail()
+            val isMessageError = currentState.message.isBlank()
+            if (isEmailError || isMessageError) {
+                updateState { copy(isEmailError = isEmailError, isMessageError = isMessageError) }
+                return
+            }
 
             viewModelScope.launch {
                 updateState { copy(isSending = true, isSendFailed = false) }
-                when (submitInquiryUseCase(currentState.email, currentState.message)) {
+                when (submitInquiryUseCase(currentState.email.trim(), currentState.message)) {
                     is AppResult.Success -> updateState { copy(isSending = false, isSent = true) }
                     else -> updateState { copy(isSending = false, isSendFailed = true) }
                 }

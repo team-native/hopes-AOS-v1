@@ -14,6 +14,9 @@ sealed interface SessionState {
     data object Unauthenticated : SessionState
 
     data object Authenticated : SessionState
+
+    /** 서버가 401로 세션을 끊었다. 사용자가 "다시 로그인해 주세요" 안내를 확인하면 [Unauthenticated]로 넘어간다. */
+    data object Expired : SessionState
 }
 
 /** 앱 전체의 세션 인증 정보 저장·조회·만료를 단일 책임으로 관리한다. */
@@ -65,11 +68,34 @@ class SessionManager
             _state.value = SessionState.Authenticated
         }
 
-        /** 로그아웃 또는 인증 실패 시 세션 인증 정보를 삭제하고 비인증 상태로 전환한다. */
+        /** 로그아웃·회원탈퇴처럼 사용자가 직접 세션을 끝낼 때 인증 정보를 삭제하고 비인증 상태로 전환한다. */
         suspend fun expireSession() {
+            clearCredentials()
+            _state.value = SessionState.Unauthenticated
+        }
+
+        /**
+         * 서버가 401로 인증을 거부했을 때 인증 정보를 삭제하고 [SessionState.Expired]로 전환한다.
+         * 화면은 로그인 만료 안내를 띄운 뒤 [acknowledgeExpiredSession]으로 인증 화면에 넘어간다.
+         */
+        suspend fun expireSessionByServer() {
+            clearCredentials()
+            // 이미 로그아웃된 뒤 늦게 도착한 401은 만료 안내를 다시 띄우지 않는다.
+            if (_state.value == SessionState.Authenticated) {
+                _state.value = SessionState.Expired
+            }
+        }
+
+        /** 로그인 만료 안내를 확인했으므로 인증 화면으로 넘어간다. */
+        fun acknowledgeExpiredSession() {
+            if (_state.value == SessionState.Expired) {
+                _state.value = SessionState.Unauthenticated
+            }
+        }
+
+        private suspend fun clearCredentials() {
             encryptedTokenStore.clear()
             tokenReference.set(null)
             tokenTypeReference.set(null)
-            _state.value = SessionState.Unauthenticated
         }
     }

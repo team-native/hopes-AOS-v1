@@ -9,4 +9,6 @@ sealed interface PersonalSettingsScreenEvent {
     data object PersonalPromptSaveClicked : PersonalSettingsScreenEvent
 
     data object PersonalPromptRetryClicked : PersonalSettingsScreenEvent
+
+    data object SavedToastDismissed : PersonalSettingsScreenEvent
 }

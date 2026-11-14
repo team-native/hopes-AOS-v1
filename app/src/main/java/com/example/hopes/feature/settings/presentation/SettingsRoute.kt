@@ -12,9 +12,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.hopes.core.designsystem.component.HopesAlertDialog
 import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionBottomSheet
-import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionConfirmDialog
-import com.example.hopes.navigation.HopesDestination
+import com.teamnative.hopes.BuildConfig
 import com.teamnative.hopes.R
 
 /** 개인정보처리방침 전문을 호스팅하는 외부 URL. */
@@ -22,19 +22,20 @@ private const val PRIVACY_POLICY_URL = "https://spotless-beret-a3e.notion.site/H
 
 private const val PRIVACY_POLICY_LOG_TAG = "SettingsRoute"
 
-/** 설정 화면에 앱 탐색 콜백을 제공한다. */
+/** 설정 화면에 서버 상태와 화면 이동, 로그아웃·회원탈퇴 흐름을 연결한다. */
 @Composable
 fun SettingsRoute(
-    onNavigate: (HopesDestination) -> Unit,
     isDarkModeEnabled: Boolean,
     onDarkModeChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
-    onNavigateToPersonalSettings: () -> Unit,
-    onNavigateToContact: () -> Unit,
+    onNavigateToAppInfo: () -> Unit,
     onLogout: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
+    // 알림 서버 기능이 없어 화면 안에서만 켜고 끈다. 연동 시 서버 설정으로 대체한다.
+    var isNotificationEnabled by rememberSaveable { mutableStateOf(true) }
     var isDeletionSheetVisible by rememberSaveable { mutableStateOf(false) }
     var isDeletionConfirmDialogVisible by rememberSaveable { mutableStateOf(false) }
     // 비밀번호 원문은 SavedState에 저장하지 않고 화면 생명주기 동안만 메모리에 유지한다.
@@ -47,6 +48,7 @@ fun SettingsRoute(
                 SettingsEffect.LoggedOut,
                 SettingsEffect.AccountDeleted,
                 -> {
+                    isLogoutDialogVisible = false
                     isDeletionSheetVisible = false
                     isDeletionConfirmDialogVisible = false
                     deletionPassword = ""
@@ -87,35 +89,61 @@ fun SettingsRoute(
         }
 
     SettingsScreen(
-        onNavigate = onNavigate,
         isDarkModeEnabled = isDarkModeEnabled,
-        onDarkModeChange = onDarkModeChange,
+        isNotificationEnabled = isNotificationEnabled,
+        isDeleteAccountEnabled = !uiState.isDeletingAccount,
+        appVersion = BuildConfig.VERSION_NAME,
         onBackClick = onBackClick,
-        onNavigateToPersonalSettings = onNavigateToPersonalSettings,
-        onNavigateToContact = onNavigateToContact,
-        onNavigateToPrivacyPolicy = {
-            // openUri는 URI 형식 오류나 처리 가능한 앱이 없을 때 예외를 던질 수 있어
-            // 앱이 크래시하지 않도록 실패를 조용히 로그로만 남긴다.
-            try {
-                uriHandler.openUri(PRIVACY_POLICY_URL)
-            } catch (exception: Exception) {
-                Log.w(PRIVACY_POLICY_LOG_TAG, "개인정보처리방침 URL을 열지 못했습니다.", exception)
-            }
-        },
-        uiState = uiState,
         onEvent = { event ->
             when (event) {
+                is SettingsScreenEvent.DarkModeChanged -> {
+                    onDarkModeChange(event.isEnabled)
+                }
+
+                is SettingsScreenEvent.NotificationChanged -> {
+                    isNotificationEnabled = event.isEnabled
+                }
+
+                SettingsScreenEvent.AppInfoClicked -> {
+                    onNavigateToAppInfo()
+                }
+
+                SettingsScreenEvent.PrivacyPolicyClicked -> {
+                    // openUri는 URI 형식 오류나 처리 가능한 앱이 없을 때 예외를 던질 수 있어
+                    // 앱이 크래시하지 않도록 실패를 조용히 로그로만 남긴다.
+                    try {
+                        uriHandler.openUri(PRIVACY_POLICY_URL)
+                    } catch (exception: Exception) {
+                        Log.w(PRIVACY_POLICY_LOG_TAG, "개인정보처리방침 URL을 열지 못했습니다.", exception)
+                    }
+                }
+
                 SettingsScreenEvent.LogoutClicked -> {
-                    viewModel.logout()
+                    isLogoutDialogVisible = true
                 }
 
                 SettingsScreenEvent.DeleteAccountClicked -> {
-                    viewModel.onEvent(event)
+                    viewModel.clearAccountDeletionError()
                     isDeletionSheetVisible = true
                 }
             }
         },
     )
+
+    if (isLogoutDialogVisible) {
+        HopesAlertDialog(
+            title = stringResource(R.string.logout_confirm_title),
+            message = stringResource(R.string.logout_confirm_message),
+            dismissText = stringResource(R.string.cancel),
+            confirmText = stringResource(R.string.logout),
+            onDismiss = { isLogoutDialogVisible = false },
+            onConfirm = {
+                isLogoutDialogVisible = false
+                viewModel.logout()
+            },
+            isConfirmDestructive = true,
+        )
+    }
 
     if (isDeletionSheetVisible) {
         SettingsAccountDeletionBottomSheet(
@@ -141,7 +169,12 @@ fun SettingsRoute(
     }
 
     if (isDeletionConfirmDialogVisible) {
-        SettingsAccountDeletionConfirmDialog(
+        HopesAlertDialog(
+            title = stringResource(R.string.account_deletion_confirm_title),
+            message = stringResource(R.string.account_deletion_confirm_message),
+            dismissText = stringResource(R.string.account_deletion_cancel),
+            confirmText = stringResource(R.string.account_deletion_confirm),
+            isConfirmDestructive = true,
             onConfirm = {
                 isDeletionConfirmDialogVisible = false
                 viewModel.deleteAccount(deletionPassword)

@@ -33,7 +33,7 @@ import javax.inject.Inject
 /** 인증 만료 응답을 앱 전체 세션 종료로 연결한다. */
 private suspend fun <T> AppResult<T>.expireSessionOnUnauthorized(sessionManager: SessionManager): AppResult<T> {
     if (this is AppResult.HttpError && statusCode == UNAUTHORIZED_STATUS_CODE) {
-        sessionManager.expireSession()
+        sessionManager.expireSessionByServer()
     }
 
     return this

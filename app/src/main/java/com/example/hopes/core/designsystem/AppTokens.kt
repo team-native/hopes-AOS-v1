@@ -5,7 +5,6 @@ import androidx.compose.ui.unit.dp
 /** UI 데모에서 반복되는 여백, 모서리, 아이콘 크기를 일관되게 제공한다. */
 object AppSpacing {
     val ScreenHorizontal = 24.dp
-    val SettingsHorizontal = 37.dp
     val ScreenVertical = 20.dp
     val SystemBarToContent = 15.dp
     val Section = 24.dp
@@ -19,10 +18,13 @@ object AppSpacing {
 
 object AppRadius {
     val Card = 20.dp
+    val ListCard = 16.dp
     val Button = 14.dp
     val Logo = 14.dp
     val Field = 14.dp
     val Sheet = 28.dp
+    val SmallButton = 10.dp
+    val HeaderButton = 12.dp
 }
 
 object AppIconSize {
@@ -41,7 +43,10 @@ object AppSize {
     val Field = 48.dp
     val ListItem = 48.dp
     val Button = 46.dp
+    val SmallButton = 36.dp
+    val Chip = 32.dp
     val TopBar = 56.dp
+    val BottomNavigation = 64.dp
     val IconButton = 40.dp
 }
 

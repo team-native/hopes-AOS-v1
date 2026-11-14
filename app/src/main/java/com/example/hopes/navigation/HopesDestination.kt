@@ -12,6 +12,8 @@ sealed interface HopesDestination : NavKey {
         val isNewChatRequested: Boolean = false,
     ) : HopesDestination
 
+    @Serializable data object Community : HopesDestination
+
     @Serializable data object History : HopesDestination
 
     // Settings 라우트는 실제로 MyPageRoute(마이페이지)를 그린다. 기존 네이밍 불일치는 이번 마이그레이션에서 다루지 않는다.
@@ -23,6 +25,12 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object Contact : HopesDestination
 
+    @Serializable data object ProfileEdit : HopesDestination
+
+    @Serializable data object Notifications : HopesDestination
+
+    @Serializable data object AppInfo : HopesDestination
+
     @Serializable data class ChatDetail(
         val chatId: Long,
         val question: String = "",
@@ -31,11 +39,12 @@ sealed interface HopesDestination : NavKey {
     @Serializable data object Auth : HopesDestination
 }
 
-/** 하단 탭에 표시되는 최상위 목적지 4개를 기본 순서대로 제공한다. */
+/** 하단 탭에 표시되는 최상위 목적지 5개를 기본 순서대로 제공한다. */
 val hopesTabDestinations: List<HopesDestination> =
     listOf(
         HopesDestination.Home,
         HopesDestination.Chat(),
+        HopesDestination.Community,
         HopesDestination.History,
         HopesDestination.Settings,
     )

@@ -8,4 +8,8 @@ data class PersonalSettingsUiState(
     val isPromptSaving: Boolean = false,
     val isPromptSaved: Boolean = false,
     val isPromptSaveFailed: Boolean = false,
-)
+) {
+    /** 불러오기가 끝났고 저장 중이 아닐 때만 저장할 수 있다. 빈 프롬프트 저장은 기본 스타일로 되돌리는 의미라 허용한다. */
+    val isSaveEnabled: Boolean
+        get() = !isPromptLoading && !isPromptLoadFailed && !isPromptSaving
+}

@@ -1,58 +1,41 @@
 package com.example.hopes.feature.home.presentation.content
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
-import com.example.hopes.core.designsystem.component.FigmaBrandHeader
-import com.example.hopes.core.designsystem.component.FigmaBrandLogoShadow
-import com.example.hopes.feature.home.presentation.component.FigmaHomeTipCard
-import com.example.hopes.feature.home.presentation.component.HomeStartChatButton
+import com.example.hopes.feature.home.presentation.HomePopularPost
+import com.example.hopes.feature.home.presentation.HomeScreenEvent
+import com.example.hopes.feature.home.presentation.HomeUiState
+import com.example.hopes.feature.home.presentation.component.HomeGreetingHeader
+import com.example.hopes.feature.home.presentation.component.HomeHeroCard
+import com.example.hopes.feature.home.presentation.component.HomePopularPostCard
+import com.example.hopes.feature.home.presentation.component.HomeQuestionTipCard
+import com.example.hopes.feature.home.presentation.component.HomeSectionHeader
 import com.example.hopes.navigation.HopesDestination
-import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.example.hopes.ui.theme.HopesTheme
 import com.teamnative.hopes.R
 
-/** 피그마 04 온보딩 프레임을 로그인 뒤 홈 탭의 첫 화면으로 표시한다. */
+/** 피그마 30 홈 화면이다. 인사말, 채팅 시작 카드, 질문 팁, 커뮤니티 인기글을 위에서부터 쌓는다. */
 @Composable
 fun HomeScreenContent(
-    onStartChatClick: () -> Unit,
+    uiState: HomeUiState,
+    onEvent: (HomeScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
-    val extendedColors = LocalHopesExtendedColors.current
-
     FigmaAppFrame(
         selectedDestination = HopesDestination.Home,
         onNavigate = onNavigate,
-        background = {
-            Image(
-                painter = painterResource(R.drawable.login_guide_background),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-            )
-        },
-        contentBackgroundColor = Color.Transparent,
-        // edge-to-edge 상태 바 영역도 홈의 파란 배경으로 채운다.
-        scaffoldContainerColor = MaterialTheme.colorScheme.primary,
     ) {
         Column(
             modifier =
@@ -60,55 +43,83 @@ fun HomeScreenContent(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
                     .padding(
-                        start = AppSpacing.Large,
+                        start = AppSpacing.ScreenHorizontal,
                         top = AppSpacing.SystemBarToContent,
-                        end = AppSpacing.Large,
-                        bottom = AppSpacing.Large,
+                        end = AppSpacing.ScreenHorizontal,
+                        bottom = AppSpacing.Section,
                     ),
         ) {
-            FigmaBrandHeader(
-                isOnBlueBackground = true,
-                logoShadow = FigmaBrandLogoShadow.Subtle,
+            HomeGreetingHeader(
+                userName = uiState.userName,
+                hasUnreadNotification = uiState.hasUnreadNotification,
+                onNotificationClick = { onEvent(HomeScreenEvent.NotificationClicked) },
             )
 
-            // 브랜드 헤더와 온보딩 제목 사이에 요청된 20dp를 추가한다.
-            Spacer(modifier = Modifier.height(54.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
-            Text(
-                text = stringResource(R.string.onboarding_title),
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.onPrimary,
-                style = TextStyle(fontSize = 34.sp, fontWeight = FontWeight.Bold, lineHeight = 43.sp),
-            )
+            HomeHeroCard(onStartChatClick = { onEvent(HomeScreenEvent.StartChatClicked) })
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.Compact))
 
-            Text(
-                text = stringResource(R.string.onboarding_description),
-                modifier = Modifier.fillMaxWidth(),
-                color = extendedColors.authDescription,
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium, lineHeight = 26.sp),
-            )
+            HomeSectionHeader(title = stringResource(R.string.home_question_tips_title))
 
-            Spacer(modifier = Modifier.height(68.dp))
+            Spacer(modifier = Modifier.height(AppSpacing.Item))
 
-            FigmaHomeTipCard(
-                index = 1,
-                topText = stringResource(R.string.onboarding_tip_one_top),
-                bottomText = stringResource(R.string.onboarding_tip_one_bottom),
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
+                HomeQuestionTipCard(
+                    index = 1,
+                    topText = stringResource(R.string.home_tip_major_top),
+                    bottomText = stringResource(R.string.home_tip_major_bottom),
+                )
 
-            Spacer(modifier = Modifier.height(15.dp))
+                HomeQuestionTipCard(
+                    index = 2,
+                    topText = stringResource(R.string.home_tip_specific_top),
+                    bottomText = stringResource(R.string.home_tip_specific_bottom),
+                )
+            }
 
-            FigmaHomeTipCard(
-                index = 2,
-                topText = stringResource(R.string.onboarding_tip_two_top),
-                bottomText = stringResource(R.string.onboarding_tip_two_bottom),
-            )
+            if (uiState.popularPosts.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(AppSpacing.Section))
 
-            Spacer(modifier = Modifier.weight(1f))
+                HomeSectionHeader(
+                    title = stringResource(R.string.home_popular_posts_title),
+                    actionText = stringResource(R.string.home_more),
+                    onActionClick = { onEvent(HomeScreenEvent.PopularPostsMoreClicked) },
+                )
 
-            HomeStartChatButton(onClick = onStartChatClick)
+                Spacer(modifier = Modifier.height(AppSpacing.Compact))
+
+                Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
+                    uiState.popularPosts.forEach { post ->
+                        HomePopularPostCard(
+                            post = post,
+                            onClick = { onEvent(HomeScreenEvent.PopularPostClicked(post.id)) },
+                        )
+                    }
+                }
+            }
         }
+    }
+}
+
+@Preview(showBackground = true, name = "30 홈")
+@Composable
+private fun HomeScreenContentPreview() {
+    HopesTheme {
+        HomeScreenContent(
+            uiState =
+                HomeUiState(
+                    userName = "서하",
+                    hasUnreadNotification = true,
+                    popularPosts =
+                        listOf(
+                            HomePopularPost(id = 1, cohort = null, title = "전공 동아리 면접 후기 공유", likeCount = 34),
+                            HomePopularPost(id = 2, cohort = 9, title = "취업 준비 언제부터 시작했어?", likeCount = 21),
+                        ),
+                ),
+            onEvent = {},
+            onNavigate = {},
+        )
     }
 }

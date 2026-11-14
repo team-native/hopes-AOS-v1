@@ -57,6 +57,11 @@ val HopesTypography =
  * 색은 담지 않으므로 Text의 color로 따로 지정한다.
  */
 object HopesTextStyles {
+    val PageTitle = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp)
+    val Headline = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold, lineHeight = 28.sp)
+    val SectionTitle = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 22.sp)
+    val Body = TextStyle(fontSize = 14.sp, lineHeight = 20.sp)
+    val BodyStrong = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp)
     val Hero = TextStyle(fontSize = 30.sp, fontWeight = FontWeight.Bold, lineHeight = 40.sp)
     val ScreenTitle = TextStyle(fontSize = 22.sp, fontWeight = FontWeight.Bold, lineHeight = 30.sp)
     val CodeDigit = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
@@ -73,4 +78,6 @@ object HopesTextStyles {
     val Caption = TextStyle(fontSize = 12.sp, lineHeight = 16.sp)
     val CaptionStrong = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold, lineHeight = 16.sp)
     val Overline = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.Medium)
+    val Tag = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+    val NavigationLabel = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Medium)
 }

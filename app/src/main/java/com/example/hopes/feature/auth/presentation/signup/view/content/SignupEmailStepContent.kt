@@ -11,8 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthFieldLabel
-import com.example.hopes.feature.auth.presentation.component.AuthInlineErrorMessage
 import com.example.hopes.feature.auth.presentation.component.AuthTextInputField
 import com.example.hopes.feature.auth.presentation.signup.view.component.SignupCheckMessage
 import com.example.hopes.feature.auth.presentation.signup.view.component.SignupCodeInput
@@ -110,7 +110,7 @@ fun SignupEmailStepContent(
             if (emailErrorMessage != null) {
                 Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-                AuthInlineErrorMessage(message = emailErrorMessage)
+                HopesInlineErrorMessage(message = emailErrorMessage)
             }
         }
 
@@ -153,7 +153,7 @@ fun SignupEmailStepContent(
                 )
             } else {
                 if (codeErrorMessage != null) {
-                    AuthInlineErrorMessage(message = codeErrorMessage)
+                    HopesInlineErrorMessage(message = codeErrorMessage)
 
                     Spacer(modifier = Modifier.height(AppSpacing.Small))
                 }
@@ -176,7 +176,7 @@ fun SignupEmailStepContent(
         if (requestErrorMessage != null) {
             Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-            AuthInlineErrorMessage(message = requestErrorMessage)
+            HopesInlineErrorMessage(message = requestErrorMessage)
         }
     }
 }

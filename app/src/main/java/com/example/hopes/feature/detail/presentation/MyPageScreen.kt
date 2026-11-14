@@ -8,11 +8,15 @@ import com.example.hopes.navigation.HopesDestination
 @Composable
 fun MyPageScreen(
     uiState: MyPageUiState,
+    toastMessage: String?,
+    onToastDismiss: () -> Unit,
     onEvent: (MyPageScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
     MyPageScreenContent(
         uiState = uiState,
+        toastMessage = toastMessage,
+        onToastDismiss = onToastDismiss,
         onEvent = onEvent,
         onNavigate = onNavigate,
     )

@@ -42,6 +42,7 @@ object AppSize {
     val ListItem = 48.dp
     val Button = 46.dp
     val TopBar = 56.dp
+    val BottomNavigation = 64.dp
     val IconButton = 40.dp
 }
 

@@ -1,16 +1,21 @@
 package com.example.hopes.core.designsystem.component
 
-import androidx.annotation.DrawableRes
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.hopes.navigation.HopesDestination
-import com.teamnative.hopes.R
 
-/** 바텀바 목적지와 제공된 아이콘 리소스를 일관되게 연결한다. */
-@DrawableRes
-internal fun HopesDestination.bottomNavigationIconResourceId(): Int =
+/** 하단 탭 목적지마다 피그마 v2의 외곽선 아이콘을 연결한다. */
+internal fun HopesDestination.bottomNavigationIcon(): ImageVector =
     when (this) {
-        HopesDestination.Home -> R.drawable.ic_bottom_navigation_home
-        is HopesDestination.Chat -> R.drawable.ic_bottom_navigation_chat
-        HopesDestination.History -> R.drawable.ic_bottom_navigation_history
-        HopesDestination.Settings -> R.drawable.ic_bottom_navigation_profile
-        else -> R.drawable.ic_bottom_navigation_home
+        HopesDestination.Home -> Icons.Outlined.Home
+        is HopesDestination.Chat -> Icons.AutoMirrored.Outlined.Chat
+        HopesDestination.Community -> Icons.Outlined.People
+        HopesDestination.History -> Icons.Outlined.AccessTime
+        HopesDestination.Settings -> Icons.Outlined.Person
+        else -> Icons.Outlined.Home
     }

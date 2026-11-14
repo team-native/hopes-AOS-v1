@@ -12,6 +12,8 @@ object AppSpacing {
     val Item = 12.dp
     val Compact = 8.dp
     val Small = 4.dp
+    val XSmall = 2.dp
+    val Medium = 16.dp
     val Large = 32.dp
 }
 
@@ -26,6 +28,28 @@ object AppRadius {
 object AppIconSize {
     val BottomNavigation = 24.dp
     val Logo = 40.dp
+
+    /** 오류·타이머처럼 12~13sp 문구 옆에 붙는 아이콘이다. */
+    val Inline = 14.dp
+    val Small = 16.dp
+    val Medium = 20.dp
+    val Large = 22.dp
+}
+
+/** 입력란, 버튼, 상단 바처럼 반복되는 컴포넌트의 고정 크기다. */
+object AppSize {
+    val Field = 48.dp
+    val ListItem = 48.dp
+    val Button = 46.dp
+    val TopBar = 56.dp
+    val IconButton = 40.dp
+}
+
+object AppBorderWidth {
+    val Default = 1.dp
+
+    /** 포커스·오류 상태에서 테두리를 강조할 때 쓴다. */
+    val Emphasized = 1.5.dp
 }
 
 /** 오버레이가 표시될 때 배경의 시각적 깊이를 표현하는 blur 반경이다. */

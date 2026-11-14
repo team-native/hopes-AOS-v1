@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.teamnative.hopes.R
 
@@ -25,7 +27,7 @@ fun AuthStepBackButton(
     Box(
         modifier =
             modifier
-                .size(40.dp)
+                .size(AppSize.IconButton)
                 .shapeClickable(shape = CircleShape, role = Role.Button, onClick = onClick),
         // 터치 영역(40dp)이 아이콘(20dp)보다 넓어 생기는 여백을, 아이콘을 중앙이 아닌 시작 쪽에
         // 정렬해서 흡수한다 — offset으로 박스를 당기는 대신, 아이콘이 화면 좌우 여백 기준선에
@@ -36,7 +38,7 @@ fun AuthStepBackButton(
             imageVector = Icons.Default.ChevronLeft,
             contentDescription = stringResource(R.string.back),
             tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(AppIconSize.Medium),
         )
     }
 }

@@ -9,29 +9,17 @@ sealed interface AuthScreenEvent {
         val value: String,
     ) : AuthScreenEvent
 
-    data class NameChanged(
-        val value: String,
-    ) : AuthScreenEvent
-
-    data class DepartmentChanged(
-        val value: String,
-    ) : AuthScreenEvent
-
-    data class GenerationChanged(
-        val value: String,
-    ) : AuthScreenEvent
-
-    data class VerificationCodeChanged(
-        val value: String,
-    ) : AuthScreenEvent
-
     data object LoginClicked : AuthScreenEvent
-
-    data object SignUpClicked : AuthScreenEvent
 
     data object SignUpRequested : AuthScreenEvent
 
     data object LoginRequested : AuthScreenEvent
+
+    data object GuideRequested : AuthScreenEvent
+
+    data class KeepLoginChanged(
+        val isChecked: Boolean,
+    ) : AuthScreenEvent
 
     data object ForgotPasswordClicked : AuthScreenEvent
 
@@ -53,5 +41,9 @@ sealed interface AuthScreenEvent {
 
     data object PasswordResetBackClicked : AuthScreenEvent
 
-    data object SendSignupVerificationClicked : AuthScreenEvent
+    /** 회원가입 흐름이 끝나 로그인 단계로 돌아온다. */
+    data class SignupCompleted(
+        val email: String,
+        val message: String,
+    ) : AuthScreenEvent
 }

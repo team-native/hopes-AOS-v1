@@ -15,6 +15,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /** "이미 계정이 있으신가요? 로그인"처럼 안내 문구 뒤에 파란 링크가 붙는 하단 문구다. 링크 부분만 누를 수 있다. */
 @Composable
@@ -24,11 +26,7 @@ fun AuthLinkPrompt(
     onLinkClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val textStyle =
-        TextStyle(
-            fontSize = 13.sp,
-            fontWeight = FontWeight.Medium,
-        )
+    val textStyle = HopesTextStyles.Label
 
     Row(
         modifier = modifier,
@@ -40,7 +38,7 @@ fun AuthLinkPrompt(
             style = textStyle,
         )
 
-        Spacer(modifier = Modifier.width(2.dp))
+        Spacer(modifier = Modifier.width(AppSpacing.XSmall))
 
         Text(
             text = linkText,
@@ -50,11 +48,11 @@ fun AuthLinkPrompt(
                         role = Role.Button,
                         onClick = onLinkClick,
                     ).padding(
-                        horizontal = 4.dp,
-                        vertical = 8.dp,
+                        horizontal = AppSpacing.Small,
+                        vertical = AppSpacing.Compact,
                     ),
             color = MaterialTheme.colorScheme.primary,
-            style = textStyle.copy(fontWeight = FontWeight.SemiBold),
+            style = HopesTextStyles.LabelStrong,
         )
     }
 }

@@ -15,8 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /** 인증 하위 단계 화면의 46dp 전체 폭 제출 버튼이다. 비활성 시 반투명하게 표시한다. */
 @Composable
@@ -32,7 +34,7 @@ fun AuthPrimaryActionButton(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(46.dp)
+                .height(AppSize.Button)
                 .figmaSheetShadow(buttonShape)
                 .background(
                     color =
@@ -48,7 +50,7 @@ fun AuthPrimaryActionButton(
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onPrimary,
-            style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+            style = HopesTextStyles.Button,
         )
     }
 }

@@ -14,6 +14,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
 /** 로그인 화면의 "로그인" 제목과 안내 부제목이다. */
@@ -24,24 +26,15 @@ fun AuthLoginHeading(modifier: Modifier = Modifier) {
             text = stringResource(R.string.login),
             modifier = Modifier.semantics { heading() },
             color = MaterialTheme.colorScheme.onSurface,
-            style =
-                TextStyle(
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 30.sp,
-                ),
+            style = HopesTextStyles.ScreenTitle,
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(AppSpacing.Small))
 
         Text(
             text = stringResource(R.string.login_subtitle),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style =
-                TextStyle(
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                ),
+            style = HopesTextStyles.Subtitle,
         )
     }
 }

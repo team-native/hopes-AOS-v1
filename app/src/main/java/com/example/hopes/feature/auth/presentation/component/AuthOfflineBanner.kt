@@ -24,7 +24,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
 /** 네트워크 오류로 로그인에 실패했을 때 화면 상단에 띄우는 어두운 안내 배너다. */
@@ -38,8 +41,8 @@ fun AuthOfflineBanner(modifier: Modifier = Modifier) {
                     color = MaterialTheme.colorScheme.inverseSurface,
                     shape = RoundedCornerShape(AppRadius.Field),
                 ).padding(
-                    horizontal = 14.dp,
-                    vertical = 10.dp,
+                    horizontal = BANNER_HORIZONTAL_PADDING,
+                    vertical = BANNER_VERTICAL_PADDING,
                 ).semantics { liveRegion = LiveRegionMode.Polite },
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -47,20 +50,19 @@ fun AuthOfflineBanner(modifier: Modifier = Modifier) {
             imageVector = Icons.Outlined.WifiOff,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.inverseOnSurface,
-            modifier = Modifier.size(16.dp),
+            modifier = Modifier.size(AppIconSize.Small),
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(AppSpacing.Compact))
 
         Text(
             text = stringResource(R.string.auth_login_offline_message),
             color = MaterialTheme.colorScheme.inverseOnSurface,
-            style =
-                TextStyle(
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    lineHeight = 16.sp,
-                ),
+            style = HopesTextStyles.Caption.copy(fontWeight = FontWeight.Medium),
         )
     }
 }
+
+// 피그마 배너의 안쪽 여백이다. 다른 컴포넌트와 공유하지 않는 값이라 파일 안에 둔다.
+private val BANNER_HORIZONTAL_PADDING = 14.dp
+private val BANNER_VERTICAL_PADDING = 10.dp

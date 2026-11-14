@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /** 인증 화면 입력 필드 위에 붙는 12sp 라벨이다. */
 @Composable
@@ -19,6 +20,6 @@ fun AuthFieldLabel(
         text = stringResource(labelRes),
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface,
-        style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
+        style = HopesTextStyles.CaptionStrong,
     )
 }

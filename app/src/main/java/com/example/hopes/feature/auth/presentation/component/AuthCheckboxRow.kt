@@ -20,6 +20,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /** "로그인 유지", 약관 동의처럼 체크박스와 문구를 묶은 행이다. 행 전체가 하나의 토글 영역이다. */
@@ -46,7 +49,7 @@ fun AuthCheckboxRow(
             Checkbox(
                 checked = isChecked,
                 onCheckedChange = null,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(AppIconSize.Medium),
                 colors =
                     CheckboxDefaults.colors(
                         checkedColor = MaterialTheme.colorScheme.primary,
@@ -56,16 +59,12 @@ fun AuthCheckboxRow(
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(AppSpacing.Compact))
 
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onSurface,
-            style =
-                TextStyle(
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
+            style = HopesTextStyles.Label,
         )
     }
 }

@@ -12,6 +12,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
 /** 로그인 화면에서 비밀번호 재설정 단계로 이동하는 "비밀번호 찾기" 링크다. */
@@ -28,14 +30,10 @@ fun AuthFindPasswordLink(
                     role = Role.Button,
                     onClick = onClick,
                 ).padding(
-                    horizontal = 4.dp,
-                    vertical = 8.dp,
+                    horizontal = AppSpacing.Small,
+                    vertical = AppSpacing.Compact,
                 ),
         color = MaterialTheme.colorScheme.onSurfaceVariant,
-        style =
-            TextStyle(
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-            ),
+        style = HopesTextStyles.Label,
     )
 }

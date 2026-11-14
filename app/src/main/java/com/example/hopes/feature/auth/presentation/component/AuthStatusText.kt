@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /** 인증 하위 단계 화면의 성공·실패 피드백 문구다. */
 @Composable
@@ -19,6 +20,6 @@ fun AuthStatusText(
         text = message,
         modifier = modifier,
         color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-        style = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Medium),
+        style = HopesTextStyles.Label,
     )
 }

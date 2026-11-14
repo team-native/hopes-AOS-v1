@@ -11,6 +11,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
 /** "선배에게 묻는 / 가장 솔직한 / 학교 이야기" 세 줄 헤드라인이다. 강조 구간만 primary 색으로 표시한다. */
@@ -39,11 +40,6 @@ fun AuthHeroHeadline(modifier: Modifier = Modifier) {
         text = headline,
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface,
-        style =
-            TextStyle(
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 40.sp,
-            ),
+        style = HopesTextStyles.Hero,
     )
 }

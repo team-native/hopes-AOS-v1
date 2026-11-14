@@ -15,6 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppIconSize
+import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.ui.theme.HopesTextStyles
 
 /** 입력 필드 바로 아래에 붙는 아이콘 + 빨간 오류 문구다. 로그인·회원가입 화면이 함께 쓴다. */
 @Composable
@@ -31,19 +34,15 @@ fun AuthInlineErrorMessage(
             imageVector = Icons.Outlined.ErrorOutline,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(14.dp),
+            modifier = Modifier.size(AppIconSize.Inline),
         )
 
-        Spacer(modifier = Modifier.width(4.dp))
+        Spacer(modifier = Modifier.width(AppSpacing.Small))
 
         Text(
             text = message,
             color = MaterialTheme.colorScheme.error,
-            style =
-                TextStyle(
-                    fontSize = 12.sp,
-                    lineHeight = 16.sp,
-                ),
+            style = HopesTextStyles.Caption,
         )
     }
 }

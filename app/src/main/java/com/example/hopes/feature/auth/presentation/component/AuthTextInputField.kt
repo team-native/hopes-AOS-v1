@@ -40,8 +40,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppBorderWidth
+import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSize
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.shapeClickable
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
@@ -78,10 +83,7 @@ fun AuthTextInputField(
             else -> extendedColors.authFieldBorder
         }
     val fieldTextStyle =
-        TextStyle(
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 15.sp,
-        )
+        HopesTextStyles.Field.copy(color = MaterialTheme.colorScheme.onSurface)
     val fieldDescription = stringResource(placeholderRes)
     val passwordVisibilityDescription =
         stringResource(
@@ -96,20 +98,20 @@ fun AuthTextInputField(
         modifier =
             modifier
                 .fillMaxWidth()
-                .height(FIELD_HEIGHT)
+                .height(AppSize.Field)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = fieldShape,
                 ).border(
                     width =
                         if (isFocused || isError) {
-                            FOCUSED_BORDER_WIDTH
+                            AppBorderWidth.Emphasized
                         } else {
-                            DEFAULT_BORDER_WIDTH
+                            AppBorderWidth.Default
                         },
                     color = borderColor,
                     shape = fieldShape,
-                ).padding(horizontal = 16.dp),
+                ).padding(horizontal = AppSpacing.Medium),
         contentAlignment = Alignment.CenterStart,
     ) {
         if (value.isEmpty()) {
@@ -129,7 +131,7 @@ fun AuthTextInputField(
                     .padding(
                         end =
                             if (isPassword) {
-                                PASSWORD_TOGGLE_SIZE
+                                AppSize.IconButton
                             } else {
                                 0.dp
                             },
@@ -172,7 +174,7 @@ fun AuthTextInputField(
                 modifier =
                     Modifier
                         .align(Alignment.CenterEnd)
-                        .size(PASSWORD_TOGGLE_SIZE)
+                        .size(AppSize.IconButton)
                         .shapeClickable(
                             shape = CircleShape,
                             onClick = { isPasswordVisible = !isPasswordVisible },
@@ -188,14 +190,9 @@ fun AuthTextInputField(
                         },
                     contentDescription = passwordVisibilityDescription,
                     tint = extendedColors.authFieldHint,
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(AppIconSize.Medium),
                 )
             }
         }
     }
 }
-
-private val FIELD_HEIGHT = 48.dp
-private val PASSWORD_TOGGLE_SIZE = 40.dp
-private val DEFAULT_BORDER_WIDTH = 1.dp
-private val FOCUSED_BORDER_WIDTH = 1.5.dp

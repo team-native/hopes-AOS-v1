@@ -1,4 +1,4 @@
-package com.example.hopes.feature.community.presentation.component
+package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -22,19 +22,22 @@ import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.figmaRaisedShadow
-import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
 
-/** 게시글 목록 대신 화면 가운데에 띄우는 원형 아이콘 + 제목 + 설명 + 작은 버튼 묶음이다(빈 화면, 불러오기 오류). */
+/**
+ * 목록 대신 화면 가운데에 띄우는 원형 아이콘 + 제목 + 설명 + 작은 버튼 묶음이다
+ * (커뮤니티 19, 기록 24-3·24-4, 알림 25-3의 빈 화면·불러오기 오류).
+ *
+ * @param actionText null이면 버튼 없이 안내만 보여준다.
+ */
 @Composable
-fun CommunityStatusMessage(
+fun HopesStatusMessage(
     icon: ImageVector,
     title: String,
     description: String,
-    actionText: String,
-    onActionClick: () -> Unit,
     modifier: Modifier = Modifier,
+    actionText: String? = null,
+    onActionClick: () -> Unit = {},
 ) {
     val actionShape = RoundedCornerShape(AppRadius.SmallButton)
 
@@ -80,6 +83,8 @@ fun CommunityStatusMessage(
             style = HopesTextStyles.Subtitle,
         )
 
+        if (actionText == null) return@Column
+
         Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
         Box(
@@ -102,6 +107,6 @@ fun CommunityStatusMessage(
     }
 }
 
-// 피그마 19 빈 화면의 원형 아이콘 배경과 아이콘 크기다.
+// 피그마 19·24-3·25-3 빈 화면의 원형 아이콘 배경과 아이콘 크기다.
 private val ICON_CIRCLE_SIZE = 64.dp
 private val ICON_SIZE = 28.dp

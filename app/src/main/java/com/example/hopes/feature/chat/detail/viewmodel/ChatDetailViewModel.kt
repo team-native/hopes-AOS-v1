@@ -56,7 +56,7 @@ class ChatDetailViewModel
             this.chatId = chatId
             if (chatId == NEW_CHAT_ID && question.isNotEmpty()) {
                 _uiState.update { it.copy(isLoading = false) }
-                sendQuestion(question, baseMessages = emptyList())
+                sendQuestion(question, attachments = emptyList(), baseMessages = emptyList())
             } else {
                 loadChat()
             }
@@ -88,13 +88,29 @@ class ChatDetailViewModel
                     val state = _uiState.value
                     val trimmedReply = state.replyText.trim()
                     if (trimmedReply.isNotEmpty() && state.isReplyEnabled) {
-                        _uiState.update { it.copy(replyText = "") }
-                        sendQuestion(trimmedReply, baseMessages = state.messages)
+                        _uiState.update { it.copy(replyText = "", draftAttachments = emptyList()) }
+                        sendQuestion(trimmedReply, attachments = state.draftAttachments, baseMessages = state.messages)
                     }
                 }
 
                 is ChatDetailScreenEvent.FollowUpQuestionClicked -> {
                     _uiState.update { it.copy(replyText = event.question) }
+                }
+
+                is ChatDetailScreenEvent.AttachmentsAdded -> {
+                    _uiState.update { state ->
+                        val existingUris = state.draftAttachments.map { it.uri }.toSet()
+                        state.copy(
+                            draftAttachments =
+                                state.draftAttachments + event.attachments.filter { it.uri !in existingUris },
+                        )
+                    }
+                }
+
+                is ChatDetailScreenEvent.AttachmentRemoved -> {
+                    _uiState.update { state ->
+                        state.copy(draftAttachments = state.draftAttachments.filterNot { it.uri == event.uri })
+                    }
                 }
 
                 is ChatDetailScreenEvent.LikeClicked -> {
@@ -140,13 +156,15 @@ class ChatDetailViewModel
          */
         private fun sendQuestion(
             question: String,
+            attachments: List<ChatAttachmentUiModel>,
             baseMessages: List<ChatMessageUiModel>,
         ) {
             sendJob?.cancel()
             inFlightQuestion = question
             sendJob =
                 viewModelScope.launch {
-                    val optimisticQuestion = ChatMessageUiModel(id = null, content = question, isUser = true)
+                    val optimisticQuestion =
+                        ChatMessageUiModel(id = null, content = question, isUser = true, attachments = attachments)
                     _uiState.update {
                         it.copy(
                             messages = baseMessages + optimisticQuestion,
@@ -156,9 +174,16 @@ class ChatDetailViewModel
                         )
                     }
 
+                    // 첨부 업로드 API 연동 전이라 질문 글만 보낸다. 첨부는 화면의 내 질문에만 붙여 둔다.
                     when (val result = requestAnswer(question)) {
                         is AppResult.Success -> {
-                            _uiState.update { it.copy(isSending = false).withChat(result.value) }
+                            _uiState.update {
+                                it
+                                    .copy(
+                                        isSending = false,
+                                    ).withChat(result.value)
+                                    .withAttachmentsOn(question, attachments)
+                            }
                         }
 
                         AppResult.NetworkError if _uiState.value.isOffline -> {
@@ -209,19 +234,29 @@ class ChatDetailViewModel
             }
         }
 
-        /** 답변을 받지 못한 질문을 화면에서 빼고 같은 질문으로 다시 보낸다. */
+        /** 답변을 받지 못한 질문을 화면에서 빼고 같은 질문(첨부 포함)으로 다시 보낸다. */
         private fun resendFailedQuestion() {
             val failedQuestion = _uiState.value.failedQuestion ?: return
             if (_uiState.value.isSending) return
 
-            sendQuestion(failedQuestion, baseMessages = _uiState.value.messages.withoutTrailingQuestion())
+            resend(failedQuestion)
         }
 
         private fun resendPendingQuestion() {
             val pendingQuestion = _uiState.value.pendingQuestion ?: return
             if (_uiState.value.isSending) return
 
-            sendQuestion(pendingQuestion, baseMessages = _uiState.value.messages.withoutTrailingQuestion())
+            resend(pendingQuestion)
+        }
+
+        private fun resend(question: String) {
+            val messages = _uiState.value.messages
+            val trailingQuestion = messages.lastOrNull()?.takeIf { it.isUser }
+            sendQuestion(
+                question = question,
+                attachments = trailingQuestion?.attachments.orEmpty(),
+                baseMessages = messages.withoutTrailingQuestion(),
+            )
         }
 
         private fun observeNetwork() {
@@ -242,6 +277,23 @@ class ChatDetailViewModel
                 title = chat.title,
                 messages = chat.messages.map { message -> message.toChatMessageUiModel() },
             )
+
+        /** 서버 목록으로 바뀐 뒤에도 방금 보낸 질문에 붙인 첨부가 화면에 남도록 다시 붙인다. */
+        private fun ChatDetailUiState.withAttachmentsOn(
+            question: String,
+            attachments: List<ChatAttachmentUiModel>,
+        ): ChatDetailUiState {
+            if (attachments.isEmpty()) return this
+            val targetIndex = messages.indexOfLast { it.isUser && it.content == question }
+            if (targetIndex < 0) return this
+
+            return copy(
+                messages =
+                    messages.mapIndexed { index, message ->
+                        if (index == targetIndex) message.copy(attachments = attachments) else message
+                    },
+            )
+        }
 
         private fun ChatMessage.toChatMessageUiModel(): ChatMessageUiModel =
             ChatMessageUiModel(

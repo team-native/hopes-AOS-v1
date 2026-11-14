@@ -26,11 +26,16 @@ import com.example.hopes.core.designsystem.component.HopesToast
 import com.example.hopes.feature.chat.detail.view.component.ChatAnswerCard
 import com.example.hopes.feature.chat.detail.view.component.ChatAnswerFeedbackRow
 import com.example.hopes.feature.chat.detail.view.component.ChatAnswerGenerating
+import com.example.hopes.feature.chat.detail.view.component.ChatDraftAttachments
 import com.example.hopes.feature.chat.detail.view.component.ChatFollowUpQuestionsCard
+import com.example.hopes.feature.chat.detail.view.component.ChatMessageAttachments
 import com.example.hopes.feature.chat.detail.view.component.ChatPendingStatus
 import com.example.hopes.feature.chat.detail.view.component.ChatStopAnswerButton
 import com.example.hopes.feature.chat.detail.view.component.ChatUserBubble
+import com.example.hopes.feature.chat.detail.view.component.chatAttachmentSummary
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAnswerFailureReason
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentKind
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentUiModel
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailUiState
 import com.example.hopes.feature.chat.detail.viewmodel.ChatMessageUiModel
@@ -44,6 +49,7 @@ import com.teamnative.hopes.R
  *
  * @param subtitle 헤더 제목 아래 문구다(예: "소프트웨어개발과 · Frontend").
  * @param toastMessage 복사 완료처럼 잠깐 띄울 안내다.
+ * @param onAttachClick 입력창 + 버튼을 누르면 부른다. 자료 첨부 시트(09)를 연다.
  * @param onNewChatConfirm 헤더 "새 대화"를 눌러 확인 다이얼로그(08-8)에서 새 대화를 고르면 부른다.
  */
 @Composable
@@ -57,6 +63,7 @@ fun ChatDetailScreen(
     toastMessage: String? = null,
     onToastDismiss: () -> Unit = {},
     onNewChatConfirm: () -> Unit = {},
+    onAttachClick: () -> Unit = {},
 ) {
     val scrollState = rememberScrollState()
     var isNewChatDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -78,18 +85,28 @@ fun ChatDetailScreen(
                 onClick = { isNewChatDialogVisible = true },
             ),
         bottomButton = {
-            ChatComposer(
-                value = uiState.replyText,
-                onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
-                onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
-                placeholder =
-                    when {
-                        uiState.isOffline -> stringResource(R.string.chat_offline_placeholder)
-                        uiState.isSending -> stringResource(R.string.chat_generating_placeholder)
-                        else -> stringResource(R.string.chat_additional_question)
-                    },
-                isEnabled = uiState.isReplyEnabled,
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
+                if (uiState.draftAttachments.isNotEmpty()) {
+                    ChatDraftAttachments(
+                        attachments = uiState.draftAttachments,
+                        onRemove = { onEvent(ChatDetailScreenEvent.AttachmentRemoved(it.uri)) },
+                    )
+                }
+
+                ChatComposer(
+                    value = uiState.replyText,
+                    onValueChange = { onEvent(ChatDetailScreenEvent.ReplyChanged(it)) },
+                    onSubmitClick = { onEvent(ChatDetailScreenEvent.ReplySubmitted) },
+                    placeholder =
+                        when {
+                            uiState.isOffline -> stringResource(R.string.chat_offline_placeholder)
+                            uiState.isSending -> stringResource(R.string.chat_generating_placeholder)
+                            else -> stringResource(R.string.chat_additional_question)
+                        },
+                    isEnabled = uiState.isReplyEnabled,
+                    onAttachClick = onAttachClick,
+                )
+            }
         },
         toast =
             if (toastMessage != null || uiState.isSending) {
@@ -139,6 +156,13 @@ fun ChatDetailScreen(
                 else -> {
                     uiState.messages.forEachIndexed { index, message ->
                         if (message.isUser) {
+                            if (message.attachments.isNotEmpty()) {
+                                ChatMessageAttachments(
+                                    attachments = message.attachments,
+                                    modifier = Modifier.align(Alignment.End),
+                                )
+                            }
+
                             ChatUserBubble(
                                 text = message.content,
                                 modifier = Modifier.align(Alignment.End),
@@ -165,11 +189,38 @@ fun ChatDetailScreen(
                         ChatPendingStatus(modifier = Modifier.align(Alignment.End))
                     }
 
+                    // 마지막 질문에 첨부가 있으면 생성 중·실패 안내를 첨부 분석 문구로 바꾼다(피그마 11, 12).
+                    val lastQuestionAttachments =
+                        uiState.messages
+                            .lastOrNull()
+                            ?.takeIf { it.isUser }
+                            ?.attachments
+                            .orEmpty()
+
                     if (uiState.isSending) {
-                        ChatAnswerGenerating()
+                        if (lastQuestionAttachments.isEmpty()) {
+                            ChatAnswerGenerating()
+                        } else {
+                            ChatAnswerGenerating(
+                                text = stringResource(R.string.chat_attach_analyzing),
+                                detail =
+                                    stringResource(
+                                        R.string.chat_attach_upload_summary,
+                                        chatAttachmentSummary(lastQuestionAttachments),
+                                    ),
+                            )
+                        }
                     }
 
-                    if (uiState.failedQuestion != null) {
+                    if (uiState.failedQuestion != null && lastQuestionAttachments.isNotEmpty() &&
+                        uiState.failureReason == ChatAnswerFailureReason.Error
+                    ) {
+                        HopesRetryMessage(
+                            title = stringResource(R.string.chat_attach_failed_title),
+                            description = stringResource(R.string.chat_attach_failed_description),
+                            onRetryClick = { onEvent(ChatDetailScreenEvent.ResendClicked) },
+                        )
+                    } else if (uiState.failedQuestion != null) {
                         val isStopped = uiState.failureReason == ChatAnswerFailureReason.Stopped
 
                         HopesRetryMessage(
@@ -330,6 +381,97 @@ private fun ChatDetailScreenOfflinePreview() {
                     isOffline = true,
                 ),
             subtitle = "소프트웨어개발과 · Frontend",
+            onEvent = {},
+            onCopyAnswer = {},
+            onShareAnswer = {},
+            onCopyCode = {},
+        )
+    }
+}
+
+private val previewAttachments =
+    listOf(
+        ChatAttachmentUiModel(uri = "content://image/1", kind = ChatAttachmentKind.Image, name = "사진1.jpg"),
+        ChatAttachmentUiModel(uri = "content://image/2", kind = ChatAttachmentKind.Image, name = "사진2.jpg"),
+        ChatAttachmentUiModel(
+            uri = "content://pdf/1",
+            kind = ChatAttachmentKind.Pdf,
+            name = "생활수칙.pdf",
+            pageCount = 12,
+        ),
+    )
+
+@Preview(showBackground = true, name = "10 첨부 미리보기")
+@Composable
+private fun ChatDetailScreenDraftAttachmentsPreview() {
+    HopesTheme {
+        ChatDetailScreen(
+            uiState =
+                ChatDetailUiState(
+                    title = "기숙사 생활",
+                    isLoading = false,
+                    replyText = "이 자료 요약해줘",
+                    draftAttachments = previewAttachments,
+                ),
+            subtitle = "선배 답변 · 실제 경험 기반",
+            onEvent = {},
+            onCopyAnswer = {},
+            onShareAnswer = {},
+            onCopyCode = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "11 첨부 메시지 · 분석 중")
+@Composable
+private fun ChatDetailScreenAnalyzingPreview() {
+    HopesTheme {
+        ChatDetailScreen(
+            uiState =
+                ChatDetailUiState(
+                    title = "기숙사 생활",
+                    isLoading = false,
+                    messages =
+                        listOf(
+                            ChatMessageUiModel(
+                                id = null,
+                                content = "이 자료 요약해줘",
+                                isUser = true,
+                                attachments = previewAttachments,
+                            ),
+                        ),
+                    isSending = true,
+                ),
+            subtitle = "선배 답변 · 실제 경험 기반",
+            onEvent = {},
+            onCopyAnswer = {},
+            onShareAnswer = {},
+            onCopyCode = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "12 자료 분석 실패")
+@Composable
+private fun ChatDetailScreenAttachmentFailedPreview() {
+    HopesTheme {
+        ChatDetailScreen(
+            uiState =
+                ChatDetailUiState(
+                    title = "기숙사 생활",
+                    isLoading = false,
+                    messages =
+                        listOf(
+                            ChatMessageUiModel(
+                                id = null,
+                                content = "이 자료 요약해줘",
+                                isUser = true,
+                                attachments = previewAttachments,
+                            ),
+                        ),
+                    failedQuestion = "이 자료 요약해줘",
+                ),
+            subtitle = "선배 답변 · 실제 경험 기반",
             onEvent = {},
             onCopyAnswer = {},
             onShareAnswer = {},

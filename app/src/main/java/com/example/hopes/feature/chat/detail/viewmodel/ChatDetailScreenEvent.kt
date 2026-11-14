@@ -26,4 +26,12 @@ sealed interface ChatDetailScreenEvent {
     data class LikeClicked(
         val messageId: Long,
     ) : ChatDetailScreenEvent
+
+    data class AttachmentsAdded(
+        val attachments: List<ChatAttachmentUiModel>,
+    ) : ChatDetailScreenEvent
+
+    data class AttachmentRemoved(
+        val uri: String,
+    ) : ChatDetailScreenEvent
 }

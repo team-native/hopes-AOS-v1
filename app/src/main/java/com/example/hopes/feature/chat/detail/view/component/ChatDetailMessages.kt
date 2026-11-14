@@ -116,9 +116,18 @@ fun ChatAnswerCard(
     }
 }
 
-/** 답변을 기다리는 동안 보여주는 점 세 개 말풍선이다. */
+/**
+ * 답변을 기다리는 동안 보여주는 점 세 개 말풍선이다.
+ *
+ * @param text 기본은 "AI가 답변을 만들고 있어요."다. 첨부 분석 중(피그마 11)에는 "자료를 분석하고 있어요…"를 넘긴다.
+ * @param detail 문구 아래 작은 회색 줄이다(예: "업로드 완료 · 이미지 2장, PDF 1개").
+ */
 @Composable
-fun ChatAnswerGenerating(modifier: Modifier = Modifier) {
+fun ChatAnswerGenerating(
+    modifier: Modifier = Modifier,
+    text: String = stringResource(R.string.chat_answer_generating),
+    detail: String? = null,
+) {
     val cardShape = RoundedCornerShape(AppRadius.ListCard)
     val transition = rememberInfiniteTransition(label = "chatGeneratingDots")
     val activeDot by transition.animateFloat(
@@ -127,7 +136,6 @@ fun ChatAnswerGenerating(modifier: Modifier = Modifier) {
         animationSpec = infiniteRepeatable(animation = tween(DOT_CYCLE_MILLIS), repeatMode = RepeatMode.Restart),
         label = "chatGeneratingActiveDot",
     )
-    val generatingText = stringResource(R.string.chat_answer_generating)
 
     Row(
         modifier =
@@ -154,11 +162,21 @@ fun ChatAnswerGenerating(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.width(AppSpacing.Compact))
 
-        Text(
-            text = generatingText,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.Label,
-        )
+        Column {
+            Text(
+                text = text,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = HopesTextStyles.LabelStrong,
+            )
+
+            if (detail != null) {
+                Text(
+                    text = detail,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = HopesTextStyles.Caption,
+                )
+            }
+        }
     }
 }
 

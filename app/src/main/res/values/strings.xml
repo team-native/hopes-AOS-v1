@@ -84,9 +84,6 @@
     <string name="history_error">지난 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
     <string name="history_empty">지난 대화가 없어요.</string>
     <string name="history_load_next_page_error">다음 대화를 불러오지 못했어요. 다시 시도해주세요.</string>
-    <string name="my_page_account">계정 정보 (수정 불가)</string>
-    <string name="my_page_email">이메일: %1$s</string>
-    <string name="my_page_major">전공: %1$s</string>
     <string name="profile_placeholder">예: 프론트엔드에 관심 많은 8기 학생이에요.</string>
     <string name="profile_personalization_label">자기소개 (AI 응답 개인화에 활용됩니다)</string>
     <string name="profile_loading">불러오는 중</string>
@@ -227,4 +224,13 @@
     <string name="home_post_like_count">좋아요 %1$d개</string>
     <string name="home_sample_post_interview">전공 동아리 면접 후기 공유</string>
     <string name="home_sample_post_job">취업 준비 언제부터 시작했어?</string>
+    <string name="my_page_profile_edit">프로필 수정</string>
+    <string name="my_page_stat_posts">작성글</string>
+    <string name="my_page_stat_comments">댓글</string>
+    <string name="my_page_stat_chats">대화</string>
+    <string name="my_page_menu_activity">내 활동</string>
+    <string name="my_page_menu_activity_description">작성글 · 댓글 모아보기</string>
+    <string name="my_page_menu_personal_settings_description">AI 답변 스타일 관리</string>
+    <string name="my_page_menu_notification">알림</string>
+    <string name="my_page_menu_notification_description">새 답변 · 공지</string>
 </resources>

@@ -32,7 +32,14 @@ class MyPageViewModel
         /** 입력 변경과 저장 요청을 처리한다. */
         fun onEvent(event: MyPageScreenEvent) {
             when (event) {
-                MyPageScreenEvent.AppSettingsClicked -> {
+                // 화면 이동 이벤트는 MyPageRoute가 처리한다.
+                MyPageScreenEvent.AppSettingsClicked,
+                MyPageScreenEvent.ProfileEditClicked,
+                MyPageScreenEvent.MyActivityClicked,
+                MyPageScreenEvent.PersonalSettingsClicked,
+                MyPageScreenEvent.NotificationClicked,
+                MyPageScreenEvent.ContactClicked,
+                -> {
                     Unit
                 }
 

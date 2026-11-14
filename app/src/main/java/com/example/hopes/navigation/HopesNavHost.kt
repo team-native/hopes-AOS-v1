@@ -129,6 +129,11 @@ private fun HopesMainNavDisplay(
                             // 설정은 마이페이지 하위 화면이라 top-level 탐색이 아닌 일반 push로 진입시켜,
                             // 뒤로가기 시 홈이 아닌 마이페이지로 돌아오게 한다.
                             onNavigateToAppSettings = { navigator.push(HopesDestination.AppSettings) },
+                            // 프로필 수정(피그마 26)과 알림(피그마 25) 화면은 다음 작업에서 연결한다.
+                            onNavigateToProfileEdit = {},
+                            onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
+                            onNavigateToNotifications = {},
+                            onNavigateToContact = { navigator.push(HopesDestination.Contact) },
                         )
                     }
                     entry<HopesDestination.AppSettings> {

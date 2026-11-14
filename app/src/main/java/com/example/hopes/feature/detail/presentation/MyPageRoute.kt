@@ -1,28 +1,49 @@
 package com.example.hopes.feature.detail.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.navigation.HopesDestination
 
-/** 마이페이지 서버 상태를 화면에 연결하고 설정 이동을 처리한다. */
+/**
+ * 마이페이지 서버 상태를 화면에 연결하고 하위 화면 이동을 처리한다.
+ * 커뮤니티 서버 기능이 없어 활동 통계는 피그마 시안의 예시 값으로 채운다.
+ */
 @Composable
 fun MyPageRoute(
     onNavigate: (HopesDestination) -> Unit,
     onNavigateToAppSettings: () -> Unit,
+    onNavigateToProfileEdit: () -> Unit,
+    onNavigateToPersonalSettings: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+    onNavigateToContact: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     MyPageScreen(
-        uiState = uiState.value,
+        uiState = uiState.copy(activityStats = SAMPLE_ACTIVITY_STATS),
         onEvent = { event ->
-            if (event is MyPageScreenEvent.AppSettingsClicked) {
-                onNavigateToAppSettings()
-            } else {
-                viewModel.onEvent(event)
+            when (event) {
+                MyPageScreenEvent.AppSettingsClicked -> onNavigateToAppSettings()
+
+                MyPageScreenEvent.ProfileEditClicked -> onNavigateToProfileEdit()
+
+                // 내 활동 화면이 생기기 전까지는 커뮤니티 탭으로 보낸다.
+                MyPageScreenEvent.MyActivityClicked -> onNavigate(HopesDestination.Community)
+
+                MyPageScreenEvent.PersonalSettingsClicked -> onNavigateToPersonalSettings()
+
+                MyPageScreenEvent.NotificationClicked -> onNavigateToNotifications()
+
+                MyPageScreenEvent.ContactClicked -> onNavigateToContact()
+
+                else -> viewModel.onEvent(event)
             }
         },
         onNavigate = onNavigate,
     )
 }
+
+private val SAMPLE_ACTIVITY_STATS = MyPageActivityStats(postCount = 2, commentCount = 5, chatCount = 12)

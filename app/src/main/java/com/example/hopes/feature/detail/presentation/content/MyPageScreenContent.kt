@@ -1,111 +1,152 @@
 package com.example.hopes.feature.detail.presentation.content
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
+import com.example.hopes.feature.detail.presentation.MyPageActivityStats
 import com.example.hopes.feature.detail.presentation.MyPageScreenEvent
 import com.example.hopes.feature.detail.presentation.MyPageUiState
-import com.example.hopes.feature.detail.presentation.component.FigmaDetailPrimaryButton
-import com.example.hopes.feature.detail.presentation.component.FigmaDetailPrimaryButtonShadow
-import com.example.hopes.feature.detail.presentation.component.FigmaMyPageAccountCard
-import com.example.hopes.feature.detail.presentation.component.FigmaMyPageHeader
-import com.example.hopes.feature.detail.presentation.component.FigmaMyPageProfileCard
+import com.example.hopes.feature.detail.presentation.component.MyPageActivityStatsCard
+import com.example.hopes.feature.detail.presentation.component.MyPageMenuCard
+import com.example.hopes.feature.detail.presentation.component.MyPageMenuItem
+import com.example.hopes.feature.detail.presentation.component.MyPageProfileSummaryCard
 import com.example.hopes.navigation.HopesDestination
+import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.HopesTheme
 import com.teamnative.hopes.R
 
-/** 피그마 10 마이페이지의 계정·프로필 편집 영역을 구성한다. */
+/** 피그마 31 마이페이지다. 프로필 요약, 활동 통계, 하위 화면 메뉴를 위에서부터 쌓는다. */
 @Composable
 fun MyPageScreenContent(
     uiState: MyPageUiState,
     onEvent: (MyPageScreenEvent) -> Unit,
     onNavigate: (HopesDestination) -> Unit,
 ) {
+    val menuItems =
+        listOf(
+            MyPageMenuItem(
+                icon = Icons.Outlined.Edit,
+                title = stringResource(R.string.my_page_menu_activity),
+                description = stringResource(R.string.my_page_menu_activity_description),
+                onClick = { onEvent(MyPageScreenEvent.MyActivityClicked) },
+            ),
+            MyPageMenuItem(
+                icon = Icons.Outlined.Tune,
+                title = stringResource(R.string.personal_settings),
+                description = stringResource(R.string.my_page_menu_personal_settings_description),
+                onClick = { onEvent(MyPageScreenEvent.PersonalSettingsClicked) },
+            ),
+            MyPageMenuItem(
+                icon = Icons.Outlined.Notifications,
+                title = stringResource(R.string.my_page_menu_notification),
+                description = stringResource(R.string.my_page_menu_notification_description),
+                onClick = { onEvent(MyPageScreenEvent.NotificationClicked) },
+            ),
+            MyPageMenuItem(
+                icon = Icons.Outlined.MailOutline,
+                title = stringResource(R.string.contact),
+                description = stringResource(R.string.settings_contact_description),
+                onClick = { onEvent(MyPageScreenEvent.ContactClicked) },
+            ),
+        )
+
     FigmaAppFrame(
         selectedDestination = HopesDestination.Settings,
         onNavigate = onNavigate,
     ) {
-        val density = LocalDensity.current
-        val isImeVisible = WindowInsets.ime.getBottom(density) > 0
-        val scrollState = rememberScrollState()
-
-        // 키보드가 올라오면 맨 아래로 애니메이션 스크롤해 가려지는 입력창·저장 버튼을 보여준다.
-        LaunchedEffect(isImeVisible) {
-            if (isImeVisible) {
-                scrollState.animateScrollTo(scrollState.maxValue)
-            }
-        }
-
-        // imePadding은 verticalScroll 앞에 둬야 키보드 높이만큼 스크롤 영역이 줄어들어 입력창과 저장 버튼이 가려지지 않는다.
         Column(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .imePadding()
-                    .verticalScroll(scrollState)
-                    .padding(bottom = 24.dp),
+                    .verticalScroll(rememberScrollState())
+                    .padding(
+                        start = AppSpacing.ScreenHorizontal,
+                        top = AppSpacing.SystemBarToContent,
+                        end = AppSpacing.ScreenHorizontal,
+                        bottom = AppSpacing.Section,
+                    ),
         ) {
-            FigmaMyPageHeader(
-                onAppSettingsClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Column(modifier = Modifier.padding(start = 24.dp, end = 24.dp)) {
-                FigmaMyPageAccountCard(email = uiState.email, major = uiState.major)
-
-                Spacer(modifier = Modifier.height(28.dp))
-
-                FigmaMyPageProfileCard(
-                    profileName = uiState.profileName,
-                    profileIntroduction = uiState.profileIntroduction,
-                    onProfileNameChange = { onEvent(MyPageScreenEvent.ProfileNameChanged(it)) },
-                    onProfileIntroductionChange = {
-                        onEvent(MyPageScreenEvent.ProfileIntroductionChanged(it))
-                    },
-                )
-
-                Spacer(modifier = Modifier.height(18.dp))
-
-                FigmaDetailPrimaryButton(
-                    text =
-                        when {
-                            uiState.isProfileLoading -> stringResource(R.string.profile_loading)
-                            uiState.isProfileLoadFailed -> stringResource(R.string.profile_load_error)
-                            uiState.isProfileSaving -> stringResource(R.string.profile_saving)
-                            uiState.isProfileSaved -> stringResource(R.string.saved)
-                            uiState.isProfileSaveFailed -> stringResource(R.string.profile_save_error)
-                            else -> stringResource(R.string.save)
-                        },
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.my_page),
                     modifier =
                         Modifier
-                            .padding(start = 6.dp)
-                            .width(96.dp)
-                            .height(44.dp),
-                    onClick = {
-                        if (uiState.isProfileLoadFailed) {
-                            onEvent(MyPageScreenEvent.ProfileRetryClicked)
-                        } else {
-                            onEvent(MyPageScreenEvent.ProfileSaveClicked)
-                        }
-                    },
-                    shadowStyle = FigmaDetailPrimaryButtonShadow.Raised,
+                            .weight(1f)
+                            .semantics { heading() },
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = HopesTextStyles.PageTitle,
+                )
+
+                HopesHeaderIconButton(
+                    imageVector = Icons.Outlined.Settings,
+                    contentDescription = stringResource(R.string.navigation_settings),
+                    onClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
                 )
             }
+
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
+
+            MyPageProfileSummaryCard(
+                name = uiState.profileName,
+                major = uiState.major,
+                email = uiState.email,
+                onProfileEditClick = { onEvent(MyPageScreenEvent.ProfileEditClicked) },
+            )
+
+            uiState.activityStats?.let { stats ->
+                Spacer(modifier = Modifier.height(AppSpacing.Item))
+
+                MyPageActivityStatsCard(stats = stats)
+            }
+
+            Spacer(modifier = Modifier.height(AppSpacing.Item))
+
+            MyPageMenuCard(items = menuItems)
         }
+    }
+}
+
+@Preview(showBackground = true, name = "31 마이페이지")
+@Composable
+private fun MyPageScreenContentPreview() {
+    HopesTheme {
+        MyPageScreenContent(
+            uiState =
+                MyPageUiState(
+                    profileName = "임서하",
+                    email = "s26055@gsm.hs.kr",
+                    major = "인공지능과",
+                    isProfileLoading = false,
+                    activityStats = MyPageActivityStats(postCount = 2, commentCount = 5, chatCount = 12),
+                ),
+            onEvent = {},
+            onNavigate = {},
+        )
     }
 }

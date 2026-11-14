@@ -28,6 +28,7 @@ import com.example.hopes.feature.chat.detail.view.component.ChatAnswerFeedbackRo
 import com.example.hopes.feature.chat.detail.view.component.ChatAnswerGenerating
 import com.example.hopes.feature.chat.detail.view.component.ChatDraftAttachments
 import com.example.hopes.feature.chat.detail.view.component.ChatFollowUpQuestionsCard
+import com.example.hopes.feature.chat.detail.view.component.ChatLocationCard
 import com.example.hopes.feature.chat.detail.view.component.ChatMessageAttachments
 import com.example.hopes.feature.chat.detail.view.component.ChatPendingStatus
 import com.example.hopes.feature.chat.detail.view.component.ChatStopAnswerButton
@@ -39,6 +40,7 @@ import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentStatus
 import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentUiModel
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailUiState
+import com.example.hopes.feature.chat.detail.viewmodel.ChatLocationUiState
 import com.example.hopes.feature.chat.detail.viewmodel.ChatMessageUiModel
 import com.example.hopes.feature.chat.detail.viewmodel.MAX_ATTACHMENT_COUNT
 import com.example.hopes.feature.chat.detail.viewmodel.limitAttachmentCount
@@ -67,6 +69,8 @@ fun ChatDetailScreen(
     onToastDismiss: () -> Unit = {},
     onNewChatConfirm: () -> Unit = {},
     onAttachClick: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
+    onViewSchoolMap: (buildingName: String, accuracyMeters: Int?) -> Unit = { _, _ -> },
 ) {
     val scrollState = rememberScrollState()
     var isNewChatDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -201,6 +205,33 @@ fun ChatDetailScreen(
                                 )
                             }
                         }
+                    }
+
+                    uiState.location?.let { location ->
+                        val defaultBuilding = stringResource(R.string.school_map_current_location)
+
+                        ChatLocationCard(
+                            state = location,
+                            onAllowClick = { onEvent(ChatDetailScreenEvent.LocationAllowClicked) },
+                            onLaterClick = { onEvent(ChatDetailScreenEvent.LocationLaterClicked) },
+                            onRetryClick = { onEvent(ChatDetailScreenEvent.LocationRetryClicked) },
+                            onOpenSettingsClick = onOpenSettings,
+                            onViewMapClick = {
+                                when (location) {
+                                    is ChatLocationUiState.NearBuilding -> {
+                                        onViewSchoolMap(location.buildingName, location.accuracyMeters)
+                                    }
+
+                                    is ChatLocationUiState.LowAccuracy -> {
+                                        onViewSchoolMap(defaultBuilding, location.accuracyMeters)
+                                    }
+
+                                    else -> {
+                                        onViewSchoolMap(defaultBuilding, null)
+                                    }
+                                }
+                            },
+                        )
                     }
 
                     if (uiState.pendingQuestion != null) {
@@ -613,6 +644,62 @@ private fun ChatDetailScreenAttachmentFailedPreview() {
             onCopyCode = {},
         )
     }
+}
+
+@Composable
+private fun LocationStatePreview(location: ChatLocationUiState) {
+    HopesTheme {
+        ChatDetailScreen(
+            uiState =
+                ChatDetailUiState(
+                    title = "학교 생활",
+                    isLoading = false,
+                    messages = listOf(ChatMessageUiModel(id = 1, content = "지금 내 위치 알려줘", isUser = true)),
+                    location = location,
+                ),
+            subtitle = "선배 답변 · 위치 안내",
+            onEvent = {},
+            onCopyAnswer = {},
+            onShareAnswer = {},
+            onCopyCode = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "20 위치 권한 안내")
+@Composable
+private fun ChatDetailLocationPermissionPreview() {
+    LocationStatePreview(ChatLocationUiState.PermissionRequired)
+}
+
+@Preview(showBackground = true, name = "20-3 위치 확인 중")
+@Composable
+private fun ChatDetailLocatingPreview() {
+    LocationStatePreview(ChatLocationUiState.Locating(progress = 0.4f))
+}
+
+@Preview(showBackground = true, name = "21 위치 응답 카드")
+@Composable
+private fun ChatDetailLocationNearPreview() {
+    LocationStatePreview(ChatLocationUiState.NearBuilding(buildingName = "본관", accuracyMeters = 15))
+}
+
+@Preview(showBackground = true, name = "21-2 학교 밖")
+@Composable
+private fun ChatDetailLocationOutsidePreview() {
+    LocationStatePreview(ChatLocationUiState.OutsideSchool(distanceKm = "2.3"))
+}
+
+@Preview(showBackground = true, name = "21-3 정확도 낮음")
+@Composable
+private fun ChatDetailLocationLowAccuracyPreview() {
+    LocationStatePreview(ChatLocationUiState.LowAccuracy(accuracyMeters = 120))
+}
+
+@Preview(showBackground = true, name = "23 위치 확인 실패")
+@Composable
+private fun ChatDetailLocationFailedPreview() {
+    LocationStatePreview(ChatLocationUiState.Failed)
 }
 
 @Preview(showBackground = true, name = "08-3 답변 생성 실패")

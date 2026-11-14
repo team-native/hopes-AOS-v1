@@ -50,6 +50,7 @@ fun ChatDetailRoute(
     major: ChatMajor?,
     onBackClick: () -> Unit,
     onStartNewChat: () -> Unit,
+    onViewSchoolMap: (buildingName: String, accuracyMeters: Int?) -> Unit,
     viewModel: ChatDetailViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(chatId, question) { viewModel.initialize(chatId, question) }
@@ -60,7 +61,9 @@ fun ChatDetailRoute(
     val coroutineScope = rememberCoroutineScope()
     var toastMessageResId by rememberSaveable { mutableStateOf<Int?>(null) }
     val subtitle =
-        if (department != null && major != null) {
+        if (uiState.location != null) {
+            stringResource(R.string.chat_location_subtitle)
+        } else if (department != null && major != null) {
             stringResource(R.string.chat_detail_subtitle, department.label(), major.label())
         } else {
             stringResource(R.string.chat_answer_label)
@@ -140,6 +143,8 @@ fun ChatDetailRoute(
         onToastDismiss = { toastMessageResId = null },
         onNewChatConfirm = onStartNewChat,
         onAttachClick = { isAttachmentSheetVisible = true },
+        onOpenSettings = { context.openAppSettings() },
+        onViewSchoolMap = onViewSchoolMap,
     )
 
     if (isAttachmentSheetVisible) {

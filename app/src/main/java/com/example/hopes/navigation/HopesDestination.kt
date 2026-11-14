@@ -33,6 +33,12 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object AppInfo : HopesDestination
 
+    /** 채팅 위치 안내에서 "지도 보기"로 여는 학교 지도다(피그마 22). */
+    @Serializable data class SchoolMap(
+        val buildingName: String,
+        val accuracyMeters: Int? = null,
+    ) : HopesDestination
+
     /**
      * @param department 채팅 홈에서 고른 학과다. 상세 화면 부제목("소프트웨어개발과 · Frontend")에 쓴다.
      */

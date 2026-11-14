@@ -7,11 +7,6 @@
     <string name="navigation_community">커뮤니티</string>
     <string name="navigation_history">기록</string>
     <string name="navigation_settings">설정</string>
-    <string name="home_title">선배에게 묻는\n가장 솔직한 학교 이야기</string>
-    <string name="home_description">재학생과 입학 희망자를 위한 AI 선배 챗봇이에요. 실제 선배들의 경험을 바탕으로 궁금한 점을 함께 정리해요.</string>
-    <string name="home_start_chat">질문 시작하기</string>
-    <string name="home_tip_title">더 좋은 답변을 받는 방법</string>
-    <string name="home_tip_description">학년, 관심 전공, 현재 상황을 함께 적으면 더 구체적인 답변을 받을 수 있어요.</string>
     <string name="chat_title">새 대화</string>
     <string name="chat_description">광주소프트웨어마이스터고 선배에게 편하게 질문해 보세요.</string>
     <string name="chat_input_label">선배에게 메시지 보내기</string>
@@ -31,8 +26,6 @@
     <string name="show_password">비밀번호 표시</string>
     <string name="hide_password">비밀번호 숨기기</string>
     <string name="name">이름</string>
-    <string name="onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
-    <string name="onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
     <string name="start_chat">채팅 시작하기</string>
     <string name="chat_create_error">채팅을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.</string>
     <string name="new_chat">새 대화</string>
@@ -66,12 +59,6 @@
     <string name="system_prompt">시스템 프롬프트</string>
     <string name="contact_content">문의 내용</string>
     <string name="send_contact">문의 보내기</string>
-    <string name="onboarding_tip_one">1. ‘1학년 기숙사 평일 루틴 알려줘’처럼 구체적으로 질문해요.</string>
-    <string name="onboarding_tip_two">2. 입학 / 전공 / 학교생활 중 관심 있는 주제를 골라요.</string>
-    <string name="onboarding_tip_one_top">“기숙사 어때” 보단,</string>
-    <string name="onboarding_tip_one_bottom">“1학년 기숙사 평일 루틴 알려줘”</string>
-    <string name="onboarding_tip_two_top">질문 전에,</string>
-    <string name="onboarding_tip_two_bottom">입학 / 전공 / 학교생활 중 카테고리를 골라요.</string>
     <string name="back">뒤로가기</string>
     <string name="close">닫기</string>
     <string name="detail_notice">입력한 내용은 이 데모 화면에서만 유지됩니다.</string>
@@ -80,10 +67,6 @@
     <string name="settings_personal_description">시스템 프롬프트 관리</string>
     <string name="settings_contact_description">gsm-chatbot@gsm.hs.kr</string>
     <string name="settings_privacy_policy_description">수집하는 정보와 이용 목적을 확인해요</string>
-    <string name="home_onboarding_title">선배 답변을\n더 정확하게 받는 방법</string>
-    <string name="home_onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
-    <string name="home_tip_one">“기숙사 어때” 보단,\n“1학년 기숙사 평일 루틴 알려줘”</string>
-    <string name="home_tip_two">질문 전에,\n입학 / 전공 / 학교생활 중 카테고리를 골라요.</string>
     <string name="chat_welcome">무엇이 궁금한가요?</string>
     <string name="chat_welcome_description">광주소프트웨어마이스터고 선배에게 편하게 물어보세요.</string>
     <string name="chat_suggestion_dormitory">기숙사 하루 일과가 어떻게 돼?</string>
@@ -228,4 +211,20 @@
     <string name="community_load_error_title">게시글을 불러오지 못했어요</string>
     <string name="community_load_error_description">네트워크 상태를 확인한 뒤 다시 시도해 주세요.</string>
     <string name="community_retry">다시 시도</string>
+    <string name="home_greeting">%1$s님, 반가워요</string>
+    <string name="home_greeting_without_name">반가워요</string>
+    <string name="home_greeting_subtitle">선배 답변을 더 정확하게 받는 방법이에요.</string>
+    <string name="home_notification">알림</string>
+    <string name="home_hero_title">궁금한 점이 있다면,\n언제든 물어보세요.</string>
+    <string name="home_hero_description">선배들의 실제 경험으로 답해요.</string>
+    <string name="home_question_tips_title">질문 잘하는 방법</string>
+    <string name="home_tip_major_top">질문 전에,</string>
+    <string name="home_tip_major_bottom">학과·전공을 먼저 골라요</string>
+    <string name="home_tip_specific_top">“기숙사 어때” 보단,</string>
+    <string name="home_tip_specific_bottom">“1학년 기숙사 평일 루틴 알려줘”</string>
+    <string name="home_popular_posts_title">커뮤니티 인기글</string>
+    <string name="home_more">더보기</string>
+    <string name="home_post_like_count">좋아요 %1$d개</string>
+    <string name="home_sample_post_interview">전공 동아리 면접 후기 공유</string>
+    <string name="home_sample_post_job">취업 준비 언제부터 시작했어?</string>
 </resources>

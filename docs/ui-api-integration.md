@@ -12,26 +12,39 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 |---|---|---|---|
 | 커뮤니티 인기글 | 시안 예시 글 2개 | 인기글 목록 (id, 기수, 제목, 좋아요 수) | `HomeRoute`의 `samplePopularPosts` → `HomeUiState.popularPosts` |
 | 인기글 불러오기 실패 (30-3) | 화면만 준비됨 | 위 API 실패 시 `LoadError` | `HomeUiState.popularPostsState`, `HomeRoute`의 `PopularPostsRetryClicked` |
-| 인기글 누르기 | 커뮤니티 탭으로 이동 | 게시글 상세 (화면 없음) | `HomeRoute`의 `PopularPostClicked` |
+| 인기글 누르기 | 게시글 상세로 이동 (예시 글 id 2, 3) | 인기글 id가 게시글 id와 같아야 함 | `HomeRoute`의 `PopularPostClicked` |
 | 알림 버튼 빨간 점 | 항상 꺼짐 | 읽지 않은 알림 여부 | `HomeUiState.hasUnreadNotification` |
 
-## 커뮤니티 (피그마 19)
+## 커뮤니티 (피그마 13 ~ 19)
+
+게시판 API가 없어 글·댓글·좋아요·신고·최근 검색어를 앱 메모리의 임시 저장소 `CommunityStore`에 둡니다(앱을 다시 켜면 처음 상태).
+화면은 모두 `CommunityStore`만 바라보므로, API를 붙일 때 이 클래스를 repository로 바꾸면 됩니다.
+글·댓글 등록과 수정은 인터넷이 끊겨 있으면 실패로 처리해서 실패 화면(14-9, 15-7)을 비행기 모드로 볼 수 있습니다.
 
 | 항목 | 지금 동작 | 필요한 API | 코드 위치 |
 |---|---|---|---|
-| 게시글 목록 | 항상 빈 화면 | 게시글 목록 (기수 필터) | `CommunityRoute`의 `contentState = Empty` |
-| 불러오기 실패 | 화면만 준비됨 (19-2) | 위 API 실패 시 `LoadError` | `CommunityContentState.LoadError` |
-| 기수 필터 목록 | 8~11기 고정 | 기수 목록 | `CommunityRoute`의 `COMMUNITY_COHORTS` |
-| 검색 · 내 활동 · 글쓰기 | 반응 없음 | 각 기능 | `CommunityRoute`의 `onSearchClick` 등 |
+| 게시글 목록 · 기수 필터 (13, 13-3) | 임시 저장소 글을 기수로 거름 | 게시글 목록 (기수 필터, 페이지) | `CommunityViewModel` |
+| 로딩 (13-2) · 불러오기 실패 (19-2) | 화면만 준비됨 | 위 API 상태를 `Loading` / `LoadError`로 | `CommunityContentState` |
+| 기수 목록 | 8~11기 고정 | 기수 목록 | `COMMUNITY_COHORTS` |
+| 게시글 상세 · 댓글 (14) | 임시 저장소 | 게시글 상세, 댓글 목록 | `CommunityPostDetailViewModel` |
+| 좋아요 (14-5) | 화면에서만 켜고 끔 | 좋아요 토글 | `CommunityStore.toggleLike` |
+| 댓글 등록 · 수정 · 삭제 (14-6 ~ 14-9) | 임시 저장소 | 댓글 CRUD | `CommunityStore.addComment` 등 |
+| 글 등록 · 수정 · 삭제 (14-4, 15 ~ 15-8) | 임시 저장소 | 게시글 CRUD | `CommunityWriteViewModel`, `CommunityStore.deletePost` |
+| 신고 (17 ~ 17-3) | "이미 신고함"만 기억, 사유는 안 보냄 | 신고 접수 (사유 포함), 신고 여부 | `CommunityStore.report` |
+| 검색 (16 ~ 16-3) | 제목·내용에 검색어가 들어간 글 | 게시글 검색 | `searchPosts()` |
+| 최근 검색어 (16-2) | 앱 메모리에만 저장 | (선택) 기기 저장 또는 서버 | `CommunityStore.recentSearches` |
+| 내 활동 (18 ~ 18-3) | 임시 저장소의 내 글·내 댓글 | 내 글 / 내 댓글 목록 | `CommunityMyActivityViewModel` |
+| 내 기수 ("10기 (나)") | 10기 고정 | 프로필에 기수 필드 | `CommunityStore.myCohort` |
+| 삭제된 글 (14-10) | 저장소에 없는 글 id면 표시 | 상세 API의 404 등 | `CommunityPostDetailScreen` |
 
-게시글이 있는 목록 화면은 시안을 받지 못해 아직 없습니다.
+**PR 전 정리:** 화면 확인용 예시 글·댓글(`CommunitySampleData.kt`)은 지우고 `CommunityStore`의 `communitySampleSeed(...)`를 `CommunitySeed()`로 바꿉니다.
 
 ## 마이페이지 (피그마 31)
 
 | 항목 | 지금 동작 | 필요한 API | 코드 위치 |
 |---|---|---|---|
 | 작성글 · 댓글 · 대화 수 | 예시 값 2 / 5 / 12 | 활동 통계 | `MyPageRoute`의 `SAMPLE_ACTIVITY_STATS` |
-| 내 활동 | 커뮤니티 탭으로 이동 | 내 활동 화면 (화면 없음) | `MyPageRoute`의 `MyActivityClicked` |
+| 내 활동 | 내 활동 화면(18)으로 이동 | 위 커뮤니티 "내 활동" 참고 | `MyPageRoute`의 `MyActivityClicked` |
 | 기수 ("10기") | 표시 안 함 | 프로필에 기수 필드 | `UserProfile`에 없음 |
 
 ## 알림 (피그마 25)

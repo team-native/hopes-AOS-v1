@@ -28,7 +28,8 @@ object AppRadius {
 }
 
 object AppIconSize {
-    val BottomNavigation = 24.dp
+    /** 피그마 하단 탭 아이콘 크기다. */
+    val BottomNavigation = 22.dp
     val Logo = 40.dp
 
     /** 오류·타이머처럼 12~13sp 문구 옆에 붙는 아이콘이다. */
@@ -46,6 +47,8 @@ object AppSize {
     val SmallButton = 36.dp
     val Chip = 32.dp
     val TopBar = 56.dp
+
+    /** 하단 탭 줄 높이다. 피그마 하단바 86에서 홈 인디케이터 영역을 뺀 값(위 10 + 탭 54)이다. */
     val BottomNavigation = 64.dp
     val IconButton = 40.dp
 }

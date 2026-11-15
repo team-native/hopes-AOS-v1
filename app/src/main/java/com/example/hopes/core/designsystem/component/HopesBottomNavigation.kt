@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
@@ -57,8 +59,13 @@ fun HopesBottomNavigation(
                 Modifier
                     .fillMaxWidth()
                     .height(AppSize.BottomNavigation)
-                    .padding(horizontal = AppSpacing.Compact, vertical = AppSpacing.Small)
-                    .selectableGroup(),
+                    // 피그마 하단바(402x86)는 위 10, 탭 54, 아래 홈 인디케이터 영역이다.
+                    // 홈 인디케이터 자리는 안드로이드 제스처 바 여백(windowInsetsPadding)이 대신한다.
+                    .padding(
+                        start = NAVIGATION_EDGE_PADDING,
+                        end = NAVIGATION_EDGE_PADDING,
+                        top = NAVIGATION_EDGE_PADDING,
+                    ).selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Small),
         ) {
             hopesTabDestinations.forEach { destination ->
@@ -66,7 +73,10 @@ fun HopesBottomNavigation(
                     destination = destination,
                     isSelected = selectedDestination == destination,
                     onClick = { onNavigate(destination) },
-                    modifier = Modifier.weight(1f),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
                 )
             }
         }
@@ -112,8 +122,7 @@ private fun HopesBottomNavigationItem(
             painter = painterResource(destination.bottomNavigationIcon()),
             contentDescription = null,
             tint = contentColor,
-            // 피그마 하단 탭 아이콘은 22x22다.
-            modifier = Modifier.size(AppIconSize.Large),
+            modifier = Modifier.size(AppIconSize.BottomNavigation),
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.XSmall))
@@ -166,3 +175,5 @@ private fun HopesBottomNavigationNarrowPreview() {
         )
     }
 }
+
+private val NAVIGATION_EDGE_PADDING = 10.dp

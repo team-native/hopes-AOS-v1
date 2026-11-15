@@ -7,6 +7,8 @@ sealed interface HomeScreenEvent {
 
     data object PopularPostsMoreClicked : HomeScreenEvent
 
+    data object PopularPostsRetryClicked : HomeScreenEvent
+
     data class PopularPostClicked(
         val postId: Long,
     ) : HomeScreenEvent

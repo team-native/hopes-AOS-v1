@@ -36,6 +36,7 @@ import com.example.hopes.feature.detail.presentation.ProfileEditRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
 import com.example.hopes.feature.notification.presentation.NotificationRoute
+import com.example.hopes.feature.schoolmap.presentation.SchoolMapScreen
 import com.example.hopes.feature.settings.presentation.AppInfoScreen
 import com.example.hopes.feature.settings.presentation.SettingsRoute
 import com.teamnative.hopes.BuildConfig
@@ -132,8 +133,15 @@ private fun HopesMainNavDisplay(
                     entry<HopesDestination.Chat> { key ->
                         ChatRoute(
                             onNavigate = navigator::navigateToTab,
-                            onNavigateToNewChatDetail = { question ->
-                                navigator.push(HopesDestination.ChatDetail(chatId = NEW_CHAT_ID, question = question))
+                            onNavigateToNewChatDetail = { question, department, major ->
+                                navigator.push(
+                                    HopesDestination.ChatDetail(
+                                        chatId = NEW_CHAT_ID,
+                                        question = question,
+                                        department = department,
+                                        major = major,
+                                    ),
+                                )
                             },
                             isNewChatRequested = key.isNewChatRequested,
                         )
@@ -189,6 +197,15 @@ private fun HopesMainNavDisplay(
                             },
                         )
                     }
+                    entry<HopesDestination.SchoolMap> { key ->
+                        SchoolMapScreen(
+                            buildingName = key.buildingName,
+                            accuracyMeters = key.accuracyMeters,
+                            onBackClick = navigator::goBack,
+                            // 위치 기능 연동 전이라 다시 측정은 아직 없다.
+                            onRefreshClick = {},
+                        )
+                    }
                     entry<HopesDestination.AppInfo> {
                         AppInfoScreen(
                             appVersion = BuildConfig.VERSION_NAME,
@@ -202,8 +219,13 @@ private fun HopesMainNavDisplay(
                         ChatDetailRoute(
                             chatId = key.chatId,
                             question = key.question,
+                            department = key.department,
+                            major = key.major,
                             onBackClick = navigator::goBack,
-                            onNavigate = navigator::navigateToTab,
+                            onStartNewChat = navigator::navigateToNewChat,
+                            onViewSchoolMap = { buildingName, accuracyMeters ->
+                                navigator.push(HopesDestination.SchoolMap(buildingName, accuracyMeters))
+                            },
                         )
                     }
                 },

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- 채팅 자료 첨부의 카메라 촬영 사진만 캐시의 chat_attachments 폴더에 둔다. -->
+    <cache-path
+        name="chat_attachments"
+        path="chat_attachments/" />
+</paths>

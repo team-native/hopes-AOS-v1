@@ -47,6 +47,9 @@ fun HomeRoute(
 
                 // 게시글 상세 화면이 생기기 전까지는 커뮤니티 탭으로 보낸다.
                 is HomeScreenEvent.PopularPostClicked -> onNavigate(HopesDestination.Community)
+
+                // 인기글 API 연동 전이라 실패 상태가 생기지 않는다. 연동 시 여기서 다시 불러온다.
+                HomeScreenEvent.PopularPostsRetryClicked -> Unit
             }
         },
         onNavigate = onNavigate,

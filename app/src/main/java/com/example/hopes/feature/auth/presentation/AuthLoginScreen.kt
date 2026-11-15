@@ -35,11 +35,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.HopesOfflineBanner
 import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.feature.auth.presentation.component.AuthHeroHeadline
 import com.example.hopes.feature.auth.presentation.component.AuthLinkPrompt
 import com.example.hopes.feature.auth.presentation.component.AuthLoginHeading
-import com.example.hopes.feature.auth.presentation.component.AuthOfflineBanner
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton
 import com.example.hopes.feature.auth.presentation.content.AuthLoginFieldsContent
 import com.example.hopes.ui.theme.HopesTheme
@@ -222,7 +222,7 @@ fun AuthLoginScreen(
             enter = fadeIn(),
             exit = fadeOut(),
         ) {
-            AuthOfflineBanner()
+            HopesOfflineBanner(message = stringResource(R.string.auth_login_offline_message))
         }
     }
 }

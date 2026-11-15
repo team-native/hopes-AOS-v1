@@ -1,5 +1,7 @@
 package com.example.hopes.feature.chat.detail.viewmodel
 
+import kotlinx.serialization.Serializable
+
 /**
  * 서버 대화 상세의 현재 표시 상태다.
  *
@@ -72,6 +74,23 @@ data class ChatAttachmentUiModel(
     val pageCount: Int? = null,
     val status: ChatAttachmentStatus = ChatAttachmentStatus.Ready,
 )
+
+/**
+ * 채팅 홈에서 고른 첨부를 채팅 상세로 넘길 때 쓰는 값이다. 보낼 수 있는 첨부만 넘기므로 상태는 담지 않는다.
+ */
+@Serializable
+data class ChatAttachmentArg(
+    val uri: String,
+    val kind: ChatAttachmentKind,
+    val name: String,
+    val pageCount: Int? = null,
+)
+
+fun ChatAttachmentUiModel.toArg(): ChatAttachmentArg =
+    ChatAttachmentArg(uri = uri, kind = kind, name = name, pageCount = pageCount)
+
+fun ChatAttachmentArg.toUiModel(): ChatAttachmentUiModel =
+    ChatAttachmentUiModel(uri = uri, kind = kind, name = name, pageCount = pageCount)
 
 /** 첨부 한 개의 상태다(피그마 10-2 ~ 10-6). */
 sealed interface ChatAttachmentStatus {

@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,32 +17,28 @@ import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.FileProvider
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.hopes.core.designsystem.component.HopesAlertDialog
-import com.example.hopes.feature.chat.detail.view.component.ChatAttachmentSheet
-import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentKind
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentUiModel
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailScreenEvent
 import com.example.hopes.feature.chat.detail.viewmodel.ChatDetailViewModel
 import com.example.hopes.feature.chat.view.label
 import com.example.hopes.feature.chat.viewmodel.ChatDepartment
 import com.example.hopes.feature.chat.viewmodel.ChatMajor
 import com.teamnative.hopes.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
 
 /**
  * 서버 대화 상세 상태를 수집하고 뒤로가기·복사·공유를 연결한다.
  *
+ * @param attachments 채팅 홈에서 질문과 함께 붙인 첨부 자료다. 첫 질문에 붙여 보낸다.
  * @param department 채팅 홈에서 고른 학과다. 학과·전공을 모두 알면 부제목에 쓰고, 아니면 기본 부제목을 쓴다.
  */
 @Composable
 fun ChatDetailRoute(
     chatId: Long,
     question: String,
+    attachments: List<ChatAttachmentUiModel>,
     department: ChatDepartment?,
     major: ChatMajor?,
     onBackClick: () -> Unit,
@@ -53,7 +46,7 @@ fun ChatDetailRoute(
     onViewSchoolMap: (buildingName: String, accuracyMeters: Int?) -> Unit,
     viewModel: ChatDetailViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(chatId, question) { viewModel.initialize(chatId, question) }
+    LaunchedEffect(chatId, question) { viewModel.initialize(chatId, question, attachments) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val clipboard = LocalClipboard.current
@@ -69,45 +62,7 @@ fun ChatDetailRoute(
             stringResource(R.string.chat_answer_label)
         }
     val shareTitle = stringResource(R.string.chat_share_answer)
-    val imageFallbackName = stringResource(R.string.chat_attach_image)
-    val pdfFallbackName = stringResource(R.string.chat_attach_pdf_label)
     var isAttachmentSheetVisible by rememberSaveable { mutableStateOf(false) }
-    // 카메라 앱이 사진을 저장할 자리다. 화면 회전으로 Route가 다시 만들어져도 결과를 받을 수 있게 저장해 둔다.
-    var pendingCameraUri by rememberSaveable { mutableStateOf<String?>(null) }
-    var isMediaPermissionDialogVisible by rememberSaveable { mutableStateOf(false) }
-
-    fun addAttachments(
-        uris: List<Uri>,
-        kind: ChatAttachmentKind,
-        fallbackName: String,
-    ) {
-        if (uris.isEmpty()) return
-        coroutineScope.launch {
-            // PDF 쪽수를 읽느라 파일을 여므로 IO 스레드에서 정보를 만든다.
-            val attachments =
-                withContext(Dispatchers.IO) {
-                    uris.map { uri -> context.contentResolver.toChatAttachment(uri, kind, fallbackName) }
-                }
-            viewModel.onEvent(ChatDetailScreenEvent.AttachmentsAdded(attachments))
-        }
-    }
-
-    val photoPickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickMultipleVisualMedia()) { uris ->
-            addAttachments(uris, ChatAttachmentKind.Image, imageFallbackName)
-        }
-    val pdfPickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
-            addAttachments(uris, ChatAttachmentKind.Pdf, pdfFallbackName)
-        }
-    val cameraLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSaved ->
-            val cameraUri = pendingCameraUri
-            pendingCameraUri = null
-            if (isSaved && cameraUri != null) {
-                addAttachments(listOf(Uri.parse(cameraUri)), ChatAttachmentKind.Image, imageFallbackName)
-            }
-        }
 
     fun copyToClipboard(
         text: String,
@@ -147,48 +102,12 @@ fun ChatDetailRoute(
         onViewSchoolMap = onViewSchoolMap,
     )
 
-    if (isAttachmentSheetVisible) {
-        ChatAttachmentSheet(
-            onPhotoClick = {
-                isAttachmentSheetVisible = false
-                photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            },
-            onCameraClick = {
-                isAttachmentSheetVisible = false
-                val cameraUri = context.createCameraPhotoUri()
-                pendingCameraUri = cameraUri.toString()
-                try {
-                    cameraLauncher.launch(cameraUri)
-                } catch (exception: ActivityNotFoundException) {
-                    pendingCameraUri = null
-                    toastMessageResId = R.string.chat_attach_camera_unavailable
-                } catch (exception: SecurityException) {
-                    // 기기 정책 등으로 카메라 접근이 막히면 설정에서 허용하도록 안내한다(피그마 09-2).
-                    pendingCameraUri = null
-                    isMediaPermissionDialogVisible = true
-                }
-            },
-            onPdfClick = {
-                isAttachmentSheetVisible = false
-                pdfPickerLauncher.launch(arrayOf(PDF_MIME_TYPE))
-            },
-            onDismiss = { isAttachmentSheetVisible = false },
-        )
-    }
-
-    if (isMediaPermissionDialogVisible) {
-        HopesAlertDialog(
-            title = stringResource(R.string.chat_attach_permission_title),
-            message = stringResource(R.string.chat_attach_permission_message),
-            dismissText = stringResource(R.string.cancel),
-            confirmText = stringResource(R.string.open_settings),
-            onDismiss = { isMediaPermissionDialogVisible = false },
-            onConfirm = {
-                isMediaPermissionDialogVisible = false
-                context.openAppSettings()
-            },
-        )
-    }
+    ChatAttachmentPicker(
+        isSheetVisible = isAttachmentSheetVisible,
+        onSheetDismiss = { isAttachmentSheetVisible = false },
+        onAttachmentsPicked = { viewModel.onEvent(ChatDetailScreenEvent.AttachmentsAdded(it)) },
+        onCameraUnavailable = { toastMessageResId = R.string.chat_attach_camera_unavailable },
+    )
 }
 
 /** 이 앱의 시스템 설정 화면을 연다. 권한을 직접 허용하도록 안내할 때 쓴다. */
@@ -202,15 +121,3 @@ internal fun Context.openAppSettings() {
         startActivity(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 }
-
-/** 카메라로 찍은 사진을 받을 캐시 파일을 만들고, 카메라 앱에 넘길 FileProvider URI를 돌려준다. */
-private fun Context.createCameraPhotoUri(): Uri {
-    val directory = File(cacheDir, CAMERA_PHOTO_DIRECTORY).apply { mkdirs() }
-    val photoFile = File(directory, "photo_${System.currentTimeMillis()}.jpg")
-    return FileProvider.getUriForFile(this, "$packageName.fileprovider", photoFile)
-}
-
-private const val PDF_MIME_TYPE = "application/pdf"
-
-// res/xml/file_provider_paths.xml의 cache-path와 같은 폴더다.
-private const val CAMERA_PHOTO_DIRECTORY = "chat_attachments"

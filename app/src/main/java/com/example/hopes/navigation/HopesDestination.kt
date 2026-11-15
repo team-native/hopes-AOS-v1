@@ -1,6 +1,7 @@
 package com.example.hopes.navigation
 
 import androidx.navigation3.runtime.NavKey
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentArg
 import com.example.hopes.feature.chat.viewmodel.ChatDepartment
 import com.example.hopes.feature.chat.viewmodel.ChatMajor
 import kotlinx.serialization.Serializable
@@ -74,6 +75,7 @@ sealed interface HopesDestination : NavKey {
     @Serializable data class ChatDetail(
         val chatId: Long,
         val question: String = "",
+        val attachments: List<ChatAttachmentArg> = emptyList(),
         val department: ChatDepartment? = null,
         val major: ChatMajor? = null,
     ) : HopesDestination

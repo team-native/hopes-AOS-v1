@@ -1,5 +1,7 @@
 package com.example.hopes.feature.chat.viewmodel
 
+import com.example.hopes.feature.chat.detail.viewmodel.ChatAttachmentUiModel
+
 sealed interface ChatScreenEvent {
     data class QuestionChanged(
         val question: String,
@@ -23,4 +25,13 @@ sealed interface ChatScreenEvent {
     ) : ChatScreenEvent
 
     data object RecommendationsRefreshClicked : ChatScreenEvent
+
+    /** 첨부 시트에서 고른 자료를 입력창 위에 붙인다(피그마 09, 10). */
+    data class AttachmentsAdded(
+        val attachments: List<ChatAttachmentUiModel>,
+    ) : ChatScreenEvent
+
+    data class AttachmentRemoved(
+        val uri: String,
+    ) : ChatScreenEvent
 }

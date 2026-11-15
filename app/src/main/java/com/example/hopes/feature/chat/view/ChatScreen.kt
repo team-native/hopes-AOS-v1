@@ -1,9 +1,11 @@
 package com.example.hopes.feature.chat.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
@@ -14,6 +16,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -27,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesInfoBanner
+import com.example.hopes.core.designsystem.component.HopesToast
+import com.example.hopes.feature.chat.detail.view.component.ChatDraftAttachments
 import com.example.hopes.feature.chat.view.component.ChatComposer
 import com.example.hopes.feature.chat.view.component.ChatContextChipRow
 import com.example.hopes.feature.chat.view.component.ChatRecommendationHeader
@@ -54,6 +59,9 @@ fun ChatScreen(
     onDepartmentClick: () -> Unit,
     onMajorClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
+    onAttachClick: () -> Unit = {},
+    toastMessage: String? = null,
+    onToastDismiss: () -> Unit = {},
 ) {
     val density = LocalDensity.current
     val isImeVisible = WindowInsets.ime.getBottom(density) > 0
@@ -64,11 +72,7 @@ fun ChatScreen(
         selectedDestination = HopesDestination.Chat(),
         onNavigate = onNavigate,
         fixedBottomContent = {
-            ChatComposer(
-                value = uiState.questionText,
-                onValueChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
-                onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
-                placeholder = stringResource(R.string.chat_new_message),
+            Column(
                 modifier =
                     Modifier
                         .imePadding()
@@ -77,52 +81,89 @@ fun ChatScreen(
                             end = AppSpacing.Medium,
                             bottom = AppSpacing.Compact,
                         ),
-            )
+                verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+            ) {
+                if (uiState.draftAttachments.isNotEmpty()) {
+                    ChatDraftAttachments(
+                        attachments = uiState.draftAttachments,
+                        onRemove = { onEvent(ChatScreenEvent.AttachmentRemoved(it.uri)) },
+                        // 업로드 API 연동 전이라 업로드 실패 상태가 생기지 않는다.
+                        onRetry = {},
+                    )
+                }
+
+                ChatComposer(
+                    value = uiState.questionText,
+                    onValueChange = { onEvent(ChatScreenEvent.QuestionChanged(it)) },
+                    onSubmitClick = { onEvent(ChatScreenEvent.QuestionSubmitted) },
+                    placeholder =
+                        if (uiState.draftAttachments.isNotEmpty()) {
+                            stringResource(R.string.chat_attach_question_placeholder)
+                        } else {
+                            stringResource(R.string.chat_new_message)
+                        },
+                    isSubmitAllowed = uiState.canSendDraftAttachments,
+                    onAttachClick = onAttachClick,
+                )
+            }
         },
         isBottomNavigationVisible = !isImeVisible,
     ) {
-        // 키보드 높이만큼 줄어든 영역은 bottomBar(composer의 imePadding 포함)가 innerPadding으로 전달하므로
-        // 여기서 imePadding을 다시 적용하지 않는다.
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(
-                        start = AppSpacing.Medium,
-                        top = AppSpacing.SystemBarToContent,
-                        end = AppSpacing.Medium,
-                        bottom = AppSpacing.Section,
-                    ),
-        ) {
-            ChatContextChipRow(
-                departmentLabel = departmentLabel,
-                majorLabel = majorLabel,
-                onDepartmentClick = onDepartmentClick,
-                onMajorClick = onMajorClick,
-                onNewChatClick = { onEvent(ChatScreenEvent.NewChatClicked) },
-            )
-
-            if (isImeVisible) {
-                Spacer(modifier = Modifier.height(AppSpacing.Item))
-
-                Text(
-                    text = stringResource(R.string.chat_recommendation_fill_hint),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = HopesTextStyles.Caption,
-                )
-            } else {
-                Spacer(modifier = Modifier.height(AppSpacing.Section))
-
-                ChatWelcomeTitle()
-
-                Spacer(modifier = Modifier.height(AppSpacing.Section))
-
-                ChatRecommendations(
-                    uiState = uiState,
+        Box(modifier = Modifier.fillMaxSize()) {
+            // 키보드 높이만큼 줄어든 영역은 bottomBar(composer의 imePadding 포함)가 innerPadding으로 전달하므로
+            // 여기서 imePadding을 다시 적용하지 않는다.
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = AppSpacing.Medium,
+                            top = AppSpacing.SystemBarToContent,
+                            end = AppSpacing.Medium,
+                            bottom = AppSpacing.Section,
+                        ),
+            ) {
+                ChatContextChipRow(
                     departmentLabel = departmentLabel,
                     majorLabel = majorLabel,
-                    onEvent = onEvent,
+                    onDepartmentClick = onDepartmentClick,
+                    onMajorClick = onMajorClick,
+                    onNewChatClick = { onEvent(ChatScreenEvent.NewChatClicked) },
+                )
+
+                if (isImeVisible) {
+                    Spacer(modifier = Modifier.height(AppSpacing.Item))
+
+                    Text(
+                        text = stringResource(R.string.chat_recommendation_fill_hint),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = HopesTextStyles.Caption,
+                    )
+                } else {
+                    Spacer(modifier = Modifier.height(AppSpacing.Section))
+
+                    ChatWelcomeTitle()
+
+                    Spacer(modifier = Modifier.height(AppSpacing.Section))
+
+                    ChatRecommendations(
+                        uiState = uiState,
+                        departmentLabel = departmentLabel,
+                        majorLabel = majorLabel,
+                        onEvent = onEvent,
+                    )
+                }
+            }
+
+            if (toastMessage != null) {
+                HopesToast(
+                    message = toastMessage,
+                    onDismiss = onToastDismiss,
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = AppSpacing.Section),
                 )
             }
         }

@@ -46,17 +46,22 @@ class ChatDetailViewModel
             observeNetwork()
         }
 
-        /** NavKey로 전달받은 chatId/question을 1회만 반영해 대화 생성 또는 로드를 시작한다. */
+        /**
+         * NavKey로 전달받은 chatId/question을 1회만 반영해 대화 생성 또는 로드를 시작한다.
+         *
+         * @param attachments 채팅 홈에서 첫 질문과 함께 붙인 첨부다. 내 첫 질문 말풍선에 붙는다.
+         */
         fun initialize(
             chatId: Long,
             question: String,
+            attachments: List<ChatAttachmentUiModel> = emptyList(),
         ) {
             if (isInitialized) return
             isInitialized = true
             this.chatId = chatId
             if (chatId == NEW_CHAT_ID && question.isNotEmpty()) {
                 _uiState.update { it.copy(isLoading = false) }
-                sendQuestion(question, attachments = emptyList(), baseMessages = emptyList())
+                sendQuestion(question, attachments = attachments, baseMessages = emptyList())
             } else {
                 loadChat()
             }

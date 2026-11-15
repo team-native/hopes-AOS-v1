@@ -27,6 +27,8 @@ import com.example.hopes.core.session.SessionState
 import com.example.hopes.feature.auth.presentation.AuthRoute
 import com.example.hopes.feature.auth.presentation.SessionViewModel
 import com.example.hopes.feature.chat.detail.view.ChatDetailRoute
+import com.example.hopes.feature.chat.detail.viewmodel.toArg
+import com.example.hopes.feature.chat.detail.viewmodel.toUiModel
 import com.example.hopes.feature.chat.view.ChatRoute
 import com.example.hopes.feature.community.presentation.CommunityRoute
 import com.example.hopes.feature.community.presentation.detail.CommunityPostDetailRoute
@@ -141,11 +143,12 @@ private fun HopesMainNavDisplay(
                     entry<HopesDestination.Chat> { key ->
                         ChatRoute(
                             onNavigate = navigator::navigateToTab,
-                            onNavigateToNewChatDetail = { question, department, major ->
+                            onNavigateToNewChatDetail = { question, attachments, department, major ->
                                 navigator.push(
                                     HopesDestination.ChatDetail(
                                         chatId = NEW_CHAT_ID,
                                         question = question,
+                                        attachments = attachments.map { it.toArg() },
                                         department = department,
                                         major = major,
                                     ),
@@ -283,6 +286,7 @@ private fun HopesMainNavDisplay(
                         ChatDetailRoute(
                             chatId = key.chatId,
                             question = key.question,
+                            attachments = key.attachments.map { it.toUiModel() },
                             department = key.department,
                             major = key.major,
                             onBackClick = navigator::goBack,

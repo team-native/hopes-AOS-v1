@@ -33,7 +33,7 @@ object AppRadius {
     val Field = 16.dp
     val Sheet = 28.dp
     val SmallButton = 10.dp
-    val HeaderButton = 12.dp
+    val HeaderButton = 14.dp
 }
 
 object AppIconSize {
@@ -60,6 +60,9 @@ object AppSize {
     /** 하단 탭 줄 높이다. 피그마 하단바 86에서 홈 인디케이터 영역을 뺀 값(위 10 + 탭 54)이다. */
     val BottomNavigation = 64.dp
     val IconButton = 40.dp
+
+    /** 피그마 홈 알림 같은 헤더 아이콘 버튼 크기다. */
+    val HeaderButton = 44.dp
 }
 
 object AppBorderWidth {

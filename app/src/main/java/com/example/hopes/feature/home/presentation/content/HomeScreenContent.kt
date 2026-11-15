@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
@@ -50,7 +51,7 @@ fun HomeScreenContent(
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = AppSpacing.ScreenHorizontal,
-                        top = AppSpacing.SystemBarToContent,
+                        top = AppSpacing.SystemBarToContent - HOME_GREETING_TOP,
                         end = AppSpacing.ScreenHorizontal,
                         bottom = AppSpacing.Section,
                     ),
@@ -76,16 +77,16 @@ fun HomeScreenContent(
                 onNotificationClick = { onEvent(HomeScreenEvent.NotificationClicked) },
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Medium + AppSpacing.XSmall))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
             HomeHeroCard(onStartChatClick = { onEvent(HomeScreenEvent.StartChatClicked) })
 
-            Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
             HomeSectionHeader(title = stringResource(R.string.home_question_tips_title))
 
             // 피그마 30의 섹션 제목과 첫 카드 사이 간격이다.
-            Spacer(modifier = Modifier.height(AppSpacing.Item + AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
                 HomeQuestionTipCard(
@@ -102,11 +103,11 @@ fun HomeScreenContent(
             }
 
             if (uiState.popularPostsState == HomePopularPostsState.LoadError) {
-                Spacer(modifier = Modifier.height(AppSpacing.Section))
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
                 HomeSectionHeader(title = stringResource(R.string.home_popular_posts_title))
 
-                Spacer(modifier = Modifier.height(AppSpacing.Item))
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
                 HopesRetryMessage(
                     title = stringResource(R.string.home_popular_posts_error_title),
@@ -114,7 +115,7 @@ fun HomeScreenContent(
                     onRetryClick = { onEvent(HomeScreenEvent.PopularPostsRetryClicked) },
                 )
             } else if (uiState.popularPosts.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.XSmall))
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
                 HomeSectionHeader(
                     title = stringResource(R.string.home_popular_posts_title),
@@ -122,8 +123,7 @@ fun HomeScreenContent(
                     onActionClick = { onEvent(HomeScreenEvent.PopularPostsMoreClicked) },
                 )
 
-                // "더보기" 버튼의 터치 여백이 제목 줄을 키우므로 카드까지는 조금만 더 띄운다.
-                Spacer(modifier = Modifier.height(AppSpacing.Item))
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
                 Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
                     uiState.popularPosts.forEach { post ->
@@ -187,3 +187,6 @@ private fun HomeScreenContentPreview() {
         )
     }
 }
+
+// 피그마 30: 알림 버튼은 Content 위 8, 인사말은 그 안에서 다시 위 8이다.
+private val HOME_GREETING_TOP = 8.dp

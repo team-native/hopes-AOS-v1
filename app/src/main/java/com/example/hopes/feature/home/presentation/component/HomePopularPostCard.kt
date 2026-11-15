@@ -1,6 +1,7 @@
 package com.example.hopes.feature.home.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
@@ -28,6 +32,7 @@ import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.feature.home.presentation.HomePopularPost
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 커뮤니티 인기글 한 줄이다. 기수 태그, 제목, 좋아요 수를 보여준다. */
@@ -48,8 +53,9 @@ fun HomePopularPostCard(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
-                ).shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
-                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Medium),
+                ).border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                .shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
+                .padding(horizontal = CARD_PADDING_HORIZONTAL, vertical = CARD_PADDING_VERTICAL),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -57,8 +63,8 @@ fun HomePopularPostCard(
                 Modifier
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(AppSpacing.Small + AppSpacing.XSmall),
-                    ).padding(horizontal = AppSpacing.Compact, vertical = AppSpacing.XSmall),
+                        shape = CircleShape,
+                    ).padding(horizontal = BADGE_PADDING_HORIZONTAL, vertical = AppSpacing.Small),
         ) {
             Text(
                 text =
@@ -83,7 +89,7 @@ fun HomePopularPostCard(
             style = HopesTextStyles.Body,
         )
 
-        Spacer(modifier = Modifier.width(AppSpacing.Compact))
+        Spacer(modifier = Modifier.width(AppSpacing.Compact + AppSpacing.XSmall))
 
         Row(
             modifier = Modifier.semantics { contentDescription = likeDescription },
@@ -92,17 +98,22 @@ fun HomePopularPostCard(
             Icon(
                 painter = painterResource(R.drawable.ic_heart),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = LocalHopesExtendedColors.current.authFieldHint,
                 modifier = Modifier.size(AppIconSize.Inline),
             )
 
-            Spacer(modifier = Modifier.width(AppSpacing.XSmall))
+            Spacer(modifier = Modifier.width(AppSpacing.Small))
 
             Text(
                 text = post.likeCount.toString(),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = LocalHopesExtendedColors.current.authFieldHint,
                 style = HopesTextStyles.Caption,
             )
         }
     }
 }
+
+// 피그마 Post Row: 안쪽 여백 16/14 + 테두리 1로 한 줄 높이가 54, 배지는 가로 10·세로 4다.
+private val CARD_PADDING_HORIZONTAL = 17.dp
+private val CARD_PADDING_VERTICAL = 15.dp
+private val BADGE_PADDING_HORIZONTAL = 10.dp

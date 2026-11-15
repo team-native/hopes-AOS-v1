@@ -77,7 +77,7 @@ fun HomeScreenContent(
                 onNotificationClick = { onEvent(HomeScreenEvent.NotificationClicked) },
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Medium))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium + AppSpacing.XSmall))
 
             HomeHeroCard(onStartChatClick = { onEvent(HomeScreenEvent.StartChatClicked) })
 
@@ -85,7 +85,8 @@ fun HomeScreenContent(
 
             HomeSectionHeader(title = stringResource(R.string.home_question_tips_title))
 
-            Spacer(modifier = Modifier.height(AppSpacing.Item))
+            // 피그마 30의 섹션 제목과 첫 카드 사이 간격이다.
+            Spacer(modifier = Modifier.height(AppSpacing.Item + AppSpacing.Compact))
 
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
                 HomeQuestionTipCard(
@@ -114,7 +115,7 @@ fun HomeScreenContent(
                     onRetryClick = { onEvent(HomeScreenEvent.PopularPostsRetryClicked) },
                 )
             } else if (uiState.popularPosts.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(AppSpacing.Section))
+                Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.XSmall))
 
                 HomeSectionHeader(
                     title = stringResource(R.string.home_popular_posts_title),
@@ -122,7 +123,8 @@ fun HomeScreenContent(
                     onActionClick = { onEvent(HomeScreenEvent.PopularPostsMoreClicked) },
                 )
 
-                Spacer(modifier = Modifier.height(AppSpacing.Compact))
+                // "더보기" 버튼의 터치 여백이 제목 줄을 키우므로 카드까지는 조금만 더 띄운다.
+                Spacer(modifier = Modifier.height(AppSpacing.Item))
 
                 Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
                     uiState.popularPosts.forEach { post ->

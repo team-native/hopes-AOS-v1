@@ -10,13 +10,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,6 +62,13 @@ fun CommunityScreen(
     onToastDismiss: () -> Unit = {},
 ) {
     val now = remember(uiState.posts) { LocalDateTime.now() }
+    val listState = rememberLazyListState()
+    val topPostId = uiState.posts.firstOrNull()?.id
+
+    // 새 글이 맨 위에 생기면 목록을 맨 위로 올린다. 그대로 두면 보던 글 기준으로 위치가 유지돼 새 글이 화면 밖에 남는다.
+    LaunchedEffect(topPostId) {
+        if (topPostId != null) listState.scrollToItem(0)
+    }
 
     FigmaAppFrame(
         selectedDestination = HopesDestination.Community,
@@ -111,6 +121,7 @@ fun CommunityScreen(
                 ) {
                     CommunityContent(
                         uiState = uiState,
+                        listState = listState,
                         now = now,
                         onPostClick = onPostClick,
                         onWriteClick = onWriteClick,
@@ -146,6 +157,7 @@ fun CommunityScreen(
 @Composable
 private fun CommunityContent(
     uiState: CommunityUiState,
+    listState: LazyListState,
     now: LocalDateTime,
     onPostClick: (Long) -> Unit,
     onWriteClick: () -> Unit,
@@ -164,6 +176,7 @@ private fun CommunityContent(
         CommunityContentState.Content -> {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
+                state = listState,
                 contentPadding =
                     PaddingValues(
                         start = AppSpacing.ScreenHorizontal,

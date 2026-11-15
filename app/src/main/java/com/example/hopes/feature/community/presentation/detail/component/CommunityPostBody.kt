@@ -89,6 +89,7 @@ fun CommunityPostBody(
             author = communityAuthorName(post.authorCohort, post.isMine),
             isMine = post.isMine,
             time = communityTimeText(post.createdAt, now),
+            isEdited = post.isEdited,
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.Item))
@@ -115,20 +116,26 @@ fun CommunityPostBody(
     }
 }
 
-/** "10기 · 10분 전" 줄이다. 내 글·댓글이면 작성자를 파란 글자로 그린다. */
+/** "10기 · 10분 전" 줄이다. 내 글·댓글이면 작성자를 파란 글자로 그리고, 수정했으면 "· 수정됨"을 붙인다. */
 @Composable
 fun CommunityMetaText(
     author: String,
     isMine: Boolean,
     time: String,
     modifier: Modifier = Modifier,
+    isEdited: Boolean = false,
 ) {
+    val edited = stringResource(R.string.community_edited)
     val authorColor = if (isMine) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
     val text =
         buildAnnotatedString {
             withStyle(SpanStyle(color = authorColor)) { append(author) }
             append(" · ")
             append(time)
+            if (isEdited) {
+                append(" · ")
+                append(edited)
+            }
         }
 
     Text(

@@ -26,16 +26,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppSize
@@ -60,6 +65,7 @@ fun CommunityCommentInput(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
     val placeholder = stringResource(R.string.community_comment_placeholder)
     val isSendEnabled = value.isNotBlank() && !isSending
     val sendDescription =
@@ -70,6 +76,17 @@ fun CommunityCommentInput(
         } else {
             stringResource(R.string.community_comment_send)
         }
+
+    // 커서 위치를 다루려고 화면 안에서는 TextFieldValue로 들고 있는다. 밖에서 글이 바뀌면(수정 시작, 전송 후 비우기) 커서를 끝에 둔다.
+    // 입력 중에는 ViewModel 값이 한 박자 늦게 돌아올 수 있어, 밖의 값이 실제로 바뀐 때만 덮어쓴다.
+    var fieldValue by remember { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
+    var lastExternalValue by remember { mutableStateOf(value) }
+    if (value != lastExternalValue) {
+        lastExternalValue = value
+        if (fieldValue.text != value) {
+            fieldValue = TextFieldValue(value, TextRange(value.length))
+        }
+    }
 
     // 댓글 수정을 고르면 입력창에 바로 커서를 둔다.
     LaunchedEffect(isEditing) {
@@ -112,8 +129,11 @@ fun CommunityCommentInput(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             BasicTextField(
-                value = value,
-                onValueChange = onValueChange,
+                value = fieldValue,
+                onValueChange = { newValue ->
+                    fieldValue = newValue
+                    if (newValue.text != value) onValueChange(newValue.text)
+                },
                 modifier =
                     Modifier
                         .weight(1f)
@@ -177,7 +197,11 @@ fun CommunityCommentInput(
                             shape = CircleShape,
                             enabled = isSendEnabled,
                             role = Role.Button,
-                            onClick = onSendClick,
+                            onClick = {
+                                onSendClick()
+                                // 댓글을 보내면 키보드를 내려 방금 단 댓글이 보이게 한다.
+                                focusManager.clearFocus()
+                            },
                         ).semantics { contentDescription = sendDescription },
                 contentAlignment = Alignment.Center,
             ) {

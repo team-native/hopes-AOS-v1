@@ -96,6 +96,7 @@ private fun CommunityCommentRow(
                 isMine = comment.isMine,
                 time = communityTimeText(comment.createdAt, now),
                 modifier = Modifier.weight(1f),
+                isEdited = comment.isEdited,
             )
 
             CommunityMoreButton(onClick = onMoreClick)

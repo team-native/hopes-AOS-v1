@@ -406,6 +406,7 @@
     <string name="community_board_title">%1$s 게시판</string>
     <string name="community_author_me">%1$s (나)</string>
     <string name="community_meta">%1$s · %2$s</string>
+    <string name="community_edited">수정됨</string>
     <string name="community_like_count">좋아요 %1$d개</string>
     <string name="community_comment_count">댓글 %1$d개</string>
     <string name="community_comment_header">댓글 %1$d</string>

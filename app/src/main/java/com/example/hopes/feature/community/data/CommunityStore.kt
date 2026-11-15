@@ -117,7 +117,11 @@ class CommunityStore
 
             postsState.update { posts ->
                 posts.map { post ->
-                    if (post.id == postId) post.copy(cohort = cohort, title = title, content = content) else post
+                    if (post.id == postId) {
+                        post.copy(cohort = cohort, title = title, content = content, isEdited = true)
+                    } else {
+                        post
+                    }
                 }
             }
             return true
@@ -168,7 +172,9 @@ class CommunityStore
             if (!isOnline()) return false
 
             commentsState.update { comments ->
-                comments.map { comment -> if (comment.id == commentId) comment.copy(content = content) else comment }
+                comments.map { comment ->
+                    if (comment.id == commentId) comment.copy(content = content, isEdited = true) else comment
+                }
             }
             return true
         }

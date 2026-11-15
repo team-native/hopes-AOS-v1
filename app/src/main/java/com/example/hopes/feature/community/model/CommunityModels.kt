@@ -8,6 +8,7 @@ import java.time.LocalDateTime
  * @param cohort 게시판 기수다. null이면 "전체" 게시판 글이다.
  * @param authorCohort 작성자 기수다. 이름·학번은 공개하지 않고 기수만 보여준다.
  * @param isMine 내가 쓴 글이면 true다. 더보기에서 수정·삭제를, 아니면 신고를 보여준다.
+ * @param isEdited 수정한 글이면 true다. 시간 옆에 "수정됨"을 붙인다.
  */
 data class CommunityPost(
     val id: Long,
@@ -20,6 +21,7 @@ data class CommunityPost(
     val commentCount: Int = 0,
     val isLiked: Boolean = false,
     val isMine: Boolean = false,
+    val isEdited: Boolean = false,
 )
 
 /** 게시글에 달린 댓글이다. */
@@ -30,6 +32,7 @@ data class CommunityComment(
     val content: String,
     val createdAt: LocalDateTime,
     val isMine: Boolean = false,
+    val isEdited: Boolean = false,
 )
 
 /** 내 활동 "댓글" 탭의 한 줄이다. 댓글과 그 댓글이 달린 글의 게시판·제목을 함께 담는다. */

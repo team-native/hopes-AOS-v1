@@ -112,7 +112,7 @@ fun CommunityPostCard(
                         R.string.community_meta,
                         communityAuthorName(post.authorCohort, post.isMine),
                         communityTimeText(post.createdAt, now),
-                    ),
+                    ) + if (post.isEdited) " · " + stringResource(R.string.community_edited) else "",
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = HopesTextStyles.Caption,

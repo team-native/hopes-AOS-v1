@@ -8,11 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
@@ -59,7 +58,7 @@ fun HomeScreenContent(
             if (uiState.isLoading) {
                 // 30-2: 인사말 대신 알림 버튼만 오른쪽에 두고 나머지는 자리 표시로 채운다.
                 HopesHeaderIconButton(
-                    imageVector = Icons.Outlined.Notifications,
+                    painter = painterResource(R.drawable.ic_bell),
                     contentDescription = stringResource(R.string.home_notification),
                     onClick = { onEvent(HomeScreenEvent.NotificationClicked) },
                     modifier = Modifier.align(Alignment.End),

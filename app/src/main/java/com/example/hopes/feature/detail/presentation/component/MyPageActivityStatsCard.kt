@@ -71,16 +71,16 @@ fun MyPageActivityStatsCard(
 
 @Composable
 private fun MyPageStatItem(
-    count: Int,
+    count: Int?,
     label: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.clearAndSetSemantics { contentDescription = "$label $count" },
+        modifier = modifier.clearAndSetSemantics { contentDescription = "$label ${count ?: UNKNOWN_COUNT}" },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = count.toString(),
+            text = count?.toString() ?: UNKNOWN_COUNT,
             color = MaterialTheme.colorScheme.onSurface,
             style = HopesTextStyles.Headline,
         )
@@ -103,3 +103,6 @@ private fun StatDivider() {
         color = MaterialTheme.colorScheme.outline,
     )
 }
+
+// 대화 수를 아직 세지 못했거나 불러오지 못했을 때 숫자 자리에 둔다.
+private const val UNKNOWN_COUNT = "-"

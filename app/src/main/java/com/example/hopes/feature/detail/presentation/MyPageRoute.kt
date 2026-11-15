@@ -11,7 +11,7 @@ import com.teamnative.hopes.R
 
 /**
  * 마이페이지 서버 상태를 화면에 연결하고 하위 화면 이동을 처리한다.
- * 커뮤니티 서버 기능이 없어 활동 통계는 피그마 시안의 예시 값으로 채운다.
+ * 화면에 들어올 때마다 대화 수를 다시 센다.
  *
  * @param isProfileSavedToastVisible 프로필 수정 화면에서 저장하고 돌아왔을 때 true다. 프로필을 다시 읽고 토스트를 띄운다.
  */
@@ -30,6 +30,10 @@ fun MyPageRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.refreshChatCount()
+    }
+
     LaunchedEffect(isProfileSavedToastVisible) {
         if (isProfileSavedToastVisible) {
             viewModel.refreshProfile()
@@ -37,7 +41,7 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
-        uiState = uiState.copy(activityStats = SAMPLE_ACTIVITY_STATS),
+        uiState = uiState,
         toastMessage =
             if (isProfileSavedToastVisible) {
                 stringResource(R.string.profile_edit_saved_toast)
@@ -58,5 +62,3 @@ fun MyPageRoute(
         onNavigate = onNavigate,
     )
 }
-
-private val SAMPLE_ACTIVITY_STATS = MyPageActivityStats(postCount = 2, commentCount = 5, chatCount = 12)

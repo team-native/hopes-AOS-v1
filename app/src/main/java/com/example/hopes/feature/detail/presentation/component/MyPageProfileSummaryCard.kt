@@ -27,9 +27,11 @@ import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.figmaMediumShadow
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 마이페이지 상단의 이름 첫 글자 아바타, 이름·학과·이메일, "프로필 수정" 버튼 카드다(피그마 31). */
@@ -41,22 +43,21 @@ fun MyPageProfileSummaryCard(
     onProfileEditClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.Card)
-    val buttonShape = RoundedCornerShape(AppRadius.Field)
+    val cardShape = RoundedCornerShape(AppRadius.Profile)
+    val buttonShape = RoundedCornerShape(AppRadius.SmallButton)
+    val borderColor = LocalHopesExtendedColors.current.authFieldBorder
 
     Column(
         modifier =
             modifier
                 .fillMaxWidth()
-                .figmaSubtleShadow(cardShape)
+                .figmaMediumShadow(cardShape)
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
-                ).padding(
-                    horizontal = AppSpacing.Medium + AppSpacing.Small,
-                    vertical =
-                        AppSpacing.Medium + AppSpacing.Small + AppSpacing.XSmall,
-                ),
+                ).border(AppBorderWidth.Default, borderColor, cardShape)
+                // 피그마 Profile Card: 안쪽 여백 위·좌우 20, 아래 16에 테두리 1을 더한 값이다.
+                .padding(start = CARD_PADDING, top = CARD_PADDING, end = CARD_PADDING, bottom = CARD_PADDING_BOTTOM),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
@@ -97,9 +98,10 @@ fun MyPageProfileSummaryCard(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(AppSpacing.XSmall))
                 Text(
                     text = email,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = LocalHopesExtendedColors.current.authFieldHint,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = HopesTextStyles.Caption,
@@ -113,10 +115,10 @@ fun MyPageProfileSummaryCard(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(AppSize.SmallButton + AppSpacing.Small)
+                    .height(BUTTON_HEIGHT)
                     .border(
                         width = AppBorderWidth.Default,
-                        color = MaterialTheme.colorScheme.outline,
+                        color = borderColor,
                         shape = buttonShape,
                     ).shapeClickable(shape = buttonShape, role = Role.Button, onClick = onProfileEditClick),
             contentAlignment = Alignment.Center,
@@ -130,4 +132,10 @@ fun MyPageProfileSummaryCard(
     }
 }
 
-private val AVATAR_SIZE = 52.dp
+private val AVATAR_SIZE = 56.dp
+private val AVATAR_TEXT_GAP = 14.dp
+
+// 피그마 Profile Card: 위·좌우 20, 아래 16(+테두리 1), 프로필 수정 버튼 높이 38.
+private val CARD_PADDING = 21.dp
+private val CARD_PADDING_BOTTOM = 17.dp
+private val BUTTON_HEIGHT = 38.dp

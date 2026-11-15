@@ -2,12 +2,14 @@ package com.example.hopes.feature.detail.presentation.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,11 +27,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.teamnative.hopes.R
 
 /** 마이페이지 메뉴 한 줄의 표시 정보다. */
 data class MyPageMenuItem(
@@ -45,7 +50,7 @@ fun MyPageMenuCard(
     items: List<MyPageMenuItem>,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.Card)
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
 
     Column(
         modifier =
@@ -54,14 +59,13 @@ fun MyPageMenuCard(
                 .figmaSubtleShadow(cardShape)
                 .clip(cardShape)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(vertical = AppSpacing.Item),
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                // 피그마 List Card: 안쪽 여백 좌우 17·위아래 14에 테두리 1을 더한 값이다.
+                .padding(horizontal = CARD_PADDING_HORIZONTAL, vertical = CARD_PADDING_VERTICAL),
     ) {
         items.forEachIndexed { index, item ->
             if (index > 0) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = AppSpacing.Medium),
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = DIVIDER_ALPHA),
-                )
+                HorizontalDivider(color = LocalHopesExtendedColors.current.authFieldBorder)
             }
 
             MyPageMenuRow(item = item)
@@ -76,8 +80,8 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
             Modifier
                 .fillMaxWidth()
                 .clickable(role = Role.Button, onClick = item.onClick)
-                // 피그마 31 메뉴 한 줄 높이(66)에 맞춘 여백이다.
-                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item + AppSpacing.XSmall),
+                // 피그마 List Row: 위아래 12, 아이콘 칩 36과 두 줄 글(24+2+16)로 한 줄 높이가 66이다.
+                .padding(vertical = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -86,7 +90,7 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
                     .size(ICON_CONTAINER_SIZE)
                     .background(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(AppRadius.SmallButton),
+                        shape = RoundedCornerShape(AppRadius.IconChip),
                     ),
             contentAlignment = Alignment.Center,
         ) {
@@ -95,7 +99,7 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
                 painter = painterResource(item.icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(AppIconSize.Medium),
+                modifier = Modifier.size(MENU_ICON_SIZE),
             )
         }
 
@@ -105,8 +109,10 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
             Text(
                 text = item.title,
                 color = MaterialTheme.colorScheme.onSurface,
-                style = HopesTextStyles.BodyStrong,
+                style = HopesTextStyles.Body,
             )
+
+            Spacer(modifier = Modifier.height(AppSpacing.XSmall))
 
             Text(
                 text = item.description,
@@ -116,13 +122,17 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
         }
 
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            painter = painterResource(R.drawable.ic_chevron_right),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(AppIconSize.Medium),
+            tint = LocalHopesExtendedColors.current.authFieldHint,
+            modifier = Modifier.size(MENU_ICON_SIZE),
         )
     }
 }
 
 private val ICON_CONTAINER_SIZE = 36.dp
-private const val DIVIDER_ALPHA = 0.6f
+
+// 피그마 List Card의 안쪽 여백과 18dp 아이콘이다.
+private val CARD_PADDING_HORIZONTAL = 18.dp
+private val CARD_PADDING_VERTICAL = 15.dp
+private val MENU_ICON_SIZE = 18.dp

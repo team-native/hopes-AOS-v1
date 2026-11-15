@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -92,8 +93,9 @@ fun MyPageScreenContent(
                             bottom = AppSpacing.Section,
                         ),
             ) {
+                // 피그마 Header: 위 4, 제목 Display 28/38과 44dp 설정 버튼.
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.Small),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
@@ -103,11 +105,11 @@ fun MyPageScreenContent(
                                 .weight(1f)
                                 .semantics { heading() },
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = HopesTextStyles.PageTitle,
+                        style = HopesTextStyles.Display,
                     )
 
                     HopesHeaderIconButton(
-                        imageVector = Icons.Outlined.Settings,
+                        painter = painterResource(R.drawable.ic_gear),
                         contentDescription = stringResource(R.string.navigation_settings),
                         onClick = { onEvent(MyPageScreenEvent.AppSettingsClicked) },
                     )
@@ -148,7 +150,7 @@ fun MyPageScreenContent(
 }
 
 // 피그마 31의 카드 사이 간격이다.
-private val CARD_GAP = 18.dp
+private val CARD_GAP = 16.dp
 
 @Preview(showBackground = true, name = "31 마이페이지")
 @Composable

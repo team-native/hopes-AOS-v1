@@ -29,6 +29,7 @@ import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.example.hopes.ui.theme.Pretendard
 import com.teamnative.hopes.R
 
 /** 이메일 필드 아래에서 인증번호 입력과 발송 요청을 함께 제공한다. 회원가입과 비밀번호 재설정 화면이 공유한다. */
@@ -63,7 +64,7 @@ fun AuthVerificationCodeField(
                 Text(
                     text = stringResource(R.string.verification_code_hint),
                     color = extendedColors.authFieldHint,
-                    style = TextStyle(fontSize = 15.sp),
+                    style = TextStyle(fontFamily = Pretendard, fontSize = 15.sp),
                 )
             }
 
@@ -77,6 +78,7 @@ fun AuthVerificationCodeField(
                 singleLine = true,
                 textStyle =
                     TextStyle(
+                        fontFamily = Pretendard,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 15.sp,
                     ),
@@ -113,7 +115,7 @@ fun AuthVerificationCodeField(
             Text(
                 text = stringResource(R.string.verification_send),
                 color = MaterialTheme.colorScheme.onPrimary,
-                style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
+                style = TextStyle(fontFamily = Pretendard, fontSize = 14.sp, fontWeight = FontWeight.SemiBold),
             )
         }
     }

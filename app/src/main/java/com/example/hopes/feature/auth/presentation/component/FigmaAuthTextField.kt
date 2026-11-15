@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
+import com.example.hopes.ui.theme.Pretendard
 import com.teamnative.hopes.R
 
 /** 40dp 높이의 피그마 스타일 입력 필드다. 실제 폭은 호출부의 modifier가 결정한다. */
@@ -53,6 +54,7 @@ fun FigmaAuthTextField(
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
     val fieldTextStyle =
         TextStyle(
+            fontFamily = Pretendard,
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 15.sp,
             fontWeight = FontWeight.Normal,

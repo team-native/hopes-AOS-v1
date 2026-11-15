@@ -426,8 +426,6 @@
     <string name="community_post_deleted_title">삭제된 게시글이에요</string>
     <string name="community_post_deleted_description">작성자가 삭제했거나 운영 정책에 따라 숨겨진 글이에요.</string>
     <string name="community_back_to_list">목록으로</string>
-    <string name="community_like">좋아요</string>
-    <string name="community_liked">좋아요 취소</string>
     <string name="community_comment_placeholder">댓글 달기</string>
     <string name="community_comment_send">댓글 등록</string>
     <string name="community_comment_editing">댓글 수정 중</string>

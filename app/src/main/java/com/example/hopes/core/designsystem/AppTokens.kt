@@ -26,6 +26,15 @@ object AppRadius {
 
     /** 피그마 홈 히어로 카드 모서리다. */
     val Hero = 24.dp
+
+    /** 피그마 radius-lg: 통계·목록 카드 모서리다. */
+    val Panel = 24.dp
+
+    /** 피그마 radius-xl: 마이페이지 프로필 카드 모서리다. */
+    val Profile = 28.dp
+
+    /** 피그마 radius-sm: 목록 줄 아이콘 칩 모서리다. */
+    val IconChip = 12.dp
     val ListCard = 20.dp
     val Button = 12.dp
 

@@ -27,14 +27,32 @@ fun Modifier.figmaLoginLogoShadow(shape: Shape): Modifier =
         alpha = 0.08f
     }
 
-/** Figma 원본의 0 6 16 -10 rgba(13, 26, 46, .07) 보조 카드 그림자를 재현한다. */
+/** 피그마 v1.5 Cloud/sm: (0, 4, blur 16, #1A4080 5%)와 (0, 1, blur 3, #1A4080 3%) 두 겹이다. */
 fun Modifier.figmaSubtleShadow(shape: Shape): Modifier =
     dropShadow(shape) {
         radius = 16.dp.toPx()
-        spread = (-10).dp.toPx()
-        offset = Offset(x = 0f, y = 6.dp.toPx())
-        color = FIGMA_SHADOW_COLOR
-        alpha = 0.07f
+        offset = Offset(x = 0f, y = 4.dp.toPx())
+        color = FIGMA_CLOUD_COLOR
+        alpha = 0.05f
+    }.dropShadow(shape) {
+        radius = 3.dp.toPx()
+        offset = Offset(x = 0f, y = 1.dp.toPx())
+        color = FIGMA_CLOUD_COLOR
+        alpha = 0.03f
+    }
+
+/** 피그마 v1.5 Cloud/md: (0, 8, blur 28, #1A4080 9%)와 (0, 2, blur 6, #1A4080 4%) 두 겹이다. */
+fun Modifier.figmaMediumShadow(shape: Shape): Modifier =
+    dropShadow(shape) {
+        radius = 28.dp.toPx()
+        offset = Offset(x = 0f, y = 8.dp.toPx())
+        color = FIGMA_CLOUD_COLOR
+        alpha = 0.09f
+    }.dropShadow(shape) {
+        radius = 6.dp.toPx()
+        offset = Offset(x = 0f, y = 2.dp.toPx())
+        color = FIGMA_CLOUD_COLOR
+        alpha = 0.04f
     }
 
 /** 로그인 시트에 쓰이는 Figma 원본의 0 14 32 -16 rgba(13, 26, 46, .12) 그림자다. */
@@ -68,3 +86,5 @@ fun Modifier.figmaPeekSheetShadow(shape: Shape): Modifier =
     }
 
 private val FIGMA_SHADOW_COLOR = Color(0xFF0D1A2E)
+
+private val FIGMA_CLOUD_COLOR = Color(0xFF1A4080)

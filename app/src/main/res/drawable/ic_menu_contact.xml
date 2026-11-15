@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 마이페이지 메뉴 아이콘(피그마 31). Lucide 아이콘(ISC 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 문의하기(mail) 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
     <path
-        android:pathData="M22,7l-8.991,5.727a2,2 0 0,1 -2.009,0L2,7"
-        android:strokeWidth="2"
+        android:pathData="M3.75 3H14.25C15.4926 3 16.5 4.00736 16.5 5.25V12.75C16.5 13.9926 15.4926 15 14.25 15H3.75C2.50736 15 1.5 13.9926 1.5 12.75V5.25C1.5 4.00736 2.50736 3 3.75 3Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M4,4h16a2,2 0 0,1 2,2v12a2,2 0 0,1 -2,2H4a2,2 0 0,1 -2,-2V6a2,2 0 0,1 2,-2z"
-        android:strokeWidth="2"
+        android:pathData="M16.5 5.25L9 9.75L1.5 5.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

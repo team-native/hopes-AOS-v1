@@ -1,61 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 마이페이지 메뉴 아이콘(피그마 31). Tabler 아이콘(MIT 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 개인 설정(sliders) 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
     <path
-        android:pathData="M12,6a2,2 0 1,0 4,0a2,2 0 1,0 -4,0"
-        android:strokeWidth="2"
+        android:pathData="M3 4.5H9.75"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M4,6h8"
-        android:strokeWidth="2"
+        android:pathData="M12.75 4.5H15"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M16,6h4"
-        android:strokeWidth="2"
+        android:pathData="M3 9H5.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M6,12a2,2 0 1,0 4,0a2,2 0 1,0 -4,0"
-        android:strokeWidth="2"
+        android:pathData="M8.25 9H15"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M4,12h2"
-        android:strokeWidth="2"
+        android:pathData="M3 13.5H11.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M10,12h10"
-        android:strokeWidth="2"
+        android:pathData="M14.25 13.5H15"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M15,18a2,2 0 1,0 4,0a2,2 0 1,0 -4,0"
-        android:strokeWidth="2"
+        android:pathData="M12.75 4.5C12.75 5.32843 12.0784 6 11.25 6C10.4216 6 9.75 5.32843 9.75 4.5C9.75 3.67157 10.4216 3 11.25 3C12.0784 3 12.75 3.67157 12.75 4.5Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M4,18h11"
-        android:strokeWidth="2"
+        android:pathData="M8.25 9C8.25 9.82843 7.57843 10.5 6.75 10.5C5.92157 10.5 5.25 9.82843 5.25 9C5.25 8.17157 5.92157 7.5 6.75 7.5C7.57843 7.5 8.25 8.17157 8.25 9Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M19,18h1"
-        android:strokeWidth="2"
+        android:pathData="M14.25 13.5C14.25 14.3284 13.5784 15 12.75 15C11.9216 15 11.25 14.3284 11.25 13.5C11.25 12.6716 11.9216 12 12.75 12C13.5784 12 14.25 12.6716 14.25 13.5Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

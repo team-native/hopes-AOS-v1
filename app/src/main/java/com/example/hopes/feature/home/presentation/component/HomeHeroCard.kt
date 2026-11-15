@@ -29,7 +29,7 @@ import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.figmaRaisedShadow
+import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
@@ -50,7 +50,7 @@ fun HomeHeroCard(
         modifier =
             modifier
                 .fillMaxWidth()
-                .figmaRaisedShadow(cardShape)
+                .figmaSubtleShadow(cardShape)
                 .clip(cardShape)
                 .background(Brush.linearGradient(listOf(surfaceColor, accentColor)))
                 .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape),

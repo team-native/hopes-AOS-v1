@@ -43,7 +43,8 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 
 | 항목 | 지금 동작 | 필요한 API | 코드 위치 |
 |---|---|---|---|
-| 작성글 · 댓글 · 대화 수 | 예시 값 2 / 5 / 12 | 활동 통계 | `MyPageRoute`의 `SAMPLE_ACTIVITY_STATS` |
+| 작성글 · 댓글 수 | 커뮤니티 임시 저장소의 내 글 · 내 댓글 수 | 커뮤니티 API를 붙이면 저장소 대신 서버 값 | `MyPageViewModel`의 `communityStore.myPosts` / `myComments` |
+| 대화 수 | 서버 대화 목록(`GET` 대화 목록)을 마지막 페이지까지 넘기며 셈. 마이페이지에 들어올 때마다 다시 셈. 실패하면 "-" | 대화 목록에 전체 개수(`totalElements` 등)가 생기면 한 번만 부르도록 바꾸기 | `CountChatsUseCase`, `MyPageViewModel.refreshChatCount` |
 | 내 활동 | 내 활동 화면(18)으로 이동 | 위 커뮤니티 "내 활동" 참고 | `MyPageRoute`의 `MyActivityClicked` |
 | 기수 ("10기") | 표시 안 함 | 프로필에 기수 필드 | `UserProfile`에 없음 |
 

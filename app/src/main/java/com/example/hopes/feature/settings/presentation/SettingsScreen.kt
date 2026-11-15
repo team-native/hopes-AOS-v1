@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesSubScreenFrame
 import com.example.hopes.feature.settings.presentation.component.SettingsCard
@@ -61,7 +62,7 @@ fun SettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
+        Spacer(modifier = Modifier.height(CARD_GAP))
 
         SettingsCard {
             SettingsNavigationRow(
@@ -80,7 +81,7 @@ fun SettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
+        Spacer(modifier = Modifier.height(CARD_GAP))
 
         SettingsCard {
             SettingsNavigationRow(
@@ -120,3 +121,6 @@ private fun SettingsScreenPreview() {
         )
     }
 }
+
+// 피그마 32의 카드 사이 간격이다(마이페이지와 같음).
+private val CARD_GAP = 18.dp

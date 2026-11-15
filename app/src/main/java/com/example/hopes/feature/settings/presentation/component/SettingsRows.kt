@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
@@ -52,7 +53,8 @@ fun SettingsCard(
                 .figmaSubtleShadow(cardShape)
                 .clip(cardShape)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(vertical = AppSpacing.Small),
+                // 피그마 32 카드 위아래 여백이다.
+                .padding(vertical = AppSpacing.Item),
         content = content,
     )
 }
@@ -80,6 +82,8 @@ fun SettingsToggleRow(
         icon = icon,
         title = title,
         description = description,
+        // 피그마 32의 스위치 행은 이동 행보다 조금 더 높다(65).
+        verticalPadding = AppSpacing.Item + AppSpacing.XSmall,
         modifier =
             Modifier.toggleable(
                 value = isChecked,
@@ -153,6 +157,7 @@ private fun SettingsRowLayout(
     description: String?,
     modifier: Modifier = Modifier,
     contentColor: Color? = null,
+    verticalPadding: Dp = AppSpacing.Item,
     trailing: @Composable RowScope.() -> Unit,
 ) {
     val accentColor = contentColor ?: MaterialTheme.colorScheme.primary
@@ -161,7 +166,7 @@ private fun SettingsRowLayout(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item),
+                .padding(horizontal = AppSpacing.Medium, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(

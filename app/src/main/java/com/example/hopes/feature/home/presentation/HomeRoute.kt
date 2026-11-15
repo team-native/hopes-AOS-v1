@@ -16,19 +16,20 @@ import com.teamnative.hopes.R
 fun HomeRoute(
     onNavigate: (HopesDestination) -> Unit,
     onNotificationClick: () -> Unit,
+    onPopularPostClick: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val samplePopularPosts =
         listOf(
             HomePopularPost(
-                id = 1,
+                id = 2,
                 cohort = null,
                 title = stringResource(R.string.home_sample_post_interview),
                 likeCount = 34,
             ),
             HomePopularPost(
-                id = 2,
+                id = 3,
                 cohort = 9,
                 title = stringResource(R.string.home_sample_post_job),
                 likeCount = 21,
@@ -45,8 +46,7 @@ fun HomeRoute(
 
                 HomeScreenEvent.PopularPostsMoreClicked -> onNavigate(HopesDestination.Community)
 
-                // 게시글 상세 화면이 생기기 전까지는 커뮤니티 탭으로 보낸다.
-                is HomeScreenEvent.PopularPostClicked -> onNavigate(HopesDestination.Community)
+                is HomeScreenEvent.PopularPostClicked -> onPopularPostClick(event.postId)
 
                 // 인기글 API 연동 전이라 실패 상태가 생기지 않는다. 연동 시 여기서 다시 불러온다.
                 HomeScreenEvent.PopularPostsRetryClicked -> Unit

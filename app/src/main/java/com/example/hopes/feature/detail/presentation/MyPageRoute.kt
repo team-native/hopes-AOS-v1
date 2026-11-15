@@ -23,6 +23,7 @@ fun MyPageRoute(
     onNavigateToPersonalSettings: () -> Unit,
     onNavigateToNotifications: () -> Unit,
     onNavigateToContact: () -> Unit,
+    onNavigateToMyActivity: () -> Unit,
     isProfileSavedToastVisible: Boolean,
     onProfileSavedToastDismiss: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel(),
@@ -47,16 +48,10 @@ fun MyPageRoute(
         onEvent = { event ->
             when (event) {
                 MyPageScreenEvent.AppSettingsClicked -> onNavigateToAppSettings()
-
                 MyPageScreenEvent.ProfileEditClicked -> onNavigateToProfileEdit()
-
-                // 내 활동 화면이 생기기 전까지는 커뮤니티 탭으로 보낸다.
-                MyPageScreenEvent.MyActivityClicked -> onNavigate(HopesDestination.Community)
-
+                MyPageScreenEvent.MyActivityClicked -> onNavigateToMyActivity()
                 MyPageScreenEvent.PersonalSettingsClicked -> onNavigateToPersonalSettings()
-
                 MyPageScreenEvent.NotificationClicked -> onNavigateToNotifications()
-
                 MyPageScreenEvent.ContactClicked -> onNavigateToContact()
             }
         },

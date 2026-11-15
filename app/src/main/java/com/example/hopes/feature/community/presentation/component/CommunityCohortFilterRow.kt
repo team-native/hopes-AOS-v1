@@ -48,14 +48,14 @@ fun CommunityCohortFilterRow(
                 .selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
     ) {
-        CommunityCohortChip(
+        CommunityFilterChip(
             text = stringResource(R.string.community_cohort_all),
             isSelected = selectedCohort == null,
             onClick = { onCohortSelect(null) },
         )
 
         cohorts.forEach { cohort ->
-            CommunityCohortChip(
+            CommunityFilterChip(
                 text = stringResource(R.string.community_cohort, cohort),
                 isSelected = selectedCohort == cohort,
                 onClick = { onCohortSelect(cohort) },
@@ -64,8 +64,9 @@ fun CommunityCohortFilterRow(
     }
 }
 
+/** 고르면 연한 파란 배경이 되는 알약 모양 칩이다. 기수 필터와 내 활동 탭(피그마 18)에 쓴다. 부모에 `selectableGroup()`을 붙인다. */
 @Composable
-private fun CommunityCohortChip(
+fun CommunityFilterChip(
     text: String,
     isSelected: Boolean,
     onClick: () -> Unit,

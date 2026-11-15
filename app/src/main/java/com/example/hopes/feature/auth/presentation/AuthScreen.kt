@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.hopes.feature.auth.presentation.onboarding.OnboardingScreen
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreen
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
@@ -26,6 +27,7 @@ fun AuthScreen(
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
     onNavigateGuide: () -> Unit,
+    onOnboardingStart: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
     signupContent: @Composable () -> Unit,
@@ -51,6 +53,10 @@ fun AuthScreen(
                     )
                 }
             }
+        }
+
+        AuthStep.Onboarding -> {
+            OnboardingScreen(onStartClick = onOnboardingStart)
         }
 
         AuthStep.PasswordResetRequest -> {

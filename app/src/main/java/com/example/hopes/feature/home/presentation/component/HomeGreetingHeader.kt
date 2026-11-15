@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +32,8 @@ fun HomeGreetingHeader(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top,
     ) {
-        Column(modifier = Modifier.weight(1f)) {
+        // 피그마 Greeting: 위 8, 제목 30 + 간격 4 + 부제 20(알림 버튼은 맨 위에 붙는다).
+        Column(modifier = Modifier.weight(1f).padding(top = AppSpacing.Compact)) {
             Text(
                 text =
                     if (userName != null) {
@@ -44,7 +46,7 @@ fun HomeGreetingHeader(
                 style = HopesTextStyles.Headline,
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(AppSpacing.Small))
 
             Text(
                 text = stringResource(R.string.home_greeting_subtitle),

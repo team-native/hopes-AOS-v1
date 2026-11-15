@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 설정 화면 아이콘(피그마). Lucide 아이콘(ISC 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 다크 모드(moon) 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
     <path
-        android:pathData="M20.985,12.486a9,9 0 1,1 -9.473,-9.472c0.405,-0.022 0.617,0.46 0.402,0.803a6,6 0 0,0 8.268,8.268c0.344,-0.215 0.825,-0.004 0.803,0.401"
-        android:strokeWidth="2"
+        android:pathData="M9 2.25C8.10489 3.14511 7.60203 4.35913 7.60203 5.625C7.60203 6.89087 8.10489 8.10489 9 9C9.89511 9.89511 11.1091 10.398 12.375 10.398C13.6409 10.398 14.8549 9.89511 15.75 9C15.75 10.335 15.3541 11.6401 14.6124 12.7501C13.8707 13.8601 12.8165 14.7253 11.5831 15.2362C10.3497 15.7471 8.99251 15.8808 7.68314 15.6203C6.37377 15.3599 5.17103 14.717 4.22703 13.773C3.28302 12.829 2.64015 11.6262 2.3797 10.3169C2.11925 9.00749 2.25292 7.65029 2.76381 6.41689C3.2747 5.18349 4.13987 4.12928 5.2499 3.38758C6.35993 2.64588 7.66498 2.25 9 2.25Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

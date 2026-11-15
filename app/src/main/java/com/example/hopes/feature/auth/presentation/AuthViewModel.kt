@@ -51,16 +51,23 @@ class AuthViewModel
                 }
 
                 is AuthScreenEvent.SignupCompleted -> {
-                    // 가입한 이메일을 로그인 입력란에 미리 채우고, 서버가 준 가입 완료 문구를 로그인 화면에 보여준다.
+                    // 가입 직후 온보딩(피그마 04)을 한 번 보여 준다. 가입한 이메일을 로그인 입력란에 미리 채우고,
+                    // 서버가 준 가입 완료 문구는 온보딩 뒤 로그인 화면에 보여준다.
                     updateState {
                         copy(
-                            authStep = AuthStep.Login,
+                            authStep = AuthStep.Onboarding,
                             email = event.email,
                             password = "",
                             errorMessage = null,
                             isLoginOffline = false,
                             statusMessage = event.message,
                         )
+                    }
+                }
+
+                AuthScreenEvent.OnboardingStartClicked -> {
+                    updateState {
+                        copy(authStep = AuthStep.Login, errorMessage = null, isLoginOffline = false)
                     }
                 }
 

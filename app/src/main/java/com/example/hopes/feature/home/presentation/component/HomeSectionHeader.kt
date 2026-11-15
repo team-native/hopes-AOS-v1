@@ -26,7 +26,8 @@ fun HomeSectionHeader(
     onActionClick: () -> Unit = {},
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        // 피그마 Section Header: 위 16 + 제목 26.
+        modifier = modifier.fillMaxWidth().padding(top = AppSpacing.Medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -45,7 +46,7 @@ fun HomeSectionHeader(
                 modifier =
                     Modifier
                         .clickable(role = Role.Button, onClick = onActionClick)
-                        .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Compact),
+                        .padding(start = AppSpacing.Compact, top = AppSpacing.XSmall, bottom = AppSpacing.XSmall),
                 color = MaterialTheme.colorScheme.primary,
                 style = HopesTextStyles.LabelStrong,
             )

@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
@@ -37,6 +37,7 @@ import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 하위 화면 헤더 오른쪽의 흰색 글자 버튼("편집", "저장") 정보다. */
@@ -71,7 +72,7 @@ fun HopesSubScreenFrame(
             modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .statusBarsPadding()
+                .figmaStatusBarsPadding()
                 .navigationBarsPadding()
                 .imePadding(),
     ) {
@@ -95,7 +96,7 @@ fun HopesSubScreenFrame(
                         .verticalScroll(scrollState)
                         .padding(
                             start = AppSpacing.ScreenHorizontal,
-                            top = AppSpacing.Item,
+                            top = AppSpacing.Medium,
                             end = AppSpacing.ScreenHorizontal,
                             bottom = AppSpacing.Section,
                         ),
@@ -140,26 +141,33 @@ private fun HopesSubScreenHeader(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .height(AppSize.TopBar + AppSpacing.Compact)
-                .padding(start = AppSpacing.Compact + AppSpacing.Small, end = AppSpacing.ScreenHorizontal),
+                .padding(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = AppSpacing.SystemBarToContent,
+                    end = AppSpacing.ScreenHorizontal,
+                ).height(AppSize.HeaderButton),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier =
                 Modifier
-                    .size(AppSize.IconButton)
-                    .shapeClickable(shape = CircleShape, role = Role.Button, onClick = onBackClick),
+                    .size(AppSize.HeaderButton)
+                    .shapeClickable(
+                        shape = RoundedCornerShape(AppRadius.HeaderButton),
+                        role = Role.Button,
+                        onClick = onBackClick,
+                    ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                imageVector = Icons.Filled.ChevronLeft,
+                painter = painterResource(R.drawable.ic_left),
                 contentDescription = stringResource(R.string.back),
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = LocalHopesExtendedColors.current.iconDefault,
                 modifier = Modifier.size(AppIconSize.Medium),
             )
         }
 
-        Spacer(modifier = Modifier.size(AppSpacing.Small))
+        Spacer(modifier = Modifier.size(AppSpacing.Item))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(

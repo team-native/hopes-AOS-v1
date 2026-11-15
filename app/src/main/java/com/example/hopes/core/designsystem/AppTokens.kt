@@ -6,7 +6,9 @@ import androidx.compose.ui.unit.dp
 object AppSpacing {
     val ScreenHorizontal = 20.dp
     val ScreenVertical = 20.dp
-    val SystemBarToContent = 15.dp
+
+    /** 피그마 Content의 위쪽 여백(상태바 아래 62 지점부터 8)이다. 상태바 높이는 figmaStatusBarsPadding이 맞춘다. */
+    val SystemBarToContent = 8.dp
     val Section = 24.dp
     val Item = 12.dp
     val Compact = 8.dp
@@ -24,6 +26,15 @@ object AppRadius {
 
     /** 피그마 홈 히어로 카드 모서리다. */
     val Hero = 24.dp
+
+    /** 피그마 radius-lg: 통계·목록 카드 모서리다. */
+    val Panel = 24.dp
+
+    /** 피그마 radius-xl: 마이페이지 프로필 카드 모서리다. */
+    val Profile = 28.dp
+
+    /** 피그마 radius-sm: 목록 줄 아이콘 칩 모서리다. */
+    val IconChip = 12.dp
     val ListCard = 20.dp
     val Button = 12.dp
 
@@ -33,7 +44,7 @@ object AppRadius {
     val Field = 16.dp
     val Sheet = 28.dp
     val SmallButton = 10.dp
-    val HeaderButton = 12.dp
+    val HeaderButton = 14.dp
 }
 
 object AppIconSize {
@@ -60,6 +71,12 @@ object AppSize {
     /** 하단 탭 줄 높이다. 피그마 하단바 86에서 홈 인디케이터 영역을 뺀 값(위 10 + 탭 54)이다. */
     val BottomNavigation = 64.dp
     val IconButton = 40.dp
+
+    /** 피그마 iOS 상태바 높이다. 콘텐츠는 이 아래에서 시작한다. */
+    val FigmaStatusBar = 62.dp
+
+    /** 피그마 홈 알림 같은 헤더 아이콘 버튼 크기다. */
+    val HeaderButton = 44.dp
 }
 
 object AppBorderWidth {

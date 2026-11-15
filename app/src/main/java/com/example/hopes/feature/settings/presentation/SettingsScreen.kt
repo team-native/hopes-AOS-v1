@@ -75,7 +75,7 @@ fun SettingsScreen(
             SettingsDivider()
 
             SettingsNavigationRow(
-                icon = rememberVectorPainter(Icons.Outlined.Shield),
+                icon = painterResource(R.drawable.ic_settings_info),
                 title = stringResource(R.string.privacy_policy),
                 onClick = { onEvent(SettingsScreenEvent.PrivacyPolicyClicked) },
             )
@@ -83,9 +83,13 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(CARD_GAP))
 
-        SettingsCard {
+        // 피그마 Logout Card: 좌우 16(+테두리 1), 위아래 여백 없이 행 위아래 14.
+        SettingsCard(
+            horizontalPadding = LOGOUT_CARD_PADDING_HORIZONTAL,
+            verticalPadding = LOGOUT_CARD_PADDING_VERTICAL,
+        ) {
             SettingsNavigationRow(
-                icon = rememberVectorPainter(Icons.AutoMirrored.Outlined.Logout),
+                icon = painterResource(R.drawable.ic_logout),
                 title = stringResource(R.string.logout),
                 contentColor = MaterialTheme.colorScheme.error,
                 onClick = { onEvent(SettingsScreenEvent.LogoutClicked) },
@@ -123,4 +127,7 @@ private fun SettingsScreenPreview() {
 }
 
 // 피그마 32의 카드 사이 간격이다(마이페이지와 같음).
-private val CARD_GAP = 18.dp
+private val CARD_GAP = 16.dp
+
+private val LOGOUT_CARD_PADDING_HORIZONTAL = 17.dp
+private val LOGOUT_CARD_PADDING_VERTICAL = 1.dp

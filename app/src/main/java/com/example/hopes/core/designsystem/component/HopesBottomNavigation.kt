@@ -36,6 +36,7 @@ import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.navigation.hopesTabDestinations
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 최상위 다섯 탭(홈·채팅·커뮤니티·기록·마이페이지)으로 이동하는 공통 하단 탐색 바다. 선택된 탭은 연한 파란 배경으로 감싼다. */
@@ -52,21 +53,21 @@ fun HopesBottomNavigation(
                 .background(MaterialTheme.colorScheme.surface)
                 .windowInsetsPadding(NavigationBarDefaults.windowInsets),
     ) {
-        HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = DIVIDER_ALPHA))
+        HorizontalDivider(color = LocalHopesExtendedColors.current.authFieldBorder)
 
         Row(
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .height(AppSize.BottomNavigation)
-                    // 피그마 하단바(402x86)는 위 10, 탭 54, 아래 홈 인디케이터 영역이다.
+                    // 피그마 하단바(402x86)는 위 8, 탭 56(위아래 8·아이콘 22·간격 4·라벨 14), 아래 홈 인디케이터 영역이다.
                     // 홈 인디케이터 자리는 안드로이드 제스처 바 여백(windowInsetsPadding)이 대신한다.
                     .padding(
                         start = NAVIGATION_EDGE_PADDING,
                         end = NAVIGATION_EDGE_PADDING,
                         top = NAVIGATION_EDGE_PADDING,
                     ).selectableGroup(),
-            horizontalArrangement = Arrangement.spacedBy(AppSpacing.Small),
+            horizontalArrangement = Arrangement.spacedBy(AppSpacing.XSmall),
         ) {
             hopesTabDestinations.forEach { destination ->
                 HopesBottomNavigationItem(
@@ -152,8 +153,6 @@ private fun HopesDestination.labelResourceId() =
         else -> R.string.navigation_home
     }
 
-private const val DIVIDER_ALPHA = 0.5f
-
 @Preview(showBackground = true)
 @Composable
 private fun HopesBottomNavigationPreview() {
@@ -176,4 +175,4 @@ private fun HopesBottomNavigationNarrowPreview() {
     }
 }
 
-private val NAVIGATION_EDGE_PADDING = 10.dp
+private val NAVIGATION_EDGE_PADDING = 8.dp

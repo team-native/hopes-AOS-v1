@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesOfflineBanner
-import com.example.hopes.core.designsystem.component.figmaTopSheetShadow
+import com.example.hopes.core.designsystem.component.figmaPeekSheetShadow
 import com.example.hopes.feature.auth.presentation.component.AuthHeroHeadline
 import com.example.hopes.feature.auth.presentation.component.AuthLinkPrompt
 import com.example.hopes.feature.auth.presentation.component.AuthLoginHeading
@@ -41,6 +42,7 @@ import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionBu
 import com.example.hopes.feature.auth.presentation.content.AuthLoginFieldsContent
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
@@ -101,7 +103,7 @@ fun AuthLoginSheet(
                     Modifier
                         .fillMaxWidth()
                         .then(if (isExpanded) Modifier.weight(1f).statusBarsPadding() else Modifier)
-                        .then(if (isExpanded) Modifier else Modifier.figmaTopSheetShadow(sheetShape))
+                        .then(if (isExpanded) Modifier else Modifier.figmaPeekSheetShadow(sheetShape))
                         .background(
                             color = MaterialTheme.colorScheme.surface,
                             shape = if (isExpanded) RectangleShape else sheetShape,
@@ -114,16 +116,27 @@ fun AuthLoginSheet(
                             horizontal = if (isExpanded) EXPANDED_HORIZONTAL_PADDING else SHEET_HORIZONTAL_PADDING,
                         ),
             ) {
-                Spacer(
-                    modifier =
-                        Modifier.height(
-                            when {
-                                !isExpanded -> AppSpacing.Item
-                                uiState.isOffline -> EXPANDED_TOP_GAP + OFFLINE_TITLE_OFFSET
-                                else -> EXPANDED_TOP_GAP
-                            },
-                        ),
-                )
+                if (!isExpanded) {
+                    // 시트임을 분명히 보여 주는 손잡이다(피그마에는 없는 요소).
+                    Box(
+                        modifier =
+                            Modifier
+                                .padding(top = HANDLE_TOP, bottom = HANDLE_BOTTOM)
+                                .align(Alignment.CenterHorizontally)
+                                .size(width = HANDLE_WIDTH, height = HANDLE_HEIGHT)
+                                .background(
+                                    LocalHopesExtendedColors.current.authHandle,
+                                    RoundedCornerShape(HANDLE_HEIGHT),
+                                ),
+                    )
+                } else {
+                    Spacer(
+                        modifier =
+                            Modifier.height(
+                                if (uiState.isOffline) EXPANDED_TOP_GAP + OFFLINE_TITLE_OFFSET else EXPANDED_TOP_GAP,
+                            ),
+                    )
+                }
 
                 AuthLoginHeading()
 
@@ -211,6 +224,12 @@ private val EXPANDED_HORIZONTAL_PADDING = 20.dp
 private val EXPANDED_TOP_GAP = 16.dp
 private val OFFLINE_TITLE_OFFSET = 46.dp
 private val OFFLINE_BANNER_TOP = 16.dp
+
+// 기본 시트 위쪽 손잡이 바 크기와 위아래 간격.
+private val HANDLE_WIDTH = 40.dp
+private val HANDLE_HEIGHT = 4.dp
+private val HANDLE_TOP = 10.dp
+private val HANDLE_BOTTOM = 14.dp
 
 @Preview(showBackground = true, name = "02 로그인 시트")
 @Composable

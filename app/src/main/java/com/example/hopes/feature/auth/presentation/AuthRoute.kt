@@ -25,7 +25,7 @@ fun AuthRoute(
         }
     }
 
-    // 시작 화면과 로그인 화면이 분리되면서, 로그인에서 뒤로가기는 앱 종료 대신 시작 화면으로 돌아간다.
+    // 로그인 시트가 열려 있으면 뒤로가기는 앱 종료 대신 시트를 닫고 시작 화면으로 돌아간다.
     BackHandler(enabled = uiState.value.authStep == AuthStep.Login) {
         viewModel.onEvent(AuthScreenEvent.GuideRequested)
     }
@@ -71,6 +71,7 @@ fun AuthRoute(
         },
         onNavigateSignup = { viewModel.onEvent(AuthScreenEvent.SignUpRequested) },
         onNavigateLogin = { viewModel.onEvent(AuthScreenEvent.LoginRequested) },
+        onNavigateGuide = { viewModel.onEvent(AuthScreenEvent.GuideRequested) },
         passwordResetUiState =
             PasswordResetUiState(
                 email = uiState.value.passwordResetEmail,

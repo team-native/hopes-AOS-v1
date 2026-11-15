@@ -1,6 +1,14 @@
 package com.example.hopes.feature.auth.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreen
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetScreenEvent
 import com.example.hopes.feature.auth.presentation.passwordreset.PasswordResetUiState
@@ -17,23 +25,32 @@ fun AuthScreen(
     onLoginEvent: (AuthLoginScreenEvent) -> Unit,
     onNavigateSignup: () -> Unit,
     onNavigateLogin: () -> Unit,
+    onNavigateGuide: () -> Unit,
     passwordResetUiState: PasswordResetUiState,
     onPasswordResetEvent: (PasswordResetScreenEvent) -> Unit,
     signupContent: @Composable () -> Unit,
 ) {
     when (authStep) {
-        AuthStep.Guide -> {
-            AuthStartScreen(
-                onStartClick = onNavigateSignup,
-                onLoginClick = onNavigateLogin,
-            )
-        }
+        // 로그인은 따로 화면을 바꾸지 않고 시작 화면 위로 바텀시트를 올린다.
+        AuthStep.Guide, AuthStep.Login -> {
+            Box(modifier = Modifier.fillMaxSize()) {
+                AuthStartScreen(
+                    onStartClick = onNavigateSignup,
+                    onLoginClick = onNavigateLogin,
+                )
 
-        AuthStep.Login -> {
-            AuthLoginScreen(
-                uiState = loginUiState,
-                onEvent = onLoginEvent,
-            )
+                AnimatedVisibility(
+                    visible = authStep == AuthStep.Login,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
+                ) {
+                    AuthLoginSheet(
+                        uiState = loginUiState,
+                        onEvent = onLoginEvent,
+                        onDismiss = onNavigateGuide,
+                    )
+                }
+            }
         }
 
         AuthStep.PasswordResetRequest -> {

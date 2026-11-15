@@ -85,7 +85,7 @@ fun AuthStartScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(AppSpacing.ScreenBottom))
         }
     }
 }

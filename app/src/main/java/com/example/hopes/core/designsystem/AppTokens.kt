@@ -14,6 +14,9 @@ object AppSpacing {
     val XSmall = 2.dp
     val Medium = 16.dp
     val Large = 32.dp
+
+    /** 화면 맨 아래 요소(버튼·링크)와 시스템 바(제스처 바) 사이 간격이다. 모든 화면이 같은 값을 쓴다. */
+    val ScreenBottom = 12.dp
 }
 
 object AppRadius {

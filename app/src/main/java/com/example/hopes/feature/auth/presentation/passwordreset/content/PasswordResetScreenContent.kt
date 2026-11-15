@@ -131,6 +131,6 @@ fun PasswordResetScreenContent(
             onClick = { onEvent(PasswordResetScreenEvent.SubmitClicked) },
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Section))
+        Spacer(modifier = Modifier.height(AppSpacing.ScreenBottom))
     }
 }

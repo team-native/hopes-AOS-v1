@@ -120,7 +120,7 @@ fun HopesSubScreenFrame(
                     Modifier.padding(
                         start = AppSpacing.ScreenHorizontal,
                         end = AppSpacing.ScreenHorizontal,
-                        bottom = AppSpacing.Item,
+                        bottom = AppSpacing.ScreenBottom,
                     ),
             ) {
                 bottomButton()

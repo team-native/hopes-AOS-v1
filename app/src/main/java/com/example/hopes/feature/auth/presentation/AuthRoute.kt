@@ -72,6 +72,7 @@ fun AuthRoute(
         onNavigateSignup = { viewModel.onEvent(AuthScreenEvent.SignUpRequested) },
         onNavigateLogin = { viewModel.onEvent(AuthScreenEvent.LoginRequested) },
         onNavigateGuide = { viewModel.onEvent(AuthScreenEvent.GuideRequested) },
+        onOnboardingStart = { viewModel.onEvent(AuthScreenEvent.OnboardingStartClicked) },
         passwordResetUiState =
             PasswordResetUiState(
                 email = uiState.value.passwordResetEmail,
@@ -124,4 +125,7 @@ enum class AuthStep {
     Login,
     PasswordResetRequest,
     SignUp,
+
+    /** 회원가입을 마친 직후에만 한 번 보이는 온보딩이다. */
+    Onboarding,
 }

@@ -102,6 +102,14 @@
     <string name="auth_hero_second_line">가장 솔직한</string>
     <string name="auth_hero_third_line">학교 이야기</string>
     <string name="auth_start_description">광주소프트웨어마이스터고 학교생활·전공·취업 질문에\n선배들이 남긴 경험으로 답해요.</string>
+    <string name="onboarding_title_first_suffix">" 답변을"</string>
+    <string name="onboarding_title_second">더 정확하게 받는 방법</string>
+    <string name="onboarding_description">질문에 학년, 관심 전공, 상황을 같이 적으면 더 현실적인 답변을 받을 수 있어요.</string>
+    <string name="onboarding_tip_one_top">질문 전에,</string>
+    <string name="onboarding_tip_one_bottom">입학 / 전공 / 학교생활 중 카테고리를 골라요.</string>
+    <string name="onboarding_tip_two_top">“기숙사 어때” 보단,</string>
+    <string name="onboarding_tip_two_bottom">“1학년 기숙사 평일 루틴 알려줘”</string>
+    <string name="onboarding_start_chat">채팅 시작하기</string>
     <string name="splash_wordmark">hopes</string>
     <string name="splash_school_name">광주소프트웨어마이스터고</string>
     <string name="auth_start_button">시작하기</string>

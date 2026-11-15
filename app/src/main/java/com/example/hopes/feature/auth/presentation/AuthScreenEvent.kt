@@ -41,7 +41,10 @@ sealed interface AuthScreenEvent {
 
     data object PasswordResetBackClicked : AuthScreenEvent
 
-    /** 회원가입 흐름이 끝나 로그인 단계로 돌아온다. */
+    /** 온보딩에서 "채팅 시작하기"를 눌러 로그인 단계로 넘어간다. */
+    data object OnboardingStartClicked : AuthScreenEvent
+
+    /** 회원가입 흐름이 끝나 온보딩을 거쳐 로그인 단계로 돌아온다. */
     data class SignupCompleted(
         val email: String,
         val message: String,

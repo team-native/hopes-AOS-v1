@@ -74,7 +74,8 @@ fun CommunityFilterChip(
     Box(
         modifier =
             Modifier
-                .height(AppSize.Chip)
+                // 피그마 13 기수 칩 높이(37)에 맞춘다.
+                .height(AppSize.Chip + AppSpacing.Small)
                 .clip(CircleShape)
                 .background(
                     color =

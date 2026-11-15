@@ -4,16 +4,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Logout
-import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonRemove
 import androidx.compose.material.icons.outlined.Shield
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesSubScreenFrame
 import com.example.hopes.feature.settings.presentation.component.SettingsCard
@@ -44,7 +44,7 @@ fun SettingsScreen(
     ) {
         SettingsCard {
             SettingsToggleRow(
-                icon = Icons.Outlined.DarkMode,
+                icon = painterResource(R.drawable.ic_settings_dark_mode),
                 title = stringResource(R.string.dark_mode),
                 description = stringResource(R.string.dark_mode_description),
                 isChecked = isDarkModeEnabled,
@@ -54,7 +54,7 @@ fun SettingsScreen(
             SettingsDivider()
 
             SettingsToggleRow(
-                icon = Icons.Outlined.Notifications,
+                icon = painterResource(R.drawable.ic_menu_notification),
                 title = stringResource(R.string.settings_notification),
                 description = stringResource(R.string.settings_notification_description),
                 isChecked = isNotificationEnabled,
@@ -62,11 +62,11 @@ fun SettingsScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
+        Spacer(modifier = Modifier.height(CARD_GAP))
 
         SettingsCard {
             SettingsNavigationRow(
-                icon = Icons.Outlined.Info,
+                icon = painterResource(R.drawable.ic_settings_info),
                 title = stringResource(R.string.app_info),
                 trailingText = stringResource(R.string.settings_app_version, appVersion),
                 onClick = { onEvent(SettingsScreenEvent.AppInfoClicked) },
@@ -75,17 +75,17 @@ fun SettingsScreen(
             SettingsDivider()
 
             SettingsNavigationRow(
-                icon = Icons.Outlined.Shield,
+                icon = rememberVectorPainter(Icons.Outlined.Shield),
                 title = stringResource(R.string.privacy_policy),
                 onClick = { onEvent(SettingsScreenEvent.PrivacyPolicyClicked) },
             )
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
+        Spacer(modifier = Modifier.height(CARD_GAP))
 
         SettingsCard {
             SettingsNavigationRow(
-                icon = Icons.AutoMirrored.Outlined.Logout,
+                icon = rememberVectorPainter(Icons.AutoMirrored.Outlined.Logout),
                 title = stringResource(R.string.logout),
                 contentColor = MaterialTheme.colorScheme.error,
                 onClick = { onEvent(SettingsScreenEvent.LogoutClicked) },
@@ -94,7 +94,7 @@ fun SettingsScreen(
             SettingsDivider()
 
             SettingsNavigationRow(
-                icon = Icons.Outlined.PersonRemove,
+                icon = rememberVectorPainter(Icons.Outlined.PersonRemove),
                 title = stringResource(R.string.account_deletion_title),
                 contentColor = MaterialTheme.colorScheme.error,
                 onClick = {
@@ -121,3 +121,6 @@ private fun SettingsScreenPreview() {
         )
     }
 }
+
+// 피그마 32의 카드 사이 간격이다(마이페이지와 같음).
+private val CARD_GAP = 18.dp

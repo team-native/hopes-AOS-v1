@@ -84,7 +84,8 @@ fun CommunityScreen(
                     modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
                 )
 
-                Spacer(modifier = Modifier.height(AppSpacing.Item))
+                // 피그마 13의 제목 줄과 기수 칩 사이 간격이다.
+                Spacer(modifier = Modifier.height(AppSpacing.Medium + AppSpacing.XSmall))
 
                 CommunityCohortFilterRow(
                     cohorts = uiState.cohorts,
@@ -181,7 +182,7 @@ private fun CommunityContent(
                     PaddingValues(
                         start = AppSpacing.ScreenHorizontal,
                         end = AppSpacing.ScreenHorizontal,
-                        top = AppSpacing.Item,
+                        top = AppSpacing.Medium,
                         // 마지막 글이 글쓰기 버튼에 가리지 않게 버튼 높이만큼 더 띄운다.
                         bottom = AppSpacing.ScreenHorizontal + AppSize.Field + AppSpacing.Section,
                     ),

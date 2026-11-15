@@ -42,7 +42,8 @@ fun MyPageActivityStatsCard(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
-                ).padding(vertical = AppSpacing.Medium + AppSpacing.Small),
+                    // 피그마 31 통계 카드 높이(97)에 맞춘 위아래 여백이다.
+                ).padding(vertical = AppSpacing.Large - AppSpacing.Small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         MyPageStatItem(

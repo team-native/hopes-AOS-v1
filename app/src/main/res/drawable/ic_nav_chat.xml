@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 하단 탭 아이콘(피그마 v2). Lucide 아이콘(ISC 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M2.992,16.342a2,2 0 0,1 0.094,1.167l-1.065,3.29a1,1 0 0,0 1.236,1.168l3.413,-0.998a2,2 0 0,1 1.099,0.092a10,10 0 1,0 -4.777,-4.719"
+        android:strokeWidth="2"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>

@@ -74,7 +74,7 @@ fun CommunityBoardTag(
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
                     shape = RoundedCornerShape(AppSpacing.Small + AppSpacing.XSmall),
-                ).padding(horizontal = AppSpacing.Compact, vertical = AppSpacing.XSmall),
+                ).padding(horizontal = AppSpacing.Compact, vertical = AppSpacing.Small),
     ) {
         Text(
             text = communityBoardName(cohort),

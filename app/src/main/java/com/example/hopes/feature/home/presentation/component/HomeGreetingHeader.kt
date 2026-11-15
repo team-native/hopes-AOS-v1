@@ -45,7 +45,7 @@ fun HomeGreetingHeader(
                 style = HopesTextStyles.Headline,
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Small))
+            Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
             Text(
                 text = stringResource(R.string.home_greeting_subtitle),

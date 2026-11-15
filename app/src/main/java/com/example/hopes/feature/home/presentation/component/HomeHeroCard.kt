@@ -16,8 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -49,14 +52,16 @@ fun HomeHeroCard(
                 .clip(cardShape)
                 .background(Brush.linearGradient(listOf(surfaceColor, accentColor))),
     ) {
+        // 피그마 30의 오른쪽 아래 구름이다. 위가 조금 더 진한 하늘색 원을 흐리게 번지게 그린다.
         Box(
             modifier =
                 Modifier
                     .align(Alignment.BottomEnd)
-                    .offset(x = DECORATION_OFFSET, y = DECORATION_OFFSET)
+                    .offset(x = DECORATION_OFFSET_X, y = DECORATION_OFFSET_Y)
                     .size(DECORATION_SIZE)
+                    .blur(DECORATION_BLUR, BlurredEdgeTreatment.Unbounded)
                     .background(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = DECORATION_ALPHA),
+                        brush = Brush.verticalGradient(listOf(DECORATION_TOP_COLOR, DECORATION_BOTTOM_COLOR)),
                         shape = CircleShape,
                     ),
         )
@@ -100,8 +105,11 @@ fun HomeHeroCard(
     }
 }
 
-// 피그마 30 홈 카드 오른쪽 아래에 반쯤 걸친 장식 원이다.
-private val DECORATION_SIZE = 120.dp
-private val DECORATION_OFFSET = 28.dp
-private const val DECORATION_ALPHA = 0.08f
+// 피그마 30 홈 카드 오른쪽 아래에 걸친 구름이다. 카드 안에는 폭 약 130, 높이 약 70만 보인다(흐림 포함).
+private val DECORATION_SIZE = 196.dp
+private val DECORATION_OFFSET_X = 68.dp
+private val DECORATION_OFFSET_Y = 112.dp
+private val DECORATION_BLUR = 10.dp
+private val DECORATION_TOP_COLOR = Color(0x80A3C4FF)
+private val DECORATION_BOTTOM_COLOR = Color(0x66B1D0FF)
 private const val BUTTON_CONTAINER_ALPHA = 0.12f

@@ -11,11 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.MailOutline
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
@@ -53,25 +50,25 @@ fun MyPageScreenContent(
     val menuItems =
         listOf(
             MyPageMenuItem(
-                icon = Icons.Outlined.Edit,
+                icon = R.drawable.ic_menu_activity,
                 title = stringResource(R.string.my_page_menu_activity),
                 description = stringResource(R.string.my_page_menu_activity_description),
                 onClick = { onEvent(MyPageScreenEvent.MyActivityClicked) },
             ),
             MyPageMenuItem(
-                icon = Icons.Outlined.Tune,
+                icon = R.drawable.ic_menu_personal_settings,
                 title = stringResource(R.string.personal_settings),
                 description = stringResource(R.string.my_page_menu_personal_settings_description),
                 onClick = { onEvent(MyPageScreenEvent.PersonalSettingsClicked) },
             ),
             MyPageMenuItem(
-                icon = Icons.Outlined.Notifications,
+                icon = R.drawable.ic_menu_notification,
                 title = stringResource(R.string.my_page_menu_notification),
                 description = stringResource(R.string.my_page_menu_notification_description),
                 onClick = { onEvent(MyPageScreenEvent.NotificationClicked) },
             ),
             MyPageMenuItem(
-                icon = Icons.Outlined.MailOutline,
+                icon = R.drawable.ic_menu_contact,
                 title = stringResource(R.string.contact),
                 description = stringResource(R.string.settings_contact_description),
                 onClick = { onEvent(MyPageScreenEvent.ContactClicked) },
@@ -126,12 +123,12 @@ fun MyPageScreenContent(
                 )
 
                 uiState.activityStats?.let { stats ->
-                    Spacer(modifier = Modifier.height(AppSpacing.Item))
+                    Spacer(modifier = Modifier.height(CARD_GAP))
 
                     MyPageActivityStatsCard(stats = stats)
                 }
 
-                Spacer(modifier = Modifier.height(AppSpacing.Item))
+                Spacer(modifier = Modifier.height(CARD_GAP))
 
                 MyPageMenuCard(items = menuItems)
             }
@@ -149,6 +146,9 @@ fun MyPageScreenContent(
         }
     }
 }
+
+// 피그마 31의 카드 사이 간격이다.
+private val CARD_GAP = 18.dp
 
 @Preview(showBackground = true, name = "31 마이페이지")
 @Composable

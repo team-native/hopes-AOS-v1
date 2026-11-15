@@ -42,7 +42,7 @@ fun HomeQuestionTipCard(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
-                ).padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item + AppSpacing.XSmall),
+                ).padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Medium + AppSpacing.XSmall),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(

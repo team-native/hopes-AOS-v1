@@ -50,7 +50,7 @@ fun HomePopularPostCard(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
                 ).shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
-                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item + AppSpacing.XSmall),
+                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Medium),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(

@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
@@ -26,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -83,7 +83,7 @@ fun CommunityPostCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+        Spacer(modifier = Modifier.height(AppSpacing.Item))
 
         Text(
             text = post.title,
@@ -93,7 +93,8 @@ fun CommunityPostCard(
             style = HopesTextStyles.FieldStrong,
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Small))
+        // 피그마 13 카드(160)의 제목과 본문 사이 간격이다.
+        Spacer(modifier = Modifier.height(AppSpacing.Item + AppSpacing.XSmall))
 
         Text(
             text = post.content,
@@ -103,7 +104,7 @@ fun CommunityPostCard(
             style = HopesTextStyles.Subtitle,
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+        Spacer(modifier = Modifier.height(AppSpacing.Compact + AppSpacing.XSmall))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -236,7 +237,7 @@ fun CommunityWriteButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            imageVector = Icons.Filled.Edit,
+            painter = painterResource(R.drawable.ic_menu_activity),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(AppIconSize.Large),

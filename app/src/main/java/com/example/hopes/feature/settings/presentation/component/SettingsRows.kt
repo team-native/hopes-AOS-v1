@@ -27,8 +27,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
@@ -52,7 +53,8 @@ fun SettingsCard(
                 .figmaSubtleShadow(cardShape)
                 .clip(cardShape)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(vertical = AppSpacing.Small),
+                // 피그마 32 카드 위아래 여백이다.
+                .padding(vertical = AppSpacing.Item),
         content = content,
     )
 }
@@ -68,7 +70,7 @@ fun SettingsDivider() {
 /** 아이콘·제목·설명 오른쪽에 스위치를 둔 행이다. 행 전체를 눌러도 켜고 끌 수 있다. */
 @Composable
 fun SettingsToggleRow(
-    icon: ImageVector,
+    icon: Painter,
     title: String,
     description: String,
     isChecked: Boolean,
@@ -80,6 +82,8 @@ fun SettingsToggleRow(
         icon = icon,
         title = title,
         description = description,
+        // 피그마 32의 스위치 행은 이동 행보다 조금 더 높다(65).
+        verticalPadding = AppSpacing.Item + AppSpacing.XSmall,
         modifier =
             Modifier.toggleable(
                 value = isChecked,
@@ -111,7 +115,7 @@ fun SettingsToggleRow(
  */
 @Composable
 fun SettingsNavigationRow(
-    icon: ImageVector,
+    icon: Painter,
     title: String,
     onClick: () -> Unit,
     description: String? = null,
@@ -148,11 +152,12 @@ fun SettingsNavigationRow(
 
 @Composable
 private fun SettingsRowLayout(
-    icon: ImageVector,
+    icon: Painter,
     title: String,
     description: String?,
     modifier: Modifier = Modifier,
     contentColor: Color? = null,
+    verticalPadding: Dp = AppSpacing.Item,
     trailing: @Composable RowScope.() -> Unit,
 ) {
     val accentColor = contentColor ?: MaterialTheme.colorScheme.primary
@@ -161,7 +166,7 @@ private fun SettingsRowLayout(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item),
+                .padding(horizontal = AppSpacing.Medium, vertical = verticalPadding),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
@@ -176,7 +181,7 @@ private fun SettingsRowLayout(
         ) {
             // 바로 옆 제목이 같은 의미를 전달하므로 아이콘은 장식으로 취급한다.
             Icon(
-                imageVector = icon,
+                painter = icon,
                 contentDescription = null,
                 tint = accentColor,
                 modifier = Modifier.size(AppIconSize.Medium),

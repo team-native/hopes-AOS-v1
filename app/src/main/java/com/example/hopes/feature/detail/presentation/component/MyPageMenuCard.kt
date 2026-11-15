@@ -1,5 +1,6 @@
 package com.example.hopes.feature.detail.presentation.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -21,7 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppIconSize
@@ -32,7 +33,7 @@ import com.example.hopes.ui.theme.HopesTextStyles
 
 /** 마이페이지 메뉴 한 줄의 표시 정보다. */
 data class MyPageMenuItem(
-    val icon: ImageVector,
+    @param:DrawableRes val icon: Int,
     val title: String,
     val description: String,
     val onClick: () -> Unit,
@@ -90,7 +91,7 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
         ) {
             // 바로 옆 제목이 같은 의미를 전달하므로 아이콘은 장식으로 취급한다.
             Icon(
-                imageVector = item.icon,
+                painter = painterResource(item.icon),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(AppIconSize.Medium),

@@ -18,6 +18,31 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object History : HopesDestination
 
+    /** 커뮤니티 게시글 상세다(피그마 14). */
+    @Serializable data class CommunityPost(
+        val postId: Long,
+    ) : HopesDestination
+
+    /**
+     * 글쓰기(피그마 15)다. [postId]가 있으면 그 글을 수정한다.
+     *
+     * @param defaultCohort 새 글의 기본 게시판이다.
+     * @param isOpenedFromList 커뮤니티 목록에서 열었으면 true다. 등록 후 목록에 "게시글을 등록했어요"를 띄운다.
+     */
+    @Serializable data class CommunityWrite(
+        val postId: Long? = null,
+        val defaultCohort: Int? = null,
+        val isOpenedFromList: Boolean = false,
+    ) : HopesDestination
+
+    /** 게시글 검색(피그마 16)이다. [cohort] 게시판 안에서 찾는다. */
+    @Serializable data class CommunitySearch(
+        val cohort: Int? = null,
+    ) : HopesDestination
+
+    /** 내 활동(피그마 18)이다. */
+    @Serializable data object CommunityMyActivity : HopesDestination
+
     // Settings 라우트는 실제로 MyPageRoute(마이페이지)를 그린다. 기존 네이밍 불일치는 이번 마이그레이션에서 다루지 않는다.
     @Serializable data object Settings : HopesDestination
 

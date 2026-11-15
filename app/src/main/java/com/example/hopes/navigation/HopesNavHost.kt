@@ -29,6 +29,10 @@ import com.example.hopes.feature.auth.presentation.SessionViewModel
 import com.example.hopes.feature.chat.detail.view.ChatDetailRoute
 import com.example.hopes.feature.chat.view.ChatRoute
 import com.example.hopes.feature.community.presentation.CommunityRoute
+import com.example.hopes.feature.community.presentation.detail.CommunityPostDetailRoute
+import com.example.hopes.feature.community.presentation.myactivity.CommunityMyActivityRoute
+import com.example.hopes.feature.community.presentation.search.CommunitySearchRoute
+import com.example.hopes.feature.community.presentation.write.CommunityWriteRoute
 import com.example.hopes.feature.detail.presentation.ContactRoute
 import com.example.hopes.feature.detail.presentation.MyPageRoute
 import com.example.hopes.feature.detail.presentation.PersonalSettingsRoute
@@ -120,6 +124,8 @@ private fun HopesMainNavDisplay(
     val navigator = remember(navigationState) { HopesMainNavigator(navigationState) }
     // 프로필 수정 화면에서 저장하고 돌아온 직후 마이페이지에 "프로필을 저장했어요" 토스트를 띄우기 위한 신호다.
     var isProfileSavedToastVisible by rememberSaveable { mutableStateOf(false) }
+    // 커뮤니티 목록에서 글을 등록하고 돌아온 직후 "게시글을 등록했어요" 토스트를 띄우기 위한 신호다.
+    var isPostCreatedToastVisible by rememberSaveable { mutableStateOf(false) }
 
     NavDisplay(
         entries =
@@ -129,6 +135,7 @@ private fun HopesMainNavDisplay(
                         HomeRoute(
                             onNavigate = navigator::navigateToTab,
                             onNotificationClick = { navigator.push(HopesDestination.Notifications) },
+                            onPopularPostClick = { postId -> navigator.push(HopesDestination.CommunityPost(postId)) },
                         )
                     }
                     entry<HopesDestination.Chat> { key ->
@@ -148,7 +155,53 @@ private fun HopesMainNavDisplay(
                         )
                     }
                     entry<HopesDestination.Community> {
-                        CommunityRoute(onNavigate = navigator::navigateToTab)
+                        CommunityRoute(
+                            onNavigate = navigator::navigateToTab,
+                            onPostClick = { postId -> navigator.push(HopesDestination.CommunityPost(postId)) },
+                            onSearchClick = { cohort -> navigator.push(HopesDestination.CommunitySearch(cohort)) },
+                            onMyActivityClick = { navigator.push(HopesDestination.CommunityMyActivity) },
+                            onWriteClick = { cohort ->
+                                navigator.push(
+                                    HopesDestination.CommunityWrite(defaultCohort = cohort, isOpenedFromList = true),
+                                )
+                            },
+                            isPostCreatedToastVisible = isPostCreatedToastVisible,
+                            onToastDismiss = { isPostCreatedToastVisible = false },
+                        )
+                    }
+                    entry<HopesDestination.CommunityPost> { key ->
+                        CommunityPostDetailRoute(
+                            postId = key.postId,
+                            onBackClick = navigator::goBack,
+                            onEditPost = { postId -> navigator.push(HopesDestination.CommunityWrite(postId = postId)) },
+                        )
+                    }
+                    entry<HopesDestination.CommunityWrite> { key ->
+                        CommunityWriteRoute(
+                            postId = key.postId,
+                            defaultCohort = key.defaultCohort,
+                            onClose = navigator::goBack,
+                            onPostCreated = {
+                                isPostCreatedToastVisible = key.isOpenedFromList
+                                navigator.goBack()
+                            },
+                        )
+                    }
+                    entry<HopesDestination.CommunitySearch> { key ->
+                        CommunitySearchRoute(
+                            cohort = key.cohort,
+                            onNavigate = navigator::navigateToTab,
+                            onPostClick = { postId -> navigator.push(HopesDestination.CommunityPost(postId)) },
+                            onCancelClick = navigator::goBack,
+                        )
+                    }
+                    entry<HopesDestination.CommunityMyActivity> {
+                        CommunityMyActivityRoute(
+                            onBackClick = navigator::goBack,
+                            onPostClick = { postId -> navigator.push(HopesDestination.CommunityPost(postId)) },
+                            onEditPost = { postId -> navigator.push(HopesDestination.CommunityWrite(postId = postId)) },
+                            onWriteClick = { navigator.push(HopesDestination.CommunityWrite()) },
+                        )
                     }
                     entry<HopesDestination.History> {
                         HistoryRoute(
@@ -169,6 +222,7 @@ private fun HopesMainNavDisplay(
                             onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
                             onNavigateToNotifications = { navigator.push(HopesDestination.Notifications) },
                             onNavigateToContact = { navigator.push(HopesDestination.Contact) },
+                            onNavigateToMyActivity = { navigator.push(HopesDestination.CommunityMyActivity) },
                             isProfileSavedToastVisible = isProfileSavedToastVisible,
                             onProfileSavedToastDismiss = { isProfileSavedToastVisible = false },
                         )

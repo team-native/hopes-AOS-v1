@@ -35,6 +35,7 @@ import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesAlertDialog
 import com.example.hopes.core.designsystem.component.HopesPrimaryButton
 import com.example.hopes.core.designsystem.component.HopesRetryMessage
+import com.example.hopes.core.designsystem.component.HopesSearchField
 import com.example.hopes.core.designsystem.component.HopesSkeletonLine
 import com.example.hopes.core.designsystem.component.HopesStatusMessage
 import com.example.hopes.feature.history.presentation.ChatSummaryUiModel
@@ -43,7 +44,6 @@ import com.example.hopes.feature.history.presentation.HistoryScreenEvent
 import com.example.hopes.feature.history.presentation.HistorySection
 import com.example.hopes.feature.history.presentation.HistoryUiState
 import com.example.hopes.feature.history.presentation.component.HistoryChatGroup
-import com.example.hopes.feature.history.presentation.component.HistorySearchField
 import com.example.hopes.feature.history.presentation.historyDateLabelOf
 import com.example.hopes.feature.history.presentation.historySectionOf
 import com.example.hopes.navigation.HopesDestination
@@ -110,9 +110,10 @@ fun HistoryScreenContent(
 
                 Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
-                HistorySearchField(
+                HopesSearchField(
                     value = uiState.searchQuery,
                     onValueChange = { onEvent(HistoryScreenEvent.SearchQueryChanged(it)) },
+                    placeholder = stringResource(R.string.history_search),
                 )
             }
 

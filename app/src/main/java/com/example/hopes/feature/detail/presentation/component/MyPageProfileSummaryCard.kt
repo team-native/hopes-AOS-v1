@@ -52,7 +52,11 @@ fun MyPageProfileSummaryCard(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
-                ).padding(AppSpacing.Medium + AppSpacing.Small),
+                ).padding(
+                    horizontal = AppSpacing.Medium + AppSpacing.Small,
+                    vertical =
+                        AppSpacing.Medium + AppSpacing.Small + AppSpacing.XSmall,
+                ),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(

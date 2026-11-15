@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
@@ -122,12 +123,12 @@ fun MyPageScreenContent(
                 )
 
                 uiState.activityStats?.let { stats ->
-                    Spacer(modifier = Modifier.height(AppSpacing.Item))
+                    Spacer(modifier = Modifier.height(CARD_GAP))
 
                     MyPageActivityStatsCard(stats = stats)
                 }
 
-                Spacer(modifier = Modifier.height(AppSpacing.Item))
+                Spacer(modifier = Modifier.height(CARD_GAP))
 
                 MyPageMenuCard(items = menuItems)
             }
@@ -145,6 +146,9 @@ fun MyPageScreenContent(
         }
     }
 }
+
+// 피그마 31의 카드 사이 간격이다.
+private val CARD_GAP = 18.dp
 
 @Preview(showBackground = true, name = "31 마이페이지")
 @Composable

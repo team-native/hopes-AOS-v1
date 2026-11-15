@@ -54,7 +54,7 @@ fun MyPageMenuCard(
                 .figmaSubtleShadow(cardShape)
                 .clip(cardShape)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(vertical = AppSpacing.Small),
+                .padding(vertical = AppSpacing.Item),
     ) {
         items.forEachIndexed { index, item ->
             if (index > 0) {
@@ -76,7 +76,8 @@ private fun MyPageMenuRow(item: MyPageMenuItem) {
             Modifier
                 .fillMaxWidth()
                 .clickable(role = Role.Button, onClick = item.onClick)
-                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item),
+                // 피그마 31 메뉴 한 줄 높이(66)에 맞춘 여백이다.
+                .padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item + AppSpacing.XSmall),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(

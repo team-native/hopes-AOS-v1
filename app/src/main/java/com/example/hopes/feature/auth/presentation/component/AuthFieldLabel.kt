@@ -19,7 +19,7 @@ fun AuthFieldLabel(
     Text(
         text = stringResource(labelRes),
         modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurface,
-        style = HopesTextStyles.CaptionStrong,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = HopesTextStyles.Label,
     )
 }

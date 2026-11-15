@@ -65,6 +65,8 @@ fun AuthTextInputField(
     isEnabled: Boolean,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
+    // 피그마 02 로그인 비밀번호 입력란에는 보기 토글이 없다.
+    showPasswordToggle: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     onImeAction: () -> Unit = {},
@@ -79,7 +81,7 @@ fun AuthTextInputField(
     val borderColor =
         when {
             isError -> MaterialTheme.colorScheme.error
-            isFocused -> MaterialTheme.colorScheme.primary
+            isFocused -> LocalHopesExtendedColors.current.authFieldFocusBorder
             else -> extendedColors.authFieldBorder
         }
     val fieldTextStyle =
@@ -130,7 +132,7 @@ fun AuthTextInputField(
                     .fillMaxWidth()
                     .padding(
                         end =
-                            if (isPassword) {
+                            if (isPassword && showPasswordToggle) {
                                 AppSize.IconButton
                             } else {
                                 0.dp
@@ -169,7 +171,7 @@ fun AuthTextInputField(
                 },
         )
 
-        if (isPassword) {
+        if (isPassword && showPasswordToggle) {
             Box(
                 modifier =
                     Modifier

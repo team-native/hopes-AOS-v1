@@ -54,7 +54,7 @@ fun AuthStartScreen(
                     .fillMaxSize()
                     .statusBarsPadding()
                     .navigationBarsPadding()
-                    .padding(horizontal = AppSpacing.ScreenHorizontal),
+                    .padding(horizontal = START_HORIZONTAL_PADDING),
         ) {
             Spacer(modifier = Modifier.weight(HERO_TOP_WEIGHT))
 
@@ -92,8 +92,11 @@ fun AuthStartScreen(
 
 // 피그마에서 헤드라인 블록은 화면 중앙보다 약간 위, 버튼은 하단에 붙는다.
 private const val HERO_TOP_WEIGHT = 1f
-private const val HERO_BOTTOM_WEIGHT = 1.3f
+private const val HERO_BOTTOM_WEIGHT = 1f
 private val CLOUD_BOTTOM_OFFSET = 96.dp
+
+// 피그마 01 Content 좌우 패딩이다(다른 화면의 20과 다르다).
+private val START_HORIZONTAL_PADDING = 28.dp
 
 @Preview(showBackground = true)
 @Composable

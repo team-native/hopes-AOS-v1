@@ -39,6 +39,8 @@ fun AuthLoginFieldsContent(
     onFindPasswordClick: () -> Unit,
     onPasswordImeDone: () -> Unit,
     modifier: Modifier = Modifier,
+    // 피그마 02-2~02-6(펼친 상태)에는 로그인 유지·비밀번호 찾기 줄이 없다.
+    showKeepLoginRow: Boolean = true,
 ) {
     val focusManager = LocalFocusManager.current
     // 서버가 실패 사유를 보내지 않으면(빈 문자열) 기본 실패 문구로 대신한다.
@@ -73,6 +75,7 @@ fun AuthLoginFieldsContent(
             errorMessage = displayedFailureMessage,
             isEnabled = isEnabled,
             isPassword = true,
+            showPasswordToggle = false,
             imeAction = ImeAction.Done,
             onImeAction = onPasswordImeDone,
         )
@@ -91,20 +94,22 @@ fun AuthLoginFieldsContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+        if (showKeepLoginRow) {
+            Spacer(modifier = Modifier.height(AppSpacing.Compact))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            AuthCheckboxRow(
-                text = stringResource(R.string.auth_keep_login),
-                isChecked = isKeepLoginChecked,
-                onCheckedChange = onKeepLoginChange,
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                AuthCheckboxRow(
+                    text = stringResource(R.string.auth_keep_login),
+                    isChecked = isKeepLoginChecked,
+                    onCheckedChange = onKeepLoginChange,
+                )
 
-            AuthFindPasswordLink(onClick = onFindPasswordClick)
+                AuthFindPasswordLink(onClick = onFindPasswordClick)
+            }
         }
     }
 }

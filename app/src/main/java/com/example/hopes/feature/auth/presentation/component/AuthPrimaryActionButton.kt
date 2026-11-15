@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
-import com.example.hopes.core.designsystem.component.figmaSheetShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
 
@@ -35,7 +34,6 @@ fun AuthPrimaryActionButton(
             modifier
                 .fillMaxWidth()
                 .height(AppSize.Button)
-                .figmaSheetShadow(buttonShape)
                 .background(
                     color =
                         if (isEnabled) {

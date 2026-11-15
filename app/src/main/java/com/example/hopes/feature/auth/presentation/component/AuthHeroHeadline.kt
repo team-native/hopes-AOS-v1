@@ -16,7 +16,10 @@ import com.teamnative.hopes.R
 
 /** "선배에게 묻는 / 가장 솔직한 / 학교 이야기" 세 줄 헤드라인이다. 강조 구간만 primary 색으로 표시한다. */
 @Composable
-fun AuthHeroHeadline(modifier: Modifier = Modifier) {
+fun AuthHeroHeadline(
+    modifier: Modifier = Modifier,
+    style: TextStyle = HopesTextStyles.Hero,
+) {
     val highlightStyle = SpanStyle(color = MaterialTheme.colorScheme.primary)
     val seniorText = stringResource(R.string.auth_hero_highlight_senior)
     val firstLineSuffix = stringResource(R.string.auth_hero_first_line_suffix)
@@ -40,6 +43,6 @@ fun AuthHeroHeadline(modifier: Modifier = Modifier) {
         text = headline,
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface,
-        style = HopesTextStyles.Hero,
+        style = style,
     )
 }

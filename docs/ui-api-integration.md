@@ -12,7 +12,7 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 |---|---|---|---|
 | 커뮤니티 인기글 | 시안 예시 글 2개 | 인기글 목록 (id, 기수, 제목, 좋아요 수) | `HomeRoute`의 `samplePopularPosts` → `HomeUiState.popularPosts` |
 | 인기글 불러오기 실패 (30-3) | 화면만 준비됨 | 위 API 실패 시 `LoadError` | `HomeUiState.popularPostsState`, `HomeRoute`의 `PopularPostsRetryClicked` |
-| 인기글 누르기 | 게시글 상세로 이동 (예시 글 id 2, 3) | 인기글 id가 게시글 id와 같아야 함 | `HomeRoute`의 `PopularPostClicked` |
+| 인기글 누르기 | 게시글 상세로 이동 (예시 인기글은 실제 글이 없어 "삭제된 게시글" 안내가 나옴) | 인기글 id가 게시글 id와 같아야 함 | `HomeRoute`의 `PopularPostClicked` |
 | 알림 버튼 빨간 점 | 항상 꺼짐 | 읽지 않은 알림 여부 | `HomeUiState.hasUnreadNotification` |
 
 ## 커뮤니티 (피그마 13 ~ 19)
@@ -37,7 +37,7 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 | 내 기수 ("10기 (나)") | 10기 고정 | 프로필에 기수 필드 | `CommunityStore.myCohort` |
 | 삭제된 글 (14-10) | 저장소에 없는 글 id면 표시 | 상세 API의 404 등 | `CommunityPostDetailScreen` |
 
-**PR 전 정리:** 화면 확인용 예시 글·댓글(`CommunitySampleData.kt`)은 지우고 `CommunityStore`의 `communitySampleSeed(...)`를 `CommunitySeed()`로 바꿉니다.
+저장소는 빈 상태로 시작하므로 앱을 켜면 커뮤니티는 빈 화면(19)부터 보입니다. 글을 쓰면 목록에 나타납니다.
 
 ## 마이페이지 (피그마 31)
 

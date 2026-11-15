@@ -41,7 +41,7 @@ class CommunityStore
     constructor(
         private val networkMonitor: NetworkMonitor,
     ) {
-        private val seed = communitySampleSeed(LocalDateTime.now())
+        private val seed = CommunitySeed()
         private val postsState = MutableStateFlow(seed.posts)
         private val commentsState = MutableStateFlow(seed.comments)
         private val reportedTargets = MutableStateFlow<Set<CommunityReportTarget>>(emptySet())

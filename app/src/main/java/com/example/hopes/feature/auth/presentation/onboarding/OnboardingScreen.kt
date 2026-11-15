@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +26,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.figmaStatusBarsPadding
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
@@ -46,7 +46,7 @@ fun OnboardingScreen(onStartClick: () -> Unit) {
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
-                .statusBarsPadding()
+                .figmaStatusBarsPadding()
                 .navigationBarsPadding()
                 .padding(horizontal = AppSpacing.ScreenHorizontal),
     ) {

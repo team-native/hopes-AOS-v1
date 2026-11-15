@@ -51,7 +51,7 @@ fun HomeScreenContent(
                     .verticalScroll(rememberScrollState())
                     .padding(
                         start = AppSpacing.ScreenHorizontal,
-                        top = AppSpacing.SystemBarToContent - HOME_GREETING_TOP,
+                        top = AppSpacing.SystemBarToContent,
                         end = AppSpacing.ScreenHorizontal,
                         bottom = AppSpacing.Section,
                     ),
@@ -187,6 +187,3 @@ private fun HomeScreenContentPreview() {
         )
     }
 }
-
-// 피그마 30: 알림 버튼은 Content 위 8, 인사말은 그 안에서 다시 위 8이다.
-private val HOME_GREETING_TOP = 8.dp

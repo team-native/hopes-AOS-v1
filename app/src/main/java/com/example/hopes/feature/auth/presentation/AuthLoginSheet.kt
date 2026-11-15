@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -35,6 +34,7 @@ import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesOfflineBanner
 import com.example.hopes.core.designsystem.component.figmaPeekSheetShadow
+import com.example.hopes.core.designsystem.component.figmaStatusBarsPadding
 import com.example.hopes.feature.auth.presentation.component.AuthHeroHeadline
 import com.example.hopes.feature.auth.presentation.component.AuthLinkPrompt
 import com.example.hopes.feature.auth.presentation.component.AuthLoginHeading
@@ -89,7 +89,7 @@ fun AuthLoginSheet(
                         Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .statusBarsPadding()
+                            .figmaStatusBarsPadding()
                             .pointerInput(Unit) { detectTapGestures { onDismiss() } }
                             .padding(horizontal = AppSpacing.ScreenHorizontal),
                     contentAlignment = Alignment.CenterStart,
@@ -102,7 +102,7 @@ fun AuthLoginSheet(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .then(if (isExpanded) Modifier.weight(1f).statusBarsPadding() else Modifier)
+                        .then(if (isExpanded) Modifier.weight(1f).figmaStatusBarsPadding() else Modifier)
                         .then(if (isExpanded) Modifier else Modifier.figmaPeekSheetShadow(sheetShape))
                         .background(
                             color = MaterialTheme.colorScheme.surface,
@@ -205,7 +205,7 @@ fun AuthLoginSheet(
             modifier =
                 Modifier
                     .align(Alignment.TopCenter)
-                    .statusBarsPadding()
+                    .figmaStatusBarsPadding()
                     .padding(horizontal = EXPANDED_HORIZONTAL_PADDING, vertical = OFFLINE_BANNER_TOP),
             enter = fadeIn(),
             exit = fadeOut(),
@@ -219,11 +219,11 @@ fun AuthLoginSheet(
 private val SHEET_HORIZONTAL_PADDING = 24.dp
 private val SHEET_ITEM_GAP = 14.dp
 
-// 피그마 02-2~02-6(펼친 상태): 좌우 20, 제목 위 16, 오프라인 배너가 있으면 제목이 46 내려간다.
+// 피그마 02-2~02-6(펼친 상태): 좌우 20, 제목 위 16, 오프라인 배너가 있으면 제목이 57 내려간다.
 private val EXPANDED_HORIZONTAL_PADDING = 20.dp
 private val EXPANDED_TOP_GAP = 16.dp
-private val OFFLINE_TITLE_OFFSET = 46.dp
-private val OFFLINE_BANNER_TOP = 16.dp
+private val OFFLINE_TITLE_OFFSET = 57.dp
+private val OFFLINE_BANNER_TOP = 8.dp
 
 // 기본 시트 위쪽 손잡이 바 크기와 위아래 간격.
 private val HANDLE_WIDTH = 40.dp

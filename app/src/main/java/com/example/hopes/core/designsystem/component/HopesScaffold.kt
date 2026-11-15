@@ -22,6 +22,8 @@ fun HopesScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
+        // 상태바 아래 콘텐츠가 피그마처럼 62 지점에서 시작하도록 상태바가 낮은 만큼 전체를 내린다.
+        modifier = Modifier.padding(top = figmaStatusBarExtraPadding()),
         containerColor = containerColor,
         topBar = {
             fixedTopContent?.invoke()

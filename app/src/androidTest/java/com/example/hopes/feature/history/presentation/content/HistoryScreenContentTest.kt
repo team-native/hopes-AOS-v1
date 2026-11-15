@@ -2,6 +2,8 @@ package com.example.hopes.feature.history.presentation.content
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -112,7 +114,8 @@ class HistoryScreenContentTest {
         )
 
         composeRule.onNodeWithText("이 대화를 삭제할까요?").assertIsDisplayed()
-        composeRule.onNodeWithText("삭제").performClick()
+        // 밀어서 나오는 행 뒤의 "삭제" 글자와 겹치므로 누를 수 있는 다이얼로그 버튼만 고른다.
+        composeRule.onNode(hasText("삭제") and hasClickAction()).performClick()
 
         composeRule.runOnIdle { assertEquals(listOf(HistoryScreenEvent.DeleteChatConfirmed), events) }
     }

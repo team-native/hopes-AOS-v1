@@ -20,6 +20,7 @@ private val lightColorScheme =
         surfaceVariant = HopesBlueContainer,
         onSurfaceVariant = HopesMutedText,
         outline = HopesOutline,
+        error = HopesDanger,
     )
 
 private val darkColorScheme =

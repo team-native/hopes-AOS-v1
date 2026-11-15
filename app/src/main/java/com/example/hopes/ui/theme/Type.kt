@@ -84,37 +84,97 @@ private fun Typography.withFontFamily(fontFamily: FontFamily): Typography =
     )
 
 /**
- * Material Typography 슬롯에 없는 피그마 v2 텍스트 스타일이다.
+ * 피그마 v1.5 App 텍스트 스타일이다(폰트만 Pretendard, 510 굵기는 Medium).
  * 색은 담지 않으므로 Text의 color로 따로 지정한다.
  */
 object HopesTextStyles {
-    val PageTitle =
-        TextStyle(fontFamily = Pretendard, fontSize = 24.sp, fontWeight = FontWeight.Bold, lineHeight = 32.sp)
-    val Headline =
-        TextStyle(fontFamily = Pretendard, fontSize = 20.sp, fontWeight = FontWeight.Bold, lineHeight = 28.sp)
-    val SectionTitle =
-        TextStyle(fontFamily = Pretendard, fontSize = 16.sp, fontWeight = FontWeight.Bold, lineHeight = 22.sp)
-    val Body = TextStyle(fontFamily = Pretendard, fontSize = 14.sp, lineHeight = 20.sp)
+    /** App/Display 28/38 Bold */
+    val Display =
+        TextStyle(
+            fontFamily = Pretendard,
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 38.sp,
+            letterSpacing = (-0.4).sp,
+        )
+
+    /** App/Title 22/30 Bold */
+    val Title =
+        TextStyle(
+            fontFamily = Pretendard,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 30.sp,
+            letterSpacing = (-0.3).sp,
+        )
+
+    /** App/Heading 18/26 Medium */
+    val Heading =
+        TextStyle(
+            fontFamily = Pretendard,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 26.sp,
+            letterSpacing = (-0.2).sp,
+        )
+
+    /** App/Body 15/24 Regular */
+    val Body =
+        TextStyle(
+            fontFamily = Pretendard,
+            fontSize = 15.sp,
+            lineHeight = 24.sp,
+            letterSpacing = (-0.1).sp,
+        )
+
+    /** App/Body Strong 15/24 Medium */
     val BodyStrong =
-        TextStyle(fontFamily = Pretendard, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, lineHeight = 20.sp)
-    val Hero = TextStyle(fontFamily = Pretendard, fontSize = 30.sp, fontWeight = FontWeight.Bold, lineHeight = 40.sp)
-    val ScreenTitle =
-        TextStyle(fontFamily = Pretendard, fontSize = 22.sp, fontWeight = FontWeight.Bold, lineHeight = 30.sp)
+        TextStyle(
+            fontFamily = Pretendard,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 24.sp,
+            letterSpacing = (-0.1).sp,
+        )
+
+    /** App/Label 14/20 Medium */
+    val Label = TextStyle(fontFamily = Pretendard, fontSize = 14.sp, fontWeight = FontWeight.Medium, lineHeight = 20.sp)
+
+    /** App/Caption 12/16 Regular */
+    val Caption = TextStyle(fontFamily = Pretendard, fontSize = 12.sp, lineHeight = 16.sp)
+
+    /** App/Tab 11/14 Medium */
+    val NavigationLabel =
+        TextStyle(fontFamily = Pretendard, fontSize = 11.sp, fontWeight = FontWeight.Medium, lineHeight = 14.sp)
+
+    // 아래는 기존 이름을 유지하는 별칭이다. 값은 위 피그마 스타일을 따른다.
+    val PageTitle = Title
+    val Headline = Title
+    val ScreenTitle = Title
+    val SectionTitle = Heading
+    val LabelStrong = Label
+    val Subtitle = Label
+    val Description = Body
+    val Field = Body
+    val FieldStrong = BodyStrong
+    val Button = BodyStrong
+    val CaptionStrong = Label.copy(fontSize = 12.sp, lineHeight = 16.sp)
+    val Overline = Caption
+    val Tag = Caption
+
+    /** 시작 화면 헤드라인이다. 피그마 01은 34/44 Semibold. */
+    val Hero =
+        TextStyle(
+            fontFamily = Pretendard,
+            fontSize = 34.sp,
+            fontWeight = FontWeight.SemiBold,
+            lineHeight = 44.sp,
+            letterSpacing = (-0.4).sp,
+        )
+
+    // 피그마 텍스트 스타일에 대응하는 항목이 없는 기존 스타일이다(별도 확인 전까지 유지).
     val CodeDigit = TextStyle(fontFamily = Pretendard, fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
     val SheetTitle = TextStyle(fontFamily = Pretendard, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-    val TopBarTitle = TextStyle(fontFamily = Pretendard, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+    val TopBarTitle = Heading
     val DialogTitle = TextStyle(fontFamily = Pretendard, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-    val Field = TextStyle(fontFamily = Pretendard, fontSize = 15.sp)
-    val FieldStrong = TextStyle(fontFamily = Pretendard, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-    val Description = TextStyle(fontFamily = Pretendard, fontSize = 14.sp, lineHeight = 22.sp)
-    val Button = TextStyle(fontFamily = Pretendard, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-    val Subtitle = TextStyle(fontFamily = Pretendard, fontSize = 13.sp, lineHeight = 18.sp)
-    val Label = TextStyle(fontFamily = Pretendard, fontSize = 13.sp, fontWeight = FontWeight.Medium)
-    val LabelStrong = TextStyle(fontFamily = Pretendard, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-    val Caption = TextStyle(fontFamily = Pretendard, fontSize = 12.sp, lineHeight = 16.sp)
-    val CaptionStrong =
-        TextStyle(fontFamily = Pretendard, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, lineHeight = 16.sp)
-    val Overline = TextStyle(fontFamily = Pretendard, fontSize = 11.sp, fontWeight = FontWeight.Medium)
-    val Tag = TextStyle(fontFamily = Pretendard, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
-    val NavigationLabel = TextStyle(fontFamily = Pretendard, fontSize = 10.sp, fontWeight = FontWeight.Medium)
 }

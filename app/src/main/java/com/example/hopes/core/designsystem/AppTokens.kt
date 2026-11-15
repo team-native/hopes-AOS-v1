@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.dp
 
 /** UI 데모에서 반복되는 여백, 모서리, 아이콘 크기를 일관되게 제공한다. */
 object AppSpacing {
-    val ScreenHorizontal = 24.dp
+    val ScreenHorizontal = 20.dp
     val ScreenVertical = 20.dp
     val SystemBarToContent = 15.dp
     val Section = 24.dp
@@ -21,10 +21,16 @@ object AppSpacing {
 
 object AppRadius {
     val Card = 20.dp
-    val ListCard = 16.dp
-    val Button = 14.dp
+
+    /** 피그마 홈 히어로 카드 모서리다. */
+    val Hero = 24.dp
+    val ListCard = 20.dp
+    val Button = 12.dp
+
+    /** 피그마 하단 탭 한 칸의 선택 배경 모서리(radius-md)다. */
+    val Tab = 16.dp
     val Logo = 14.dp
-    val Field = 14.dp
+    val Field = 16.dp
     val Sheet = 28.dp
     val SmallButton = 10.dp
     val HeaderButton = 12.dp
@@ -44,9 +50,9 @@ object AppIconSize {
 
 /** 입력란, 버튼, 상단 바처럼 반복되는 컴포넌트의 고정 크기다. */
 object AppSize {
-    val Field = 48.dp
+    val Field = 54.dp
     val ListItem = 48.dp
-    val Button = 46.dp
+    val Button = 50.dp
     val SmallButton = 36.dp
     val Chip = 32.dp
     val TopBar = 56.dp

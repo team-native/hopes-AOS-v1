@@ -47,6 +47,16 @@ fun Modifier.figmaSheetShadow(shape: Shape): Modifier =
         alpha = 0.12f
     }
 
+/** 피그마 02 로그인 Sheet의 위쪽 그림자다: drop-shadow(0, -4, blur 12, #1A3366 6%). */
+fun Modifier.figmaTopSheetShadow(shape: Shape): Modifier =
+    dropShadow(shape) {
+        radius = 12.dp.toPx()
+        spread = 0f
+        offset = Offset(x = 0f, y = (-4).dp.toPx())
+        color = Color(0xFF1A3366)
+        alpha = 0.06f
+    }
+
 /** 로그인 안내에 노출되는 피크 시트의 Figma 원본 그림자다. */
 fun Modifier.figmaPeekSheetShadow(shape: Shape): Modifier =
     dropShadow(shape) {

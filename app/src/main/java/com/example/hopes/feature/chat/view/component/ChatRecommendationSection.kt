@@ -1,5 +1,6 @@
 package com.example.hopes.feature.chat.view.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,7 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -75,7 +76,7 @@ fun ChatRecommendationHeader(
 /** 아이콘·질문·오른쪽 화살표로 된 추천 질문 카드다. 누르면 질문이 입력창에 채워진다. */
 @Composable
 fun ChatRecommendedQuestionCard(
-    icon: ImageVector,
+    @DrawableRes icon: Int,
     question: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -168,7 +169,9 @@ fun ChatRecommendationSkeleton(
 }
 
 @Composable
-private fun ChatQuestionIconTile(icon: ImageVector) {
+private fun ChatQuestionIconTile(
+    @DrawableRes icon: Int,
+) {
     Box(
         modifier =
             Modifier
@@ -181,7 +184,7 @@ private fun ChatQuestionIconTile(icon: ImageVector) {
     ) {
         // 바로 옆 질문 문구가 의미를 전달하므로 아이콘은 장식으로 취급한다.
         Icon(
-            imageVector = icon,
+            painter = painterResource(icon),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(AppIconSize.Small),

@@ -1,12 +1,7 @@
 package com.example.hopes.feature.chat.view
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bed
-import androidx.compose.material.icons.outlined.Code
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.example.hopes.feature.chat.viewmodel.ChatDepartment
 import com.example.hopes.feature.chat.viewmodel.ChatMajor
@@ -36,10 +31,12 @@ fun ChatQuestionTopic.question(major: ChatMajor?): String =
         ChatQuestionTopic.Advice -> stringResource(R.string.chat_suggestion_advice)
     }
 
-fun ChatQuestionTopic.icon(): ImageVector =
+/** 추천 질문 카드 왼쪽의 피그마 아이콘(res/drawable/ic_topic_*)이다. */
+@DrawableRes
+fun ChatQuestionTopic.icon(): Int =
     when (this) {
-        ChatQuestionTopic.Dormitory -> Icons.Outlined.Bed
-        ChatQuestionTopic.Admission -> Icons.Outlined.Description
-        ChatQuestionTopic.MajorStudy -> Icons.Outlined.Code
-        ChatQuestionTopic.Advice -> Icons.Outlined.FavoriteBorder
+        ChatQuestionTopic.Dormitory -> R.drawable.ic_topic_dormitory
+        ChatQuestionTopic.Admission -> R.drawable.ic_topic_admission
+        ChatQuestionTopic.MajorStudy -> R.drawable.ic_topic_major_study
+        ChatQuestionTopic.Advice -> R.drawable.ic_topic_advice
     }

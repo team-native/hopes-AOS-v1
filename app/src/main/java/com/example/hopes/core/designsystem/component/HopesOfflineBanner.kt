@@ -1,4 +1,4 @@
-package com.example.hopes.feature.auth.presentation.component
+package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -28,11 +27,13 @@ import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.ui.theme.HopesTextStyles
-import com.teamnative.hopes.R
 
-/** 네트워크 오류로 로그인에 실패했을 때 화면 상단에 띄우는 어두운 안내 배너다. */
+/** 인터넷 연결이 끊겼을 때 화면 위쪽에 띄우는 어두운 안내 줄이다(로그인 실패, 채팅 08-5). */
 @Composable
-fun AuthOfflineBanner(modifier: Modifier = Modifier) {
+fun HopesOfflineBanner(
+    message: String,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier =
             modifier
@@ -56,7 +57,7 @@ fun AuthOfflineBanner(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(AppSpacing.Compact))
 
         Text(
-            text = stringResource(R.string.auth_login_offline_message),
+            text = message,
             color = MaterialTheme.colorScheme.inverseOnSurface,
             style = HopesTextStyles.Caption.copy(fontWeight = FontWeight.Medium),
         )

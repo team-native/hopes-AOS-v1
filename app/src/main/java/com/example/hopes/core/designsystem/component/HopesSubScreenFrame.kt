@@ -1,5 +1,6 @@
 package com.example.hopes.core.designsystem.component
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +52,7 @@ data class HopesHeaderAction(
  *
  * @param subtitle null이면 제목만 표시한다.
  * @param toast 화면 아래쪽, 하단 버튼 위에 겹쳐 띄울 안내다. 보통 [HopesToast]를 넘긴다.
+ * @param scrollState 채팅처럼 본문을 코드에서 맨 아래로 스크롤해야 하는 화면은 직접 만든 상태를 넘긴다.
  */
 @Composable
 fun HopesSubScreenFrame(
@@ -61,6 +63,7 @@ fun HopesSubScreenFrame(
     headerAction: HopesHeaderAction? = null,
     bottomButton: (@Composable () -> Unit)? = null,
     toast: (@Composable () -> Unit)? = null,
+    scrollState: ScrollState = rememberScrollState(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
@@ -89,7 +92,7 @@ fun HopesSubScreenFrame(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(scrollState)
                         .padding(
                             start = AppSpacing.ScreenHorizontal,
                             top = AppSpacing.Item,

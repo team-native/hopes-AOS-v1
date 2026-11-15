@@ -90,7 +90,7 @@ private fun HopesBottomNavigationItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val itemShape = RoundedCornerShape(AppRadius.Button)
+    val itemShape = RoundedCornerShape(AppRadius.Tab)
     val contentColor =
         if (isSelected) {
             MaterialTheme.colorScheme.primary
@@ -125,7 +125,7 @@ private fun HopesBottomNavigationItem(
             modifier = Modifier.size(AppIconSize.BottomNavigation),
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.XSmall))
+        Spacer(modifier = Modifier.height(AppSpacing.Small))
 
         Text(
             text = stringResource(destination.labelResourceId()),

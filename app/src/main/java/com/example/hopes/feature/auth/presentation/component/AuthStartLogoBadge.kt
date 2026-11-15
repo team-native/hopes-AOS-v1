@@ -35,7 +35,7 @@ fun AuthStartLogoBadge(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
     ) {
         Image(
-            painter = painterResource(R.drawable.hopes_logo),
+            painter = painterResource(R.drawable.ic_logo_mark),
             contentDescription = stringResource(R.string.app_name),
             contentScale = ContentScale.Fit,
             modifier = Modifier.size(LOGO_MARK_SIZE),
@@ -43,5 +43,5 @@ fun AuthStartLogoBadge(modifier: Modifier = Modifier) {
     }
 }
 
-private val LOGO_BADGE_SIZE = 56.dp
-private val LOGO_MARK_SIZE = DpSize(width = 22.dp, height = 32.dp)
+private val LOGO_BADGE_SIZE = 64.dp
+private val LOGO_MARK_SIZE = DpSize(width = 26.dp, height = 40.dp)

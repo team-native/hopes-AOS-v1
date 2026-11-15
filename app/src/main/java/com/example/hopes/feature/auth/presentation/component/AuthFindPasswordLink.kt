@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 로그인 화면에서 비밀번호 재설정 단계로 이동하는 "비밀번호 찾기" 링크다. */
@@ -33,7 +34,7 @@ fun AuthFindPasswordLink(
                     horizontal = AppSpacing.Small,
                     vertical = AppSpacing.Compact,
                 ),
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = LocalHopesExtendedColors.current.authFieldHint,
         style = HopesTextStyles.Label,
     )
 }

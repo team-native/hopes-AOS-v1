@@ -3,19 +3,14 @@ package com.example.hopes.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,8 +41,10 @@ import com.example.hopes.feature.notification.presentation.NotificationRoute
 import com.example.hopes.feature.schoolmap.presentation.SchoolMapScreen
 import com.example.hopes.feature.settings.presentation.AppInfoScreen
 import com.example.hopes.feature.settings.presentation.SettingsRoute
+import com.example.hopes.feature.splash.presentation.SplashScreen
 import com.teamnative.hopes.BuildConfig
 import com.teamnative.hopes.R
+import kotlinx.coroutines.delay
 
 /** 인증·탭·설정 및 서버 채팅 상세의 단일 탐색 그래프다. */
 @Composable
@@ -58,8 +55,14 @@ fun HopesNavHost(
 ) {
     val sessionState by sessionViewModel.sessionState.collectAsStateWithLifecycle()
 
-    if (sessionState is SessionState.Loading) {
-        SessionRestoringIndicator()
+    // 피그마 00 스플래시: 세션 확인이 끝나도 최소 시간 동안은 보여 준다. 화면 회전에는 다시 시작하지 않는다.
+    var isSplashMinTimeElapsed by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(SPLASH_MIN_MILLIS)
+        isSplashMinTimeElapsed = true
+    }
+    if (sessionState is SessionState.Loading || !isSplashMinTimeElapsed) {
+        SplashScreen()
         return
     }
 
@@ -305,13 +308,5 @@ private fun HopesMainNavDisplay(
     )
 }
 
-/** 저장 세션을 읽는 동안 인증 화면이 잠시 노출되지 않도록 로딩 상태를 표시한다. */
-@Composable
-private fun SessionRestoringIndicator() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-    }
-}
+/** 스플래시를 최소로 보여 주는 시간이다. 로고 애니메이션(약 0.8초)이 끝나고 잠시 머문다. */
+private const val SPLASH_MIN_MILLIS = 1500L

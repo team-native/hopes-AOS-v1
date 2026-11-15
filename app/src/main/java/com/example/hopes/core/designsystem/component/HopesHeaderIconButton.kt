@@ -13,7 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,24 @@ fun HopesHeaderIconButton(
     modifier: Modifier = Modifier,
     hasBadge: Boolean = false,
 ) {
+    HopesHeaderIconButton(
+        painter = rememberVectorPainter(imageVector),
+        contentDescription = contentDescription,
+        onClick = onClick,
+        modifier = modifier,
+        hasBadge = hasBadge,
+    )
+}
+
+/** [Painter]로 아이콘을 받는 버전이다. 피그마 SVG에서 옮긴 벡터 리소스를 그대로 쓸 때 사용한다. */
+@Composable
+fun HopesHeaderIconButton(
+    painter: Painter,
+    contentDescription: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    hasBadge: Boolean = false,
+) {
     val buttonShape = RoundedCornerShape(AppRadius.HeaderButton)
 
     Box(
@@ -49,7 +69,7 @@ fun HopesHeaderIconButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            imageVector = imageVector,
+            painter = painter,
             contentDescription = contentDescription,
             tint = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.size(AppIconSize.Medium),

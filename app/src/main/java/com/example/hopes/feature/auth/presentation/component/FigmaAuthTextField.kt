@@ -34,6 +34,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hopes.core.designsystem.AppRadius
+import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.example.hopes.ui.theme.Pretendard
@@ -72,11 +74,11 @@ fun FigmaAuthTextField(
     Box(
         modifier =
             modifier
-                .height(40.dp)
+                .height(AppSize.Field)
                 .border(
                     width = 1.dp,
                     color = extendedColors.authFieldBorder,
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(AppRadius.Field),
                 ).padding(horizontal = 16.dp),
         contentAlignment = Alignment.CenterStart,
     ) {

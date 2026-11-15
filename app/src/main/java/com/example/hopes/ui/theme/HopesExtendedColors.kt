@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 data class HopesExtendedColors(
     val authFieldBorder: Color,
+    val authFieldFocusBorder: Color,
     val authFieldHint: Color,
     val authHandle: Color,
     val authSubtitle: Color,
@@ -24,19 +25,21 @@ val LocalHopesExtendedColors =
 
 internal val lightHopesExtendedColors =
     HopesExtendedColors(
-        authFieldBorder = Color(0xFFD9D9D9),
-        authFieldHint = Color(0xFF6B7A94),
+        authFieldBorder = Color(0xFFEBF1FA),
+        authFieldFocusBorder = Color(0xFFA9CDFB),
+        authFieldHint = Color(0xFF98A3B8),
         authHandle = Color(0xFFD1DEED),
         authSubtitle = Color(0xFF718096),
         replyFieldBackground = Color(0xFFFBFCFF),
         toggleTrackOff = Color(0x4D3C3C43),
         logoutContainer = Color(0xFFFFEDED),
-        logoutText = Color(0xFFE0211C),
+        logoutText = Color(0xFFEF4458),
     )
 
 internal val darkHopesExtendedColors =
     HopesExtendedColors(
         authFieldBorder = Color(0xFF596878),
+        authFieldFocusBorder = Color(0xFF70C6FF),
         authFieldHint = Color(0xFFB3C2D6),
         authHandle = Color(0xFF8FA8C2),
         authSubtitle = Color(0xFFB3C2D6),

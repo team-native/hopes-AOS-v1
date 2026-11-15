@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 하단 탭 아이콘(피그마 v2). Lucide 아이콘(ISC 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 하단 탭 홈 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="22"
+    android:viewportHeight="22">
     <path
-        android:pathData="M15,21v-8a1,1 0 0,0 -1,-1h-4a1,1 0 0,0 -1,1v8"
-        android:strokeWidth="2"
-        android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-    <path
-        android:pathData="M3,10a2,2 0 0,1 0.709,-1.528l7,-5.999a2,2 0 0,1 2.582,0l7,5.999A2,2 0 0,1 21,10v9a2,2 0 0,1 -2,2H5a2,2 0 0,1 -2,-2z"
-        android:strokeWidth="2"
+        android:pathData="M2.75 9.625L11 2.75L19.25 9.625V18.3333C19.25 18.5764 19.1534 18.8096 18.9815 18.9815C18.8096 19.1534 18.5764 19.25 18.3333 19.25H13.75V13.75H8.25V19.25H3.66667C3.42355 19.25 3.19039 19.1534 3.01849 18.9815C2.84658 18.8096 2.75 18.5764 2.75 18.3333V9.625Z"
+        android:strokeWidth="1.65"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

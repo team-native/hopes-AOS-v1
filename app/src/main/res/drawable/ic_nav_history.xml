@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 하단 탭 아이콘(피그마 v2). Lucide 아이콘(ISC 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 하단 탭 기록 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="22dp"
+    android:height="22dp"
+    android:viewportWidth="22"
+    android:viewportHeight="22">
     <path
-        android:pathData="M2,12a10,10 0 1,0 20,0a10,10 0 1,0 -20,0"
-        android:strokeWidth="2"
+        android:pathData="M19.25 11C19.25 15.5563 15.5563 19.25 11 19.25C6.44365 19.25 2.75 15.5563 2.75 11C2.75 6.44365 6.44365 2.75 11 2.75C15.5563 2.75 19.25 6.44365 19.25 11Z"
+        android:strokeWidth="1.65"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M12,6v6l4,2"
-        android:strokeWidth="2"
+        android:pathData="M11 6.41667V11L13.75 12.8333"
+        android:strokeWidth="1.65"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

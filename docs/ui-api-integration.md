@@ -79,7 +79,7 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 | 추천 로딩 · 실패 | 화면만 준비됨 (05-4, 05-2) | 위 API 상태를 `Loading` / `LoadError`로 | `ChatRecommendationState` |
 | 추천 새로 고침 | 반응 없음 | 위 API 다시 부르기 | `ChatViewModel`의 `RecommendationsRefreshClicked` |
 | 학과 · 전공 선택 | 화면에서만 기억, 서버에 안 보냄 | 질문과 함께 보내거나 프로필에 저장 | `ChatUiState.department` / `major` |
-| 입력창 + · 마이크 | 반응 없음 (채팅 홈) | 홈에서 첨부할지 결정, 음성 입력 | `ChatScreen`의 `ChatComposer` |
+| 입력창 + | 반응 없음 (채팅 홈) | 홈에서 첨부할지 결정 | `ChatScreen`의 `ChatComposer` |
 
 ## 채팅 상세 (피그마 08)
 

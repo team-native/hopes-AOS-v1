@@ -18,9 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
+import com.example.hopes.core.designsystem.component.HopesStatusMessage
 import com.example.hopes.feature.community.presentation.component.CommunityCohortFilterRow
 import com.example.hopes.feature.community.presentation.component.CommunityHeader
-import com.example.hopes.feature.community.presentation.component.CommunityStatusMessage
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.ui.theme.HopesTheme
 import com.teamnative.hopes.R
@@ -76,7 +76,7 @@ fun CommunityScreen(
             ) {
                 when (contentState) {
                     CommunityContentState.Empty -> {
-                        CommunityStatusMessage(
+                        HopesStatusMessage(
                             icon = Icons.AutoMirrored.Outlined.Chat,
                             title = stringResource(R.string.community_empty_title),
                             description = stringResource(R.string.community_empty_description),
@@ -86,7 +86,7 @@ fun CommunityScreen(
                     }
 
                     CommunityContentState.LoadError -> {
-                        CommunityStatusMessage(
+                        HopesStatusMessage(
                             icon = Icons.Outlined.ErrorOutline,
                             title = stringResource(R.string.community_load_error_title),
                             description = stringResource(R.string.community_load_error_description),

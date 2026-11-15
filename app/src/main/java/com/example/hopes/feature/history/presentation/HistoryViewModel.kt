@@ -55,6 +55,26 @@ class HistoryViewModel
                 HistoryScreenEvent.LoadNextPageRetryClicked -> {
                     loadNextPage()
                 }
+
+                is HistoryScreenEvent.DeleteChatClicked -> {
+                    updateState { copy(pendingDeleteChatId = event.chatId) }
+                }
+
+                HistoryScreenEvent.DeleteChatDismissed -> {
+                    updateState { copy(pendingDeleteChatId = null) }
+                }
+
+                HistoryScreenEvent.DeleteChatConfirmed -> {
+                    // 대화 삭제 API 연동 전이라 목록에서만 뺀다. 다시 불러오면 돌아온다. 연동 시 여기서 서버에 삭제를 요청한다.
+                    updateState {
+                        val remainingChats = chats.filterNot { it.id == pendingDeleteChatId }
+                        copy(
+                            chats = remainingChats,
+                            pendingDeleteChatId = null,
+                            contentState = if (remainingChats.isEmpty()) HistoryContentState.Empty else contentState,
+                        )
+                    }
+                }
             }
         }
 
@@ -158,7 +178,8 @@ class HistoryViewModel
                 }
         }
 
-        private fun ChatSummary.toChatSummaryUiModel(): ChatSummaryUiModel = ChatSummaryUiModel(id = id, title = title)
+        private fun ChatSummary.toChatSummaryUiModel(): ChatSummaryUiModel =
+            ChatSummaryUiModel(id = id, title = title, date = parseHistoryDate(updatedAt))
 
         private fun updateState(transform: HistoryUiState.() -> HistoryUiState) {
             _uiState.value = _uiState.value.transform()

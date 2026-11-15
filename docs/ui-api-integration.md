@@ -38,8 +38,18 @@ Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요�
 
 | 항목 | 지금 동작 | 필요한 API | 코드 위치 |
 |---|---|---|---|
-| 알림 목록 | 시안 예시 4개 | 알림 목록 (종류, 제목, 내용) | `NotificationRoute`의 `sampleItems` |
-| 편집 · 보기 · 모두 읽음 처리 | 반응 없음 | 읽음 처리, 이동 대상 | `NotificationRoute`의 콜백 |
+| 알림 목록 | 시안 예시 4개 | 알림 목록 (종류, 제목, 내용) | `NotificationSamples.kt`의 `sampleNotifications()` |
+| 보기 → 상세 (25-4) | 예시 알림의 상세 화면으로 이동 | 알림 상세 (본문, 날짜) | `NotificationDetailRoute`, `sampleNotifications()` |
+| 편집 · 모두 읽음 처리 | 반응 없음 | 읽음 처리 | `NotificationRoute`의 콜백 |
+| 로딩 (25-2) · 빈 상태 (25-3) | 화면만 준비됨 | 위 API 상태를 `isLoading` / 빈 목록으로 | `NotificationScreen`의 `isLoading`, `items` |
+
+## 지난 대화 (피그마 24)
+
+| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
+|---|---|---|---|
+| 대화 삭제 (24-5, 24-6) | 확인 후 **목록에서만 뺌** (다시 불러오면 돌아옴) | 대화 삭제 | `HistoryViewModel`의 `DeleteChatConfirmed` |
+| 날짜 묶음 · 날짜 문구 | 기존 `updatedAt`으로 계산 (ISO 형식) | — | `HistoryDateGrouping.kt` |
+| 행 아래 학과 표시 (24-2 "어제 · 소프트웨어개발과") | 날짜만 표시 | 대화 목록에 학과 필드 | `ChatSummaryUiModel` |
 
 ## 설정 (피그마 32)
 

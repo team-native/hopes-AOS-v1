@@ -1,4 +1,4 @@
-package com.example.hopes.feature.history.presentation.component
+package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +27,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -38,22 +40,26 @@ import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.figmaSubtleShadow
-import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
-/** "지난 대화 검색" 알약 모양 검색창이다. 글자가 있으면 오른쪽에 지우기 버튼이 나온다(피그마 24, 24-2). */
+/**
+ * 알약 모양 검색창이다. 글자가 있으면 오른쪽에 지우기 버튼이 나온다(피그마 24 지난 대화, 16 게시글 검색).
+ *
+ * @param onSearch 키보드의 검색 키를 눌렀을 때 부른다. 키보드는 이 뒤에 내려간다.
+ */
 @Composable
-fun HistorySearchField(
+fun HopesSearchField(
     value: String,
     onValueChange: (String) -> Unit,
+    placeholder: String,
     modifier: Modifier = Modifier,
+    onSearch: () -> Unit = {},
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val focusManager = LocalFocusManager.current
-    val placeholder = stringResource(R.string.history_search)
 
     Row(
         modifier =
@@ -96,13 +102,20 @@ fun HistorySearchField(
                 modifier =
                     Modifier
                         .fillMaxWidth()
+                        .focusRequester(focusRequester)
                         .semantics { contentDescription = placeholder },
                 singleLine = true,
                 textStyle = HopesTextStyles.Body.copy(color = MaterialTheme.colorScheme.onSurface),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 interactionSource = interactionSource,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+                keyboardActions =
+                    KeyboardActions(
+                        onSearch = {
+                            onSearch()
+                            focusManager.clearFocus()
+                        },
+                    ),
             )
         }
 
@@ -116,7 +129,7 @@ fun HistorySearchField(
             ) {
                 Icon(
                     imageVector = Icons.Filled.Cancel,
-                    contentDescription = stringResource(R.string.history_search_clear),
+                    contentDescription = stringResource(R.string.search_clear),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(AppIconSize.Small),
                 )

@@ -92,7 +92,8 @@ fun ChatRecommendedQuestionCard(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
                 ).shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
-                .padding(horizontal = AppSpacing.Item, vertical = AppSpacing.Item),
+                // 피그마 05 추천 질문 카드 높이(59)에 맞춘 여백이다.
+                .padding(horizontal = AppSpacing.Item, vertical = AppSpacing.Item + AppSpacing.XSmall),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ChatQuestionIconTile(icon = icon)

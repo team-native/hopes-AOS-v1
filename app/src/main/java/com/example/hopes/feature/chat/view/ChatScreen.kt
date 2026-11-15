@@ -141,7 +141,8 @@ fun ChatScreen(
                         style = HopesTextStyles.Caption,
                     )
                 } else {
-                    Spacer(modifier = Modifier.height(AppSpacing.Section))
+                    // 피그마 05의 칩 줄과 "무엇이 궁금한가요?" 사이 간격이다.
+                    Spacer(modifier = Modifier.height(AppSpacing.Large))
 
                     ChatWelcomeTitle()
 
@@ -258,10 +259,11 @@ private fun ChatRecommendations(
 
         Spacer(modifier = Modifier.height(AppSpacing.Compact))
     } else {
-        Spacer(modifier = Modifier.height(AppSpacing.Small))
+        // 피그마 05의 "추천 질문" 줄과 첫 카드 사이 간격이다.
+        Spacer(modifier = Modifier.height(AppSpacing.Medium + AppSpacing.Small))
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact)) {
+    Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
         uiState.recommendedTopics.forEach { topic ->
             val question = topic.question(uiState.major)
 

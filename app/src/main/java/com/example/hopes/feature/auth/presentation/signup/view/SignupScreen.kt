@@ -124,7 +124,7 @@ fun SignupScreen(
             modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
+        Spacer(modifier = Modifier.height(AppSpacing.ScreenBottom))
     }
 }
 

@@ -1,7 +1,9 @@
 package com.example.hopes.feature.community.presentation.detail.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,9 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
+import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
@@ -29,6 +34,7 @@ import com.example.hopes.feature.community.presentation.component.communityAutho
 import com.example.hopes.feature.community.presentation.component.communityTimeText
 import com.example.hopes.feature.community.presentation.detail.CommunityFailedComment
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 import java.time.LocalDateTime
 
@@ -47,7 +53,7 @@ fun CommunityCommentList(
     onRetryClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.Card)
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
 
     Column(
         modifier =
@@ -55,11 +61,13 @@ fun CommunityCommentList(
                 .fillMaxWidth()
                 .figmaSubtleShadow(cardShape)
                 .background(MaterialTheme.colorScheme.surface, cardShape)
-                .padding(horizontal = AppSpacing.Medium + AppSpacing.Small, vertical = AppSpacing.Compact),
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                // 피그마 Comment List: 가로 17·세로 14.
+                .padding(horizontal = LIST_PADDING_HORIZONTAL, vertical = LIST_PADDING_VERTICAL),
     ) {
         comments.forEachIndexed { index, comment ->
             if (index > 0) {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+                HorizontalDivider(color = LocalHopesExtendedColors.current.authFieldBorder)
             }
 
             CommunityCommentRow(
@@ -71,7 +79,7 @@ fun CommunityCommentList(
 
         failedComments.forEachIndexed { index, failed ->
             if (comments.isNotEmpty() || index > 0) {
-                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+                HorizontalDivider(color = LocalHopesExtendedColors.current.authFieldBorder)
             }
 
             CommunityFailedCommentRow(
@@ -89,23 +97,39 @@ private fun CommunityCommentRow(
     now: LocalDateTime,
     onMoreClick: () -> Unit,
 ) {
-    Column(modifier = Modifier.padding(vertical = AppSpacing.Compact)) {
+    // 피그마 Comment: 위아래 12, 요소 간격 4. 머리 줄은 작성자(Label), "· 시간"(Caption), 더보기 16.
+    Column(
+        modifier = Modifier.padding(vertical = AppSpacing.Item),
+        verticalArrangement = Arrangement.spacedBy(AppSpacing.Small),
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            CommunityMetaText(
-                author = communityAuthorName(comment.authorCohort, comment.isMine),
-                isMine = comment.isMine,
-                time = communityTimeText(comment.createdAt, now),
-                modifier = Modifier.weight(1f),
-                isEdited = comment.isEdited,
+            Text(
+                text = communityAuthorName(comment.authorCohort, comment.isMine),
+                color =
+                    if (comment.isMine) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+                style = HopesTextStyles.Label,
             )
 
-            CommunityMoreButton(onClick = onMoreClick)
+            Text(
+                text =
+                    " · " + communityTimeText(comment.createdAt, now) +
+                        if (comment.isEdited) " · " + stringResource(R.string.community_edited) else "",
+                modifier = Modifier.weight(1f).padding(start = AppSpacing.XSmall),
+                color = LocalHopesExtendedColors.current.authFieldHint,
+                style = HopesTextStyles.Caption,
+            )
+
+            CommunityMoreButton(onClick = onMoreClick, iconSize = AppIconSize.Small)
         }
 
         Text(
             text = comment.content,
             color = MaterialTheme.colorScheme.onSurface,
-            style = HopesTextStyles.BodyStrong,
+            style = HopesTextStyles.Label,
         )
     }
 }
@@ -155,3 +179,6 @@ private fun CommunityFailedCommentRow(
         )
     }
 }
+
+private val LIST_PADDING_HORIZONTAL = 17.dp
+private val LIST_PADDING_VERTICAL = 14.dp

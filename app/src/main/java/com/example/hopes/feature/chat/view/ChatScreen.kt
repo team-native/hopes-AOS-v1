@@ -27,6 +27,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesInfoBanner
@@ -34,6 +35,7 @@ import com.example.hopes.core.designsystem.component.HopesToast
 import com.example.hopes.feature.chat.detail.view.component.ChatDraftAttachments
 import com.example.hopes.feature.chat.view.component.ChatComposer
 import com.example.hopes.feature.chat.view.component.ChatContextChipRow
+import com.example.hopes.feature.chat.view.component.ChatDefaultQuestionCard
 import com.example.hopes.feature.chat.view.component.ChatRecommendationHeader
 import com.example.hopes.feature.chat.view.component.ChatRecommendationSkeleton
 import com.example.hopes.feature.chat.view.component.ChatRecommendedQuestionCard
@@ -76,10 +78,12 @@ fun ChatScreen(
                 modifier =
                     Modifier
                         .imePadding()
+                        // 피그마 Composer: 좌우 16, 위아래 10.
                         .padding(
                             start = AppSpacing.Medium,
+                            top = COMPOSER_PADDING_VERTICAL,
                             end = AppSpacing.Medium,
-                            bottom = AppSpacing.Compact,
+                            bottom = COMPOSER_PADDING_VERTICAL,
                         ),
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
             ) {
@@ -118,9 +122,9 @@ fun ChatScreen(
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                         .padding(
-                            start = AppSpacing.Medium,
+                            start = AppSpacing.ScreenHorizontal,
                             top = AppSpacing.SystemBarToContent,
-                            end = AppSpacing.Medium,
+                            end = AppSpacing.ScreenHorizontal,
                             bottom = AppSpacing.Section,
                         ),
             ) {
@@ -141,12 +145,14 @@ fun ChatScreen(
                         style = HopesTextStyles.Caption,
                     )
                 } else {
-                    // 피그마 05의 칩 줄과 "무엇이 궁금한가요?" 사이 간격이다.
-                    Spacer(modifier = Modifier.height(AppSpacing.Large))
+                    // 피그마 Content 요소 간격은 16이다. 학과·전공을 고르기 전(05-3)에는 제목이 없다.
+                    Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
-                    ChatWelcomeTitle()
+                    if (uiState.isPersonalized) {
+                        ChatWelcomeTitle()
 
-                    Spacer(modifier = Modifier.height(AppSpacing.Section))
+                        Spacer(modifier = Modifier.height(AppSpacing.Medium))
+                    }
 
                     ChatRecommendations(
                         uiState = uiState,
@@ -191,9 +197,11 @@ private fun ChatWelcomeTitle() {
 
     Text(
         text = title,
+        // 피그마 Cloud Card: 위 8, 아래 6.
         modifier =
             Modifier
                 .fillMaxWidth()
+                .padding(top = AppSpacing.Compact, bottom = AppSpacing.Small + AppSpacing.XSmall)
                 .semantics { heading() },
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center,
@@ -222,7 +230,7 @@ private fun ChatRecommendations(
                 onRefreshClick = null,
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
             ChatRecommendationSkeleton()
             return
@@ -260,18 +268,27 @@ private fun ChatRecommendations(
         Spacer(modifier = Modifier.height(AppSpacing.Compact))
     } else {
         // 피그마 05의 "추천 질문" 줄과 첫 카드 사이 간격이다.
-        Spacer(modifier = Modifier.height(AppSpacing.Medium + AppSpacing.Small))
+        Spacer(modifier = Modifier.height(AppSpacing.Medium))
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall)) {
-        uiState.recommendedTopics.forEach { topic ->
-            val question = topic.question(uiState.major)
+    if (!uiState.isPersonalized) {
+        // 피그마 05-3: 학과·전공을 고르기 전에는 기본 추천 질문을 카드 한 장에 구분선으로 보여준다.
+        ChatDefaultQuestionCard(
+            questions = uiState.recommendedTopics.map { topic -> topic.icon() to topic.question(uiState.major) },
+            onQuestionClick = { question -> onEvent(ChatScreenEvent.SuggestionClicked(question)) },
+        )
+    } else {
+        // 피그마 05: 질문마다 별도 카드이고 카드 사이 간격은 8이다.
+        Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact)) {
+            uiState.recommendedTopics.forEach { topic ->
+                val question = topic.question(uiState.major)
 
-            ChatRecommendedQuestionCard(
-                icon = topic.icon(),
-                question = question,
-                onClick = { onEvent(ChatScreenEvent.SuggestionClicked(question)) },
-            )
+                ChatRecommendedQuestionCard(
+                    icon = topic.icon(),
+                    question = question,
+                    onClick = { onEvent(ChatScreenEvent.SuggestionClicked(question)) },
+                )
+            }
         }
     }
 }
@@ -341,3 +358,5 @@ private fun ChatScreenLoadingPreview() {
         )
     }
 }
+
+private val COMPOSER_PADDING_VERTICAL = 10.dp

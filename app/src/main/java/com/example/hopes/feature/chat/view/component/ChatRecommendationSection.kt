@@ -2,6 +2,8 @@ package com.example.hopes.feature.chat.view.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,16 +19,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
@@ -34,6 +39,7 @@ import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 추천 질문 영역 위의 "○○ · ○○ 추천 질문" 문구와 오른쪽 새로 고침 버튼이다. */
@@ -51,24 +57,20 @@ fun ChatRecommendationHeader(
             text = label,
             modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.CaptionStrong,
+            style = HopesTextStyles.Label,
         )
 
         if (onRefreshClick != null) {
-            Box(
+            // 피그마 icon/refresh: 18dp. 누르는 영역은 시각 크기를 그대로 따른다.
+            Icon(
+                painter = painterResource(R.drawable.ic_refresh),
+                contentDescription = stringResource(R.string.chat_recommendation_refresh),
+                tint = LocalHopesExtendedColors.current.authFieldHint,
                 modifier =
                     Modifier
-                        .size(AppSize.IconButton)
-                        .shapeClickable(shape = CircleShape, role = Role.Button, onClick = onRefreshClick),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = stringResource(R.string.chat_recommendation_refresh),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(AppIconSize.Small),
-                )
-            }
+                        .size(REFRESH_ICON_SIZE)
+                        .clickable(role = Role.Button, onClick = onRefreshClick),
+            )
         }
     }
 }
@@ -91,9 +93,10 @@ fun ChatRecommendedQuestionCard(
                 .background(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
-                ).shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
-                // 피그마 05 추천 질문 카드 높이(59)에 맞춘 여백이다.
-                .padding(horizontal = AppSpacing.Item, vertical = AppSpacing.Item + AppSpacing.XSmall),
+                ).border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                .shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
+                // 피그마 05 List Row: 안쪽 여백 16/12에 테두리 1을 더해 높이가 62다.
+                .padding(horizontal = CARD_PADDING_HORIZONTAL, vertical = CARD_PADDING_VERTICAL),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ChatQuestionIconTile(icon = icon)
@@ -108,11 +111,65 @@ fun ChatRecommendedQuestionCard(
         )
 
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            painter = painterResource(R.drawable.ic_chevron_right),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(AppIconSize.Medium),
+            tint = LocalHopesExtendedColors.current.authFieldHint,
+            modifier = Modifier.size(ROW_ICON_SIZE),
         )
+    }
+}
+
+/**
+ * 학과·전공을 고르기 전(피그마 05-3) "기본 추천 질문"을 한 장의 카드 안에 구분선으로 이어 붙여 보여준다.
+ *
+ * @param questions 아이콘 리소스와 질문 문구 쌍이다.
+ */
+@Composable
+fun ChatDefaultQuestionCard(
+    questions: List<Pair<Int, String>>,
+    onQuestionClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .figmaSubtleShadow(cardShape)
+                .background(MaterialTheme.colorScheme.surface, cardShape)
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                .clip(cardShape)
+                // 피그마 05-3 Card: 좌우 16·위아래 4에 테두리 1을 더한 값이다.
+                .padding(horizontal = CARD_PADDING_HORIZONTAL, vertical = DEFAULT_CARD_PADDING_VERTICAL),
+    ) {
+        questions.forEachIndexed { index, (icon, question) ->
+            if (index > 0) {
+                HorizontalDivider(color = LocalHopesExtendedColors.current.authFieldBorder)
+            }
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable(role = Role.Button, onClick = { onQuestionClick(question) })
+                        .padding(vertical = AppSpacing.Item),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ChatQuestionIconTile(icon = icon)
+                Spacer(modifier = Modifier.width(AppSpacing.Item))
+                Text(
+                    text = question,
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = HopesTextStyles.Body,
+                )
+                Icon(
+                    painter = painterResource(R.drawable.ic_chevron_right),
+                    contentDescription = null,
+                    tint = LocalHopesExtendedColors.current.authFieldHint,
+                    modifier = Modifier.size(ROW_ICON_SIZE),
+                )
+            }
+        }
     }
 }
 
@@ -179,7 +236,7 @@ private fun ChatQuestionIconTile(
                 .size(ICON_TILE_SIZE)
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(AppRadius.SmallButton),
+                    shape = RoundedCornerShape(AppRadius.IconChip),
                 ),
         contentAlignment = Alignment.Center,
     ) {
@@ -188,12 +245,18 @@ private fun ChatQuestionIconTile(
             painter = painterResource(icon),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(AppIconSize.Small),
+            modifier = Modifier.size(ROW_ICON_SIZE),
         )
     }
 }
 
-private val ICON_TILE_SIZE = 32.dp
+// 피그마 List Row: 아이콘 칩 36, 아이콘·화살표 18, 한 줄 안쪽 여백 16/12(+테두리 1). 기본 질문 카드는 위아래 4(+1).
+private val ICON_TILE_SIZE = 36.dp
+private val ROW_ICON_SIZE = 18.dp
+private val REFRESH_ICON_SIZE = 18.dp
+private val CARD_PADDING_HORIZONTAL = 17.dp
+private val CARD_PADDING_VERTICAL = 13.dp
+private val DEFAULT_CARD_PADDING_VERTICAL = 5.dp
 private val PLACEHOLDER_LINE_HEIGHT = 10.dp
 private const val PLACEHOLDER_ALPHA = 0.5f
 private const val LONG_LINE_FRACTION = 0.7f

@@ -18,11 +18,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.teamnative.hopes.R
 
 /**
  * 연한 파란 배경의 안내 줄이다(예: "학과와 전공을 고르면 나에게 맞는 질문을 추천해 드려요.").
@@ -34,7 +37,7 @@ import com.example.hopes.ui.theme.HopesTextStyles
 fun HopesInfoBanner(
     message: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector = Icons.Outlined.Info,
+    icon: ImageVector? = null,
     actionText: String? = null,
     onActionClick: () -> Unit = {},
 ) {
@@ -44,31 +47,33 @@ fun HopesInfoBanner(
                 .fillMaxWidth()
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(AppRadius.Field),
-                ).padding(
-                    start = AppSpacing.Item,
-                    end = AppSpacing.Small,
-                    top = AppSpacing.XSmall,
-                    bottom = AppSpacing.XSmall,
-                ),
+                    shape = RoundedCornerShape(AppRadius.Banner),
+                    // 피그마 Banner/Info: 좌우 16, 위아래 12.
+                ).padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(AppIconSize.Small),
-        )
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(BANNER_ICON_SIZE),
+            )
+        } else {
+            Icon(
+                painter = painterResource(R.drawable.ic_alert),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(BANNER_ICON_SIZE),
+            )
+        }
 
         Spacer(modifier = Modifier.width(AppSpacing.Compact))
 
         Text(
             text = message,
-            modifier =
-                Modifier
-                    .weight(1f)
-                    .padding(vertical = AppSpacing.Compact),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.weight(1f),
+            color = MaterialTheme.colorScheme.primary,
             style = HopesTextStyles.Caption,
         )
 
@@ -85,3 +90,5 @@ fun HopesInfoBanner(
         }
     }
 }
+
+private val BANNER_ICON_SIZE = 18.dp

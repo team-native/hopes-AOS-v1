@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,15 +43,18 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.figmaBrandShadow
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.feature.chat.detail.view.answer.ChatAnswerContent
 import com.example.hopes.feature.chat.detail.view.answer.parseChatAnswerBlocks
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 내가 보낸 질문이다. 오른쪽에 붙는 파란 말풍선으로 그린다. */
@@ -59,14 +63,23 @@ fun ChatUserBubble(
     text: String,
     modifier: Modifier = Modifier,
 ) {
+    // 피그마 Bubble / User: 모서리 24, 오른쪽 아래만 6, 좌우 16·위아래 12.
+    val bubbleShape =
+        RoundedCornerShape(
+            topStart = AppRadius.Panel,
+            topEnd = AppRadius.Panel,
+            bottomStart = AppRadius.Panel,
+            bottomEnd = USER_BUBBLE_TAIL_RADIUS,
+        )
     Text(
         text = text,
         modifier =
             modifier
                 .widthIn(max = USER_BUBBLE_MAX_WIDTH)
+                .figmaBrandShadow(bubbleShape)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
-                    shape = RoundedCornerShape(AppRadius.Card),
+                    shape = bubbleShape,
                 ).padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item),
         color = MaterialTheme.colorScheme.onPrimary,
         style = HopesTextStyles.Body,
@@ -87,7 +100,14 @@ fun ChatAnswerCard(
     onCopyCode: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.ListCard)
+    // 피그마 Bubble / Answer: 모서리 24, 왼쪽 위만 6, 안쪽 여백 16(+테두리 1), 요소 간격 10.
+    val cardShape =
+        RoundedCornerShape(
+            topStart = ANSWER_BUBBLE_TAIL_RADIUS,
+            topEnd = AppRadius.Panel,
+            bottomStart = AppRadius.Panel,
+            bottomEnd = AppRadius.Panel,
+        )
     val blocks = remember(text) { parseChatAnswerBlocks(text) }
 
     Column(modifier = modifier.fillMaxWidth()) {
@@ -99,8 +119,9 @@ fun ChatAnswerCard(
                     .background(
                         color = MaterialTheme.colorScheme.surface,
                         shape = cardShape,
-                    ).padding(AppSpacing.Medium),
-            verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+                    ).border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                    .padding(ANSWER_BUBBLE_PADDING),
+            verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact + AppSpacing.XSmall),
         ) {
             sources.forEach { source -> ChatAnswerSourceChip(source = source) }
 
@@ -241,6 +262,9 @@ private fun ChatAnswerActionButton(
 }
 
 private val USER_BUBBLE_MAX_WIDTH = 260.dp
+private val USER_BUBBLE_TAIL_RADIUS = 6.dp
+private val ANSWER_BUBBLE_TAIL_RADIUS = 6.dp
+private val ANSWER_BUBBLE_PADDING = 17.dp
 private val DOT_SIZE = 6.dp
 private const val DOT_COUNT = 3
 private const val DOT_CYCLE_MILLIS = 900

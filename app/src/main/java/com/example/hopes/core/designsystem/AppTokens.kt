@@ -30,6 +30,9 @@ object AppRadius {
     /** 피그마 radius-lg: 통계·목록 카드 모서리다. */
     val Panel = 24.dp
 
+    /** 피그마 Banner/Info 모서리다. */
+    val Banner = 14.dp
+
     /** 피그마 radius-xl: 마이페이지 프로필 카드 모서리다. */
     val Profile = 28.dp
 

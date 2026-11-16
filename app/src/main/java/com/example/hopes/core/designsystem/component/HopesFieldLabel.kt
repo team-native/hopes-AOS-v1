@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.hopes.ui.theme.HopesTextStyles
 
-/** 입력란 위에 붙는 작은 굵은 라벨이다. */
+/** 입력란 위에 붙는 라벨이다(피그마 Field 라벨: Label 14/20, 보조 글자색). */
 @Composable
 fun HopesFieldLabel(
     text: String,
@@ -15,7 +15,7 @@ fun HopesFieldLabel(
     Text(
         text = text,
         modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurface,
-        style = HopesTextStyles.CaptionStrong,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = HopesTextStyles.Label,
     )
 }

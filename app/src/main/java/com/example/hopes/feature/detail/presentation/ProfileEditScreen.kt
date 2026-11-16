@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesCardHeading
 import com.example.hopes.core.designsystem.component.HopesErrorBanner
@@ -77,6 +78,8 @@ fun ProfileEditScreen(
                 value = uiState.email,
             )
 
+            Spacer(modifier = Modifier.height(AppSpacing.Item))
+
             ProfileAccountRow(
                 label = stringResource(R.string.profile_edit_major),
                 value = uiState.major.orEmpty(),
@@ -92,7 +95,7 @@ fun ProfileEditScreen(
 
             HopesFieldLabel(text = stringResource(R.string.profile_edit_name))
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(LABEL_FIELD_GAP))
 
             HopesTextField(
                 value = uiState.name,
@@ -107,7 +110,7 @@ fun ProfileEditScreen(
 
             HopesFieldLabel(text = stringResource(R.string.profile_personalization_label))
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(LABEL_FIELD_GAP))
 
             HopesTextArea(
                 value = uiState.introduction,
@@ -127,10 +130,7 @@ private fun ProfileAccountRow(
     value: String,
 ) {
     Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = AppSpacing.Small + AppSpacing.XSmall),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
             text = label,
@@ -142,12 +142,14 @@ private fun ProfileAccountRow(
         Text(
             text = value,
             color = MaterialTheme.colorScheme.onSurface,
-            style = HopesTextStyles.LabelStrong,
+            style = HopesTextStyles.Label,
         )
     }
 }
 
-private val INTRODUCTION_MIN_HEIGHT = AppSpacing.Large * 3
+// 피그마 26: 라벨과 입력란 사이 6, 자기소개 입력란 높이 96.
+private val LABEL_FIELD_GAP = 6.dp
+private val INTRODUCTION_MIN_HEIGHT = 96.dp
 
 @Preview(showBackground = true, name = "26 프로필 수정")
 @Composable

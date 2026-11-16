@@ -55,6 +55,15 @@ fun Modifier.figmaMediumShadow(shape: Shape): Modifier =
         alpha = 0.04f
     }
 
+/** 피그마 v1.5 Cloud/brand: (0, 8, blur 20, #2E87F5 20%). 내가 보낸 말풍선 그림자다. */
+fun Modifier.figmaBrandShadow(shape: Shape): Modifier =
+    dropShadow(shape) {
+        radius = 20.dp.toPx()
+        offset = Offset(x = 0f, y = 8.dp.toPx())
+        color = Color(0xFF2E87F5)
+        alpha = 0.2f
+    }
+
 /** 로그인 시트에 쓰이는 Figma 원본의 0 14 32 -16 rgba(13, 26, 46, .12) 그림자다. */
 fun Modifier.figmaSheetShadow(shape: Shape): Modifier =
     dropShadow(shape) {

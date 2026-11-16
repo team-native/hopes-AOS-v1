@@ -1,6 +1,7 @@
 package com.example.hopes.feature.chat.detail.view.answer
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,12 +40,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
@@ -150,14 +153,23 @@ private fun AnswerCodeBlock(
                 .fillMaxWidth()
                 .background(
                     color = MaterialTheme.colorScheme.background,
-                    shape = RoundedCornerShape(AppRadius.SmallButton),
-                ).padding(start = AppSpacing.Item, bottom = AppSpacing.Item),
+                    shape = RoundedCornerShape(AppRadius.IconChip),
+                    // 피그마 Code Block: 모서리 12, 테두리 1, 안쪽 여백 12.
+                ).border(
+                    AppBorderWidth.Default,
+                    LocalHopesExtendedColors.current.authFieldBorder,
+                    RoundedCornerShape(AppRadius.IconChip),
+                ).padding(
+                    start = AppSpacing.Item + AppBorderWidth.Default,
+                    bottom =
+                        AppSpacing.Item + AppBorderWidth.Default,
+                ),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = language,
                 modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = LocalHopesExtendedColors.current.authFieldHint,
                 style = HopesTextStyles.Caption,
             )
 
@@ -194,14 +206,15 @@ private fun AnswerQuote(text: String) {
                 Modifier
                     .width(QUOTE_BAR_WIDTH)
                     .fillMaxHeight()
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = QUOTE_BAR_ALPHA)),
+                    .background(LocalHopesExtendedColors.current.authFieldFocusBorder),
         )
 
         Text(
             text = text.toInlineAnnotatedString(),
-            modifier = Modifier.padding(start = AppSpacing.Item - AppSpacing.XSmall),
+            // 피그마 Quote: 막대 3, 왼쪽 여백 12, 위아래 2, Label 14/20.
+            modifier = Modifier.padding(start = AppSpacing.Item, top = AppSpacing.XSmall, bottom = AppSpacing.XSmall),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.Subtitle,
+            style = HopesTextStyles.Label,
         )
     }
 }
@@ -260,4 +273,3 @@ private val ANSWER_BODY_STYLE = HopesTextStyles.Body.copy(lineHeight = HopesText
 private const val BULLET_MARKER = "•"
 private val LIST_MARKER_MIN_WIDTH = 20.dp
 private val QUOTE_BAR_WIDTH = 3.dp
-private const val QUOTE_BAR_ALPHA = 0.3f

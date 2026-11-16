@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -20,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.figmaStatusBarsPadding
 import com.example.hopes.feature.auth.presentation.component.AuthPrimaryActionButton
 import com.example.hopes.feature.auth.presentation.signup.view.component.SignupStepProgress
 import com.example.hopes.feature.auth.presentation.signup.view.component.SignupTopBar
@@ -69,7 +69,7 @@ fun SignupScreen(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
-                .figmaStatusBarsPadding()
+                .statusBarsPadding()
                 .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime)),
     ) {
         SignupTopBar(onBackClick = { onEvent(SignupScreenEvent.BackClicked) })

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,6 +20,7 @@ import com.example.hopes.ui.theme.LocalHopesExtendedColors
 @Composable
 fun HopesSurfaceCard(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(AppSpacing.Medium),
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val cardShape = RoundedCornerShape(AppRadius.Panel)
@@ -32,7 +34,7 @@ fun HopesSurfaceCard(
                     color = MaterialTheme.colorScheme.surface,
                     shape = cardShape,
                 ).border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
-                .padding(AppSpacing.Medium),
+                .padding(contentPadding),
         content = content,
     )
 }

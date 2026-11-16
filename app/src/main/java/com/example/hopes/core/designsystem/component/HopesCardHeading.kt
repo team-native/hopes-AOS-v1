@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import com.example.hopes.core.designsystem.AppSpacing
@@ -19,6 +20,7 @@ fun HopesCardHeading(
     title: String,
     modifier: Modifier = Modifier,
     description: String? = null,
+    descriptionColor: Color = LocalHopesExtendedColors.current.authFieldHint,
 ) {
     Column(modifier = modifier) {
         Text(
@@ -33,7 +35,7 @@ fun HopesCardHeading(
 
             Text(
                 text = description,
-                color = LocalHopesExtendedColors.current.authFieldHint,
+                color = descriptionColor,
                 style = HopesTextStyles.Caption,
             )
         }

@@ -3,12 +3,13 @@ package com.example.hopes.feature.community.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.feature.community.model.CommunityReportReason
 import com.example.hopes.feature.community.model.CommunityTimeLabel
@@ -73,8 +74,9 @@ fun CommunityBoardTag(
             modifier
                 .background(
                     color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = RoundedCornerShape(AppSpacing.Small + AppSpacing.XSmall),
-                ).padding(horizontal = AppSpacing.Compact, vertical = AppSpacing.Small),
+                    shape = CircleShape,
+                    // 피그마 Board Badge: 가로 10·세로 4, 완전한 알약 모양.
+                ).padding(horizontal = TAG_PADDING_HORIZONTAL, vertical = AppSpacing.Small),
     ) {
         Text(
             text = communityBoardName(cohort),
@@ -83,3 +85,5 @@ fun CommunityBoardTag(
         )
     }
 }
+
+private val TAG_PADDING_HORIZONTAL = 10.dp

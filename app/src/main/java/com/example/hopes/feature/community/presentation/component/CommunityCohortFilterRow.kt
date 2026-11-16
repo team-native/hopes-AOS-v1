@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
@@ -74,8 +75,8 @@ fun CommunityFilterChip(
     Box(
         modifier =
             Modifier
-                // 피그마 13 기수 칩 높이(37)에 맞춘다.
-                .height(AppSize.Chip + AppSpacing.Small)
+                // 피그마 Chip: 위아래 8 + 글줄 20 + 테두리 2 = 38.
+                .height(CHIP_HEIGHT)
                 .clip(CircleShape)
                 .background(
                     color =
@@ -97,7 +98,7 @@ fun CommunityFilterChip(
                     selected = isSelected,
                     role = Role.Tab,
                     onClick = onClick,
-                ).padding(horizontal = AppSpacing.Item + AppSpacing.XSmall),
+                ).padding(horizontal = CHIP_PADDING_HORIZONTAL),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -118,4 +119,6 @@ fun CommunityFilterChip(
     }
 }
 
+private val CHIP_PADDING_HORIZONTAL = 14.dp
+private val CHIP_HEIGHT = 38.dp
 private const val SELECTED_BORDER_ALPHA = 0.4f

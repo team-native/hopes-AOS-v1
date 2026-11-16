@@ -3,14 +3,12 @@ package com.example.hopes.feature.community.presentation.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -38,17 +36,17 @@ fun CommunityHeader(
                     .weight(1f)
                     .semantics { heading() },
             color = MaterialTheme.colorScheme.onSurface,
-            style = HopesTextStyles.PageTitle,
+            style = HopesTextStyles.Display,
         )
 
         HopesHeaderIconButton(
-            imageVector = Icons.Outlined.Search,
+            painter = painterResource(R.drawable.ic_search),
             contentDescription = stringResource(R.string.community_search),
             onClick = onSearchClick,
         )
 
         HopesHeaderIconButton(
-            imageVector = Icons.Outlined.Person,
+            painter = painterResource(R.drawable.ic_user),
             contentDescription = stringResource(R.string.community_my_activity),
             onClick = onMyActivityClick,
         )

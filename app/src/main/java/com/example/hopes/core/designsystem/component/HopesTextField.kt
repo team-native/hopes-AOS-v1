@@ -91,7 +91,7 @@ fun HopesTextArea(
         keyboardOptions = KeyboardOptions.Default,
         modifier = modifier.heightIn(min = minHeight),
         contentAlignment = Alignment.TopStart,
-        verticalPadding = AppSpacing.Item,
+        verticalPadding = TEXT_AREA_VERTICAL_PADDING,
     )
 }
 
@@ -175,3 +175,6 @@ private fun HopesInputBox(
 }
 
 private val DEFAULT_TEXT_AREA_MIN_HEIGHT = 120.dp
+
+// 피그마 Text Area: 위아래 14.
+private val TEXT_AREA_VERTICAL_PADDING = 14.dp

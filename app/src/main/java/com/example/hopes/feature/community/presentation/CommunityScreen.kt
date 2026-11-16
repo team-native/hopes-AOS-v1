@@ -54,6 +54,7 @@ fun CommunityScreen(
     uiState: CommunityUiState,
     onCohortSelect: (Int?) -> Unit,
     onPostClick: (Long) -> Unit,
+    onLikeClick: (Long) -> Unit = {},
     onSearchClick: () -> Unit,
     onMyActivityClick: () -> Unit,
     onWriteClick: () -> Unit,
@@ -125,6 +126,7 @@ fun CommunityScreen(
                         listState = listState,
                         now = now,
                         onPostClick = onPostClick,
+                        onLikeClick = onLikeClick,
                         onWriteClick = onWriteClick,
                         onRetryClick = onRetryClick,
                     )
@@ -162,6 +164,7 @@ private fun CommunityContent(
     listState: LazyListState,
     now: LocalDateTime,
     onPostClick: (Long) -> Unit,
+    onLikeClick: (Long) -> Unit = {},
     onWriteClick: () -> Unit,
     onRetryClick: () -> Unit,
 ) {
@@ -194,6 +197,7 @@ private fun CommunityContent(
                         post = post,
                         now = now,
                         onClick = { onPostClick(post.id) },
+                        onLikeClick = { onLikeClick(post.id) },
                     )
                 }
             }

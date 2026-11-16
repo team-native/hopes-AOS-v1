@@ -58,6 +58,7 @@ fun CommunityMyActivityScreen(
     onBackClick: () -> Unit,
     onTabSelect: (CommunityMyActivityTab) -> Unit,
     onPostClick: (Long) -> Unit,
+    onLikeClick: (Long) -> Unit = {},
     onPostMoreClick: (Long) -> Unit,
     onPostMoreDismiss: () -> Unit,
     onEditPostClick: (Long) -> Unit,
@@ -108,6 +109,7 @@ fun CommunityMyActivityScreen(
                                 post = post,
                                 now = now,
                                 onClick = { onPostClick(post.id) },
+                                onLikeClick = { onLikeClick(post.id) },
                                 onMoreClick = { onPostMoreClick(post.id) },
                             )
                         }

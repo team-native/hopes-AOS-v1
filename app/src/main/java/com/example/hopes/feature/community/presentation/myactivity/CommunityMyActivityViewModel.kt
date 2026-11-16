@@ -62,6 +62,11 @@ class CommunityMyActivityViewModel
             screenState.value = screenState.value.copy(morePostId = null)
         }
 
+        /** 목록에서 하트를 누르면 좋아요를 켜고, 다시 누르면 끈다. */
+        fun toggleLike(postId: Long) {
+            store.toggleLike(postId)
+        }
+
         fun requestDeletePost(postId: Long) {
             screenState.value = screenState.value.copy(morePostId = null, pendingDeletePostId = postId)
         }

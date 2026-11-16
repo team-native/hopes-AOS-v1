@@ -2,6 +2,7 @@ package com.example.hopes.feature.detail.presentation
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -81,6 +82,8 @@ fun PersonalSettingsScreen(
             HopesCardHeading(
                 title = stringResource(R.string.personal_settings_prompt_title),
                 description = stringResource(R.string.personal_settings_prompt_description),
+                // 피그마 28은 설명을 보조 글자색으로 그린다(26은 연한 회색).
+                descriptionColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Item))
@@ -98,7 +101,7 @@ fun PersonalSettingsScreen(
 }
 
 // 피그마 28 시스템 프롬프트 입력란의 최소 높이다.
-private val PROMPT_MIN_HEIGHT = 200.dp
+private val PROMPT_MIN_HEIGHT = 220.dp
 
 @Preview(showBackground = true, name = "28 개인 설정")
 @Composable

@@ -80,7 +80,8 @@ fun HistoryScreenContent(
                         Modifier.padding(
                             start = AppSpacing.ScreenHorizontal,
                             end = AppSpacing.ScreenHorizontal,
-                            bottom = AppSpacing.Item,
+                            // 피그마 24: 버튼 아래 16, 그 아래가 하단 탭바다.
+                            bottom = AppSpacing.Medium,
                         ),
                 )
             }
@@ -99,7 +100,7 @@ fun HistoryScreenContent(
                     text = stringResource(R.string.history_title),
                     modifier = Modifier.semantics { heading() },
                     color = MaterialTheme.colorScheme.onSurface,
-                    style = HopesTextStyles.PageTitle,
+                    style = HopesTextStyles.Display,
                 )
 
                 Text(
@@ -225,9 +226,9 @@ private fun HistoryChatList(
         contentPadding =
             PaddingValues(
                 start = AppSpacing.ScreenHorizontal,
-                top = AppSpacing.Section,
+                top = AppSpacing.Medium,
                 end = AppSpacing.ScreenHorizontal,
-                bottom = AppSpacing.Section,
+                bottom = AppSpacing.Medium,
             ),
     ) {
         if (isSearching) {
@@ -291,15 +292,16 @@ private fun HistoryGroup(
     today: LocalDate,
     onEvent: (HistoryScreenEvent) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(bottom = AppSpacing.Section)) {
+    // 피그마 24: 묶음 제목·카드·다음 묶음 사이 간격은 모두 16이다.
+    Column(modifier = Modifier.padding(bottom = AppSpacing.Medium)) {
         Text(
             text = label,
             modifier = Modifier.semantics { heading() },
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = HopesTextStyles.CaptionStrong,
+            style = HopesTextStyles.Label,
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+        Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
         HistoryChatGroup(
             chats = chats,

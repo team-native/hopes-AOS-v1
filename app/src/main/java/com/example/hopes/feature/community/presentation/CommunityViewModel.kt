@@ -16,7 +16,7 @@ import javax.inject.Inject
 class CommunityViewModel
     @Inject
     constructor(
-        store: CommunityStore,
+        private val store: CommunityStore,
     ) : ViewModel() {
         private val selectedCohort = MutableStateFlow<Int?>(null)
 
@@ -37,6 +37,11 @@ class CommunityViewModel
 
         fun selectCohort(cohort: Int?) {
             selectedCohort.value = cohort
+        }
+
+        /** 목록에서 하트를 누르면 좋아요를 켜고, 다시 누르면 끈다. */
+        fun toggleLike(postId: Long) {
+            store.toggleLike(postId)
         }
 
         private companion object {

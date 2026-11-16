@@ -32,6 +32,7 @@ fun CommunityRoute(
         uiState = uiState,
         onCohortSelect = viewModel::selectCohort,
         onPostClick = onPostClick,
+        onLikeClick = viewModel::toggleLike,
         onSearchClick = { onSearchClick(uiState.selectedCohort) },
         onMyActivityClick = onMyActivityClick,
         onWriteClick = { onWriteClick(uiState.selectedCohort) },

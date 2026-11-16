@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -53,6 +54,7 @@ import java.time.LocalDateTime
  * 게시글 목록의 카드 한 장이다(피그마 13, 16, 18). 게시판 태그, 제목, 본문 두 줄, 작성자·시간, 좋아요·댓글 수를 보여준다.
  *
  * @param onMoreClick 있으면 오른쪽 위에 "…" 버튼을 붙인다(내 활동).
+ * @param onLikeClick 있으면 하트를 눌러 좋아요를 켜고 끌 수 있다. 한 사람이 한 번만 누를 수 있어 다시 누르면 취소된다.
  */
 @Composable
 fun CommunityPostCard(
@@ -61,6 +63,7 @@ fun CommunityPostCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onMoreClick: (() -> Unit)? = null,
+    onLikeClick: (() -> Unit)? = null,
 ) {
     val cardShape = RoundedCornerShape(AppRadius.Panel)
 
@@ -116,9 +119,11 @@ fun CommunityPostCard(
             )
 
             CommunityCount(
-                icon = R.drawable.ic_heart,
+                icon = if (post.isLiked) R.drawable.ic_heart_filled else R.drawable.ic_heart,
                 count = post.likeCount,
                 description = stringResource(R.string.community_like_count, post.likeCount),
+                isActive = post.isLiked,
+                onClick = onLikeClick,
             )
 
             Spacer(modifier = Modifier.width(AppSpacing.Item))
@@ -137,15 +142,32 @@ private fun CommunityCount(
     @DrawableRes icon: Int,
     count: Int,
     description: String,
+    isActive: Boolean = false,
+    onClick: (() -> Unit)? = null,
 ) {
+    val contentColor =
+        if (isActive) MaterialTheme.colorScheme.primary else LocalHopesExtendedColors.current.authFieldHint
+
     Row(
-        modifier = Modifier.clearAndSetSemantics { contentDescription = description },
+        modifier =
+            Modifier
+                .then(
+                    if (onClick != null) {
+                        // 손가락으로 누르기 쉽게 눌림 영역을 넓힌다. 눌림 전체가 카드 클릭보다 먼저 받는다.
+                        Modifier
+                            .clip(CircleShape)
+                            .toggleable(value = isActive, role = Role.Checkbox, onValueChange = { onClick() })
+                            .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Small)
+                    } else {
+                        Modifier
+                    },
+                ).clearAndSetSemantics { contentDescription = description },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = null,
-            tint = LocalHopesExtendedColors.current.authFieldHint,
+            tint = contentColor,
             modifier = Modifier.size(AppIconSize.Inline),
         )
 
@@ -153,7 +175,7 @@ private fun CommunityCount(
 
         Text(
             text = count.toString(),
-            color = LocalHopesExtendedColors.current.authFieldHint,
+            color = contentColor,
             style = HopesTextStyles.Caption,
         )
     }

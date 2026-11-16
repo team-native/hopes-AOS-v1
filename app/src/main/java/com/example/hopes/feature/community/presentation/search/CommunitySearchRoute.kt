@@ -35,6 +35,7 @@ fun CommunitySearchRoute(
             viewModel.submitQuery()
             onPostClick(postId)
         },
+        onLikeClick = viewModel::toggleLike,
         onCancelClick = onCancelClick,
         onNavigate = onNavigate,
     )

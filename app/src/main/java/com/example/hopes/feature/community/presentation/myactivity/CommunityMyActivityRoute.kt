@@ -21,6 +21,7 @@ fun CommunityMyActivityRoute(
         onBackClick = onBackClick,
         onTabSelect = viewModel::selectTab,
         onPostClick = onPostClick,
+        onLikeClick = viewModel::toggleLike,
         onPostMoreClick = viewModel::openPostMore,
         onPostMoreDismiss = viewModel::closePostMore,
         onEditPostClick = { postId ->

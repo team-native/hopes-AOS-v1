@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -101,7 +103,7 @@ fun ContactScreen(
         HopesSurfaceCard {
             HopesFieldLabel(text = stringResource(R.string.contact_reply_email))
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(LABEL_FIELD_GAP))
 
             HopesTextField(
                 value = uiState.email,
@@ -124,7 +126,7 @@ fun ContactScreen(
 
             HopesFieldLabel(text = stringResource(R.string.contact_content))
 
-            Spacer(modifier = Modifier.height(AppSpacing.Compact))
+            Spacer(modifier = Modifier.height(LABEL_FIELD_GAP))
 
             HopesTextArea(
                 value = uiState.message,
@@ -133,6 +135,7 @@ fun ContactScreen(
                 accessibilityLabel = stringResource(R.string.contact_content),
                 errorMessage = messageError,
                 isEnabled = !uiState.isSending,
+                minHeight = CONTENT_MIN_HEIGHT,
             )
 
             if (messageError != null) {
@@ -150,7 +153,8 @@ fun ContactScreen(
 
 @Composable
 private fun ContactEmailInfoCard() {
-    HopesSurfaceCard {
+    // 피그마 Mail Info: 좌우 16·위아래 14, 아이콘 칩 36(아이콘 18, 반경 12), 간격 12.
+    HopesSurfaceCard(contentPadding = PaddingValues(horizontal = AppSpacing.Medium, vertical = INFO_PADDING_VERTICAL)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier =
@@ -158,15 +162,15 @@ private fun ContactEmailInfoCard() {
                         .size(INFO_ICON_CONTAINER_SIZE)
                         .background(
                             color = MaterialTheme.colorScheme.primaryContainer,
-                            shape = RoundedCornerShape(AppRadius.SmallButton),
+                            shape = RoundedCornerShape(AppRadius.IconChip),
                         ),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.MailOutline,
+                    painter = painterResource(R.drawable.ic_mail),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(AppIconSize.Small),
+                    modifier = Modifier.size(INFO_ICON_SIZE),
                 )
             }
 
@@ -240,7 +244,7 @@ private fun ContactSentMessage(
 }
 
 // 피그마 29 이메일 안내 아이콘 배경, 29-4 완료 원형 아이콘 크기와 위 여백이다.
-private val INFO_ICON_CONTAINER_SIZE = 32.dp
+private val INFO_ICON_CONTAINER_SIZE = 36.dp
 private val SENT_ICON_CIRCLE_SIZE = 64.dp
 private val SENT_ICON_SIZE = 28.dp
 private val SENT_MESSAGE_TOP_PADDING = 96.dp
@@ -280,3 +284,9 @@ private fun ContactScreenSentPreview() {
         )
     }
 }
+
+// 피그마 29: 라벨과 입력란 사이 6, 문의 내용 입력란 높이 160, 안내 카드 위아래 14.
+private val LABEL_FIELD_GAP = 6.dp
+private val CONTENT_MIN_HEIGHT = 160.dp
+private val INFO_PADDING_VERTICAL = 14.dp
+private val INFO_ICON_SIZE = 18.dp

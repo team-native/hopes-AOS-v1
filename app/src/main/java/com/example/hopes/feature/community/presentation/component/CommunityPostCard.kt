@@ -1,6 +1,8 @@
 package com.example.hopes.feature.community.presentation.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -34,18 +33,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
-import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.HopesSkeleton
 import com.example.hopes.core.designsystem.component.HopesSkeletonLine
-import com.example.hopes.core.designsystem.component.figmaRaisedShadow
+import com.example.hopes.core.designsystem.component.figmaBrandShadow
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.feature.community.model.CommunityPost
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 import java.time.LocalDateTime
 
@@ -62,16 +62,19 @@ fun CommunityPostCard(
     modifier: Modifier = Modifier,
     onMoreClick: (() -> Unit)? = null,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.ListCard)
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
 
+    // 피그마 Post Card(높이 160): 안쪽 여백 16, 요소 간격 8, 테두리 1.
     Column(
         modifier =
             modifier
                 .fillMaxWidth()
                 .figmaSubtleShadow(cardShape)
                 .background(MaterialTheme.colorScheme.surface, cardShape)
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
                 .shapeClickable(shape = cardShape, role = Role.Button, onClick = onClick)
                 .padding(AppSpacing.Medium),
+        verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             CommunityBoardTag(cohort = post.cohort)
@@ -83,8 +86,6 @@ fun CommunityPostCard(
             }
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
-
         Text(
             text = post.title,
             color = MaterialTheme.colorScheme.onSurface,
@@ -93,18 +94,13 @@ fun CommunityPostCard(
             style = HopesTextStyles.FieldStrong,
         )
 
-        // 피그마 13 카드(160)의 제목과 본문 사이 간격이다.
-        Spacer(modifier = Modifier.height(AppSpacing.Item + AppSpacing.XSmall))
-
         Text(
             text = post.content,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            style = HopesTextStyles.Subtitle,
+            style = HopesTextStyles.Label,
         )
-
-        Spacer(modifier = Modifier.height(AppSpacing.Compact + AppSpacing.XSmall))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -115,20 +111,20 @@ fun CommunityPostCard(
                         communityTimeText(post.createdAt, now),
                     ) + if (post.isEdited) " · " + stringResource(R.string.community_edited) else "",
                 modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = LocalHopesExtendedColors.current.authFieldHint,
                 style = HopesTextStyles.Caption,
             )
 
             CommunityCount(
-                icon = Icons.Outlined.FavoriteBorder,
+                icon = R.drawable.ic_heart,
                 count = post.likeCount,
                 description = stringResource(R.string.community_like_count, post.likeCount),
             )
 
-            Spacer(modifier = Modifier.width(AppSpacing.Compact))
+            Spacer(modifier = Modifier.width(AppSpacing.Item))
 
             CommunityCount(
-                icon = Icons.AutoMirrored.Outlined.Chat,
+                icon = R.drawable.ic_comment,
                 count = post.commentCount,
                 description = stringResource(R.string.community_comment_count, post.commentCount),
             )
@@ -138,7 +134,7 @@ fun CommunityPostCard(
 
 @Composable
 private fun CommunityCount(
-    icon: ImageVector,
+    @DrawableRes icon: Int,
     count: Int,
     description: String,
 ) {
@@ -147,17 +143,17 @@ private fun CommunityCount(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = icon,
+            painter = painterResource(icon),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = LocalHopesExtendedColors.current.authFieldHint,
             modifier = Modifier.size(AppIconSize.Inline),
         )
 
-        Spacer(modifier = Modifier.width(AppSpacing.XSmall))
+        Spacer(modifier = Modifier.width(AppSpacing.Small))
 
         Text(
             text = count.toString(),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = LocalHopesExtendedColors.current.authFieldHint,
             style = HopesTextStyles.Caption,
         )
     }
@@ -228,8 +224,8 @@ fun CommunityWriteButton(
     Box(
         modifier =
             modifier
-                .size(AppSize.Field + AppSpacing.Compact)
-                .figmaRaisedShadow(CircleShape)
+                .size(FAB_SIZE)
+                .figmaBrandShadow(CircleShape)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.primary)
                 .shapeClickable(shape = CircleShape, role = Role.Button, onClick = onClick)
@@ -237,14 +233,16 @@ fun CommunityWriteButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_menu_activity),
+            painter = painterResource(R.drawable.ic_pen),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onPrimary,
-            modifier = Modifier.size(AppIconSize.Large),
+            modifier = Modifier.size(FAB_ICON_SIZE),
         )
     }
 }
 
+private val FAB_SIZE = 56.dp
+private val FAB_ICON_SIZE = 24.dp
 private val MORE_BUTTON_SIZE = 28.dp
 private val SKELETON_TAG_WIDTH = 36.dp
 private const val SKELETON_CARD_COUNT = 3

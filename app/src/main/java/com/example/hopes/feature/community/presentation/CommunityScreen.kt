@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,8 +22,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
@@ -84,8 +85,7 @@ fun CommunityScreen(
                     modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
                 )
 
-                // 피그마 13의 제목 줄과 기수 칩 사이 간격이다.
-                Spacer(modifier = Modifier.height(AppSpacing.Medium + AppSpacing.XSmall))
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
                 CommunityCohortFilterRow(
                     cohorts = uiState.cohorts,
@@ -137,7 +137,8 @@ fun CommunityScreen(
                     modifier =
                         Modifier
                             .align(Alignment.BottomEnd)
-                            .padding(AppSpacing.ScreenHorizontal),
+                            // 피그마 FAB: 오른쪽 20, 하단 탭바 위 26.
+                            .padding(end = AppSpacing.ScreenHorizontal, bottom = FAB_BOTTOM_MARGIN),
                 )
             }
 
@@ -186,7 +187,7 @@ private fun CommunityContent(
                         // 마지막 글이 글쓰기 버튼에 가리지 않게 버튼 높이만큼 더 띄운다.
                         bottom = AppSpacing.ScreenHorizontal + AppSize.Field + AppSpacing.Section,
                     ),
-                verticalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+                verticalArrangement = Arrangement.spacedBy(POST_GAP),
             ) {
                 items(uiState.posts, key = { it.id }) { post ->
                     CommunityPostCard(
@@ -200,7 +201,7 @@ private fun CommunityContent(
 
         CommunityContentState.Empty -> {
             HopesStatusMessage(
-                icon = Icons.AutoMirrored.Outlined.Chat,
+                iconPainter = painterResource(R.drawable.ic_chat_large),
                 title = stringResource(R.string.community_empty_title),
                 description = stringResource(R.string.community_empty_description),
                 actionText = stringResource(R.string.community_write),
@@ -219,6 +220,9 @@ private fun CommunityContent(
         }
     }
 }
+
+private val POST_GAP = 10.dp
+private val FAB_BOTTOM_MARGIN = 26.dp
 
 @Composable
 private fun CommunityScreenPreview(uiState: CommunityUiState) {

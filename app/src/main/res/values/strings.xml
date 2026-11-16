@@ -199,8 +199,6 @@
     <string name="home_popular_posts_title">커뮤니티 인기글</string>
     <string name="home_more">더보기</string>
     <string name="home_post_like_count">좋아요 %1$d개</string>
-    <string name="home_sample_post_interview">전공 동아리 면접 후기 공유</string>
-    <string name="home_sample_post_job">취업 준비 언제부터 시작했어?</string>
     <string name="my_page_profile_edit">프로필 수정</string>
     <string name="my_page_stat_posts">작성글</string>
     <string name="my_page_stat_comments">댓글</string>

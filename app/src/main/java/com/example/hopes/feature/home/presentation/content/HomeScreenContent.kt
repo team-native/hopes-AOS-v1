@@ -130,6 +130,7 @@ fun HomeScreenContent(
                         HomePopularPostCard(
                             post = post,
                             onClick = { onEvent(HomeScreenEvent.PopularPostClicked(post.id)) },
+                            onLikeClick = { onEvent(HomeScreenEvent.PopularPostLikeClicked(post.id)) },
                         )
                     }
                 }

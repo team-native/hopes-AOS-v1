@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -41,6 +43,7 @@ fun HomePopularPostCard(
     post: HomePopularPost,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onLikeClick: (() -> Unit)? = null,
 ) {
     val cardShape = RoundedCornerShape(AppRadius.ListCard)
     val likeDescription = stringResource(R.string.home_post_like_count, post.likeCount)
@@ -91,14 +94,32 @@ fun HomePopularPostCard(
 
         Spacer(modifier = Modifier.width(AppSpacing.Compact + AppSpacing.XSmall))
 
+        val likeColor =
+            if (post.isLiked) MaterialTheme.colorScheme.primary else LocalHopesExtendedColors.current.authFieldHint
+
         Row(
-            modifier = Modifier.semantics { contentDescription = likeDescription },
+            modifier =
+                Modifier
+                    .then(
+                        if (onLikeClick != null) {
+                            // 카드 전체 클릭(글 열기)과 구분해 하트만 눌리게 하고, 누르기 쉽게 영역을 넓힌다.
+                            Modifier
+                                .clip(CircleShape)
+                                .toggleable(
+                                    value = post.isLiked,
+                                    role = Role.Checkbox,
+                                    onValueChange = { onLikeClick() },
+                                ).padding(AppSpacing.Small)
+                        } else {
+                            Modifier
+                        },
+                    ).semantics { contentDescription = likeDescription },
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                painter = painterResource(R.drawable.ic_heart),
+                painter = painterResource(if (post.isLiked) R.drawable.ic_heart_filled else R.drawable.ic_heart),
                 contentDescription = null,
-                tint = LocalHopesExtendedColors.current.authFieldHint,
+                tint = likeColor,
                 modifier = Modifier.size(AppIconSize.Inline),
             )
 
@@ -106,7 +127,7 @@ fun HomePopularPostCard(
 
             Text(
                 text = post.likeCount.toString(),
-                color = LocalHopesExtendedColors.current.authFieldHint,
+                color = likeColor,
                 style = HopesTextStyles.Caption,
             )
         }

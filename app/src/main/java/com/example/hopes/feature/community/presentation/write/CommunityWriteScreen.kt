@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,7 +45,6 @@ import com.example.hopes.core.designsystem.component.HopesInfoBanner
 import com.example.hopes.core.designsystem.component.HopesInlineErrorMessage
 import com.example.hopes.core.designsystem.component.HopesTextArea
 import com.example.hopes.core.designsystem.component.HopesTextField
-import com.example.hopes.core.designsystem.component.figmaStatusBarsPadding
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.feature.community.presentation.component.CommunityBoardSheet
 import com.example.hopes.feature.community.presentation.component.communityBoardName
@@ -69,7 +69,7 @@ fun CommunityWriteScreen(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .figmaStatusBarsPadding()
+                .statusBarsPadding()
                 .navigationBarsPadding()
                 .imePadding(),
     ) {

@@ -63,6 +63,7 @@ fun CommunitySearchScreen(
     onRecentSearchClick: (String) -> Unit,
     onClearRecentSearches: () -> Unit,
     onPostClick: (Long) -> Unit,
+    onLikeClick: (Long) -> Unit = {},
     onCancelClick: () -> Unit,
     onNavigate: (HopesDestination) -> Unit,
     shouldFocusSearchField: Boolean = true,
@@ -139,6 +140,7 @@ fun CommunitySearchScreen(
                             results = uiState.results,
                             now = now,
                             onPostClick = onPostClick,
+                            onLikeClick = onLikeClick,
                         )
                     }
                 }
@@ -152,6 +154,7 @@ private fun CommunitySearchResults(
     results: List<CommunityPost>,
     now: LocalDateTime,
     onPostClick: (Long) -> Unit,
+    onLikeClick: (Long) -> Unit = {},
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -177,6 +180,7 @@ private fun CommunitySearchResults(
                 post = post,
                 now = now,
                 onClick = { onPostClick(post.id) },
+                onLikeClick = { onLikeClick(post.id) },
             )
         }
     }

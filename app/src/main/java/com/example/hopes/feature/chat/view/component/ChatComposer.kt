@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -34,9 +35,11 @@ import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.figmaMediumShadow
 import com.example.hopes.core.designsystem.component.figmaRaisedShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
@@ -63,12 +66,13 @@ fun ChatComposer(
         modifier =
             modifier
                 .fillMaxWidth()
-                .heightIn(min = AppSize.Field + AppSpacing.Small)
+                .heightIn(min = COMPOSER_MIN_HEIGHT)
                 .testTag("chat_composer_surface")
-                .figmaRaisedShadow(CircleShape)
+                .figmaMediumShadow(CircleShape)
                 .background(MaterialTheme.colorScheme.surface, CircleShape)
-                .border(AppBorderWidth.Default, MaterialTheme.colorScheme.outline, CircleShape)
-                .padding(horizontal = AppSpacing.Small),
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, CircleShape)
+                // 피그마 Composer Bar: 안쪽 여백 6, 높이 54(40+6+6+테두리 2).
+                .padding(COMPOSER_PADDING),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         ChatComposerIconButton(
@@ -77,7 +81,7 @@ fun ChatComposer(
             contentDescription = stringResource(R.string.chat_attach),
         ) { tint ->
             Icon(
-                imageVector = Icons.Filled.Add,
+                painter = painterResource(R.drawable.ic_plus),
                 contentDescription = null,
                 tint = tint,
                 modifier = Modifier.size(AppIconSize.Medium),
@@ -85,13 +89,13 @@ fun ChatComposer(
         }
 
         Box(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).padding(start = COMPOSER_INPUT_START, end = COMPOSER_INPUT_END),
             contentAlignment = Alignment.CenterStart,
         ) {
             if (value.isEmpty()) {
                 Text(
                     text = placeholder,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = LocalHopesExtendedColors.current.authFieldHint,
                     maxLines = 1,
                     style = HopesTextStyles.Body,
                 )
@@ -141,10 +145,10 @@ fun ChatComposer(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowUpward,
+                    painter = painterResource(R.drawable.ic_arrow_up),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(AppIconSize.Small),
+                    modifier = Modifier.size(AppIconSize.Medium),
                 )
             }
         }
@@ -162,6 +166,7 @@ private fun ChatComposerIconButton(
         modifier =
             Modifier
                 .size(AppSize.IconButton)
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, CircleShape)
                 .shapeClickable(shape = CircleShape, enabled = isEnabled, role = Role.Button, onClick = onClick)
                 .semantics { this.contentDescription = contentDescription },
         contentAlignment = Alignment.Center,
@@ -176,6 +181,11 @@ private fun ChatComposerIconButton(
     }
 }
 
-private val SEND_BUTTON_SIZE = 32.dp
+// 피그마 Send/Attach는 둘 다 40이다(Send는 흰 위 화살표가 있는 브랜드 원).
+private val SEND_BUTTON_SIZE = 40.dp
+private val COMPOSER_MIN_HEIGHT = 54.dp
+private val COMPOSER_PADDING = 6.dp
+private val COMPOSER_INPUT_START = 6.dp
+private val COMPOSER_INPUT_END = 4.dp
 private const val DISABLED_SEND_ALPHA = 0.38f
 private const val DISABLED_ICON_ALPHA = 0.5f

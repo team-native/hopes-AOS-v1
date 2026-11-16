@@ -1,37 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 채팅 홈 추천 질문 아이콘(피그마 05). Lucide 아이콘(ISC 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 입학(file) 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
     <path
-        android:pathData="M15,2H6a2,2 0 0,0 -2,2v16a2,2 0 0,0 2,2h12a2,2 0 0,0 2,-2V7z"
-        android:strokeWidth="2"
+        android:pathData="M10.5 2.25H5.25C4.85218 2.25 4.47064 2.40804 4.18934 2.68934C3.90804 2.97064 3.75 3.35218 3.75 3.75V14.25C3.75 14.6478 3.90804 15.0294 4.18934 15.3107C4.47064 15.592 4.85218 15.75 5.25 15.75H12.75C13.1478 15.75 13.5294 15.592 13.8107 15.3107C14.092 15.0294 14.25 14.6478 14.25 14.25V6L10.5 2.25Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M14,2v4a2,2 0 0,0 2,2h4"
-        android:strokeWidth="2"
+        android:pathData="M10.5 2.25V6H14.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M10,9H8"
-        android:strokeWidth="2"
+        android:pathData="M6.75 9.75H11.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M16,13H8"
-        android:strokeWidth="2"
-        android:strokeColor="#FF000000"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round" />
-    <path
-        android:pathData="M16,17H8"
-        android:strokeWidth="2"
+        android:pathData="M6.75 12.75H9.75"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

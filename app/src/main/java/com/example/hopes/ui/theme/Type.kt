@@ -157,6 +157,10 @@ object HopesTextStyles {
     /** App/Caption 12/16 Regular */
     val Caption = figmaTextStyle(fontFamily = Pretendard, fontSize = 12.sp, lineHeight = 16.sp)
 
+    /** 컨텍스트 칩 글자(Chip): 12/20 Medium. */
+    val Chip =
+        figmaTextStyle(fontFamily = Pretendard, fontSize = 12.sp, fontWeight = FontWeight.Medium, lineHeight = 20.sp)
+
     /** App/Tab 11/14 Medium */
     val NavigationLabel =
         figmaTextStyle(fontFamily = Pretendard, fontSize = 11.sp, fontWeight = FontWeight.Medium, lineHeight = 14.sp)

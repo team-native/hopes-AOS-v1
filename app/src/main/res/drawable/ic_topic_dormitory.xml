@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 채팅 홈 추천 질문 아이콘(피그마 05). Tabler 아이콘(MIT 라이선스)과 같은 선 모양이다. 색은 Icon의 tint로 칠한다. -->
+<!-- 피그마 v1.5 기숙사(bed) 아이콘 SVG를 벡터로 옮겼다. 색은 Icon의 tint로 칠한다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="18dp"
+    android:height="18dp"
+    android:viewportWidth="18"
+    android:viewportHeight="18">
     <path
-        android:pathData="M5,9a2,2 0 1,0 4,0a2,2 0 1,0 -4,0"
-        android:strokeWidth="2"
+        android:pathData="M1.5 6V14.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M22,17v-3h-20"
-        android:strokeWidth="2"
+        android:pathData="M1.5 11.25H16.5V14.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M2,8v9"
-        android:strokeWidth="2"
+        android:pathData="M16.5 11.25V9.75C16.5 9.15326 16.2629 8.58097 15.841 8.15901C15.419 7.73705 14.8467 7.5 14.25 7.5H8.25V11.25"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
     <path
-        android:pathData="M12,14h10v-2a3,3 0 0,0 -3,-3h-7v5z"
-        android:strokeWidth="2"
+        android:pathData="M6 8.625C6 9.24632 5.49632 9.75 4.875 9.75C4.25368 9.75 3.75 9.24632 3.75 8.625C3.75 8.00368 4.25368 7.5 4.875 7.5C5.49632 7.5 6 8.00368 6 8.625Z"
+        android:strokeWidth="1.35"
         android:strokeColor="#FF000000"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />

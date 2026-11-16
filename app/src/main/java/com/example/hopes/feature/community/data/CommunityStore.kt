@@ -41,8 +41,7 @@ class CommunityStore
     constructor(
         private val networkMonitor: NetworkMonitor,
     ) {
-        // 임시 글을 넣는다. 확인이 끝나면 인자를 지운다(CommunityTempData.kt 참고).
-        private val seed = CommunitySeed(posts = CommunityTempData.posts, comments = CommunityTempData.comments)
+        private val seed = CommunitySeed()
         private val postsState = MutableStateFlow(seed.posts)
         private val commentsState = MutableStateFlow(seed.comments)
         private val reportedTargets = MutableStateFlow<Set<CommunityReportTarget>>(emptySet())

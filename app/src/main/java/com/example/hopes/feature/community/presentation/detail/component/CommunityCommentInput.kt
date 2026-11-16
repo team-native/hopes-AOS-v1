@@ -35,18 +35,23 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
+import com.example.hopes.core.designsystem.component.figmaBrandShadow
+import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
@@ -139,7 +144,7 @@ fun CommunityCommentInput(
                         .weight(1f)
                         .focusRequester(focusRequester)
                         .semantics { contentDescription = placeholder },
-                textStyle = HopesTextStyles.Field.copy(color = MaterialTheme.colorScheme.onSurface),
+                textStyle = HopesTextStyles.Body.copy(color = MaterialTheme.colorScheme.onSurface),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 interactionSource = interactionSource,
                 maxLines = MAX_INPUT_LINES,
@@ -148,7 +153,8 @@ fun CommunityCommentInput(
                         modifier =
                             Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = AppSize.IconButton + AppSpacing.Small)
+                                .heightIn(min = AppSize.Field)
+                                .figmaSubtleShadow(RoundedCornerShape(INPUT_RADIUS))
                                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(INPUT_RADIUS))
                                 .border(
                                     width = if (isFocused) AppBorderWidth.Emphasized else AppBorderWidth.Default,
@@ -156,21 +162,20 @@ fun CommunityCommentInput(
                                         if (isFocused) {
                                             MaterialTheme.colorScheme.primary
                                         } else {
-                                            MaterialTheme.colorScheme.outline
+                                            LocalHopesExtendedColors.current.authFieldBorder
                                         },
                                     shape = RoundedCornerShape(INPUT_RADIUS),
                                 ).padding(
-                                    horizontal = AppSpacing.Medium,
-                                    vertical =
-                                        AppSpacing.Compact + AppSpacing.XSmall,
+                                    horizontal = INPUT_PADDING_HORIZONTAL,
+                                    vertical = INPUT_PADDING_VERTICAL,
                                 ),
                         contentAlignment = Alignment.CenterStart,
                     ) {
                         if (value.isEmpty()) {
                             Text(
                                 text = placeholder,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = HopesTextStyles.Field,
+                                color = LocalHopesExtendedColors.current.authFieldHint,
+                                style = HopesTextStyles.Body,
                             )
                         }
 
@@ -184,7 +189,8 @@ fun CommunityCommentInput(
             Box(
                 modifier =
                     Modifier
-                        .size(AppSize.IconButton + AppSpacing.Small)
+                        .size(AppSize.Field - AppSpacing.Item / 2)
+                        .figmaBrandShadow(CircleShape)
                         .background(
                             color =
                                 if (isSendEnabled) {
@@ -206,7 +212,7 @@ fun CommunityCommentInput(
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowUpward,
+                    painter = painterResource(R.drawable.ic_arrow_up),
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(AppIconSize.Medium),
@@ -216,6 +222,8 @@ fun CommunityCommentInput(
     }
 }
 
-private val INPUT_RADIUS = AppSize.IconButton
+private val INPUT_RADIUS = 999.dp
+private val INPUT_PADDING_HORIZONTAL = 18.dp
+private val INPUT_PADDING_VERTICAL = 13.dp
 private const val MAX_INPUT_LINES = 4
 private const val DISABLED_SEND_ALPHA = 0.4f

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,6 +31,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
@@ -164,6 +164,7 @@ private fun CommunityCount(
 fun CommunityMoreButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    iconSize: Dp = AppIconSize.Medium,
 ) {
     val description = stringResource(R.string.community_more)
 
@@ -176,10 +177,10 @@ fun CommunityMoreButton(
         contentAlignment = Alignment.Center,
     ) {
         Icon(
-            imageVector = Icons.Filled.MoreHoriz,
+            painter = painterResource(R.drawable.ic_more),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(AppIconSize.Small),
+            tint = LocalHopesExtendedColors.current.authFieldHint,
+            modifier = Modifier.size(iconSize),
         )
     }
 }

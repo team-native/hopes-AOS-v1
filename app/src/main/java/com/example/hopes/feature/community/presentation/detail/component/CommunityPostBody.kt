@@ -2,6 +2,7 @@ package com.example.hopes.feature.community.presentation.detail.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +15,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Chat
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -32,6 +33,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
@@ -44,6 +46,7 @@ import com.example.hopes.feature.community.presentation.component.CommunityMoreB
 import com.example.hopes.feature.community.presentation.component.communityAuthorName
 import com.example.hopes.feature.community.presentation.component.communityTimeText
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 import java.time.LocalDateTime
 
@@ -57,7 +60,7 @@ fun CommunityPostBody(
     onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.Card)
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
 
     Column(
         modifier =
@@ -65,7 +68,10 @@ fun CommunityPostBody(
                 .fillMaxWidth()
                 .figmaSubtleShadow(cardShape)
                 .background(MaterialTheme.colorScheme.surface, cardShape)
-                .padding(AppSpacing.Medium + AppSpacing.Small),
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                .padding(AppSpacing.Medium),
+        // 피그마 Post: 안쪽 여백 16, 요소 간격 8.
+        verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             CommunityBoardTag(cohort = post.cohort)
@@ -75,15 +81,11 @@ fun CommunityPostBody(
             CommunityMoreButton(onClick = onMoreClick)
         }
 
-        Spacer(modifier = Modifier.height(AppSpacing.Compact))
-
         Text(
             text = post.title,
             color = MaterialTheme.colorScheme.onSurface,
-            style = HopesTextStyles.SheetTitle,
+            style = HopesTextStyles.Heading,
         )
-
-        Spacer(modifier = Modifier.height(AppSpacing.Small))
 
         CommunityMetaText(
             author = communityAuthorName(post.authorCohort, post.isMine),
@@ -92,24 +94,21 @@ fun CommunityPostBody(
             isEdited = post.isEdited,
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
-
         Text(
             text = post.content,
             color = MaterialTheme.colorScheme.onSurface,
-            style = HopesTextStyles.Description,
+            style = HopesTextStyles.Body,
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Medium))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        // 피그마 Actions: 위 여백 4, 칩 간격 12.
+        Row(modifier = Modifier.padding(top = AppSpacing.Small), verticalAlignment = Alignment.CenterVertically) {
             CommunityLikeChip(
                 count = post.likeCount,
                 isLiked = post.isLiked,
                 onClick = onLikeClick,
             )
 
-            Spacer(modifier = Modifier.width(AppSpacing.Compact))
+            Spacer(modifier = Modifier.width(AppSpacing.Item))
 
             CommunityCommentChip(count = commentCount)
         }
@@ -126,7 +125,8 @@ fun CommunityMetaText(
     isEdited: Boolean = false,
 ) {
     val edited = stringResource(R.string.community_edited)
-    val authorColor = if (isMine) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+    val hintColor = LocalHopesExtendedColors.current.authFieldHint
+    val authorColor = if (isMine) MaterialTheme.colorScheme.primary else hintColor
     val text =
         buildAnnotatedString {
             withStyle(SpanStyle(color = authorColor)) { append(author) }
@@ -141,7 +141,7 @@ fun CommunityMetaText(
     Text(
         text = text,
         modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = hintColor,
         style = HopesTextStyles.Caption,
     )
 }
@@ -159,6 +159,7 @@ private fun CommunityLikeChip(
     Row(
         modifier =
             Modifier
+                // 피그마 Like: 가로 12·세로 6, 아이콘 16, 간격 6.
                 .height(AppSize.Chip)
                 .clip(CircleShape)
                 .background(
@@ -169,13 +170,18 @@ private fun CommunityLikeChip(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            painter =
+                if (isLiked) {
+                    rememberVectorPainter(Icons.Filled.Favorite)
+                } else {
+                    painterResource(R.drawable.ic_heart)
+                },
             contentDescription = null,
             tint = contentColor,
             modifier = Modifier.size(AppIconSize.Small),
         )
 
-        Spacer(modifier = Modifier.width(AppSpacing.Small))
+        Spacer(modifier = Modifier.width(COUNT_ICON_GAP))
 
         Text(
             text = count.toString(),
@@ -189,23 +195,26 @@ private fun CommunityLikeChip(
 private fun CommunityCommentChip(count: Int) {
     val description = stringResource(R.string.community_comment_count, count)
 
+    val chipShape = RoundedCornerShape(COMMENT_CHIP_RADIUS)
+
+    // 피그마 Comments: 흰 배경에 그림자, 가로 17·세로 14, 반경 20.
     Row(
         modifier =
             Modifier
-                .height(AppSize.Chip)
-                .border(AppBorderWidth.Default, MaterialTheme.colorScheme.outline, CircleShape)
+                .figmaSubtleShadow(chipShape)
+                .background(MaterialTheme.colorScheme.surface, chipShape)
                 .clearAndSetSemantics { contentDescription = description }
-                .padding(horizontal = AppSpacing.Item),
+                .padding(horizontal = COMMENT_CHIP_PADDING_HORIZONTAL, vertical = COMMENT_CHIP_PADDING_VERTICAL),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Outlined.Chat,
+            painter = painterResource(R.drawable.ic_comment),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = LocalHopesExtendedColors.current.authFieldHint,
             modifier = Modifier.size(AppIconSize.Small),
         )
 
-        Spacer(modifier = Modifier.width(AppSpacing.Small))
+        Spacer(modifier = Modifier.width(COUNT_ICON_GAP))
 
         Text(
             text = count.toString(),
@@ -214,3 +223,8 @@ private fun CommunityCommentChip(count: Int) {
         )
     }
 }
+
+private val COUNT_ICON_GAP = 6.dp
+private val COMMENT_CHIP_RADIUS = 20.dp
+private val COMMENT_CHIP_PADDING_HORIZONTAL = 17.dp
+private val COMMENT_CHIP_PADDING_VERTICAL = 14.dp

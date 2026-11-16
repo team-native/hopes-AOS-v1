@@ -113,16 +113,17 @@ fun CommunityPostDetailScreen(
                     onMoreClick = { onEvent(CommunityPostDetailEvent.PostMoreClicked) },
                 )
 
-                Spacer(modifier = Modifier.height(AppSpacing.Section))
+                // 피그마 14: 본문 카드·"댓글 3"·댓글 카드 사이 간격은 모두 10이다.
+                Spacer(modifier = Modifier.height(DETAIL_GAP))
 
                 Text(
                     text = stringResource(R.string.community_comment_header, uiState.commentCount),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = HopesTextStyles.LabelStrong,
+                    style = HopesTextStyles.Label,
                 )
 
                 if (uiState.commentCount > 0) {
-                    Spacer(modifier = Modifier.height(AppSpacing.Compact))
+                    Spacer(modifier = Modifier.height(DETAIL_GAP))
 
                     CommunityCommentList(
                         comments = uiState.comments,
@@ -140,6 +141,8 @@ fun CommunityPostDetailScreen(
     CommunityDetailSheets(uiState = uiState, onEvent = onEvent)
     CommunityDetailDialogs(dialog = uiState.dialog, onEvent = onEvent)
 }
+
+private val DETAIL_GAP = 10.dp
 
 @Composable
 private fun CommunityDetailSheets(

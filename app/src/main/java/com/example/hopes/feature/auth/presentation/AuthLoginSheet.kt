@@ -25,10 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
@@ -52,12 +54,14 @@ import com.teamnative.hopes.R
  * - 시트 바깥이나 입력란이 아닌 곳을 누르면 키보드를 닫는다. 키보드가 닫힌 상태에서 바깥을 누르면 시트를 닫는다.
  *
  * @param onDismiss 시트 바깥을 눌러 닫을 때 부른다(시작 화면으로 돌아간다).
+ * @param onSheetHeightChange 시트 높이가 바뀔 때마다 부른다. 시작 화면이 시트에 가려지지 않게 위치를 맞추는 데 쓴다.
  */
 @Composable
 fun AuthLoginSheet(
     uiState: AuthLoginUiState,
     onEvent: (AuthLoginScreenEvent) -> Unit,
     onDismiss: () -> Unit,
+    onSheetHeightChange: (Dp) -> Unit = {},
 ) {
     val density = LocalDensity.current
     val focusManager = LocalFocusManager.current
@@ -89,6 +93,8 @@ fun AuthLoginSheet(
                 Modifier
                     .align(Alignment.BottomCenter)
                     .statusBarsPadding()
+                    // 시트 높이를 알려 시작 화면의 로고·헤드라인이 시트 위 빈 공간에 맞게 올라가도록 한다.
+                    .onSizeChanged { size -> onSheetHeightChange(with(density) { size.height.toDp() }) }
                     .fillMaxWidth()
                     .figmaPeekSheetShadow(sheetShape)
                     .background(color = MaterialTheme.colorScheme.surface, shape = sheetShape)

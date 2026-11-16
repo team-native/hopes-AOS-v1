@@ -16,13 +16,11 @@ import com.example.hopes.core.designsystem.AppSize
  *
  * 상단 여백을 상태바 높이와 피그마 상태바 높이(62) 중 큰 값으로 잡아, 상태바가 낮은 기기에서도 콘텐츠가 피그마와 같은
  * 위치에서 시작하고 상태바가 더 높은 기기(펀치홀 등)에서는 상태바를 가리지 않는다.
- *
- * @param lift 뒤로가기 줄이 있는 화면처럼 시작점을 피그마(62)보다 위로 당길 만큼이다. 상태바 높이보다는 올라가지 않는다.
  */
 @Composable
-fun Modifier.figmaStatusBarsPadding(lift: Dp = 0.dp): Modifier {
+fun Modifier.figmaStatusBarsPadding(): Modifier {
     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-    return padding(top = maxOf(statusBarHeight, AppSize.FigmaStatusBar - lift))
+    return padding(top = maxOf(statusBarHeight, AppSize.FigmaStatusBar))
 }
 
 /**

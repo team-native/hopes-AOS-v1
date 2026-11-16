@@ -19,9 +19,6 @@ object AppSpacing {
 
     /** 화면 맨 아래 요소(버튼·링크)와 시스템 바(제스처 바) 사이 간격이다. 모든 화면이 같은 값을 쓴다. */
     val ScreenBottom = 12.dp
-
-    /** 뒤로가기 줄(< 제목)이 있는 화면의 시작점을 피그마(62)보다 위로 당기는 만큼이다. 팀 피드백으로 10을 준다. */
-    val BackHeaderLift = 10.dp
 }
 
 object AppRadius {

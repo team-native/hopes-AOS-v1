@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,7 +76,7 @@ fun HopesSubScreenFrame(
             modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .figmaStatusBarsPadding(lift = AppSpacing.BackHeaderLift)
+                .statusBarsPadding()
                 .navigationBarsPadding()
                 .imePadding(),
     ) {

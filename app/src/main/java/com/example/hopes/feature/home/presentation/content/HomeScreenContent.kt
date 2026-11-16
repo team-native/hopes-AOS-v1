@@ -1,13 +1,19 @@
 package com.example.hopes.feature.home.presentation.content
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,10 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
+import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
 import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
 import com.example.hopes.core.designsystem.component.HopesRetryMessage
+import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.feature.home.presentation.HomePopularPost
 import com.example.hopes.feature.home.presentation.HomePopularPostsState
 import com.example.hopes.feature.home.presentation.HomeScreenEvent
@@ -30,7 +39,9 @@ import com.example.hopes.feature.home.presentation.component.HomePopularPostCard
 import com.example.hopes.feature.home.presentation.component.HomeQuestionTipCard
 import com.example.hopes.feature.home.presentation.component.HomeSectionHeader
 import com.example.hopes.navigation.HopesDestination
+import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 피그마 30 홈 화면이다. 인사말, 채팅 시작 카드, 질문 팁, 커뮤니티 인기글을 위에서부터 쌓는다. */
@@ -114,7 +125,16 @@ fun HomeScreenContent(
                     description = stringResource(R.string.home_popular_posts_error_description),
                     onRetryClick = { onEvent(HomeScreenEvent.PopularPostsRetryClicked) },
                 )
-            } else if (uiState.popularPosts.isNotEmpty()) {
+            } else if (uiState.popularPosts.isEmpty()) {
+                // 피그마에 빈 상태 시안이 없어 인기글 줄과 같은 카드 모양으로 안내한다.
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
+
+                HomeSectionHeader(title = stringResource(R.string.home_popular_posts_title))
+
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
+
+                HomePopularPostsEmpty()
+            } else {
                 Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
                 HomeSectionHeader(
@@ -136,6 +156,29 @@ fun HomeScreenContent(
                 }
             }
         }
+    }
+}
+
+/** 인기글이 하나도 없을 때 보여주는 안내 카드다. */
+@Composable
+private fun HomePopularPostsEmpty() {
+    val cardShape = RoundedCornerShape(AppRadius.ListCard)
+
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .figmaSubtleShadow(cardShape)
+                .background(MaterialTheme.colorScheme.surface, cardShape)
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                .padding(vertical = AppSpacing.Section),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = stringResource(R.string.home_popular_posts_empty),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = HopesTextStyles.Label,
+        )
     }
 }
 

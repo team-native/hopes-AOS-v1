@@ -302,6 +302,7 @@
     <string name="chat_generating_placeholder">답변을 만드는 중이에요…</string>
     <string name="chat_detail_subtitle">%1$s · %2$s</string>
     <string name="retry">다시 시도</string>
+    <string name="home_popular_posts_empty">아직 인기글이 없어요</string>
     <string name="home_popular_posts_error_title">인기글을 불러오지 못했어요</string>
     <string name="home_popular_posts_error_description">잠시 후 다시 시도해 주세요. 채팅은 그대로 이용할 수 있어요.</string>
     <string name="chat_like">좋아요</string>

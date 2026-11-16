@@ -2,6 +2,7 @@ package com.example.hopes.core.designsystem.component
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -32,6 +33,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
@@ -196,17 +199,18 @@ private fun HopesSubScreenHeader(
             Box(
                 modifier =
                     Modifier
-                        .height(AppSize.Chip)
-                        .figmaSubtleShadow(actionShape)
+                        // 피그마 Button/Outline/S: 높이 36, 가로 14, 연한 테두리.
+                        .height(AppSize.SmallButton)
                         .background(
                             color = MaterialTheme.colorScheme.surface,
                             shape = actionShape,
-                        ).shapeClickable(
+                        ).border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, actionShape)
+                        .shapeClickable(
                             shape = actionShape,
                             enabled = action.isEnabled,
                             role = Role.Button,
                             onClick = action.onClick,
-                        ).padding(horizontal = AppSpacing.Item),
+                        ).padding(horizontal = ACTION_PADDING_HORIZONTAL),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -223,3 +227,5 @@ private fun HopesSubScreenHeader(
         }
     }
 }
+
+private val ACTION_PADDING_HORIZONTAL = 14.dp

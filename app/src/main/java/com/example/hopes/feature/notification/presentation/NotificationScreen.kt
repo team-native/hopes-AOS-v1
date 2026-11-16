@@ -1,6 +1,7 @@
 package com.example.hopes.feature.notification.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
@@ -36,6 +39,7 @@ import com.example.hopes.core.designsystem.component.shapeClickable
 import com.example.hopes.feature.notification.presentation.component.NotificationListCard
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /** 알림 종류다. 종류마다 목록 아이콘이 달라진다. */
@@ -75,7 +79,7 @@ fun NotificationScreen(
     onViewClick: (NotificationItem) -> Unit,
     onMarkAllReadClick: () -> Unit,
 ) {
-    val markAllShape = RoundedCornerShape(AppRadius.ListCard)
+    val markAllShape = RoundedCornerShape(AppRadius.Button)
 
     HopesSubScreenFrame(
         title = stringResource(R.string.notification_title),
@@ -98,7 +102,7 @@ fun NotificationScreen(
 
         if (items.isEmpty()) {
             HopesStatusMessage(
-                icon = Icons.Outlined.Notifications,
+                iconPainter = painterResource(R.drawable.ic_bell),
                 title = stringResource(R.string.notification_empty_title),
                 description = stringResource(R.string.notification_empty_description),
                 modifier =
@@ -114,18 +118,19 @@ fun NotificationScreen(
             onViewClick = onViewClick,
         )
 
-        Spacer(modifier = Modifier.height(AppSpacing.Item))
+        Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
+        // 피그마 Button/Outline/L: 높이 50, 반경 12, 연한 테두리.
         Box(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(AppSize.Field)
-                    .figmaSubtleShadow(markAllShape)
+                    .height(AppSize.Button)
                     .background(
                         color = MaterialTheme.colorScheme.surface,
                         shape = markAllShape,
-                    ).shapeClickable(shape = markAllShape, role = Role.Button, onClick = onMarkAllReadClick),
+                    ).border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, markAllShape)
+                    .shapeClickable(shape = markAllShape, role = Role.Button, onClick = onMarkAllReadClick),
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -140,7 +145,7 @@ fun NotificationScreen(
 /** 알림을 불러오는 동안 목록 카드 자리에 그리는 회색 자리 표시다(피그마 25-2). */
 @Composable
 private fun NotificationLoadingCard() {
-    val cardShape = RoundedCornerShape(AppRadius.Card)
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
 
     Column(
         modifier =
@@ -148,7 +153,8 @@ private fun NotificationLoadingCard() {
                 .fillMaxWidth()
                 .figmaSubtleShadow(cardShape)
                 .background(MaterialTheme.colorScheme.surface, cardShape)
-                .padding(AppSpacing.Medium),
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                .padding(horizontal = AppSpacing.Medium + AppSpacing.XSmall / 2, vertical = AppSpacing.Item),
         verticalArrangement = Arrangement.spacedBy(AppSpacing.Medium + AppSpacing.Small),
     ) {
         repeat(LOADING_ROW_COUNT) {
@@ -170,7 +176,7 @@ private fun NotificationLoadingCard() {
 }
 
 private val EMPTY_TOP_PADDING = 160.dp
-private val LOADING_ICON_SIZE = 36.dp
+private val LOADING_ICON_SIZE = 40.dp
 private const val LOADING_ROW_COUNT = 4
 private const val LONG_LINE_FRACTION = 0.8f
 private const val SHORT_LINE_FRACTION = 0.5f

@@ -10,7 +10,7 @@ import com.teamnative.hopes.R
 
 /**
  * 홈 화면 이벤트를 앱 탐색 동작에 연결한다.
- * 커뮤니티 서버 기능이 없어 인기글은 피그마 시안의 예시 글로 채운다.
+ * 인기글은 커뮤니티 임시 저장소(`CommunityStore`)의 좋아요 많은 글이다.
  */
 @Composable
 fun HomeRoute(
@@ -20,24 +20,8 @@ fun HomeRoute(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val samplePopularPosts =
-        listOf(
-            HomePopularPost(
-                id = 2,
-                cohort = null,
-                title = stringResource(R.string.home_sample_post_interview),
-                likeCount = 34,
-            ),
-            HomePopularPost(
-                id = 3,
-                cohort = 9,
-                title = stringResource(R.string.home_sample_post_job),
-                likeCount = 21,
-            ),
-        )
-
     HomeScreen(
-        uiState = uiState.copy(popularPosts = samplePopularPosts),
+        uiState = uiState,
         onEvent = { event ->
             when (event) {
                 HomeScreenEvent.StartChatClicked -> onNavigate(HopesDestination.Chat())
@@ -45,6 +29,8 @@ fun HomeRoute(
                 HomeScreenEvent.NotificationClicked -> onNotificationClick()
 
                 HomeScreenEvent.PopularPostsMoreClicked -> onNavigate(HopesDestination.Community)
+
+                is HomeScreenEvent.PopularPostLikeClicked -> viewModel.toggleLike(event.postId)
 
                 is HomeScreenEvent.PopularPostClicked -> onPopularPostClick(event.postId)
 

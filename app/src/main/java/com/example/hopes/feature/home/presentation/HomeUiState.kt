@@ -31,4 +31,5 @@ data class HomePopularPost(
     val cohort: Int?,
     val title: String,
     val likeCount: Int,
+    val isLiked: Boolean = false,
 )

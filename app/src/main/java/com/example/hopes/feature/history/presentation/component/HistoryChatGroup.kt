@@ -1,6 +1,7 @@
 package com.example.hopes.feature.history.presentation.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
@@ -39,6 +41,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
@@ -46,6 +49,7 @@ import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.feature.history.presentation.ChatSummaryUiModel
 import com.example.hopes.feature.history.presentation.HistoryDateLabel
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
@@ -63,7 +67,7 @@ fun HistoryChatGroup(
     onDeleteClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val cardShape = RoundedCornerShape(AppRadius.Card)
+    val cardShape = RoundedCornerShape(AppRadius.Panel)
 
     Column(
         modifier =
@@ -71,13 +75,16 @@ fun HistoryChatGroup(
                 .fillMaxWidth()
                 .figmaSubtleShadow(cardShape)
                 .clip(cardShape)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(MaterialTheme.colorScheme.surface)
+                .border(AppBorderWidth.Default, LocalHopesExtendedColors.current.authFieldBorder, cardShape)
+                // 피그마 List Card: 위아래 14. 좌우 17은 각 행이 가진다(밀어서 삭제 배경이 카드 끝까지 닿도록).
+                .padding(vertical = CARD_PADDING_VERTICAL),
     ) {
         chats.forEachIndexed { index, chat ->
             if (index > 0) {
                 HorizontalDivider(
-                    modifier = Modifier.padding(horizontal = AppSpacing.Medium),
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = DIVIDER_ALPHA),
+                    modifier = Modifier.padding(horizontal = ROW_PADDING_HORIZONTAL),
+                    color = LocalHopesExtendedColors.current.authFieldBorder,
                 )
             }
 
@@ -161,7 +168,7 @@ private fun HistoryChatRow(
                                     true
                                 },
                             )
-                    }.padding(horizontal = AppSpacing.Medium, vertical = AppSpacing.Item + AppSpacing.XSmall),
+                    }.padding(horizontal = ROW_PADDING_HORIZONTAL, vertical = AppSpacing.Item),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -176,17 +183,17 @@ private fun HistoryChatRow(
                 if (dateLabel != null) {
                     Text(
                         text = dateLabel.text(),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = LocalHopesExtendedColors.current.authFieldHint,
                         style = HopesTextStyles.Caption,
                     )
                 }
             }
 
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                painter = painterResource(R.drawable.ic_chevron_right),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(AppIconSize.Medium),
+                tint = LocalHopesExtendedColors.current.authFieldHint,
+                modifier = Modifier.size(CHEVRON_SIZE),
             )
         }
     }
@@ -221,4 +228,6 @@ private fun HistoryDateLabel.text(): String =
     }
 
 private val DELETE_ACTION_WIDTH = 72.dp
-private const val DIVIDER_ALPHA = 0.6f
+private val CARD_PADDING_VERTICAL = 14.dp
+private val ROW_PADDING_HORIZONTAL = 17.dp
+private val CHEVRON_SIZE = 18.dp

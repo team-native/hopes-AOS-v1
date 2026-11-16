@@ -31,16 +31,19 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
 import com.example.hopes.core.designsystem.AppSize
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.ui.theme.HopesTextStyles
+import com.example.hopes.ui.theme.LocalHopesExtendedColors
 import com.teamnative.hopes.R
 
 /**
@@ -70,16 +73,21 @@ fun HopesSearchField(
                 .background(MaterialTheme.colorScheme.surface, CircleShape)
                 .border(
                     width = if (isFocused) AppBorderWidth.Emphasized else AppBorderWidth.Default,
-                    color = if (isFocused) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
+                    color =
+                        if (isFocused) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            LocalHopesExtendedColors.current.authFieldBorder
+                        },
                     shape = CircleShape,
                 ).padding(start = AppSpacing.Medium, end = AppSpacing.Small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = Icons.Outlined.Search,
+            painter = painterResource(R.drawable.ic_search),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(AppIconSize.Small),
+            tint = LocalHopesExtendedColors.current.authFieldHint,
+            modifier = Modifier.size(SEARCH_ICON_SIZE),
         )
 
         Spacer(modifier = Modifier.width(AppSpacing.Compact))
@@ -91,7 +99,7 @@ fun HopesSearchField(
             if (value.isEmpty()) {
                 Text(
                     text = placeholder,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = LocalHopesExtendedColors.current.authFieldHint,
                     style = HopesTextStyles.Body,
                 )
             }
@@ -137,3 +145,6 @@ fun HopesSearchField(
         }
     }
 }
+
+// 피그마 Search Field의 돋보기 크기다.
+private val SEARCH_ICON_SIZE = 18.dp

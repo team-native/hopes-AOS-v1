@@ -69,7 +69,7 @@ fun SignupScreen(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
-                .figmaStatusBarsPadding()
+                .figmaStatusBarsPadding(lift = AppSpacing.BackHeaderLift)
                 .windowInsetsPadding(WindowInsets.navigationBars.union(WindowInsets.ime)),
     ) {
         SignupTopBar(onBackClick = { onEvent(SignupScreenEvent.BackClicked) })

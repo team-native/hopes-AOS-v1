@@ -75,7 +75,7 @@ fun HopesSubScreenFrame(
             modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .figmaStatusBarsPadding()
+                .figmaStatusBarsPadding(lift = AppSpacing.BackHeaderLift)
                 .navigationBarsPadding()
                 .imePadding(),
     ) {

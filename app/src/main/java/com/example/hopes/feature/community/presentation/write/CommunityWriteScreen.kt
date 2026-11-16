@@ -69,7 +69,7 @@ fun CommunityWriteScreen(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .figmaStatusBarsPadding()
+                .figmaStatusBarsPadding(lift = AppSpacing.BackHeaderLift)
                 .navigationBarsPadding()
                 .imePadding(),
     ) {

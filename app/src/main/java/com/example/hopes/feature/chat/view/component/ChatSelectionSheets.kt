@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -34,10 +35,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBlurRadius
 import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppIconSize
@@ -73,14 +76,18 @@ fun ChatDepartmentSheet(
         onDismiss = onDismiss,
     ) {
         Column(modifier = Modifier.selectableGroup()) {
-            ChatDepartment.entries.forEach { department ->
+            ChatDepartment.entries.forEachIndexed { index, department ->
                 val isSelected = pendingDepartment == department
+                // 피그마 Options: 옵션 사이에 1dp 구분선이 있다.
+                if (index > 0) {
+                    HorizontalDivider(color = extendedColors.authFieldBorder)
+                }
 
                 Row(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .height(AppSize.ListItem)
+                            .height(OPTION_ROW_HEIGHT)
                             .selectable(
                                 selected = isSelected,
                                 role = Role.RadioButton,
@@ -101,17 +108,27 @@ fun ChatDepartmentSheet(
                     )
 
                     if (isSelected) {
-                        Icon(
-                            imageVector = Icons.Filled.CheckCircle,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(AppIconSize.Large),
-                        )
+                        // 피그마 Radio: 지름 22의 브랜드 원 안에 14dp 흰 체크.
+                        Box(
+                            modifier =
+                                Modifier
+                                    .size(
+                                        RADIO_SIZE,
+                                    ).background(MaterialTheme.colorScheme.primary, CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_check),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(RADIO_CHECK_SIZE),
+                            )
+                        }
                     } else {
                         Box(
                             modifier =
                                 Modifier
-                                    .size(AppIconSize.Medium)
+                                    .size(RADIO_SIZE)
                                     .border(
                                         width = AppBorderWidth.Emphasized,
                                         color = extendedColors.authFieldBorder,
@@ -172,7 +189,7 @@ private fun ChatMajorChip(
     Box(
         modifier =
             Modifier
-                .height(AppSize.Chip)
+                .height(MAJOR_CHIP_HEIGHT)
                 .clip(CircleShape)
                 .background(
                     if (isSelected) {
@@ -184,7 +201,7 @@ private fun ChatMajorChip(
                     width = AppBorderWidth.Default,
                     color =
                         if (isSelected) {
-                            MaterialTheme.colorScheme.primary.copy(alpha = SELECTED_BORDER_ALPHA)
+                            LocalHopesExtendedColors.current.authFieldFocusBorder
                         } else {
                             MaterialTheme.colorScheme.outline
                         },
@@ -193,7 +210,7 @@ private fun ChatMajorChip(
                     selected = isSelected,
                     role = Role.RadioButton,
                     onClick = onClick,
-                ).padding(horizontal = AppSpacing.Item + AppSpacing.XSmall),
+                ).padding(horizontal = MAJOR_CHIP_PADDING_HORIZONTAL),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -204,7 +221,7 @@ private fun ChatMajorChip(
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
-            style = if (isSelected) HopesTextStyles.LabelStrong else HopesTextStyles.Label,
+            style = HopesTextStyles.Label,
         )
     }
 }
@@ -225,6 +242,16 @@ private fun ChatSelectionSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
         containerColor = MaterialTheme.colorScheme.surface,
+        // 피그마 Handle: 44×5, 위 12·아래 16(제목은 핸들 아래 16에서 시작).
+        dragHandle = {
+            Box(
+                modifier =
+                    Modifier
+                        .padding(top = HANDLE_TOP, bottom = HANDLE_BOTTOM)
+                        .size(width = HANDLE_WIDTH, height = HANDLE_HEIGHT)
+                        .background(LocalHopesExtendedColors.current.authHandle, CircleShape),
+            )
+        },
     ) {
         ApplyDialogWindowBackgroundBlur(blurRadius = AppBlurRadius.DialogWindowBackdrop)
 
@@ -239,10 +266,10 @@ private fun ChatSelectionSheet(
                 text = title,
                 modifier = Modifier.semantics { heading() },
                 color = MaterialTheme.colorScheme.onSurface,
-                style = HopesTextStyles.SheetTitle,
+                style = HopesTextStyles.Title,
             )
 
-            Spacer(modifier = Modifier.height(AppSpacing.Small))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
             Text(
                 text = description,
@@ -254,9 +281,9 @@ private fun ChatSelectionSheet(
 
             content()
 
-            Spacer(modifier = Modifier.height(AppSpacing.Section))
+            Spacer(modifier = Modifier.height(AppSpacing.Medium))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
                 HopesSecondaryButton(
                     text = stringResource(R.string.chat_selection_clear),
                     onClick = onClear,
@@ -275,4 +302,16 @@ private fun ChatSelectionSheet(
     }
 }
 
-private const val SELECTED_BORDER_ALPHA = 0.4f
+// 피그마 Options: 옵션 한 줄 높이 52(+구분선 1), 라디오 22, 체크 14.
+private val OPTION_ROW_HEIGHT = 52.dp
+private val RADIO_SIZE = 22.dp
+private val RADIO_CHECK_SIZE = 14.dp
+
+private val HANDLE_WIDTH = 44.dp
+private val HANDLE_HEIGHT = 5.dp
+private val HANDLE_TOP = 12.dp
+private val HANDLE_BOTTOM = 16.dp
+
+// 피그마 07 Chips: 높이 38(8+20+8+테두리 2), 좌우 14(+테두리 1), 칩 사이 8.
+private val MAJOR_CHIP_HEIGHT = 38.dp
+private val MAJOR_CHIP_PADDING_HORIZONTAL = 15.dp

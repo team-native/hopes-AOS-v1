@@ -1,8 +1,6 @@
 package com.example.hopes.feature.auth.presentation
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
@@ -43,8 +41,9 @@ fun AuthScreen(
 
                 AnimatedVisibility(
                     visible = authStep == AuthStep.Login,
-                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
-                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it }),
+                    // 시작 화면은 그대로 두고 시트만 아래에서 올라오고 내려간다.
+                    enter = slideInVertically(initialOffsetY = { it }),
+                    exit = slideOutVertically(targetOffsetY = { it }),
                 ) {
                     AuthLoginSheet(
                         uiState = loginUiState,

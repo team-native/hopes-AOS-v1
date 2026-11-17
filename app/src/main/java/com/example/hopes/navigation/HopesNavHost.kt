@@ -3,6 +3,9 @@ package com.example.hopes.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,13 +14,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.example.hopes.core.designsystem.component.HopesAlertDialog
+import com.example.hopes.core.designsystem.component.HopesToast
 import com.example.hopes.core.session.SessionState
 import com.example.hopes.feature.auth.presentation.AuthRoute
 import com.example.hopes.feature.auth.presentation.SessionViewModel
@@ -39,6 +46,7 @@ import com.example.hopes.feature.home.presentation.HomeRoute
 import com.example.hopes.feature.notification.presentation.NotificationDetailRoute
 import com.example.hopes.feature.notification.presentation.NotificationRoute
 import com.example.hopes.feature.schoolmap.presentation.SchoolMapScreen
+import com.example.hopes.feature.settings.presentation.AccountDeletionRoute
 import com.example.hopes.feature.settings.presentation.AppInfoScreen
 import com.example.hopes.feature.settings.presentation.SettingsRoute
 import com.example.hopes.feature.splash.presentation.SplashScreen
@@ -71,14 +79,22 @@ fun HopesNavHost(
     // 로그인/로그아웃처럼 메인↔인증이 바뀔 때만 전체를 다시 구성한다.
     val isMainVisible = sessionState is SessionState.Authenticated || sessionState is SessionState.Expired
 
+    // 회원탈퇴에 성공하면 앱이 시작 화면으로 돌아가므로, 거기서 "탈퇴가 완료됐어요"를 띄우기 위한 신호다(피그마 32-10).
+    // key 바깥에 두어 메인↔인증 전환 중에도 유지한다.
+    var isAccountDeletedToastVisible by rememberSaveable { mutableStateOf(false) }
+
     key(isMainVisible) {
         if (isMainVisible) {
             HopesMainNavDisplay(
                 isDarkThemeEnabled = isDarkThemeEnabled,
                 onDarkThemeChange = onDarkThemeChange,
+                onAccountDeleted = { isAccountDeletedToastVisible = true },
             )
         } else {
-            HopesAuthNavDisplay()
+            HopesAuthNavDisplay(
+                isAccountDeletedToastVisible = isAccountDeletedToastVisible,
+                onAccountDeletedToastDismiss = { isAccountDeletedToastVisible = false },
+            )
         }
     }
 
@@ -97,7 +113,10 @@ fun HopesNavHost(
 }
 
 @Composable
-private fun HopesAuthNavDisplay() {
+private fun HopesAuthNavDisplay(
+    isAccountDeletedToastVisible: Boolean,
+    onAccountDeletedToastDismiss: () -> Unit,
+) {
     val backStack = rememberNavBackStack(HopesDestination.Auth)
 
     NavDisplay(
@@ -110,7 +129,20 @@ private fun HopesAuthNavDisplay() {
             entryProvider {
                 entry<HopesDestination.Auth> {
                     // 인증 성공은 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
-                    AuthRoute(onAuthenticated = {})
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AuthRoute(onAuthenticated = {})
+
+                        if (isAccountDeletedToastVisible) {
+                            HopesToast(
+                                message = stringResource(R.string.account_deletion_done),
+                                onDismiss = onAccountDeletedToastDismiss,
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .padding(bottom = ACCOUNT_DELETED_TOAST_BOTTOM_PADDING),
+                            )
+                        }
+                    }
                 }
             },
     )
@@ -120,6 +152,7 @@ private fun HopesAuthNavDisplay() {
 private fun HopesMainNavDisplay(
     isDarkThemeEnabled: Boolean,
     onDarkThemeChange: (Boolean) -> Unit,
+    onAccountDeleted: () -> Unit,
 ) {
     val navigationState =
         rememberHopesMainNavigationState(
@@ -239,8 +272,16 @@ private fun HopesMainNavDisplay(
                             onDarkModeChange = onDarkThemeChange,
                             onBackClick = navigator::goBack,
                             onNavigateToAppInfo = { navigator.push(HopesDestination.AppInfo) },
+                            onNavigateToAccountDeletion = { navigator.push(HopesDestination.AccountDeletion) },
                             // 로그아웃도 sessionState 변화 + key(sessionState)가 이미 처리하므로 별도 백스택 조작이 필요 없다.
                             onLogout = {},
+                        )
+                    }
+                    entry<HopesDestination.AccountDeletion> {
+                        AccountDeletionRoute(
+                            onBackClick = navigator::goBack,
+                            // 세션이 끊기면 key(isMainVisible)가 인증 화면으로 바꿔 주므로 별도 백스택 조작이 필요 없다.
+                            onAccountDeleted = onAccountDeleted,
                         )
                     }
                     entry<HopesDestination.PersonalSettings> {
@@ -310,3 +351,6 @@ private fun HopesMainNavDisplay(
 
 /** 스플래시를 최소로 보여 주는 시간이다. 로고 애니메이션(약 0.8초)이 끝나고 잠시 머문다. */
 private const val SPLASH_MIN_MILLIS = 1500L
+
+// 피그마 32-10: 완료 토스트는 시작 화면 아래쪽 버튼 위에 뜬다.
+private val ACCOUNT_DELETED_TOAST_BOTTOM_PADDING = 190.dp

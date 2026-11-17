@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,6 +26,8 @@ import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.hopes.core.designsystem.AppBorderWidth
@@ -51,6 +54,8 @@ fun HopesTextField(
     isEnabled: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
+    isPassword: Boolean = false,
+    onImeAction: () -> Unit = {},
 ) {
     HopesInputBox(
         value = value,
@@ -60,7 +65,13 @@ fun HopesTextField(
         errorMessage = errorMessage,
         isEnabled = isEnabled,
         isSingleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = if (isPassword) KeyboardType.Password else keyboardType,
+                imeAction = imeAction,
+            ),
+        keyboardActions = KeyboardActions(onAny = { onImeAction() }),
+        visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
         modifier = modifier.height(AppSize.Field),
         contentAlignment = Alignment.CenterStart,
     )
@@ -89,6 +100,8 @@ fun HopesTextArea(
         isEnabled = isEnabled,
         isSingleLine = false,
         keyboardOptions = KeyboardOptions.Default,
+        keyboardActions = KeyboardActions.Default,
+        visualTransformation = VisualTransformation.None,
         modifier = modifier.heightIn(min = minHeight),
         contentAlignment = Alignment.TopStart,
         verticalPadding = TEXT_AREA_VERTICAL_PADDING,
@@ -105,6 +118,8 @@ private fun HopesInputBox(
     isEnabled: Boolean,
     isSingleLine: Boolean,
     keyboardOptions: KeyboardOptions,
+    keyboardActions: KeyboardActions,
+    visualTransformation: VisualTransformation,
     modifier: Modifier,
     contentAlignment: Alignment,
     verticalPadding: Dp = 0.dp,
@@ -134,6 +149,8 @@ private fun HopesInputBox(
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         interactionSource = interactionSource,
         keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        visualTransformation = visualTransformation,
         decorationBox = { innerTextField ->
             Box(
                 modifier =

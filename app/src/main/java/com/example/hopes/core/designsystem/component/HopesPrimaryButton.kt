@@ -22,8 +22,10 @@ fun HopesPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
+    isDestructive: Boolean = false,
 ) {
     val buttonShape = RoundedCornerShape(AppRadius.Button)
+    val baseColor = if (isDestructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
 
     Box(
         modifier =
@@ -32,12 +34,7 @@ fun HopesPrimaryButton(
                 .height(AppSize.Button)
                 .figmaSheetShadow(buttonShape)
                 .background(
-                    color =
-                        if (isEnabled) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.primary.copy(alpha = DISABLED_ALPHA)
-                        },
+                    color = if (isEnabled) baseColor else baseColor.copy(alpha = DISABLED_ALPHA),
                     shape = buttonShape,
                 ).shapeClickable(
                     shape = buttonShape,

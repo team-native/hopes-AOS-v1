@@ -49,6 +49,8 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object AppSettings : HopesDestination
 
+    @Serializable data object AccountDeletion : HopesDestination
+
     @Serializable data object PersonalSettings : HopesDestination
 
     @Serializable data object Contact : HopesDestination

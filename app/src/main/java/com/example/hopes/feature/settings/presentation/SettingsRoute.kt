@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.hopes.core.designsystem.component.HopesAlertDialog
-import com.example.hopes.feature.settings.presentation.component.SettingsAccountDeletionBottomSheet
 import com.teamnative.hopes.BuildConfig
 import com.teamnative.hopes.R
 
@@ -29,6 +28,7 @@ fun SettingsRoute(
     onDarkModeChange: (Boolean) -> Unit,
     onBackClick: () -> Unit,
     onNavigateToAppInfo: () -> Unit,
+    onNavigateToAccountDeletion: () -> Unit,
     onLogout: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -36,10 +36,6 @@ fun SettingsRoute(
     var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
     // 알림 서버 기능이 없어 화면 안에서만 켜고 끈다. 연동 시 서버 설정으로 대체한다.
     var isNotificationEnabled by rememberSaveable { mutableStateOf(true) }
-    var isDeletionSheetVisible by rememberSaveable { mutableStateOf(false) }
-    var isDeletionConfirmDialogVisible by rememberSaveable { mutableStateOf(false) }
-    // 비밀번호 원문은 SavedState에 저장하지 않고 화면 생명주기 동안만 메모리에 유지한다.
-    var deletionPassword by remember { mutableStateOf("") }
     val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(viewModel) {
@@ -49,49 +45,16 @@ fun SettingsRoute(
                 SettingsEffect.AccountDeleted,
                 -> {
                     isLogoutDialogVisible = false
-                    isDeletionSheetVisible = false
-                    isDeletionConfirmDialogVisible = false
-                    deletionPassword = ""
                     onLogout()
                 }
             }
         }
     }
 
-    LaunchedEffect(uiState.accountDeletionError) {
-        if (uiState.accountDeletionError != null) {
-            isDeletionConfirmDialogVisible = false
-            isDeletionSheetVisible = true
-        }
-    }
-
-    val accountDeletionErrorMessage =
-        uiState.accountDeletionError?.let { error ->
-            when (error) {
-                is AccountDeletionError.Http -> {
-                    error.serverMessage ?: stringResource(
-                        if (error.statusCode == UNAUTHORIZED_STATUS_CODE) {
-                            R.string.account_deletion_password_error
-                        } else {
-                            R.string.account_deletion_request_error
-                        },
-                    )
-                }
-
-                AccountDeletionError.Network -> {
-                    stringResource(R.string.account_deletion_network_error)
-                }
-
-                AccountDeletionError.Serialization -> {
-                    stringResource(R.string.account_deletion_request_error)
-                }
-            }
-        }
-
     SettingsScreen(
         isDarkModeEnabled = isDarkModeEnabled,
         isNotificationEnabled = isNotificationEnabled,
-        isDeleteAccountEnabled = !uiState.isDeletingAccount,
+        isDeleteAccountEnabled = true,
         appVersion = BuildConfig.VERSION_NAME,
         onBackClick = onBackClick,
         onEvent = { event ->
@@ -123,8 +86,7 @@ fun SettingsRoute(
                 }
 
                 SettingsScreenEvent.DeleteAccountClicked -> {
-                    viewModel.clearAccountDeletionError()
-                    isDeletionSheetVisible = true
+                    onNavigateToAccountDeletion()
                 }
             }
         },
@@ -144,47 +106,4 @@ fun SettingsRoute(
             isConfirmDestructive = true,
         )
     }
-
-    if (isDeletionSheetVisible) {
-        SettingsAccountDeletionBottomSheet(
-            password = deletionPassword,
-            onPasswordChange = {
-                deletionPassword = it
-                if (uiState.accountDeletionError != null) {
-                    viewModel.clearAccountDeletionError()
-                }
-            },
-            errorMessage = accountDeletionErrorMessage,
-            isDeletingAccount = uiState.isDeletingAccount,
-            onDeleteClick = {
-                isDeletionSheetVisible = false
-                isDeletionConfirmDialogVisible = true
-            },
-            onDismiss = {
-                isDeletionSheetVisible = false
-                deletionPassword = ""
-                viewModel.clearAccountDeletionError()
-            },
-        )
-    }
-
-    if (isDeletionConfirmDialogVisible) {
-        HopesAlertDialog(
-            title = stringResource(R.string.account_deletion_confirm_title),
-            message = stringResource(R.string.account_deletion_confirm_message),
-            dismissText = stringResource(R.string.account_deletion_cancel),
-            confirmText = stringResource(R.string.account_deletion_confirm),
-            isConfirmDestructive = true,
-            onConfirm = {
-                isDeletionConfirmDialogVisible = false
-                viewModel.deleteAccount(deletionPassword)
-            },
-            onDismiss = {
-                isDeletionConfirmDialogVisible = false
-                isDeletionSheetVisible = true
-            },
-        )
-    }
 }
-
-private const val UNAUTHORIZED_STATUS_CODE = 401

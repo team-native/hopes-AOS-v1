@@ -6,10 +6,6 @@ sealed interface SettingsScreenEvent {
         val isEnabled: Boolean,
     ) : SettingsScreenEvent
 
-    data class NotificationChanged(
-        val isEnabled: Boolean,
-    ) : SettingsScreenEvent
-
     data object AppInfoClicked : SettingsScreenEvent
 
     data object PrivacyPolicyClicked : SettingsScreenEvent

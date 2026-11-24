@@ -31,7 +31,7 @@ import com.example.hopes.ui.theme.LocalHopesExtendedColors
 
 /**
  * 목록 대신 화면 가운데에 띄우는 원형 아이콘 + 제목 + 설명 + 작은 버튼 묶음이다
- * (커뮤니티 19, 기록 24-3·24-4, 알림 25-3의 빈 화면·불러오기 오류).
+ * (커뮤니티 19, 기록 24-3·24-4의 빈 화면·불러오기 오류).
  *
  * @param actionText null이면 버튼 없이 안내만 보여준다.
  */

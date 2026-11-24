@@ -4,6 +4,7 @@ import com.example.hopes.feature.community.model.CommunityComment
 import com.example.hopes.feature.community.model.CommunityReportReason
 
 sealed interface CommunityPostDetailEvent {
+    data object RetryLoadClicked : CommunityPostDetailEvent
     data object BackClicked : CommunityPostDetailEvent
 
     data object LikeClicked : CommunityPostDetailEvent

@@ -11,29 +11,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import com.example.hopes.core.designsystem.AppSpacing
-import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
 import com.example.hopes.ui.theme.HopesTextStyles
 import com.teamnative.hopes.R
 
-/** 홈 상단의 "서하님, 반가워요" 인사말과 부제목, 알림 버튼이다. */
+/** 홈 상단의 인사말과 부제목이다. */
 @Composable
 fun HomeGreetingHeader(
     userName: String?,
-    hasUnreadNotification: Boolean,
-    onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top,
     ) {
-        // 피그마 Greeting: 위 8, 제목 30 + 간격 4 + 부제 20(알림 버튼은 맨 위에 붙는다).
-        Column(modifier = Modifier.weight(1f).padding(top = AppSpacing.Compact)) {
+        Column(modifier = Modifier.fillMaxWidth().padding(top = AppSpacing.Compact)) {
             Text(
                 text =
                     if (userName != null) {
@@ -55,11 +50,5 @@ fun HomeGreetingHeader(
             )
         }
 
-        HopesHeaderIconButton(
-            painter = painterResource(R.drawable.ic_bell),
-            contentDescription = stringResource(R.string.home_notification),
-            onClick = onNotificationClick,
-            hasBadge = hasUnreadNotification,
-        )
     }
 }

@@ -5,13 +5,13 @@ import com.example.hopes.core.network.NetworkResult
 import com.example.hopes.data.api.AuthApiService
 import com.example.hopes.data.api.ChatApiService
 import com.example.hopes.data.api.ChatResponseDto
-import com.example.hopes.data.api.ContentRequestDto
 import com.example.hopes.data.api.CreateChatRequestDto
 import com.example.hopes.data.api.DeleteAccountRequestDto
 import com.example.hopes.data.api.EmailCodeRequestDto
 import com.example.hopes.data.api.EmailRequestDto
 import com.example.hopes.data.api.LoginRequestDto
 import com.example.hopes.data.api.MainResponseDto
+import com.example.hopes.data.api.InquiryRequestDto
 import com.example.hopes.data.api.MessageEnvelopeDto
 import com.example.hopes.data.api.MyPageUpdateRequestDto
 import com.example.hopes.data.api.PasswordResetRequestDto
@@ -99,6 +99,8 @@ interface ChatRemoteDataSource {
         id: Long,
         body: SendMessageRequestDto,
     ): NetworkResult<ChatResponseDto>
+
+    suspend fun deleteChat(id: Long): NetworkResult<Unit>
 }
 
 /** ChatApiService 호출을 ApiExecutor를 통해 실행한다. */
@@ -136,7 +138,12 @@ class ChatRemoteDataSourceImpl
             body: SendMessageRequestDto,
         ): NetworkResult<ChatResponseDto> =
             apiExecutor.execute {
-                chatApiService.sendMessage(id, body)
+                chatApiService.sendMessage(id, "APP", body)
+            }
+
+        override suspend fun deleteChat(id: Long): NetworkResult<Unit> =
+            apiExecutor.executeNoContent {
+                chatApiService.deleteChat(id)
             }
     }
 
@@ -156,7 +163,7 @@ interface SettingsRemoteDataSource {
 
     suspend fun updateSettings(body: SettingUpdateRequestDto): NetworkResult<SettingMainResponseDto>
 
-    suspend fun submitInquiry(body: ContentRequestDto): NetworkResult<MessageEnvelopeDto>
+    suspend fun submitInquiry(body: InquiryRequestDto): NetworkResult<MessageEnvelopeDto>
 }
 
 /** SettingsApiService 호출을 ApiExecutor를 통해 실행한다. */
@@ -202,7 +209,7 @@ class SettingsRemoteDataSourceImpl
                 settingsApiService.updateSettings(body)
             }
 
-        override suspend fun submitInquiry(body: ContentRequestDto): NetworkResult<MessageEnvelopeDto> =
+        override suspend fun submitInquiry(body: InquiryRequestDto): NetworkResult<MessageEnvelopeDto> =
             apiExecutor.execute {
                 settingsApiService.submitInquiry(body)
             }

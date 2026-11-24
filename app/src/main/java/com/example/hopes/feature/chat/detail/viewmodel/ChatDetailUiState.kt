@@ -27,6 +27,7 @@ data class ChatDetailUiState(
     val followUpQuestions: List<String> = emptyList(),
     val likedMessageIds: Set<Long> = emptySet(),
     val draftAttachments: List<ChatAttachmentUiModel> = emptyList(),
+    val failedAttachmentDeletionIds: Set<Long> = emptySet(),
     val location: ChatLocationUiState? = null,
 ) {
     /** 답변을 기다리는 중이거나, 대화를 불러오지 못했거나, 오프라인이면 추가 질문을 막는다. */
@@ -72,6 +73,9 @@ data class ChatAttachmentUiModel(
     val kind: ChatAttachmentKind,
     val name: String,
     val pageCount: Int? = null,
+    val mimeType: String = if (kind == ChatAttachmentKind.Pdf) "application/pdf" else "image/jpeg",
+    val serverId: Long? = null,
+    val clientRequestId: String = java.util.UUID.randomUUID().toString(),
     val status: ChatAttachmentStatus = ChatAttachmentStatus.Ready,
 )
 
@@ -84,13 +88,16 @@ data class ChatAttachmentArg(
     val kind: ChatAttachmentKind,
     val name: String,
     val pageCount: Int? = null,
+    val mimeType: String = if (kind == ChatAttachmentKind.Pdf) "application/pdf" else "image/jpeg",
+    val serverId: Long? = null,
+    val clientRequestId: String = java.util.UUID.randomUUID().toString(),
 )
 
 fun ChatAttachmentUiModel.toArg(): ChatAttachmentArg =
-    ChatAttachmentArg(uri = uri, kind = kind, name = name, pageCount = pageCount)
+    ChatAttachmentArg(uri = uri, kind = kind, name = name, pageCount = pageCount, mimeType = mimeType, serverId = serverId, clientRequestId = clientRequestId)
 
 fun ChatAttachmentArg.toUiModel(): ChatAttachmentUiModel =
-    ChatAttachmentUiModel(uri = uri, kind = kind, name = name, pageCount = pageCount)
+    ChatAttachmentUiModel(uri = uri, kind = kind, name = name, pageCount = pageCount, mimeType = mimeType, serverId = serverId, clientRequestId = clientRequestId)
 
 /** 첨부 한 개의 상태다(피그마 10-2 ~ 10-6). */
 sealed interface ChatAttachmentStatus {
@@ -145,6 +152,14 @@ sealed interface ChatLocationUiState {
     /** 학교 근처지만 정확도가 낮다(21-3). */
     data class LowAccuracy(
         val accuracyMeters: Int,
+    ) : ChatLocationUiState
+
+    data class ServerResult(
+        val status: String,
+        val message: String,
+        val accuracyMeters: Double,
+        val floorPlansAvailable: Boolean,
+        val matchedBuildingId: Long?,
     ) : ChatLocationUiState
 
     /** 위치를 확인하지 못했다(23). */

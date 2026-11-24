@@ -2,7 +2,7 @@ package com.example.hopes.feature.community.presentation.myactivity
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hopes.feature.community.data.CommunityStore
+import com.example.hopes.feature.community.data.CommunityRepository
 import com.example.hopes.feature.community.model.CommunityMyComment
 import com.example.hopes.feature.community.model.CommunityPost
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 enum class CommunityMyActivityTab {
     Posts,
@@ -30,16 +32,35 @@ data class CommunityMyActivityUiState(
     val comments: List<CommunityMyComment> = emptyList(),
     val morePostId: Long? = null,
     val pendingDeletePostId: Long? = null,
+    val isLoading: Boolean = true,
+    val postsLoadError: Boolean = false,
+    val commentsLoadError: Boolean = false,
 )
 
-/** 내가 쓴 글과 댓글을 보여준다. 글은 임시 저장소 [CommunityStore]에서 읽는다. */
+/** 내가 쓴 글과 댓글을 서버에서 불러와 보여준다. */
 @HiltViewModel
 class CommunityMyActivityViewModel
     @Inject
     constructor(
-        private val store: CommunityStore,
+        private val store: CommunityRepository,
     ) : ViewModel() {
         private val screenState = MutableStateFlow(CommunityMyActivityUiState())
+
+        init {
+            refresh()
+        }
+
+        fun retry() = refresh()
+
+        private fun refresh() {
+            viewModelScope.launch {
+                screenState.value = screenState.value.copy(isLoading = true, postsLoadError = false, commentsLoadError = false)
+                val boardsLoaded = store.loadBoards()
+                val postsLoaded = boardsLoaded && store.refreshMyPosts()
+                val commentsLoaded = store.refreshMyComments()
+                screenState.value = screenState.value.copy(isLoading = false, postsLoadError = !postsLoaded, commentsLoadError = !commentsLoaded)
+            }
+        }
 
         val uiState: StateFlow<CommunityMyActivityUiState> =
             combine(screenState, store.myPosts, store.myComments) { state, posts, comments ->
@@ -64,7 +85,7 @@ class CommunityMyActivityViewModel
 
         /** 목록에서 하트를 누르면 좋아요를 켜고, 다시 누르면 끈다. */
         fun toggleLike(postId: Long) {
-            store.toggleLike(postId)
+            viewModelScope.launch { store.toggleLike(postId) }
         }
 
         fun requestDeletePost(postId: Long) {
@@ -77,8 +98,9 @@ class CommunityMyActivityViewModel
 
         fun confirmDeletePost() {
             val postId = screenState.value.pendingDeletePostId ?: return
-            store.deletePost(postId)
-            screenState.value = screenState.value.copy(pendingDeletePostId = null)
+            viewModelScope.launch {
+                if (store.deletePost(postId)) screenState.value = screenState.value.copy(pendingDeletePostId = null)
+            }
         }
 
         private companion object {

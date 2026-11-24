@@ -57,12 +57,6 @@ sealed interface HopesDestination : NavKey {
 
     @Serializable data object ProfileEdit : HopesDestination
 
-    @Serializable data object Notifications : HopesDestination
-
-    @Serializable data class NotificationDetail(
-        val notificationId: Long,
-    ) : HopesDestination
-
     @Serializable data object AppInfo : HopesDestination
 
     /** 채팅 위치 안내에서 "지도 보기"로 여는 학교 지도다(피그마 22). */
@@ -80,6 +74,8 @@ sealed interface HopesDestination : NavKey {
         val attachments: List<ChatAttachmentArg> = emptyList(),
         val department: ChatDepartment? = null,
         val major: ChatMajor? = null,
+        val departmentId: Long? = null,
+        val specialtyId: Long? = null,
     ) : HopesDestination
 
     @Serializable data object Auth : HopesDestination

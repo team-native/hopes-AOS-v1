@@ -66,7 +66,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_URL", "\"http://service.gsmsv.site:22116/\"")
+            buildConfigField("String", "BASE_URL", "\"https://hopes-v1.https.gsmsv.site/\"")
             buildConfigField("boolean", "ENABLE_LOG", "true")
             buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
         }
@@ -76,7 +76,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            buildConfigField("String", "BASE_URL", "\"http://service.gsmsv.site:22116/\"")
+            buildConfigField("String", "BASE_URL", "\"https://hopes-v1.https.gsmsv.site/\"")
             buildConfigField("boolean", "ENABLE_LOG", "false")
             buildConfigField("int", "CONNECT_TIMEOUT_SECONDS", "20")
             if (hasReleaseSigningConfig) {

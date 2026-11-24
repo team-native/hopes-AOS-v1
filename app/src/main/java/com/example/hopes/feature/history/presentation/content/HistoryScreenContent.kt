@@ -132,11 +132,20 @@ fun HistoryScreenContent(
     uiState.pendingDeleteChatId?.let {
         HopesAlertDialog(
             title = stringResource(R.string.history_delete_confirm_title),
-            message = stringResource(R.string.history_delete_confirm_message),
+            message =
+                stringResource(
+                    if (uiState.isDeleteError) {
+                        R.string.history_delete_failed
+                    } else {
+                        R.string.history_delete_confirm_message
+                    },
+                ),
             dismissText = stringResource(R.string.cancel),
             confirmText = stringResource(R.string.history_delete),
             onDismiss = { onEvent(HistoryScreenEvent.DeleteChatDismissed) },
-            onConfirm = { onEvent(HistoryScreenEvent.DeleteChatConfirmed) },
+            onConfirm = {
+                if (!uiState.isDeletingChat) onEvent(HistoryScreenEvent.DeleteChatConfirmed)
+            },
             isConfirmDestructive = true,
         )
     }

@@ -2,7 +2,7 @@ package com.example.hopes.feature.community.presentation.write
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hopes.feature.community.data.CommunityStore
+import com.example.hopes.feature.community.data.CommunityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class CommunityWriteViewModel
     @Inject
     constructor(
-        private val store: CommunityStore,
+        private val store: CommunityRepository,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(CommunityWriteUiState())
         val uiState: StateFlow<CommunityWriteUiState> = _uiState.asStateFlow()
@@ -38,17 +38,21 @@ class CommunityWriteViewModel
             if (isInitialized) return
             isInitialized = true
 
-            if (postId == null) {
-                initialState = CommunityWriteUiState(cohort = defaultCohort ?: store.myCohort)
-                _uiState.value = initialState
-                return
-            }
-
             viewModelScope.launch {
+                store.loadBoards()
+                val cohorts = store.availableCohorts.value
+                if (postId == null) {
+                    val selectedCohort = defaultCohort?.takeIf { it in cohorts } ?: store.myCohort.takeIf { it in cohorts } ?: cohorts.firstOrNull()
+                    initialState = CommunityWriteUiState(cohorts = cohorts, cohort = selectedCohort)
+                    _uiState.value = initialState
+                    return@launch
+                }
+                store.refreshPost(postId)
                 val post = store.post(postId).first() ?: return@launch
                 initialState =
                     CommunityWriteUiState(
                         editingPostId = post.id,
+                        cohorts = cohorts,
                         cohort = post.cohort,
                         title = post.title,
                         content = post.content,
@@ -80,7 +84,7 @@ class CommunityWriteViewModel
                 }
 
                 CommunityWriteEvent.BoardClicked -> {
-                    _uiState.update { it.copy(isBoardSheetVisible = true) }
+                    _uiState.update { if (it.isEditMode) it else it.copy(isBoardSheetVisible = true) }
                 }
 
                 is CommunityWriteEvent.BoardSelected -> {

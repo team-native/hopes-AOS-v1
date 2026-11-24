@@ -16,8 +16,8 @@ import com.example.hopes.core.designsystem.component.HopesAlertDialog
 import com.teamnative.hopes.BuildConfig
 import com.teamnative.hopes.R
 
-/** 개인정보처리방침 전문을 호스팅하는 외부 URL. */
-private const val PRIVACY_POLICY_URL = "https://spotless-beret-a3e.notion.site/Hopes-3c497507c37c8052ba2cd6fb48f568a3"
+/** Swagger가 공개 text/html로 제공하는 개인정보처리방침 경로다. */
+private const val PRIVACY_POLICY_PATH = "api/privacy/policy"
 
 private const val PRIVACY_POLICY_LOG_TAG = "SettingsRoute"
 
@@ -34,8 +34,6 @@ fun SettingsRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
-    // 알림 서버 기능이 없어 화면 안에서만 켜고 끈다. 연동 시 서버 설정으로 대체한다.
-    var isNotificationEnabled by rememberSaveable { mutableStateOf(true) }
     val uriHandler = LocalUriHandler.current
 
     LaunchedEffect(viewModel) {
@@ -53,7 +51,6 @@ fun SettingsRoute(
 
     SettingsScreen(
         isDarkModeEnabled = isDarkModeEnabled,
-        isNotificationEnabled = isNotificationEnabled,
         isDeleteAccountEnabled = true,
         appVersion = BuildConfig.VERSION_NAME,
         onBackClick = onBackClick,
@@ -61,10 +58,6 @@ fun SettingsRoute(
             when (event) {
                 is SettingsScreenEvent.DarkModeChanged -> {
                     onDarkModeChange(event.isEnabled)
-                }
-
-                is SettingsScreenEvent.NotificationChanged -> {
-                    isNotificationEnabled = event.isEnabled
                 }
 
                 SettingsScreenEvent.AppInfoClicked -> {
@@ -75,7 +68,8 @@ fun SettingsRoute(
                     // openUri는 URI 형식 오류나 처리 가능한 앱이 없을 때 예외를 던질 수 있어
                     // 앱이 크래시하지 않도록 실패를 조용히 로그로만 남긴다.
                     try {
-                        uriHandler.openUri(PRIVACY_POLICY_URL)
+                        val policyUrl = "${BuildConfig.BASE_URL.trimEnd('/')}/$PRIVACY_POLICY_PATH"
+                        uriHandler.openUri(policyUrl)
                     } catch (exception: Exception) {
                         Log.w(PRIVACY_POLICY_LOG_TAG, "개인정보처리방침 URL을 열지 못했습니다.", exception)
                     }

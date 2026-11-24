@@ -99,7 +99,6 @@
     <string name="generic_error_message">잠시 후 다시 시도해주세요.</string>
     <string-array name="settings_items">
         <item>개인 설정</item>
-        <item>알림 설정</item>
         <item>문의하기</item>
     </string-array>
     <!-- 인증 시작 화면(01)과 로그인 화면(02) -->
@@ -118,7 +117,7 @@
     <string name="onboarding_start_chat">채팅 시작하기</string>
     <string name="splash_wordmark">hopes</string>
     <string name="splash_school_name">광주소프트웨어마이스터고</string>
-    <string name="auth_start_button">시작하기</string>
+    <string name="auth_start_button">학교 이메일로 가입하기</string>
     <string name="auth_has_account_prompt">이미 계정이 있으신가요?</string>
     <string name="auth_no_account_prompt">계정이 없으신가요?</string>
     <string name="auth_keep_login">로그인 유지</string>
@@ -191,10 +190,11 @@
     <string name="community_load_error_title">게시글을 불러오지 못했어요</string>
     <string name="community_load_error_description">네트워크 상태를 확인한 뒤 다시 시도해 주세요.</string>
     <string name="community_retry">다시 시도</string>
+    <string name="community_load_failed">게시글을 불러오지 못했어요</string>
+    <string name="community_load_failed_description">연결을 확인하고 다시 시도해 주세요.</string>
     <string name="home_greeting">%1$s님, 반가워요</string>
     <string name="home_greeting_without_name">반가워요</string>
     <string name="home_greeting_subtitle">선배 답변을 더 정확하게 받는 방법이에요.</string>
-    <string name="home_notification">알림</string>
     <string name="home_hero_title">궁금한 점이 있다면,\n언제든 물어보세요.</string>
     <string name="home_hero_description">선배들의 실제 경험으로 답해요.</string>
     <string name="home_question_tips_title">질문 잘하는 방법</string>
@@ -212,21 +212,6 @@
     <string name="my_page_menu_activity">내 활동</string>
     <string name="my_page_menu_activity_description">작성글 · 댓글 모아보기</string>
     <string name="my_page_menu_personal_settings_description">AI 답변 스타일 관리</string>
-    <string name="my_page_menu_notification">알림</string>
-    <string name="my_page_menu_notification_description">새 답변 · 공지</string>
-    <string name="notification_title">알림</string>
-    <string name="notification_subtitle">새 답변과 공지 알림을 확인해요.</string>
-    <string name="notification_edit">편집</string>
-    <string name="notification_view">보기</string>
-    <string name="notification_mark_all_read">모두 읽음 처리</string>
-    <string name="notification_sample_answer_title">새 답변 도착</string>
-    <string name="notification_sample_answer_body">기숙사 질문에 선배 답변이 도착했어요.</string>
-    <string name="notification_sample_profile_title">프로필 저장 완료</string>
-    <string name="notification_sample_profile_body">개인화 정보가 반영됐어요.</string>
-    <string name="notification_sample_admission_title">입학 안내 업데이트</string>
-    <string name="notification_sample_admission_body">면접 준비 질문이 추가됐어요.</string>
-    <string name="notification_sample_system_title">시스템 공지</string>
-    <string name="notification_sample_system_body">답변 데이터 업데이트 완료</string>
     <string name="profile_edit_subtitle">마이페이지 &gt; 프로필 수정</string>
     <string name="profile_edit_account_title">계정 정보</string>
     <string name="profile_edit_account_description">수정할 수 없는 정보예요.</string>
@@ -255,8 +240,6 @@
     <string name="contact_sent_confirm">확인</string>
     <string name="cancel">취소</string>
     <string name="settings_subtitle">앱 설정과 도움말을 관리해요.</string>
-    <string name="settings_notification">알림 받기</string>
-    <string name="settings_notification_description">새 답변 · 공지 알림</string>
     <string name="settings_app_version">v%1$s</string>
     <string name="logout_confirm_title">로그아웃할까요?</string>
     <string name="logout_confirm_message">다시 로그인하면 대화 기록을 그대로 볼 수 있어요.</string>
@@ -283,6 +266,10 @@
     <string name="chat_recommendation_select_hint">학과와 전공을 고르면 나에게 맞는 질문을 추천해 드려요.</string>
     <string name="chat_recommendation_error">맞춤 추천을 불러오지 못했어요. 기본 질문을 보여드려요.</string>
     <string name="chat_recommendation_retry">다시 시도</string>
+    <string name="chat_recommendation_consent_prompt">선택한 학과와 전공을 질문 추천에 활용할 수 있어요. 동의하면 맞춤 질문을 불러옵니다.</string>
+    <string name="chat_recommendation_consent_action">동의하고 추천 받기</string>
+    <string name="chat_recommendation_consent_enabled">맞춤 질문 추천에 동의한 상태예요.</string>
+    <string name="chat_recommendation_consent_withdraw">동의 철회</string>
     <string name="chat_recommendation_fill_hint">추천 질문을 누르면 입력창에 채워져요</string>
     <string name="chat_suggestion_major_study">%1$s는 뭐부터 공부하면 좋아?</string>
     <string name="chat_attach">자료 첨부</string>
@@ -357,6 +344,8 @@
     <string name="chat_attach_unsupported">지원하지 않는 형식</string>
     <string name="chat_attach_unreadable">암호가 걸렸거나 손상된 파일</string>
     <string name="chat_attach_retry_upload">%1$s 다시 올리기</string>
+    <string name="chat_attach_delete_failed">첨부 파일 %1$d개를 서버에서 삭제하지 못했어요.</string>
+    <string name="chat_attach_retry_delete">서버 삭제 다시 시도</string>
     <string name="chat_attach_question_placeholder">자료에 대해 질문하기</string>
     <string name="chat_answer_source">%1$s 기반</string>
     <string name="chat_location_permission_title">위치 권한이 필요해요</string>
@@ -377,6 +366,10 @@
     <string name="chat_location_measure_again">다시 측정</string>
     <string name="chat_location_failed_title">위치를 확인하지 못했어요</string>
     <string name="chat_location_failed_description">위치 서비스가 꺼져 있거나 신호가 약할 수 있어요. 설정을 확인한 뒤 다시 시도해 주세요.</string>
+    <string name="chat_location_check_cta">현재 위치 확인</string>
+    <string name="chat_location_check_disclosure">버튼을 누른 뒤 위치 권한을 요청하고, 확인에 필요한 위치를 서버로 전송해요.</string>
+    <string name="chat_location_result_title">위치 확인 결과</string>
+    <string name="chat_location_result_accuracy">서버 측정 정확도 %.1f m</string>
     <string name="chat_location_subtitle">선배 답변 · 위치 안내</string>
     <string name="school_map_title">학교 지도</string>
     <string name="school_map_subtitle">현재 위치</string>
@@ -397,22 +390,11 @@
     <string name="history_delete">삭제</string>
     <string name="history_delete_confirm_title">이 대화를 삭제할까요?</string>
     <string name="history_delete_confirm_message">삭제한 대화는 되돌릴 수 없어요.</string>
+    <string name="history_delete_failed">대화를 삭제하지 못했어요. 다시 시도해 주세요.</string>
     <string name="history_date_today">오늘</string>
     <string name="history_date_yesterday">어제</string>
     <string name="history_date_days_ago">%1$d일 전</string>
     <string name="history_date_month_day">%1$d월 %2$d일</string>
-    <string name="notification_empty_title">새 알림이 없어요</string>
-    <string name="notification_empty_description">새 답변과 공지가 여기에 쌓여요.</string>
-    <string name="notification_detail_title">공지</string>
-    <string name="notification_kind_answer">새 답변</string>
-    <string name="notification_kind_profile">프로필</string>
-    <string name="notification_kind_admission">입학 안내</string>
-    <string name="notification_kind_system">시스템 공지</string>
-    <string name="notification_sample_system_date">2026.11.12</string>
-    <string name="notification_sample_system_detail">선배 답변 데이터가 업데이트됐어요. 학과·전공별 추천 질문이 더 정확해지고, 기숙사·입학 관련 답변이 최신 내용으로 바뀌었어요.\n\n이용 중 불편한 점은 마이페이지 &gt; 문의하기로 알려 주세요.</string>
-    <string name="notification_sample_answer_detail">기숙사 하루 일과 질문에 선배 답변이 도착했어요. 채팅 탭에서 이어서 볼 수 있어요.</string>
-    <string name="notification_sample_profile_detail">저장한 자기소개가 다음 답변부터 반영돼요.</string>
-    <string name="notification_sample_admission_detail">면접 준비에 자주 나오는 질문이 추천 질문에 추가됐어요.</string>
     <!-- 커뮤니티 (피그마 13 ~ 18) -->
     <string name="confirm">확인</string>
     <string name="search_clear">검색어 지우기</string>
@@ -462,6 +444,7 @@
     <string name="community_report_done_description">운영자가 확인한 뒤 조치할게요.\n신고자 정보는 공개되지 않아요.</string>
     <string name="community_report_already_post">이미 신고한 게시글이에요</string>
     <string name="community_report_already_comment">이미 신고한 댓글이에요</string>
+    <string name="community_report_failed">신고를 접수하지 못했어요. 다시 시도해 주세요.</string>
     <string name="community_write_title">글쓰기</string>
     <string name="community_edit_title">게시글 수정</string>
     <string name="community_write_submit">등록</string>
@@ -487,6 +470,8 @@
     <string name="community_search_result_count">검색 결과 %1$d개</string>
     <string name="community_search_empty_title">검색 결과가 없어요</string>
     <string name="community_search_empty_description">다른 단어로 검색하거나 게시판을 바꿔 보세요.</string>
+    <string name="community_search_prompt_title">검색어를 입력해 주세요</string>
+    <string name="community_search_prompt_description">검색 버튼을 누르면 게시글을 찾아드려요.</string>
     <string name="community_my_activity_description">내가 쓴 글과 댓글은 나만 볼 수 있어요</string>
     <string name="community_my_posts_tab">작성글 %1$d</string>
     <string name="community_my_comments_tab">댓글 %1$d</string>

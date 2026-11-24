@@ -78,7 +78,7 @@ object AppSize {
     /** 피그마 iOS 상태바 높이다. 콘텐츠는 이 아래에서 시작한다. */
     val FigmaStatusBar = 62.dp
 
-    /** 피그마 홈 알림 같은 헤더 아이콘 버튼 크기다. */
+    /** 화면 헤더 아이콘 버튼 크기다. */
     val HeaderButton = 44.dp
 }
 

@@ -3,6 +3,7 @@ package com.example.hopes.data.api
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -17,7 +18,11 @@ import retrofit2.Retrofit
 import java.util.concurrent.atomic.AtomicReference
 
 class SettingsApiServiceContractTest {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+        }
 
     @Test
     fun `회원탈퇴 endpoint는 DELETE body로 비밀번호를 전송한다`() =
@@ -34,6 +39,26 @@ class SettingsApiServiceContractTest {
             assertEquals("/api/account", request.url.encodedPath)
             assertEquals("{\"password\":\"wrong-password\"}", request.bodyAsString())
         }
+
+    @Test
+    fun `비밀번호 재설정 요청은 Swagger 필드명을 사용한다`() {
+        val jsonBody = json.encodeToString(PasswordResetRequestDto("school@gsm.hs.kr", "123456", "NewPass123", null))
+
+        assertEquals(
+            "{\"email\":\"school@gsm.hs.kr\",\"code\":\"123456\",\"newPassword\":\"NewPass123\"}",
+            jsonBody,
+        )
+    }
+
+    @Test
+    fun `문의 요청은 내용과 답변 이메일을 별도 필드로 전송한다`() {
+        val jsonBody = json.encodeToString(InquiryRequestDto("도움이 필요해요", "reply@gsm.hs.kr"))
+
+        assertEquals(
+            "{\"content\":\"도움이 필요해요\",\"replyEmail\":\"reply@gsm.hs.kr\"}",
+            jsonBody,
+        )
+    }
 
     /** 실제 네트워크 대신 요청을 캡처하고 204 응답을 반환하는 SettingsApiService를 생성한다. */
     private fun createSettingsApiService(capturedRequest: AtomicReference<Request>): SettingsApiService {

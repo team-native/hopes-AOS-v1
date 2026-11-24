@@ -43,8 +43,6 @@ import com.example.hopes.feature.detail.presentation.PersonalSettingsRoute
 import com.example.hopes.feature.detail.presentation.ProfileEditRoute
 import com.example.hopes.feature.history.presentation.HistoryRoute
 import com.example.hopes.feature.home.presentation.HomeRoute
-import com.example.hopes.feature.notification.presentation.NotificationDetailRoute
-import com.example.hopes.feature.notification.presentation.NotificationRoute
 import com.example.hopes.feature.schoolmap.presentation.SchoolMapScreen
 import com.example.hopes.feature.settings.presentation.AccountDeletionRoute
 import com.example.hopes.feature.settings.presentation.AppInfoScreen
@@ -172,14 +170,13 @@ private fun HopesMainNavDisplay(
                     entry<HopesDestination.Home> {
                         HomeRoute(
                             onNavigate = navigator::navigateToTab,
-                            onNotificationClick = { navigator.push(HopesDestination.Notifications) },
                             onPopularPostClick = { postId -> navigator.push(HopesDestination.CommunityPost(postId)) },
                         )
                     }
                     entry<HopesDestination.Chat> { key ->
                         ChatRoute(
                             onNavigate = navigator::navigateToTab,
-                            onNavigateToNewChatDetail = { question, attachments, department, major ->
+                            onNavigateToNewChatDetail = { question, attachments, department, major, departmentId, specialtyId ->
                                 navigator.push(
                                     HopesDestination.ChatDetail(
                                         chatId = NEW_CHAT_ID,
@@ -187,6 +184,8 @@ private fun HopesMainNavDisplay(
                                         attachments = attachments.map { it.toArg() },
                                         department = department,
                                         major = major,
+                                        departmentId = departmentId,
+                                        specialtyId = specialtyId,
                                     ),
                                 )
                             },
@@ -259,7 +258,6 @@ private fun HopesMainNavDisplay(
                             onNavigateToAppSettings = { navigator.push(HopesDestination.AppSettings) },
                             onNavigateToProfileEdit = { navigator.push(HopesDestination.ProfileEdit) },
                             onNavigateToPersonalSettings = { navigator.push(HopesDestination.PersonalSettings) },
-                            onNavigateToNotifications = { navigator.push(HopesDestination.Notifications) },
                             onNavigateToContact = { navigator.push(HopesDestination.Contact) },
                             onNavigateToMyActivity = { navigator.push(HopesDestination.CommunityMyActivity) },
                             isProfileSavedToastVisible = isProfileSavedToastVisible,
@@ -314,18 +312,6 @@ private fun HopesMainNavDisplay(
                             onBackClick = navigator::goBack,
                         )
                     }
-                    entry<HopesDestination.Notifications> {
-                        NotificationRoute(
-                            onBackClick = navigator::goBack,
-                            onNotificationClick = { id -> navigator.push(HopesDestination.NotificationDetail(id)) },
-                        )
-                    }
-                    entry<HopesDestination.NotificationDetail> { key ->
-                        NotificationDetailRoute(
-                            notificationId = key.notificationId,
-                            onBackClick = navigator::goBack,
-                        )
-                    }
                     entry<HopesDestination.ChatDetail> { key ->
                         ChatDetailRoute(
                             chatId = key.chatId,
@@ -333,6 +319,8 @@ private fun HopesMainNavDisplay(
                             attachments = key.attachments.map { it.toUiModel() },
                             department = key.department,
                             major = key.major,
+                            departmentId = key.departmentId,
+                            specialtyId = key.specialtyId,
                             onBackClick = navigator::goBack,
                             onStartNewChat = navigator::navigateToNewChat,
                             onViewSchoolMap = { buildingName, accuracyMeters ->

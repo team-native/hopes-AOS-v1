@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,6 +63,7 @@ fun CommunitySearchScreen(
     onSearch: () -> Unit,
     onRecentSearchClick: (String) -> Unit,
     onClearRecentSearches: () -> Unit,
+    onRetrySearch: () -> Unit,
     onPostClick: (Long) -> Unit,
     onLikeClick: (Long) -> Unit = {},
     onCancelClick: () -> Unit,
@@ -118,7 +120,7 @@ fun CommunitySearchScreen(
                 contentAlignment = Alignment.Center,
             ) {
                 when {
-                    uiState.query.isBlank() -> {
+                    uiState.status == CommunitySearchStatus.RecentSearches -> {
                         CommunityRecentSearches(
                             recentSearches = uiState.recentSearches,
                             onRecentSearchClick = onRecentSearchClick,
@@ -127,7 +129,29 @@ fun CommunitySearchScreen(
                         )
                     }
 
-                    uiState.results.isEmpty() -> {
+                    uiState.status == CommunitySearchStatus.Loading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    uiState.status == CommunitySearchStatus.LoadError -> {
+                        HopesStatusMessage(
+                            icon = Icons.Outlined.Search,
+                            title = stringResource(R.string.community_load_error_title),
+                            description = stringResource(R.string.community_load_error_description),
+                            actionText = stringResource(R.string.community_retry),
+                            onActionClick = onRetrySearch,
+                        )
+                    }
+
+                    uiState.status == CommunitySearchStatus.Editing -> {
+                        HopesStatusMessage(
+                            icon = Icons.Outlined.Search,
+                            title = stringResource(R.string.community_search_prompt_title),
+                            description = stringResource(R.string.community_search_prompt_description),
+                        )
+                    }
+
+                    uiState.status == CommunitySearchStatus.Empty -> {
                         HopesStatusMessage(
                             icon = Icons.Outlined.Search,
                             title = stringResource(R.string.community_search_empty_title),
@@ -257,6 +281,7 @@ private fun CommunitySearchPreview(uiState: CommunitySearchUiState) {
             onSearch = {},
             onRecentSearchClick = {},
             onClearRecentSearches = {},
+            onRetrySearch = {},
             onPostClick = {},
             onCancelClick = {},
             onNavigate = {},

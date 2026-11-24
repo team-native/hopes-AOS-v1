@@ -11,6 +11,8 @@ data class HistoryUiState(
     val isLoadingNextPage: Boolean = false,
     val isNextPageError: Boolean = false,
     val pendingDeleteChatId: Long? = null,
+    val isDeletingChat: Boolean = false,
+    val isDeleteError: Boolean = false,
 )
 
 /**

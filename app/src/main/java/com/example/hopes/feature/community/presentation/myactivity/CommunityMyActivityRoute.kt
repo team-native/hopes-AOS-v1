@@ -32,5 +32,6 @@ fun CommunityMyActivityRoute(
         onDeletePostConfirm = viewModel::confirmDeletePost,
         onDeletePostDismiss = viewModel::dismissDeletePost,
         onWriteClick = onWriteClick,
+        onRetryClick = viewModel::retry,
     )
 }

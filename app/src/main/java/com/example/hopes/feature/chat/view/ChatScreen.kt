@@ -43,6 +43,7 @@ import com.example.hopes.feature.chat.viewmodel.ChatDepartment
 import com.example.hopes.feature.chat.viewmodel.ChatMajor
 import com.example.hopes.feature.chat.viewmodel.ChatRecommendationState
 import com.example.hopes.feature.chat.viewmodel.ChatScreenEvent
+import com.example.hopes.feature.chat.viewmodel.ChatQuestionTopic
 import com.example.hopes.feature.chat.viewmodel.ChatUiState
 import com.example.hopes.navigation.HopesDestination
 import com.example.hopes.ui.theme.HopesTextStyles
@@ -251,14 +252,28 @@ private fun ChatRecommendations(
                 stringResource(R.string.chat_recommendation_default_label)
             },
         onRefreshClick =
-            if (uiState.isPersonalized) {
+            if (uiState.isPersonalized && uiState.recommendationConsentEnabled) {
                 { onEvent(ChatScreenEvent.RecommendationsRefreshClicked) }
             } else {
                 null
             },
     )
 
-    if (uiState.isPersonalized && uiState.recommendationState == ChatRecommendationState.LoadError) {
+    if (uiState.isPersonalized && !uiState.recommendationConsentEnabled) {
+        HopesInfoBanner(
+            message = stringResource(R.string.chat_recommendation_consent_prompt),
+            actionText = uiState.recommendationPolicyVersion.takeIf { it.isNotBlank() }?.let { stringResource(R.string.chat_recommendation_consent_action) },
+            onActionClick = { onEvent(ChatScreenEvent.RecommendationConsentClicked) },
+        )
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+    } else if (uiState.isPersonalized && uiState.recommendationConsentEnabled) {
+        HopesInfoBanner(
+            message = stringResource(R.string.chat_recommendation_consent_enabled),
+            actionText = stringResource(R.string.chat_recommendation_consent_withdraw),
+            onActionClick = { onEvent(ChatScreenEvent.RecommendationConsentWithdrawClicked) },
+        )
+        Spacer(modifier = Modifier.height(AppSpacing.Compact))
+    } else if (uiState.isPersonalized && uiState.recommendationState == ChatRecommendationState.LoadError) {
         HopesInfoBanner(
             message = stringResource(R.string.chat_recommendation_error),
             actionText = stringResource(R.string.chat_recommendation_retry),
@@ -274,20 +289,32 @@ private fun ChatRecommendations(
     if (!uiState.isPersonalized) {
         // 피그마 05-3: 학과·전공을 고르기 전에는 기본 추천 질문을 카드 한 장에 구분선으로 보여준다.
         ChatDefaultQuestionCard(
-            questions = uiState.recommendedTopics.map { topic -> topic.icon() to topic.question(uiState.major) },
+            questions = uiState.recommendedQuestions.takeIf { it.isNotEmpty() }?.mapIndexed { index, item -> ChatQuestionTopic.entries[index % ChatQuestionTopic.entries.size].icon() to item.content }
+                ?: uiState.recommendedTopics.map { topic -> topic.icon() to topic.question(uiState.major) },
             onQuestionClick = { question -> onEvent(ChatScreenEvent.SuggestionClicked(question)) },
         )
     } else {
         // 피그마 05: 질문마다 별도 카드이고 카드 사이 간격은 8이다.
         Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact)) {
-            uiState.recommendedTopics.forEach { topic ->
-                val question = topic.question(uiState.major)
+            val serverQuestions = uiState.recommendedQuestions
+            if (serverQuestions.isNotEmpty()) {
+                serverQuestions.forEachIndexed { index, recommendation ->
+                    ChatRecommendedQuestionCard(
+                        icon = ChatQuestionTopic.entries[index % ChatQuestionTopic.entries.size].icon(),
+                        question = recommendation.content,
+                        onClick = { onEvent(ChatScreenEvent.SuggestionClicked(recommendation.content)) },
+                    )
+                }
+            } else if (!uiState.isPersonalized) {
+                uiState.recommendedTopics.forEach { topic ->
+                    val question = topic.question(uiState.major)
 
-                ChatRecommendedQuestionCard(
-                    icon = topic.icon(),
-                    question = question,
-                    onClick = { onEvent(ChatScreenEvent.SuggestionClicked(question)) },
-                )
+                    ChatRecommendedQuestionCard(
+                        icon = topic.icon(),
+                        question = question,
+                        onClick = { onEvent(ChatScreenEvent.SuggestionClicked(question)) },
+                    )
+                }
             }
         }
     }

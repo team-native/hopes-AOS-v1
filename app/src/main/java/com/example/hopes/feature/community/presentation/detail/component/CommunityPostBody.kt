@@ -149,7 +149,7 @@ fun CommunityMetaText(
 /** 좋아요 칩이다. 누르면 파란 배경에 채운 하트로 바뀐다(피그마 14-5). */
 @Composable
 private fun CommunityLikeChip(
-    count: Int,
+    count: Long,
     isLiked: Boolean,
     onClick: () -> Unit,
 ) {

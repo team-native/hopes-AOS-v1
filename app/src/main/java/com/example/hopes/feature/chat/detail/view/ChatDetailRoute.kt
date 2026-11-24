@@ -1,19 +1,28 @@
 package com.example.hopes.feature.chat.detail.view
 
+import android.Manifest
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.Intent
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
+import android.os.CancellationSignal
 import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ClipEntry
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -27,6 +36,10 @@ import com.example.hopes.feature.chat.viewmodel.ChatDepartment
 import com.example.hopes.feature.chat.viewmodel.ChatMajor
 import com.teamnative.hopes.R
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
+import java.time.Instant
+import kotlin.coroutines.resume
 
 /**
  * 서버 대화 상세 상태를 수집하고 뒤로가기·복사·공유를 연결한다.
@@ -41,17 +54,23 @@ fun ChatDetailRoute(
     attachments: List<ChatAttachmentUiModel>,
     department: ChatDepartment?,
     major: ChatMajor?,
+    departmentId: Long?,
+    specialtyId: Long?,
     onBackClick: () -> Unit,
     onStartNewChat: () -> Unit,
     onViewSchoolMap: (buildingName: String, accuracyMeters: Int?) -> Unit,
     viewModel: ChatDetailViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(chatId, question) { viewModel.initialize(chatId, question, attachments) }
+    LaunchedEffect(chatId, question) { viewModel.initialize(chatId, question, attachments, departmentId, specialtyId) }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val clipboard = LocalClipboard.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+        if (isGranted) fetchAndSubmitLocation(context, coroutineScope, viewModel)
+        else viewModel.locationCheckFailed()
+    }
     var toastMessageResId by rememberSaveable { mutableStateOf<Int?>(null) }
     val subtitle =
         if (uiState.location != null) {
@@ -80,6 +99,10 @@ fun ChatDetailRoute(
         onEvent = { event ->
             if (event == ChatDetailScreenEvent.BackClicked) {
                 onBackClick()
+            } else if (event == ChatDetailScreenEvent.LocationAllowClicked || event == ChatDetailScreenEvent.LocationRetryClicked) {
+                val hasPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                if (hasPermission) fetchAndSubmitLocation(context, coroutineScope, viewModel)
+                else permissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             } else {
                 viewModel.onEvent(event)
             }
@@ -108,6 +131,48 @@ fun ChatDetailRoute(
         onAttachmentsPicked = { viewModel.onEvent(ChatDetailScreenEvent.AttachmentsAdded(it)) },
         onCameraUnavailable = { toastMessageResId = R.string.chat_attach_camera_unavailable },
     )
+}
+
+private fun fetchAndSubmitLocation(
+    context: Context,
+    coroutineScope: kotlinx.coroutines.CoroutineScope,
+    viewModel: ChatDetailViewModel,
+) {
+    viewModel.locationCheckStarted()
+    coroutineScope.launch {
+        val location = try {
+            context.currentCoarseLocation()
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (_: Exception) {
+            null
+        }
+        if (location == null || !location.hasAccuracy() || location.accuracy <= 0f) {
+            viewModel.locationCheckFailed()
+        } else {
+            viewModel.submitLocationCheck(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                accuracyMeters = location.accuracy.toDouble(),
+                measuredAt = Instant.ofEpochMilli(location.time).toString(),
+            )
+        }
+    }
+}
+
+@Suppress("MissingPermission")
+private suspend fun Context.currentCoarseLocation(): Location? = suspendCancellableCoroutine { continuation ->
+    val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val provider = locationManager.getBestProvider(Criteria().apply { accuracy = Criteria.ACCURACY_COARSE }, true)
+    if (provider == null) {
+        continuation.resume(null)
+        return@suspendCancellableCoroutine
+    }
+    val cancellationSignal = CancellationSignal()
+    continuation.invokeOnCancellation { cancellationSignal.cancel() }
+    locationManager.getCurrentLocation(provider, cancellationSignal, mainExecutor) { location ->
+        if (continuation.isActive) continuation.resume(location)
+    }
 }
 
 /** 이 앱의 시스템 설정 화면을 연다. 권한을 직접 허용하도록 안내할 때 쓴다. */

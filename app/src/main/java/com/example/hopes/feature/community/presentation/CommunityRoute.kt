@@ -9,7 +9,7 @@ import com.example.hopes.navigation.HopesDestination
 import com.teamnative.hopes.R
 
 /**
- * 커뮤니티 탭이다. 게시판 API가 없어 글은 임시 저장소에서 읽는다(`CommunityStore`).
+ * 커뮤니티 탭의 게시글을 서버에서 불러온다.
  *
  * @param onWriteClick 글쓰기 화면을 연다. 지금 고른 기수 게시판을 넘겨 기본 게시판으로 쓴다.
  * @param onSearchClick 검색 화면을 연다. 지금 고른 기수 게시판 안에서 찾는다.
@@ -36,8 +36,9 @@ fun CommunityRoute(
         onSearchClick = { onSearchClick(uiState.selectedCohort) },
         onMyActivityClick = onMyActivityClick,
         onWriteClick = { onWriteClick(uiState.selectedCohort) },
-        // 임시 저장소는 불러오기에 실패하지 않는다. API를 붙이면 여기서 다시 불러온다.
-        onRetryClick = {},
+        onRetryClick = viewModel::retry,
+        onLoadMore = viewModel::loadNextPage,
+        onRetryNextPage = viewModel::retryNextPage,
         onNavigate = onNavigate,
         toastMessage = if (isPostCreatedToastVisible) stringResource(R.string.community_post_created) else null,
         onToastDismiss = onToastDismiss,

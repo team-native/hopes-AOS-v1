@@ -12,7 +12,14 @@ data class CommunityUiState(
     val selectedCohort: Int? = null,
     val posts: List<CommunityPost> = emptyList(),
     val contentState: CommunityContentState = CommunityContentState.Loading,
+    val nextPageState: CommunityNextPageState = CommunityNextPageState.Idle,
 )
+
+enum class CommunityNextPageState {
+    Idle,
+    Loading,
+    Error,
+}
 
 /** 게시글 목록 자리에 보여줄 상태다(피그마 13 목록, 13-2 로딩, 19 빈 화면, 19-2 불러오기 오류). */
 enum class CommunityContentState {

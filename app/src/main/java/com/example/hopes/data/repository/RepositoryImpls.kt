@@ -1,8 +1,8 @@
 package com.example.hopes.data.repository
 
 import com.example.hopes.core.session.SessionManager
-import com.example.hopes.data.api.ContentRequestDto
 import com.example.hopes.data.api.CreateChatRequestDto
+import com.example.hopes.data.api.InquiryRequestDto
 import com.example.hopes.data.api.DeleteAccountRequestDto
 import com.example.hopes.data.api.EmailCodeRequestDto
 import com.example.hopes.data.api.EmailRequestDto
@@ -14,6 +14,7 @@ import com.example.hopes.data.mapper.toAppResult
 import com.example.hopes.data.mapper.toDomain
 import com.example.hopes.data.mapper.toDto
 import com.example.hopes.data.remote.AuthRemoteDataSource
+import com.example.hopes.data.remote.AttachmentRemoteDataSource
 import com.example.hopes.data.remote.ChatRemoteDataSource
 import com.example.hopes.data.remote.SettingsRemoteDataSource
 import com.example.hopes.domain.model.AuthToken
@@ -24,10 +25,12 @@ import com.example.hopes.domain.model.ProfileUpdateRequest
 import com.example.hopes.domain.model.SignUpRequest
 import com.example.hopes.domain.model.UserProfile
 import com.example.hopes.domain.model.UserSettings
+import com.example.hopes.domain.repository.AttachmentRepository
 import com.example.hopes.domain.repository.AuthRepository
 import com.example.hopes.domain.repository.ChatRepository
 import com.example.hopes.domain.repository.SettingsRepository
 import com.example.hopes.domain.result.AppResult
+import com.example.hopes.domain.model.UploadedAttachment
 import javax.inject.Inject
 
 /** 인증 만료 응답을 앱 전체 세션 종료로 연결한다. */
@@ -144,12 +147,32 @@ class ChatRepositoryImpl
         override suspend fun sendMessage(
             id: Long,
             content: String,
+            attachmentIds: List<Long>,
+            departmentId: Long?,
+            specialtyId: Long?,
+            clientRequestId: String,
         ): AppResult<Chat> =
             chatRemoteDataSource
-                .sendMessage(id, SendMessageRequestDto(content))
+                .sendMessage(
+                    id,
+                    SendMessageRequestDto(
+                        content = content,
+                        attachmentIds = attachmentIds,
+                        departmentId = departmentId,
+                        specialtyId = specialtyId,
+                        clientRequestId = clientRequestId,
+                        elevatorOnly = false,
+                    ),
+                )
                 .toAppResult { responseDto ->
                     responseDto.toDomain()
                 }.expireSessionOnUnauthorized(sessionManager)
+
+        override suspend fun deleteChat(id: Long): AppResult<Unit> =
+            chatRemoteDataSource
+                .deleteChat(id)
+                .toAppResult { Unit }
+                .expireSessionOnUnauthorized(sessionManager)
     }
 
 /** 설정 원격 데이터와 세션 종료 정책을 조합한다. */
@@ -214,11 +237,36 @@ class SettingsRepositoryImpl
                     responseDto.toDomain()
                 }.expireSessionOnUnauthorized(sessionManager)
 
-        override suspend fun submitInquiry(content: String): AppResult<Unit> =
+        override suspend fun submitInquiry(
+            email: String,
+            content: String,
+        ): AppResult<Unit> =
             settingsRemoteDataSource
-                .submitInquiry(ContentRequestDto(content))
+                .submitInquiry(InquiryRequestDto(content = content, replyEmail = email))
                 .toAppResult { Unit }
                 .expireSessionOnUnauthorized(sessionManager)
     }
 
 private const val UNAUTHORIZED_STATUS_CODE = 401
+
+class AttachmentRepositoryImpl
+    @Inject
+    constructor(
+        private val attachmentRemoteDataSource: AttachmentRemoteDataSource,
+        private val sessionManager: SessionManager,
+    ) : AttachmentRepository {
+        override suspend fun delete(attachmentId: Long): AppResult<Unit> =
+            attachmentRemoteDataSource.delete(attachmentId).toAppResult { Unit }.expireSessionOnUnauthorized(sessionManager)
+
+        override suspend fun upload(
+            uri: String,
+            fileName: String,
+            mimeType: String,
+            clientRequestId: String,
+            onProgress: (Float) -> Unit,
+        ): AppResult<UploadedAttachment> =
+            attachmentRemoteDataSource
+                .upload(uri, fileName, mimeType, clientRequestId, onProgress)
+                .toAppResult { responseDto -> responseDto.toDomain() }
+                .expireSessionOnUnauthorized(sessionManager)
+    }

@@ -40,6 +40,8 @@ fun ChatRoute(
         attachments: List<ChatAttachmentUiModel>,
         department: ChatDepartment?,
         major: ChatMajor?,
+        departmentId: Long?,
+        specialtyId: Long?,
     ) -> Unit,
     isNewChatRequested: Boolean = false,
     viewModel: ChatViewModel = hiltViewModel(),
@@ -50,9 +52,10 @@ fun ChatRoute(
     var toastMessageResId by rememberSaveable { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(viewModel) {
+        viewModel.initialize()
         viewModel.effect.collect { effect ->
             if (effect is ChatEffect.NavigateToNewChat) {
-                onNavigateToNewChatDetail(effect.question, effect.attachments, effect.department, effect.major)
+                onNavigateToNewChatDetail(effect.question, effect.attachments, effect.department, effect.major, effect.departmentId, effect.specialtyId)
             }
         }
     }
@@ -85,6 +88,7 @@ fun ChatRoute(
         ChatSelectionSheetType.Department -> {
             ChatDepartmentSheet(
                 selectedDepartment = uiState.department,
+                departments = uiState.availableDepartments,
                 onConfirm = { department ->
                     viewModel.onEvent(ChatScreenEvent.DepartmentSelected(department))
                     visibleSheet = null
@@ -96,6 +100,7 @@ fun ChatRoute(
         ChatSelectionSheetType.Major -> {
             ChatMajorSheet(
                 selectedMajor = uiState.major,
+                majors = uiState.availableMajors,
                 onConfirm = { major ->
                     viewModel.onEvent(ChatScreenEvent.MajorSelected(major))
                     visibleSheet = null

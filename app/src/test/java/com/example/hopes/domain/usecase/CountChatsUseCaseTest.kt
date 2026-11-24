@@ -72,6 +72,12 @@ class CountChatsUseCaseTest {
         override suspend fun sendMessage(
             id: Long,
             content: String,
+            attachmentIds: List<Long>,
+            departmentId: Long?,
+            specialtyId: Long?,
+            clientRequestId: String,
         ): AppResult<Chat> = error("not used")
+
+        override suspend fun deleteChat(id: Long): AppResult<Unit> = error("not used")
     }
 }

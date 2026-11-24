@@ -20,5 +20,8 @@ interface SettingsRepository {
 
     suspend fun updateCustomPrompt(customPrompt: String?): AppResult<UserSettings>
 
-    suspend fun submitInquiry(content: String): AppResult<Unit>
+    suspend fun submitInquiry(
+        email: String,
+        content: String,
+    ): AppResult<Unit>
 }

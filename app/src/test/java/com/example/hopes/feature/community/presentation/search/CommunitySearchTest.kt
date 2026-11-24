@@ -29,6 +29,17 @@ class CommunitySearchTest {
         assertEquals(emptyList<CommunityPost>(), searchPosts(posts, "  ", cohort = null))
     }
 
+    @Test
+    fun `검색 API 실패는 기존 캐시가 있어도 오류 상태다`() {
+        assertEquals(CommunitySearchStatus.LoadError, searchStatusFor(succeeded = false, results = posts))
+    }
+
+    @Test
+    fun `성공한 검색은 결과 유무에 따라 빈 결과와 목록 상태를 구분한다`() {
+        assertEquals(CommunitySearchStatus.Empty, searchStatusFor(succeeded = true, results = emptyList()))
+        assertEquals(CommunitySearchStatus.Results, searchStatusFor(succeeded = true, results = posts))
+    }
+
     private fun post(
         id: Long,
         cohort: Int?,

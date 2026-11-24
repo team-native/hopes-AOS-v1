@@ -15,6 +15,15 @@ data class ChatUiState(
     val department: ChatDepartment? = null,
     val major: ChatMajor? = null,
     val recommendationState: ChatRecommendationState = ChatRecommendationState.Loaded,
+    val departmentId: Long? = null,
+    val specialtyId: Long? = null,
+    val availableDepartments: List<ChatDepartment> = ChatDepartment.entries,
+    val availableMajors: List<ChatMajor> = ChatMajor.entries,
+    val recommendedQuestions: List<ChatQuestionRecommendation> = emptyList(),
+    val recommendationRefreshToken: String? = null,
+    val excludedRecommendationIds: List<Long> = emptyList(),
+    val recommendationConsentEnabled: Boolean = false,
+    val recommendationPolicyVersion: String = "",
     val draftAttachments: List<ChatAttachmentUiModel> = emptyList(),
 ) {
     /** 보낼 수 없는 첨부(형식·개수·용량·손상)가 있으면 전송을 막는다. */
@@ -33,3 +42,5 @@ data class ChatUiState(
                 recommendedQuestionTopics(department = null, major = null)
             }
 }
+
+data class ChatQuestionRecommendation(val id: Long, val content: String)

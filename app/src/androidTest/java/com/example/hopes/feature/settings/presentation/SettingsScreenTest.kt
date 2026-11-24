@@ -19,7 +19,7 @@ class SettingsScreenTest {
         setSettingsContent(onEvent = {})
 
         composeRule.onNodeWithText("다크 모드").assertIsDisplayed()
-        composeRule.onNodeWithText("알림 받기").assertIsDisplayed()
+        composeRule.onNodeWithText("알림 받기").assertDoesNotExist()
         composeRule.onNodeWithText("앱 정보").assertIsDisplayed()
         composeRule.onNodeWithText("v1.5").assertIsDisplayed()
         composeRule.onNodeWithText("개인정보 처리방침").assertIsDisplayed()
@@ -53,7 +53,6 @@ class SettingsScreenTest {
             HopesTheme {
                 SettingsScreen(
                     isDarkModeEnabled = false,
-                    isNotificationEnabled = true,
                     isDeleteAccountEnabled = true,
                     appVersion = "1.5",
                     onEvent = onEvent,

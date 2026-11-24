@@ -63,12 +63,6 @@ fun MyPageScreenContent(
                 onClick = { onEvent(MyPageScreenEvent.PersonalSettingsClicked) },
             ),
             MyPageMenuItem(
-                icon = R.drawable.ic_menu_notification,
-                title = stringResource(R.string.my_page_menu_notification),
-                description = stringResource(R.string.my_page_menu_notification_description),
-                onClick = { onEvent(MyPageScreenEvent.NotificationClicked) },
-            ),
-            MyPageMenuItem(
                 icon = R.drawable.ic_menu_contact,
                 title = stringResource(R.string.contact),
                 description = stringResource(R.string.settings_contact_description),

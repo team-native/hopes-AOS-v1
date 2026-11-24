@@ -14,6 +14,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.MaterialTheme
@@ -66,6 +67,7 @@ fun CommunityMyActivityScreen(
     onDeletePostConfirm: () -> Unit,
     onDeletePostDismiss: () -> Unit,
     onWriteClick: () -> Unit,
+    onRetryClick: () -> Unit = {},
 ) {
     val now = remember(uiState.posts, uiState.comments) { LocalDateTime.now() }
 
@@ -95,7 +97,17 @@ fun CommunityMyActivityScreen(
 
         when (uiState.selectedTab) {
             CommunityMyActivityTab.Posts -> {
-                if (uiState.posts.isEmpty()) {
+                if (uiState.isLoading) {
+                    androidx.compose.material3.CircularProgressIndicator()
+                } else if (uiState.postsLoadError) {
+                    HopesStatusMessage(
+                        icon = Icons.Outlined.Refresh,
+                        title = stringResource(R.string.community_load_error_title),
+                        description = stringResource(R.string.community_load_error_description),
+                        actionText = stringResource(R.string.community_retry),
+                        onActionClick = onRetryClick,
+                    )
+                } else if (uiState.posts.isEmpty()) {
                     CommunityMyActivityEmpty(
                         title = stringResource(R.string.community_my_posts_empty_title),
                         description = stringResource(R.string.community_my_posts_empty_description),
@@ -118,7 +130,17 @@ fun CommunityMyActivityScreen(
             }
 
             CommunityMyActivityTab.Comments -> {
-                if (uiState.comments.isEmpty()) {
+                if (uiState.isLoading) {
+                    androidx.compose.material3.CircularProgressIndicator()
+                } else if (uiState.commentsLoadError) {
+                    HopesStatusMessage(
+                        icon = Icons.Outlined.Refresh,
+                        title = stringResource(R.string.community_load_error_title),
+                        description = stringResource(R.string.community_load_error_description),
+                        actionText = stringResource(R.string.community_retry),
+                        onActionClick = onRetryClick,
+                    )
+                } else if (uiState.comments.isEmpty()) {
                     CommunityMyActivityEmpty(
                         title = stringResource(R.string.community_my_comments_empty_title),
                         description = stringResource(R.string.community_my_comments_empty_description),

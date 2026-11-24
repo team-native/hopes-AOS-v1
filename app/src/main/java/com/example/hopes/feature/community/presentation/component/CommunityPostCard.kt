@@ -140,7 +140,7 @@ fun CommunityPostCard(
 @Composable
 private fun CommunityCount(
     @DrawableRes icon: Int,
-    count: Int,
+    count: Long,
     description: String,
     isActive: Boolean = false,
     onClick: (() -> Unit)? = null,

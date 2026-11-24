@@ -14,10 +14,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,7 +25,6 @@ import com.example.hopes.core.designsystem.AppBorderWidth
 import com.example.hopes.core.designsystem.AppRadius
 import com.example.hopes.core.designsystem.AppSpacing
 import com.example.hopes.core.designsystem.component.FigmaAppFrame
-import com.example.hopes.core.designsystem.component.HopesHeaderIconButton
 import com.example.hopes.core.designsystem.component.HopesRetryMessage
 import com.example.hopes.core.designsystem.component.figmaSubtleShadow
 import com.example.hopes.feature.home.presentation.HomePopularPost
@@ -68,24 +67,12 @@ fun HomeScreenContent(
                     ),
         ) {
             if (uiState.isLoading) {
-                // 30-2: 인사말 대신 알림 버튼만 오른쪽에 두고 나머지는 자리 표시로 채운다.
-                HopesHeaderIconButton(
-                    painter = painterResource(R.drawable.ic_bell),
-                    contentDescription = stringResource(R.string.home_notification),
-                    onClick = { onEvent(HomeScreenEvent.NotificationClicked) },
-                    modifier = Modifier.align(Alignment.End),
-                )
-
-                Spacer(modifier = Modifier.height(AppSpacing.Medium))
-
                 HomeLoadingContent()
                 return@Column
             }
 
             HomeGreetingHeader(
                 userName = uiState.userName,
-                hasUnreadNotification = uiState.hasUnreadNotification,
-                onNotificationClick = { onEvent(HomeScreenEvent.NotificationClicked) },
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Medium))
@@ -125,6 +112,11 @@ fun HomeScreenContent(
                     description = stringResource(R.string.home_popular_posts_error_description),
                     onRetryClick = { onEvent(HomeScreenEvent.PopularPostsRetryClicked) },
                 )
+            } else if (uiState.popularPostsState == HomePopularPostsState.Loading) {
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
+                HomeSectionHeader(title = stringResource(R.string.home_popular_posts_title))
+                Spacer(modifier = Modifier.height(AppSpacing.Medium))
+                CircularProgressIndicator()
             } else if (uiState.popularPosts.isEmpty()) {
                 // 피그마에 빈 상태 시안이 없어 인기글 줄과 같은 카드 모양으로 안내한다.
                 Spacer(modifier = Modifier.height(AppSpacing.Medium))
@@ -202,7 +194,6 @@ private fun HomeScreenContentPopularErrorPreview() {
             uiState =
                 HomeUiState(
                     userName = "서하",
-                    hasUnreadNotification = true,
                     popularPostsState = HomePopularPostsState.LoadError,
                 ),
             onEvent = {},
@@ -219,7 +210,6 @@ private fun HomeScreenContentPreview() {
             uiState =
                 HomeUiState(
                     userName = "서하",
-                    hasUnreadNotification = true,
                     popularPosts =
                         listOf(
                             HomePopularPost(id = 1, cohort = null, title = "전공 동아리 면접 후기 공유", likeCount = 34),

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -93,6 +94,16 @@ fun ChatDetailScreen(
             ),
         bottomButton = {
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
+                if (uiState.failedAttachmentDeletionIds.isNotEmpty()) {
+                    Text(
+                        text = stringResource(R.string.chat_attach_delete_failed, uiState.failedAttachmentDeletionIds.size),
+                        color = MaterialTheme.colorScheme.error,
+                        style = HopesTextStyles.Caption,
+                    )
+                    TextButton(onClick = { onEvent(ChatDetailScreenEvent.AttachmentDeletionRetryClicked) }) {
+                        Text(text = stringResource(R.string.chat_attach_retry_delete))
+                    }
+                }
                 if (uiState.draftAttachments.isNotEmpty()) {
                     ChatDraftAttachments(
                         attachments = uiState.draftAttachments,
@@ -231,6 +242,15 @@ fun ChatDetailScreen(
                                     }
                                 }
                             },
+                        )
+                    } ?: run {
+                        TextButton(onClick = { onEvent(ChatDetailScreenEvent.LocationAllowClicked) }) {
+                            Text(text = stringResource(R.string.chat_location_check_cta))
+                        }
+                        Text(
+                            text = stringResource(R.string.chat_location_check_disclosure),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = HopesTextStyles.Caption,
                         )
                     }
 

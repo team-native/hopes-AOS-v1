@@ -24,14 +24,13 @@ import com.example.hopes.ui.theme.HopesTheme
 import com.teamnative.hopes.R
 
 /**
- * 피그마 32 설정 화면이다. 화면 토글(다크 모드·알림), 앱 정보·처리방침, 계정(로그아웃·회원탈퇴) 카드 세 개로 나눈다.
+ * 피그마 32 설정 화면이다. 화면 토글, 앱 정보·처리방침, 계정(로그아웃·회원탈퇴) 카드 세 개로 나눈다.
  *
  * @param appVersion "1.5"처럼 앱 정보 행 오른쪽에 붙일 버전 이름이다.
  */
 @Composable
 fun SettingsScreen(
     isDarkModeEnabled: Boolean,
-    isNotificationEnabled: Boolean,
     isDeleteAccountEnabled: Boolean,
     appVersion: String,
     onEvent: (SettingsScreenEvent) -> Unit,
@@ -51,15 +50,6 @@ fun SettingsScreen(
                 onCheckedChange = { onEvent(SettingsScreenEvent.DarkModeChanged(it)) },
             )
 
-            SettingsDivider()
-
-            SettingsToggleRow(
-                icon = painterResource(R.drawable.ic_menu_notification),
-                title = stringResource(R.string.settings_notification),
-                description = stringResource(R.string.settings_notification_description),
-                isChecked = isNotificationEnabled,
-                onCheckedChange = { onEvent(SettingsScreenEvent.NotificationChanged(it)) },
-            )
         }
 
         Spacer(modifier = Modifier.height(CARD_GAP))
@@ -117,7 +107,6 @@ private fun SettingsScreenPreview() {
     HopesTheme {
         SettingsScreen(
             isDarkModeEnabled = false,
-            isNotificationEnabled = true,
             isDeleteAccountEnabled = true,
             appVersion = "1.5",
             onEvent = {},

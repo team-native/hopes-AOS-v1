@@ -10,15 +10,20 @@ import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.CreateChatUseCase
 import com.example.hopes.domain.usecase.GetChatUseCase
 import com.example.hopes.domain.usecase.SendChatMessageUseCase
+import com.example.hopes.domain.usecase.UploadChatAttachmentUseCase
+import com.example.hopes.domain.usecase.DeleteChatAttachmentUseCase
+import com.example.hopes.domain.model.CampusLocationCheckRequest
+import com.example.hopes.domain.usecase.CheckCampusLocationUseCase
 import com.example.hopes.navigation.NEW_CHAT_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import java.util.UUID
+import kotlinx.coroutines.Job
 
 @HiltViewModel
 class ChatDetailViewModel
@@ -27,10 +32,15 @@ class ChatDetailViewModel
         private val createChatUseCase: CreateChatUseCase,
         private val getChatUseCase: GetChatUseCase,
         private val sendChatMessageUseCase: SendChatMessageUseCase,
+        private val uploadChatAttachmentUseCase: UploadChatAttachmentUseCase,
+        private val deleteChatAttachmentUseCase: DeleteChatAttachmentUseCase,
+        private val checkCampusLocation: CheckCampusLocationUseCase,
         private val networkMonitor: NetworkMonitor,
     ) : ViewModel() {
         /** 대화가 생성되면 이후의 추가 질문 전송이 실제 chatId를 쓰도록 갱신한다. */
         private var chatId: Long = NEW_CHAT_ID
+        private var departmentId: Long? = null
+        private var specialtyId: Long? = null
         private var isInitialized = false
 
         private val _uiState = MutableStateFlow(ChatDetailUiState())
@@ -41,6 +51,10 @@ class ChatDetailViewModel
 
         /** 지금 답변을 기다리는 질문이다. 답변 중지 시 다시 시도할 질문으로 남긴다. */
         private var inFlightQuestion: String? = null
+        private var retryClientRequestId: String? = null
+        private val removedUploadRequestIds = mutableSetOf<String>()
+        private val attachmentUploadJobs = mutableMapOf<String, Job>()
+        private val attachmentDeletionJobs = mutableMapOf<Long, Job>()
 
         init {
             observeNetwork()
@@ -55,10 +69,14 @@ class ChatDetailViewModel
             chatId: Long,
             question: String,
             attachments: List<ChatAttachmentUiModel> = emptyList(),
+            departmentId: Long? = null,
+            specialtyId: Long? = null,
         ) {
             if (isInitialized) return
             isInitialized = true
             this.chatId = chatId
+            this.departmentId = departmentId
+            this.specialtyId = specialtyId
             if (chatId == NEW_CHAT_ID && question.isNotEmpty()) {
                 _uiState.update { it.copy(isLoading = false) }
                 sendQuestion(question, attachments = attachments, baseMessages = emptyList())
@@ -109,14 +127,21 @@ class ChatDetailViewModel
                 }
 
                 is ChatDetailScreenEvent.AttachmentsAdded -> {
+                    val uploads = mutableListOf<ChatAttachmentUiModel>()
                     _uiState.update { state ->
                         val existingUris = state.draftAttachments.map { it.uri }.toSet()
-                        val newAttachments = event.attachments.filter { it.uri !in existingUris }
+                        val newAttachments = event.attachments.filter { it.uri !in existingUris }.map {
+                            if (it.status == ChatAttachmentStatus.Ready) it.copy(status = ChatAttachmentStatus.Uploading(0f)) else it
+                        }
+                        uploads += newAttachments.filter { it.status is ChatAttachmentStatus.Uploading }
                         state.copy(draftAttachments = (state.draftAttachments + newAttachments).limitAttachmentCount())
                     }
+                    uploads.forEach(::uploadAttachment)
                 }
 
                 is ChatDetailScreenEvent.AttachmentRemoved -> {
+                    val removedAttachment = _uiState.value.draftAttachments.firstOrNull { it.uri == event.uri }
+                    removedAttachment?.takeIf { it.serverId == null }?.let { removedUploadRequestIds += it.clientRequestId }
                     // 하나를 빼면 개수 제한에 걸렸던 첨부가 다시 들어갈 수 있다.
                     _uiState.update { state ->
                         state.copy(
@@ -124,14 +149,17 @@ class ChatDetailViewModel
                                 state.draftAttachments.filterNot { it.uri == event.uri }.limitAttachmentCount(),
                         )
                     }
+                    removedAttachment?.serverId?.let { attachmentId ->
+                        deleteAttachment(attachmentId)
+                    }
                 }
 
-                // 업로드 API 연동 전이라 업로드 실패 상태가 생기지 않는다. 연동 시 여기서 다시 올린다.
                 is ChatDetailScreenEvent.AttachmentRetryClicked -> {
-                    Unit
+                    _uiState.value.draftAttachments.firstOrNull { it.uri == event.uri }?.let(::uploadAttachment)
                 }
 
-                // 위치 기능 연동 전이라 권한 요청·측정은 아직 없다. 연동 시 여기서 권한을 묻고 위치를 측정한다.
+                ChatDetailScreenEvent.AttachmentDeletionRetryClicked -> retryFailedAttachmentDeletions()
+
                 ChatDetailScreenEvent.LocationAllowClicked,
                 ChatDetailScreenEvent.LocationRetryClicked,
                 -> {
@@ -161,6 +189,33 @@ class ChatDetailViewModel
             }
         }
 
+        fun locationCheckStarted() {
+            _uiState.update { it.copy(location = ChatLocationUiState.Locating(0f)) }
+        }
+
+        fun locationCheckFailed() {
+            _uiState.update { it.copy(location = ChatLocationUiState.Failed) }
+        }
+
+        fun submitLocationCheck(latitude: Double, longitude: Double, accuracyMeters: Double, measuredAt: String) {
+            _uiState.update { it.copy(location = ChatLocationUiState.Locating(0.5f)) }
+            viewModelScope.launch {
+                val result = checkCampusLocation(
+                    CampusLocationCheckRequest(
+                        latitude = latitude,
+                        longitude = longitude,
+                        horizontalAccuracyMeters = accuracyMeters,
+                        measuredAt = measuredAt,
+                        clientRequestId = UUID.randomUUID().toString(),
+                    ),
+                )
+                val resultState = (result as? AppResult.Success)?.value?.let {
+                    ChatLocationUiState.ServerResult(it.status, it.message, it.accuracyMeters, it.floorPlansAvailable, it.matchedBuildingId)
+                } ?: ChatLocationUiState.Failed
+                _uiState.update { it.copy(location = resultState) }
+            }
+        }
+
         /** 기존 대화의 첫 메시지 페이지를 불러온다. */
         private fun loadChat() {
             loadChatJob?.cancel()
@@ -187,11 +242,13 @@ class ChatDetailViewModel
             question: String,
             attachments: List<ChatAttachmentUiModel>,
             baseMessages: List<ChatMessageUiModel>,
+            clientRequestId: String = UUID.randomUUID().toString(),
         ) {
             sendJob?.cancel()
             inFlightQuestion = question
             sendJob =
                 viewModelScope.launch {
+                    retryClientRequestId = clientRequestId
                     val optimisticQuestion =
                         ChatMessageUiModel(id = null, content = question, isUser = true, attachments = attachments)
                     _uiState.update {
@@ -204,14 +261,17 @@ class ChatDetailViewModel
                     }
 
                     // 첨부 업로드 API 연동 전이라 질문 글만 보낸다. 첨부는 화면의 내 질문에만 붙여 둔다.
-                    when (val result = requestAnswer(question)) {
+                    val uploadedAttachments = attachments.map { if (it.serverId != null) it else uploadOne(it) }
+                    val sendableAttachments = uploadedAttachments.filter { it.serverId != null }
+                    when (val result = requestAnswer(question, sendableAttachments.mapNotNull { it.serverId }, clientRequestId)) {
                         is AppResult.Success -> {
+                            retryClientRequestId = null
                             _uiState.update {
                                 it
                                     .copy(
                                         isSending = false,
                                     ).withChat(result.value)
-                                    .withAttachmentsOn(question, attachments)
+                                    .withAttachmentsOn(question, sendableAttachments)
                             }
                         }
 
@@ -234,7 +294,7 @@ class ChatDetailViewModel
                 }
         }
 
-        private suspend fun requestAnswer(question: String): AppResult<Chat> {
+        private suspend fun requestAnswer(question: String, attachmentIds: List<Long>, clientRequestId: String): AppResult<Chat> {
             if (chatId == NEW_CHAT_ID) {
                 when (val createResult = createChatUseCase(question)) {
                     is AppResult.Success -> chatId = createResult.value.id
@@ -243,7 +303,63 @@ class ChatDetailViewModel
                     AppResult.SerializationError -> return AppResult.SerializationError
                 }
             }
-            return sendChatMessageUseCase(chatId, question)
+            return sendChatMessageUseCase(chatId, question, attachmentIds, departmentId, specialtyId, clientRequestId)
+        }
+
+        private fun uploadAttachment(attachment: ChatAttachmentUiModel) {
+            if (attachmentUploadJobs[attachment.clientRequestId]?.isActive == true) return
+            attachmentUploadJobs[attachment.clientRequestId] = viewModelScope.launch {
+                val uploaded = uploadOne(attachment.copy(status = ChatAttachmentStatus.Uploading(0f)))
+                if (attachment.clientRequestId in removedUploadRequestIds) {
+                    uploaded.serverId?.let { deleteAttachment(it) }
+                    removedUploadRequestIds.remove(attachment.clientRequestId)
+                } else {
+                    _uiState.update { state -> state.copy(draftAttachments = state.draftAttachments.map { if (it.uri == attachment.uri) uploaded else it }) }
+                }
+                attachmentUploadJobs.remove(attachment.clientRequestId)
+            }
+        }
+
+        private fun deleteAttachment(attachmentId: Long) {
+            if (attachmentDeletionJobs[attachmentId]?.isActive == true) return
+            attachmentDeletionJobs[attachmentId] = viewModelScope.launch {
+                val result = deleteChatAttachmentUseCase(attachmentId)
+                _uiState.update { state ->
+                    if (result is AppResult.Success) {
+                        state.copy(failedAttachmentDeletionIds = state.failedAttachmentDeletionIds - attachmentId)
+                    } else {
+                        state.copy(failedAttachmentDeletionIds = state.failedAttachmentDeletionIds + attachmentId)
+                    }
+                }
+                attachmentDeletionJobs.remove(attachmentId)
+            }
+        }
+
+        private fun retryFailedAttachmentDeletions() {
+            _uiState.value.failedAttachmentDeletionIds.forEach(::deleteAttachment)
+        }
+
+        private suspend fun uploadOne(attachment: ChatAttachmentUiModel): ChatAttachmentUiModel {
+            val result =
+                uploadChatAttachmentUseCase(
+                    attachment.uri,
+                    attachment.name,
+                    attachment.mimeType,
+                    attachment.clientRequestId,
+                    onProgress = { progress ->
+                        val uploading = attachment.copy(status = ChatAttachmentStatus.Uploading(progress))
+                        _uiState.update { state ->
+                            state.copy(
+                                draftAttachments = state.draftAttachments.map { if (it.uri == attachment.uri) uploading else it },
+                                messages = state.messages.map { message -> message.copy(attachments = message.attachments.map { if (it.uri == attachment.uri) uploading else it }) },
+                            )
+                        }
+                    },
+                )
+            return when (result) {
+                is AppResult.Success -> attachment.copy(serverId = result.value.id, status = ChatAttachmentStatus.Ready)
+                else -> attachment.copy(status = ChatAttachmentStatus.UploadFailed)
+            }
         }
 
         /**
@@ -285,6 +401,7 @@ class ChatDetailViewModel
                 question = question,
                 attachments = trailingQuestion?.attachments.orEmpty(),
                 baseMessages = messages.withoutTrailingQuestion(),
+                clientRequestId = retryClientRequestId ?: UUID.randomUUID().toString(),
             )
         }
 
@@ -329,6 +446,15 @@ class ChatDetailViewModel
                 id = id,
                 content = content,
                 isUser = role == ChatMessageRole.User,
+                attachments = attachments.map { attachment ->
+                    ChatAttachmentUiModel(
+                        uri = attachment.previewUrl ?: "attachment://${attachment.id}",
+                        kind = if (attachment.mimeType.startsWith("image/")) ChatAttachmentKind.Image else ChatAttachmentKind.Pdf,
+                        name = attachment.fileName,
+                        mimeType = attachment.mimeType,
+                        serverId = attachment.id,
+                    )
+                },
             )
 
         private companion object {

@@ -22,5 +22,11 @@ interface ChatRepository {
     suspend fun sendMessage(
         id: Long,
         content: String,
+        attachmentIds: List<Long> = emptyList(),
+        departmentId: Long? = null,
+        specialtyId: Long? = null,
+        clientRequestId: String,
     ): AppResult<Chat>
+
+    suspend fun deleteChat(id: Long): AppResult<Unit>
 }

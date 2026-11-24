@@ -16,10 +16,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -43,6 +45,7 @@ import com.example.hopes.ui.theme.HopesTextStyles
 import com.example.hopes.ui.theme.HopesTheme
 import com.teamnative.hopes.R
 import java.time.LocalDateTime
+import kotlinx.coroutines.flow.collect
 
 /**
  * 커뮤니티 탭이다(피그마 13, 13-2, 13-3, 19, 19-2). 제목·기수 필터 아래에 게시글 목록 또는 상태 안내를 그린다.
@@ -59,6 +62,8 @@ fun CommunityScreen(
     onMyActivityClick: () -> Unit,
     onWriteClick: () -> Unit,
     onRetryClick: () -> Unit,
+    onLoadMore: () -> Unit = {},
+    onRetryNextPage: () -> Unit = onLoadMore,
     onNavigate: (HopesDestination) -> Unit,
     toastMessage: String? = null,
     onToastDismiss: () -> Unit = {},
@@ -129,6 +134,8 @@ fun CommunityScreen(
                         onLikeClick = onLikeClick,
                         onWriteClick = onWriteClick,
                         onRetryClick = onRetryClick,
+                        onLoadMore = onLoadMore,
+                        onRetryNextPage = onRetryNextPage,
                     )
                 }
             }
@@ -167,6 +174,8 @@ private fun CommunityContent(
     onLikeClick: (Long) -> Unit = {},
     onWriteClick: () -> Unit,
     onRetryClick: () -> Unit,
+    onLoadMore: () -> Unit,
+    onRetryNextPage: () -> Unit,
 ) {
     when (uiState.contentState) {
         CommunityContentState.Loading -> {
@@ -179,6 +188,10 @@ private fun CommunityContent(
         }
 
         CommunityContentState.Content -> {
+            LaunchedEffect(listState, uiState.posts.size) {
+                snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0 }
+                    .collect { lastVisible -> if (uiState.posts.isNotEmpty() && lastVisible >= uiState.posts.size - 3) onLoadMore() }
+            }
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = listState,
@@ -199,6 +212,23 @@ private fun CommunityContent(
                         onClick = { onPostClick(post.id) },
                         onLikeClick = { onLikeClick(post.id) },
                     )
+                }
+                when (uiState.nextPageState) {
+                    CommunityNextPageState.Idle -> Unit
+                    CommunityNextPageState.Loading -> item {
+                        Box(modifier = Modifier.fillMaxWidth().padding(AppSpacing.Item), contentAlignment = Alignment.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                    CommunityNextPageState.Error -> item {
+                        HopesStatusMessage(
+                            icon = Icons.Outlined.ErrorOutline,
+                            title = stringResource(R.string.community_load_error_title),
+                            description = stringResource(R.string.community_load_error_description),
+                            actionText = stringResource(R.string.community_retry),
+                            onActionClick = onRetryNextPage,
+                        )
+                    }
                 }
             }
         }
@@ -239,6 +269,8 @@ private fun CommunityScreenPreview(uiState: CommunityUiState) {
             onMyActivityClick = {},
             onWriteClick = {},
             onRetryClick = {},
+            onLoadMore = {},
+            onRetryNextPage = {},
             onNavigate = {},
         )
     }

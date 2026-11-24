@@ -46,6 +46,7 @@ fun MessageDto.toDomain(): ChatMessage =
         role = role.toChatMessageRole(),
         content = content,
         createdAt = createdAt,
+        attachments = attachments.map { it.toDomain() },
     )
 
 private fun String.toChatMessageRole(): ChatMessageRole =
@@ -88,7 +89,7 @@ fun PasswordResetRequest.toDto(): PasswordResetRequestDto =
     PasswordResetRequestDto(
         email = email,
         code = code,
-        password = password,
+        newPassword = password,
         passwordConfirm = passwordConfirm,
     )
 

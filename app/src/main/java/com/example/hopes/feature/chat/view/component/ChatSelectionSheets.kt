@@ -62,6 +62,7 @@ import com.teamnative.hopes.R
 @Composable
 fun ChatDepartmentSheet(
     selectedDepartment: ChatDepartment?,
+    departments: List<ChatDepartment> = ChatDepartment.entries,
     onConfirm: (ChatDepartment?) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -76,7 +77,7 @@ fun ChatDepartmentSheet(
         onDismiss = onDismiss,
     ) {
         Column(modifier = Modifier.selectableGroup()) {
-            ChatDepartment.entries.forEachIndexed { index, department ->
+            departments.forEachIndexed { index, department ->
                 val isSelected = pendingDepartment == department
                 // 피그마 Options: 옵션 사이에 1dp 구분선이 있다.
                 if (index > 0) {
@@ -149,6 +150,7 @@ fun ChatDepartmentSheet(
 @Composable
 fun ChatMajorSheet(
     selectedMajor: ChatMajor?,
+    majors: List<ChatMajor> = ChatMajor.entries,
     onConfirm: (ChatMajor?) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -169,7 +171,7 @@ fun ChatMajorSheet(
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Compact),
         ) {
-            ChatMajor.entries.forEach { major ->
+            majors.forEach { major ->
                 ChatMajorChip(
                     text = major.label(),
                     isSelected = pendingMajor == major,

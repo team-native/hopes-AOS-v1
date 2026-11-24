@@ -1,135 +1,58 @@
-# v2 UI · API 연결 목록 (#230)
+# 사용자 UI · 서버 API 연결 현황 (#256)
 
-Figma v2 퍼블리싱에서 **화면은 만들었지만 서버 연결이 필요한 곳**을 모았습니다.
-이미 서버와 연결된 곳은 맨 아래 "연결 완료"에 따로 적었습니다.
+검토 기준: Swagger OAS 3.1 `https://hopes-v1.https.gsmsv.site/v3/api-docs` (2026-11-24 확인). Figma 링크는 제공받았으나 연결된 계정에서 읽기 권한만 확인되어 화면 상세는 조회하지 못했습니다. 현재 UI와 Swagger 계약으로 구현했습니다. 알림 UI 전체 제거와 HTTPS 서버 URL 사용은 사용자 승인 범위입니다.
 
-표의 "지금 동작"은 API가 붙기 전 화면이 하는 일입니다.
-"코드 위치"를 따라가면 예시 데이터나 빈 콜백이 있는 자리가 나옵니다.
+## 연결 및 수정
 
-## 홈 (피그마 30)
+- debug/release API Base URL을 `https://hopes-v1.https.gsmsv.site/`로 변경했습니다.
+- 비밀번호 재설정 요청은 `newPassword`, 문의 요청은 `content`와 `replyEmail` 필드를 사용합니다.
+- 대화 기록 삭제는 `DELETE /api/chats/{id}`의 204 처리 경로를 사용합니다. 실패 시 기록은 화면에서 제거하지 않습니다.
+- 채팅 메시지 DTO에 `attachmentIds`, 학과·전공·위치 관련 필드와 `X-Hopes-Client: APP` 헤더를 반영했습니다. 각 전송의 `clientRequestId`는 상세 ViewModel에서 생성하고 재시도 시 같은 ID를 use case/repository까지 전달합니다. OAS에는 이 필드만 정의되어 있고 서버의 중복 제거 동작은 명시되지 않았습니다.
+- 첨부 `POST /api/attachments` multipart 업로드와 `DELETE /api/attachments/{attachmentId}`를 remote data source·repository·use case에 연결했습니다. 크기를 알 수 없는 URI도 전송 전 스트림 복사 단계에서 20 MiB 상한을 적용합니다. 이미지 업로드 사본에서 GPS IFD 표준 필드 전체를 Android framework `ExifInterface`로 제거하며 원본은 수정하지 않습니다. 진행 중 제거는 UI에서 즉시 제외하고 업로드 응답 ID를 받은 뒤 서버 삭제를 요청합니다. 삭제가 실패하면 실패한 ID를 화면 상태에 보존하고 재시도 버튼을 제공합니다. 실패한 첨부는 제외하고 전송할 수 있습니다.
+- 커뮤니티 API를 remote data source → DTO mapper → `CommunityRepository` → `CommunityStore` facade로 연결했습니다. 게시판 목록, 게시글 목록/검색/paging/상세/등록/수정/삭제, 댓글 전체 페이지 조회/등록/수정/삭제, 좋아요/취소(실패 시 feed와 my-posts cache를 모두 롤백), 신고, 내 글/댓글 전체 페이지 조회를 호출합니다. 내 글 캐시는 global feed와 분리했습니다. 다음 페이지와 검색은 로딩·실패·재시도 상태를 표현합니다. 검색 API 실패는 기존 캐시나 빈 결과로 표시하지 않습니다. 댓글 등록과 게시글 등록은 POST 응답을 댓글·내 댓글 또는 feed·내 글 캐시에 즉시 반영하므로 목록 GET 실패가 등록 실패로 바뀌지 않습니다. 내 활동의 댓글 create/update/delete도 my-comments cache에 반영합니다. 전체 페이지 요청은 서버 page가 요청 cursor와 다르거나 100페이지를 넘으면 중단합니다. OAS int64 count는 DTO와 community model에서 `Long`으로 유지합니다. 최근 검색어만 로컬 상태입니다.
+- 채팅 시작 UI의 학과·전공 선택은 `ChatAssistRemoteDataSource` → `ChatAssistRepository` → UseCase를 통해 서버 카테고리에서 현재 UI가 지원하는 활성 항목을 찾아 ID와 함께 유지합니다. 질문 추천은 같은 경계를 거쳐 `departmentId`, `specialtyId`, `limit`, `refreshToken`, `excludeIds`, `personalized`, `specialtyIds`를 보내고 서버 질문 문구와 refresh token을 UI에 반영합니다. 선택된 학과·전공은 chat preferences PATCH로 저장합니다.
+- 추천 동의 상태는 `ChatAssistRepository`·UseCase를 거쳐 GET으로 읽습니다. 아직 동의하지 않은 경우 UI에서 명시적으로 동의 버튼을 누른 때만 GET 응답의 `policyVersion`을 사용해 동의 PUT을 보냅니다. 동의된 화면에는 철회 동작을 제공하며, 철회 PUT 성공 시 추천 질문을 지웁니다. 이 API는 동의 상태와 정책 버전을 제공하지만 정책 본문/열람 URL은 제공하지 않습니다.
+- 채팅 상세의 위치 확인 CTA는 사용자가 누른 뒤에만 coarse 위치 권한을 요청합니다. 요청은 `CampusLocationRemoteDataSource` → `CampusLocationRepository` → `CheckCampusLocationUseCase`를 거쳐 `POST /api/campus/location-check`로 전송합니다. OAS의 latitude, longitude, horizontalAccuracyMeters, measuredAt, clientRequestId 필드를 유지합니다. 결과의 서버 status/message/accuracy를 그대로 표시하고 임의 정확도 threshold나 상태 의미를 적용하지 않습니다. OAS status는 자유 문자열이며 정확도 기준은 계약에 없습니다. 응답 building ID는 이름으로 추정하지 않습니다. 위치 권한은 Android `ACCESS_COARSE_LOCATION` 하나만 선언했습니다.
+- 설정의 개인정보 처리방침 진입은 기존 Notion 링크 대신 공개 `GET /api/privacy/policy` (`text/html`)로 연결했습니다. UI는 HTTPS base URL에서 경로를 조합해 기본 브라우저로 엽니다.
+- 디버그 HTTP 진단은 BASIC 수준으로 제한하고 URL query 문자열을 가립니다. request/response body와 인증 header는 기록하지 않습니다. release는 기존 `ENABLE_LOG=false` 설정으로 로깅하지 않습니다.
+- 첫 진입 가입 버튼을 `학교 이메일로 가입하기`로 명확히 했습니다.
+- 설정의 알림 토글, 홈 알림 진입·배지, 마이페이지 진입, 알림 목록·상세 화면/내비게이션/샘플/문자열/아이콘을 삭제했습니다.
+- 사용자 설정·프로필·로그인·회원가입·기존 대화 API 연결은 기존 구현을 유지했습니다.
 
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 커뮤니티 인기글 | 시안 예시 글 2개 | 인기글 목록 (id, 기수, 제목, 좋아요 수) | `HomeRoute`의 `samplePopularPosts` → `HomeUiState.popularPosts` |
-| 인기글 불러오기 실패 (30-3) | 화면만 준비됨 | 위 API 실패 시 `LoadError` | `HomeUiState.popularPostsState`, `HomeRoute`의 `PopularPostsRetryClicked` |
-| 인기글 누르기 | 게시글 상세로 이동 (예시 인기글은 실제 글이 없어 "삭제된 게시글" 안내가 나옴) | 인기글 id가 게시글 id와 같아야 함 | `HomeRoute`의 `PopularPostClicked` |
-| 알림 버튼 빨간 점 | 항상 꺼짐 | 읽지 않은 알림 여부 | `HomeUiState.hasUnreadNotification` |
+## 미연결·부분 연결
 
-## 커뮤니티 (피그마 13 ~ 19)
+| 기능 | 상태 및 근거 |
+|---|---|
+| 커뮤니티 목록 paging | 목록 UI는 스크롤 끝에서 다음 페이지를 요청합니다. 댓글·내 활동 조회는 page 불일치와 100페이지 상한으로 반복 호출을 제한합니다. 상세 mutation 오류 표현은 제한적입니다. |
+| 커뮤니티 작성자·게시판 표시 | OAS `authorLabel`을 기존 UI의 기수 표시로 변환하는 정보는 계약에 없습니다. 현재 숫자가 포함된 경우에만 숫자를 사용하고, 표시 이름/기수 의미가 다른 서버 응답이면 UI 모델 보완이 필요합니다. API 게시판 응답을 기수 게시판과 매칭할 때 `cohort` 값을 사용합니다. |
+| 추천 카테고리·preferences PATCH body | OAS departments/specialties 응답은 map-of-array이고 Chat UI에는 기존 enum 선택지만 있습니다. 활성 카테고리 중 기존 UI와 이름 매칭되는 항목만 노출합니다. preferences PATCH request schema는 OAS에서 `{}`(JsonNode)로만 정의되어 있어 `departmentId`, `specialtyId`, `specialtyIds`를 보내는 것은 응답 DTO에 맞춘 추론입니다. 실제 서버 계약 확인이 필요합니다. |
+| 추천 동의 | 동의는 선택 시에만 켜고 철회 API도 제공합니다. consent GET 실패 또는 policyVersion 누락이면 동의 조작을 숨깁니다. `/api/privacy/recommendation-consent`는 동의 상태·정책 버전만 반환하며 정책 본문/열람 URL은 포함하지 않습니다. 일반 개인정보 처리방침은 별도 `/api/privacy/policy` HTML API로 설정 화면에서 열 수 있습니다. 추천 동의 정책 원문으로 직접 이동하는 경로는 확인되지 않았습니다. |
+| 첨부 metadata/content GET | OAS에 `GET /api/attachments/{attachmentId}`(metadata)와 `/content`(binary)가 있습니다. 현재 `ChatResponseDto.messages.attachments`가 `AttachmentDto` metadata를 이미 포함하며, `ChatMessageAttachments`는 이미지 tile/PDF chip만 렌더하고 다운로드·미리보기 클릭 동작을 제공하지 않습니다. 따라서 GET operations는 대응 사용자 동작이 없어 연결하지 않았습니다. 별도 파일 열기/미리보기 UI가 추가되면 content endpoint 연결이 필요합니다. |
+| 위치 확인 권한/API | OAS `POST /api/campus/location-check` 요청/응답 DTO를 연결했습니다. coarse 위치만 요청하고 권한 거부, 비활성 provider, 측정 실패, API 실패는 실패/재시도 상태로 표시합니다. 응답 status/message/accuracy를 그대로 화면에 내보냅니다. OAS는 status enum과 accuracy threshold를 정의하지 않으므로 low-accuracy 분류를 추측하지 않습니다. `matchedBuilding`은 numeric ID로 보존하되 지도 건물명으로 변환하지 않습니다. `MessageResponse.location`은 `JsonNode`이므로 메시지 생성으로 위치 요청을 유추하지 않습니다. |
+| 위치 확인 권한/API | OAS `POST /api/campus/location-check` 요청/응답 DTO를 연결했습니다. coarse 위치만 요청하고 권한 거부, 비활성 provider, 측정 실패, API 실패는 실패/재시도 상태로 표시합니다. 응답 status/message/accuracy를 그대로 화면에 내보냅니다. OAS는 status enum과 accuracy threshold를 정의하지 않으므로 low-accuracy 분류를 추측하지 않습니다. `matchedBuilding`은 numeric ID로 보존하되 지도 건물명으로 변환하지 않습니다. `MessageResponse.location`은 `JsonNode`이므로 메시지 생성으로 위치 요청을 유추하지 않습니다. 사용자는 2026-11-24에 “현재처럼 캠퍼스 위치 결과 API만 사용(추천)”을 선택했습니다. 대안 `POST /api/chats/{id}/location-check`는 응답 스키마가 `{}`로 정의되어 있어 이 CTA에서 선택하지 않았으며, 현재 캠퍼스 위치 결과 API를 유지합니다. |
+| 개인정보 처리방침 | OAS `GET /api/privacy/policy`는 인증 없이 `text/html`을 반환하며 기존 설정 화면의 외부 링크 UI가 있어 공개 서버 정책 URL로 연결했습니다. 약관 문서는 별도 OAS operation/URL이 없어 가입 화면에서 열 수 있는 경로는 확인되지 않았습니다. |
+| 캠퍼스 지도·시설·층별 도면·내비게이션 | OAS 응답 스키마가 `{}`로 정의되어 있어 payload 모델을 추측하지 않았습니다. 실제 서버 응답 계약 확인 전 미연결입니다. |
+| 이메일 인증 토큰 교환 | 현재 앱 토큰 저장·요청 인증 구조와 Swagger 응답 계약을 대조한 추가 확인이 남아 있습니다. |
 
-게시판 API가 없어 글·댓글·좋아요·신고·최근 검색어를 앱 메모리의 임시 저장소 `CommunityStore`에 둡니다(앱을 다시 켜면 처음 상태).
-화면은 모두 `CommunityStore`만 바라보므로, API를 붙일 때 이 클래스를 repository로 바꾸면 됩니다.
-글·댓글 등록과 수정은 인터넷이 끊겨 있으면 실패로 처리해서 실패 화면(14-9, 15-7)을 비행기 모드로 볼 수 있습니다.
+## 출시 안전 체크
 
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 게시글 목록 · 기수 필터 (13, 13-3) | 임시 저장소 글을 기수로 거름 | 게시글 목록 (기수 필터, 페이지) | `CommunityViewModel` |
-| 로딩 (13-2) · 불러오기 실패 (19-2) | 화면만 준비됨 | 위 API 상태를 `Loading` / `LoadError`로 | `CommunityContentState` |
-| 기수 목록 | 8~11기 고정 | 기수 목록 | `COMMUNITY_COHORTS` |
-| 게시글 상세 · 댓글 (14) | 임시 저장소 | 게시글 상세, 댓글 목록 | `CommunityPostDetailViewModel` |
-| 좋아요 (14-5) | 화면에서만 켜고 끔 | 좋아요 토글 | `CommunityStore.toggleLike` |
-| 댓글 등록 · 수정 · 삭제 (14-6 ~ 14-9) | 임시 저장소 | 댓글 CRUD | `CommunityStore.addComment` 등 |
-| 글 등록 · 수정 · 삭제 (14-4, 15 ~ 15-8) | 임시 저장소 | 게시글 CRUD | `CommunityWriteViewModel`, `CommunityStore.deletePost` |
-| 신고 (17 ~ 17-3) | "이미 신고함"만 기억, 사유는 안 보냄 | 신고 접수 (사유 포함), 신고 여부 | `CommunityStore.report` |
-| 검색 (16 ~ 16-3) | 제목·내용에 검색어가 들어간 글 | 게시글 검색 | `searchPosts()` |
-| 최근 검색어 (16-2) | 앱 메모리에만 저장 | (선택) 기기 저장 또는 서버 | `CommunityStore.recentSearches` |
-| 내 활동 (18 ~ 18-3) | 임시 저장소의 내 글·내 댓글 | 내 글 / 내 댓글 목록 | `CommunityMyActivityViewModel` |
-| 내 기수 ("10기 (나)") | 10기 고정 | 프로필에 기수 필드 | `CommunityStore.myCohort` |
-| 삭제된 글 (14-10) | 저장소에 없는 글 id면 표시 | 상세 API의 404 등 | `CommunityPostDetailScreen` |
+출처: `launch-safety-checklist` (2026-11-24 확인). 법적 정책 문구의 적정성 판단은 포함하지 않습니다.
 
-저장소는 빈 상태로 시작하므로 앱을 켜면 커뮤니티는 빈 화면(19)부터 보입니다. 글을 쓰면 목록에 나타납니다.
-
-## 마이페이지 (피그마 31)
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 작성글 · 댓글 수 | 커뮤니티 임시 저장소의 내 글 · 내 댓글 수 | 커뮤니티 API를 붙이면 저장소 대신 서버 값 | `MyPageViewModel`의 `communityStore.myPosts` / `myComments` |
-| 대화 수 | 서버 대화 목록(`GET` 대화 목록)을 마지막 페이지까지 넘기며 셈. 마이페이지에 들어올 때마다 다시 셈. 실패하면 "-" | 대화 목록에 전체 개수(`totalElements` 등)가 생기면 한 번만 부르도록 바꾸기 | `CountChatsUseCase`, `MyPageViewModel.refreshChatCount` |
-| 내 활동 | 내 활동 화면(18)으로 이동 | 위 커뮤니티 "내 활동" 참고 | `MyPageRoute`의 `MyActivityClicked` |
-| 기수 ("10기") | 표시 안 함 | 프로필에 기수 필드 | `UserProfile`에 없음 |
-
-## 알림 (피그마 25)
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 알림 목록 | 시안 예시 4개 | 알림 목록 (종류, 제목, 내용) | `NotificationSamples.kt`의 `sampleNotifications()` |
-| 보기 → 상세 (25-4) | 예시 알림의 상세 화면으로 이동 | 알림 상세 (본문, 날짜) | `NotificationDetailRoute`, `sampleNotifications()` |
-| 편집 · 모두 읽음 처리 | 반응 없음 | 읽음 처리 | `NotificationRoute`의 콜백 |
-| 로딩 (25-2) · 빈 상태 (25-3) | 화면만 준비됨 | 위 API 상태를 `isLoading` / 빈 목록으로 | `NotificationScreen`의 `isLoading`, `items` |
-
-## 지난 대화 (피그마 24)
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 대화 삭제 (24-5, 24-6) | 확인 후 **목록에서만 뺌** (다시 불러오면 돌아옴) | 대화 삭제 | `HistoryViewModel`의 `DeleteChatConfirmed` |
-| 날짜 묶음 · 날짜 문구 | 기존 `updatedAt`으로 계산 (ISO 형식) | — | `HistoryDateGrouping.kt` |
-| 행 아래 학과 표시 (24-2 "어제 · 소프트웨어개발과") | 날짜만 표시 | 대화 목록에 학과 필드 | `ChatSummaryUiModel` |
-
-## 설정 (피그마 32)
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 알림 받기 토글 | 화면 안에서만 유지 (앱 재시작 시 켜짐) | 알림 설정 조회·저장 | `SettingsRoute`의 `isNotificationEnabled` |
-| 앱 정보 "최신 버전 · 사용 중" | 항상 "사용 중" | 최신 버전 확인 (또는 행 삭제) | `AppInfoScreen` |
-
-## 채팅 홈 (피그마 05 · 06 · 07)
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 추천 질문 | 학과·전공에 맞춘 고정 질문 | 추천 질문 목록 | `recommendedQuestionTopics()`, `ChatUiState.recommendationState` |
-| 추천 로딩 · 실패 | 화면만 준비됨 (05-4, 05-2) | 위 API 상태를 `Loading` / `LoadError`로 | `ChatRecommendationState` |
-| 추천 새로 고침 | 반응 없음 | 위 API 다시 부르기 | `ChatViewModel`의 `RecommendationsRefreshClicked` |
-| 학과 · 전공 선택 | 화면에서만 기억, 서버에 안 보냄 | 질문과 함께 보내거나 프로필에 저장 | `ChatUiState.department` / `major` |
-| 입력창 + | 반응 없음 (채팅 홈) | 홈에서 첨부할지 결정 | `ChatScreen`의 `ChatComposer` |
-
-## 채팅 상세 (피그마 08)
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 답변 표시 | 답변이 다 오면 한 번에 표시, 마크다운을 문단으로 정리 | (선택) 스트리밍 | `ChatDetailViewModel.sendQuestion` |
-| 답변 중지 (08-2) | 화면에서만 기다림을 끝냄 (서버는 계속 생성할 수 있음) | 생성 취소 | `ChatDetailViewModel.stopAnswer` |
-| 좋아요 (08) | 화면에서만 켜고 끔 | 답변 피드백 | `ChatDetailUiState.likedMessageIds` |
-| 추가로 많이 묻는 질문 (08) | 목록이 비어 카드가 숨겨짐 | 연관 질문 목록 | `ChatDetailUiState.followUpQuestions` |
-| 자료 첨부 (09~12) | 사진·카메라·PDF를 골라 화면에 보여주고, **서버에는 질문 글만 보냄** | 첨부 업로드 / 분석 | `ChatDetailViewModel.sendQuestion`의 `attachments` |
-
-## 자료 첨부 상태 (피그마 09-2 ~ 11-3)
-
-앱에서 바로 검사해서 동작하는 것: 지원하지 않는 형식(10-4), 개수 3개·파일 20MB 초과(10-5), 열 수 없는 PDF(10-6).
-제한 값은 시안 기준 임시값이라 서버 제한이 정해지면 `MAX_ATTACHMENT_COUNT` / `MAX_ATTACHMENT_SIZE_BYTES`를 맞춰 주세요.
-
-| 항목 | 지금 동작 | 필요한 API | 코드 위치 |
-|---|---|---|---|
-| 업로드 진행률 (10-2) | 화면만 준비됨 | 업로드 진행률 → `ChatAttachmentStatus.Uploading(progress)` | `ChatAttachmentUiModel.status` |
-| 일부 업로드 실패 (10-3) | 화면만 준비됨 | 실패 시 `UploadFailed`, 다시 올리기 | `ChatDetailViewModel`의 `AttachmentRetryClicked` |
-| 답변 근거 자료 칩 (11-3) | 비어 있어 숨겨짐 | 답변의 출처 (파일명 · 쪽) | `ChatMessageUiModel.sources` |
-| 사진 권한 안내 (09-2) | 카메라 실행이 권한 문제로 막히면 표시 | — | `ChatDetailRoute`의 `isMediaPermissionDialogVisible` |
-
-## 현재 위치 (피그마 20 ~ 23)
-
-위치 안내 카드와 학교 지도 화면은 만들어 두었습니다. **위치 질문 감지, 권한 요청, 위치 측정은 아직 없습니다.**
-`ChatDetailUiState.location`에 상태를 넣으면 마지막 메시지 아래에 카드가 나옵니다.
-
-| 상태 | 화면 | 넣을 값 |
+| 항목 | 코드 근거 | 판정 |
 |---|---|---|
-| `PermissionRequired` | 20 위치 권한 안내 ("나중에"는 카드 닫기, "위치 허용"은 `LocationAllowClicked`) | — |
-| `Locating(progress)` | 20-3 측정 중 | 0..1 진행률 |
-| `NearBuilding(buildingName, accuracyMeters)` | 21 위치 응답 카드 | 건물 이름, 정확도(m) |
-| `OutsideSchool(distanceKm)` | 21-2 학교 밖 | "2.3"처럼 표시할 거리 |
-| `LowAccuracy(accuracyMeters)` | 21-3 정확도 낮음 ("다시 측정"은 `LocationRetryClicked`) | 정확도(m) |
-| `Failed` | 23 위치 확인 실패 ("설정 열기"는 앱 설정을 엶) | — |
+| 가입 동의 기본값·철회 | `SignupUiState.isTermsAgreed` 기본값은 false. 추천 선택 동의는 `ChatViewModel`에서 명시적 opt-in/철회를 처리합니다. 가입 필수동의의 계정 생성 후 철회 경로는 앱에서 확인되지 않았습니다. | 부분 확인; 필수동의 철회 경로 확인 필요 |
+| 약관·처리방침 진입점 | 설정 개인정보 처리방침 링크는 `/api/privacy/policy`로 연결했습니다. 가입 화면의 약관·필수 동의 문구는 별도 약관 URL이 없고, OAS에 이용약관 operation도 없습니다. | 처리방침 PASS; 약관 확인 필요 |
+| 권한 최소 수집 | `AndroidManifest.xml`의 위치 권한은 coarse 하나이며, 사용자가 위치 확인 CTA를 누른 뒤 런타임 요청합니다. 서버 위치 권한 분리는 클라이언트 코드에서 판정할 수 없습니다. | 앱 권한 PASS; 서버 역할 확인 필요 |
+| API 키 | 이번 변경에서 앱 API key를 추가하지 않았습니다. | 해당 없음 |
+| 테스트/실데이터 분리 | `app/build.gradle.kts`에서 debug/release가 같은 Swagger base URL을 사용합니다. 테스트 전용 서버/데이터 격리는 확인되지 않았습니다. | 확인 필요 |
+| 결제 | 이번 기능에 결제 API·화면이 없습니다. | 해당 없음 |
 
-- 위치 카드가 있으면 헤더 부제목이 "선배 답변 · 위치 안내"로 바뀝니다.
-- "지도 보기"는 학교 지도 화면(22, `HopesDestination.SchoolMap`)을 엽니다. 실내 도면이 없어 지도는 자리 표시(`SchoolMapPlaceholder`)이고, 층 칩을 골라도 바뀌지 않습니다. 지도 화면의 다시 측정 버튼도 아직 반응이 없습니다.
-- 위치 권한(`ACCESS_FINE_LOCATION` 등)은 매니페스트에 아직 추가하지 않았습니다.
+## 검증·제약
 
-오프라인(08-5)은 앱 쪽에서 끝냈습니다. `NetworkMonitor`로 연결이 끊긴 걸 알면 안내를 띄우고, 못 보낸 질문은 다시 연결되면 자동으로 보냅니다.
-
-## 연결 완료 (참고)
-
-- 홈 인사말 이름: `GetProfileUseCase` (`HomeViewModel`)
-- 마이페이지 프로필 요약, 프로필 수정 저장: `GetProfileUseCase`, `UpdateProfileUseCase`
-- 개인 설정 프롬프트 조회·저장: `GetSettingsUseCase`, `UpdateCustomPromptUseCase`
-- 문의하기 전송: `SubmitInquiryUseCase`
-- 로그아웃, 회원탈퇴: `LogoutUseCase`, `DeleteAccountUseCase`
-- 로그인 만료: API가 401을 받으면 `SessionState.Expired` → 만료 다이얼로그 (`SessionManager.expireSessionByServer`)
-- 채팅 생성 · 조회 · 전송: `CreateChatUseCase`, `GetChatUseCase`, `SendChatMessageUseCase`
+- `SettingsApiServiceContractTest`: PASS (비밀번호 재설정·문의 JSON 계약).
+- 사후 수정 최종 변경 기준 `:app:compileDebugKotlin`: PASS, `:app:testDebugUnitTest`: PASS, `:app:assembleDebug`: PASS.
+- 이전 빌드 APK 설치·에뮬레이터 비로그인 기동: PASS (`emulator-5554`, `com.teamnative.hopes/.MainActivity` resumed). 최종 코드 기준 APK 경로: `app/build/outputs/apk/debug/app-debug.apk`. 최종 APK 재설치는 현재 셸에 `adb`가 없어 미확인입니다. 로그인 후 서버 기능 검증은 테스트 계정 위치가 없어 미수행입니다.
+- 첫 Gradle 실행은 기본 사용자 캐시의 `.lck` 파일 `Operation not permitted`로 차단되어 task-specific `/private/tmp/hopes-gradle-home`을 사용했습니다.
+- 사후 수정 targeted tests: PASS (`AttachmentUploadPolicyTest`, `CommunityStoreTest`, `SendChatMessageUseCaseTest`, `LocationCheckContractTest`). 전체 `:app:testDebugUnitTest`: PASS, 최종 APK 재생성: PASS.
+- 추가 수정 라운드: `CommunityStoreTest`, `CommunitySearchTest` 회귀 테스트 PASS. 최종 `:app:compileDebugKotlin :app:testDebugUnitTest :app:assembleDebug`: PASS; `git diff --check`: PASS. 생성 APK는 `app/build/outputs/apk/debug/app-debug.apk` (2026-11-24 14:34:37)입니다.
+- 디버그 위치 권한/서버 응답 흐름은 에뮬레이터에서 별도 확인하지 않았습니다. 이전 셸에서 `adb: command not found`가 발생했고 비운영 테스트 계정 경로도 없습니다.

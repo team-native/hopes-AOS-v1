@@ -26,6 +26,9 @@ sealed interface ChatScreenEvent {
 
     data object RecommendationsRefreshClicked : ChatScreenEvent
 
+    data object RecommendationConsentClicked : ChatScreenEvent
+    data object RecommendationConsentWithdrawClicked : ChatScreenEvent
+
     /** 첨부 시트에서 고른 자료를 입력창 위에 붙인다(피그마 09, 10). */
     data class AttachmentsAdded(
         val attachments: List<ChatAttachmentUiModel>,

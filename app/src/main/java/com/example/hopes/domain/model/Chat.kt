@@ -11,6 +11,7 @@ data class ChatMessage(
     val role: ChatMessageRole,
     val content: String,
     val createdAt: String?,
+    val attachments: List<UploadedAttachment> = emptyList(),
 )
 
 /** 서버 메시지 발신자를 앱의 표시 규칙과 분리해 표현한다. */

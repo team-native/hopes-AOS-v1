@@ -5,6 +5,7 @@ import com.example.hopes.domain.model.ChatPage
 import com.example.hopes.domain.repository.ChatRepository
 import com.example.hopes.domain.result.AppResult
 import javax.inject.Inject
+import java.util.UUID
 
 class GetChatsUseCase
     @Inject
@@ -91,5 +92,18 @@ class SendChatMessageUseCase
         suspend operator fun invoke(
             chatId: Long,
             content: String,
-        ): AppResult<Chat> = chatRepository.sendMessage(chatId, content)
+            attachmentIds: List<Long> = emptyList(),
+            departmentId: Long? = null,
+            specialtyId: Long? = null,
+            clientRequestId: String = UUID.randomUUID().toString(),
+        ): AppResult<Chat> = chatRepository.sendMessage(chatId, content, attachmentIds, departmentId, specialtyId, clientRequestId)
+    }
+
+class DeleteChatUseCase
+    @Inject
+    constructor(
+        private val chatRepository: ChatRepository,
+    ) {
+        /** 사용자가 대화 기록에서 삭제를 확정했을 때 서버 기록을 삭제한다. */
+        suspend operator fun invoke(chatId: Long): AppResult<Unit> = chatRepository.deleteChat(chatId)
     }

@@ -86,6 +86,16 @@ fun CommunityPostDetailScreen(
                 Unit
             }
 
+            uiState.isLoadError -> {
+                HopesStatusMessage(
+                    icon = Icons.Outlined.Delete,
+                    title = stringResource(R.string.community_load_failed),
+                    description = stringResource(R.string.community_load_failed_description),
+                    actionText = stringResource(R.string.community_retry),
+                    onActionClick = { onEvent(CommunityPostDetailEvent.RetryLoadClicked) },
+                )
+            }
+
             post == null -> {
                 Box(
                     modifier =
@@ -270,6 +280,7 @@ private fun CommunityDetailToast.message(): String =
             CommunityDetailToast.AlreadyReportedPost -> R.string.community_report_already_post
             CommunityDetailToast.AlreadyReportedComment -> R.string.community_report_already_comment
             CommunityDetailToast.CommentEditFailed -> R.string.community_comment_edit_failed
+            CommunityDetailToast.ReportFailed -> R.string.community_report_failed
         },
     )
 

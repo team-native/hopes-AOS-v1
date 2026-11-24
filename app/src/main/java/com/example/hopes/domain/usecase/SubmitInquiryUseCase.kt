@@ -4,10 +4,7 @@ import com.example.hopes.domain.repository.SettingsRepository
 import com.example.hopes.domain.result.AppResult
 import javax.inject.Inject
 
-/**
- * 문의 내용을 서버로 전송한다. 서버 API는 content 필드 하나만 받으므로,
- * 보낸 사람을 식별할 수 있도록 이메일을 문의 내용 앞에 합쳐 전송한다.
- */
+/** 문의 내용과 답변 이메일을 분리해 서버로 전송한다. */
 class SubmitInquiryUseCase
     @Inject
     constructor(
@@ -16,5 +13,5 @@ class SubmitInquiryUseCase
         suspend operator fun invoke(
             email: String,
             message: String,
-        ): AppResult<Unit> = settingsRepository.submitInquiry("이메일: $email\n$message")
+        ): AppResult<Unit> = settingsRepository.submitInquiry(email, message)
     }

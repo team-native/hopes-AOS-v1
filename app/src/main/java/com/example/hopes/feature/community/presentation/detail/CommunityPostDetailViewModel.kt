@@ -3,7 +3,7 @@ package com.example.hopes.feature.community.presentation.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.hopes.feature.community.data.CommunityReportTarget
-import com.example.hopes.feature.community.data.CommunityStore
+import com.example.hopes.feature.community.data.CommunityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class CommunityPostDetailViewModel
     @Inject
     constructor(
-        private val store: CommunityStore,
+        private val store: CommunityRepository,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(CommunityPostDetailUiState())
         val uiState: StateFlow<CommunityPostDetailUiState> = _uiState.asStateFlow()
@@ -35,13 +35,24 @@ class CommunityPostDetailViewModel
         fun initialize(postId: Long) {
             if (this.postId == postId) return
             this.postId = postId
+            loadPost(postId)
+        }
+
+        private fun loadPost(postId: Long) {
 
             observeJob?.cancel()
             observeJob =
                 viewModelScope.launch {
+                    _uiState.update { it.copy(isLoading = true, isLoadError = false) }
+                    store.loadBoards()
+                    val postLoaded = store.refreshPost(postId)
+                    val commentsLoaded = store.refreshComments(postId)
+                    if (!postLoaded || !commentsLoaded) {
+                        _uiState.update { it.copy(isLoading = false, isLoadError = true) }
+                    }
                     combine(store.post(postId), store.comments(postId)) { post, comments -> post to comments }
                         .collect { (post, comments) ->
-                            _uiState.update { it.copy(isLoading = false, post = post, comments = comments) }
+                            if (postLoaded && commentsLoaded) _uiState.update { it.copy(isLoading = false, isLoadError = false, post = post, comments = comments) }
                         }
                 }
         }
@@ -50,8 +61,9 @@ class CommunityPostDetailViewModel
             val currentPostId = postId ?: return
 
             when (event) {
+                CommunityPostDetailEvent.RetryLoadClicked -> loadPost(currentPostId)
                 CommunityPostDetailEvent.LikeClicked -> {
-                    store.toggleLike(currentPostId)
+                    viewModelScope.launch { store.toggleLike(currentPostId) }
                 }
 
                 CommunityPostDetailEvent.PostMoreClicked -> {
@@ -101,8 +113,10 @@ class CommunityPostDetailViewModel
 
                 is CommunityPostDetailEvent.ReportSubmitted -> {
                     val target = (_uiState.value.sheet as? CommunityDetailSheet.Report)?.target ?: return
-                    store.report(target, event.reason)
-                    _uiState.update { it.copy(sheet = CommunityDetailSheet.ReportDone) }
+                    viewModelScope.launch {
+                        val submitted = store.report(target, event.reason)
+                        _uiState.update { if (submitted) it.copy(sheet = CommunityDetailSheet.ReportDone) else it.copy(sheet = null, toast = CommunityDetailToast.ReportFailed) }
+                    }
                 }
 
                 CommunityPostDetailEvent.DialogDismissed -> {
@@ -110,20 +124,25 @@ class CommunityPostDetailViewModel
                 }
 
                 CommunityPostDetailEvent.DeletePostConfirmed -> {
-                    store.deletePost(currentPostId)
-                    _uiState.update { it.copy(dialog = null, isPostDeleted = true) }
+                    viewModelScope.launch {
+                        val deleted = store.deletePost(currentPostId)
+                        _uiState.update { it.copy(dialog = null, isPostDeleted = deleted) }
+                    }
                 }
 
                 CommunityPostDetailEvent.DeleteCommentConfirmed -> {
                     val dialog = _uiState.value.dialog as? CommunityDetailDialog.DeleteComment ?: return
-                    store.deleteComment(dialog.commentId)
+                    viewModelScope.launch {
+                    val deleted = store.deleteComment(dialog.commentId)
                     _uiState.update {
+                        if (!deleted) return@update it.copy(dialog = null, toast = CommunityDetailToast.CommentEditFailed)
                         it.copy(
                             dialog = null,
                             // 수정 중이던 댓글을 지웠으면 수정도 끝낸다.
                             editingCommentId = it.editingCommentId.takeUnless { id -> id == dialog.commentId },
                             commentInput = if (it.editingCommentId == dialog.commentId) "" else it.commentInput,
                         )
+                    }
                     }
                 }
 

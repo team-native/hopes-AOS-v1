@@ -41,6 +41,7 @@ internal fun ContentResolver.toChatAttachment(
         kind = kind,
         name = metadata.displayName ?: fallbackName,
         pageCount = pageCount,
+        mimeType = mimeType ?: if (kind == ChatAttachmentKind.Pdf) PDF_MIME_TYPE else "image/jpeg",
         status = status,
     )
 }

@@ -21,7 +21,6 @@ fun MyPageRoute(
     onNavigateToAppSettings: () -> Unit,
     onNavigateToProfileEdit: () -> Unit,
     onNavigateToPersonalSettings: () -> Unit,
-    onNavigateToNotifications: () -> Unit,
     onNavigateToContact: () -> Unit,
     onNavigateToMyActivity: () -> Unit,
     isProfileSavedToastVisible: Boolean,
@@ -55,7 +54,6 @@ fun MyPageRoute(
                 MyPageScreenEvent.ProfileEditClicked -> onNavigateToProfileEdit()
                 MyPageScreenEvent.MyActivityClicked -> onNavigateToMyActivity()
                 MyPageScreenEvent.PersonalSettingsClicked -> onNavigateToPersonalSettings()
-                MyPageScreenEvent.NotificationClicked -> onNavigateToNotifications()
                 MyPageScreenEvent.ContactClicked -> onNavigateToContact()
             }
         },

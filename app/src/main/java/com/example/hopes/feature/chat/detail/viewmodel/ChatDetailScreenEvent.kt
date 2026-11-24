@@ -40,6 +40,8 @@ sealed interface ChatDetailScreenEvent {
         val uri: String,
     ) : ChatDetailScreenEvent
 
+    data object AttachmentDeletionRetryClicked : ChatDetailScreenEvent
+
     data object LocationAllowClicked : ChatDetailScreenEvent
 
     data object LocationLaterClicked : ChatDetailScreenEvent

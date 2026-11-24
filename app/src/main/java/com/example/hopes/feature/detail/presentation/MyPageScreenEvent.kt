@@ -10,7 +10,5 @@ sealed interface MyPageScreenEvent {
 
     data object PersonalSettingsClicked : MyPageScreenEvent
 
-    data object NotificationClicked : MyPageScreenEvent
-
     data object ContactClicked : MyPageScreenEvent
 }

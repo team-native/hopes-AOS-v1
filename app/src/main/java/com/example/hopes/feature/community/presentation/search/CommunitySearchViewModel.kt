@@ -2,15 +2,17 @@ package com.example.hopes.feature.community.presentation.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.hopes.feature.community.data.CommunityStore
+import com.example.hopes.feature.community.data.CommunityRepository
 import com.example.hopes.feature.community.model.CommunityPost
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /**
  * @param results 검색어가 있을 때만 의미가 있다. 검색어가 비면 최근 검색어를 보여준다(피그마 16-2).
@@ -19,24 +21,29 @@ data class CommunitySearchUiState(
     val query: String = "",
     val results: List<CommunityPost> = emptyList(),
     val recentSearches: List<String> = emptyList(),
+    val status: CommunitySearchStatus = CommunitySearchStatus.RecentSearches,
 )
 
-/** 게시글 제목·내용에서 검색어를 찾는다. 글은 임시 저장소 [CommunityStore]에서 읽는다. */
+enum class CommunitySearchStatus { RecentSearches, Editing, Loading, Results, Empty, LoadError }
+
+/** 게시글 검색 API 결과를 [CommunityRepository] 화면 캐시에서 표시한다. */
 @HiltViewModel
 class CommunitySearchViewModel
     @Inject
     constructor(
-        private val store: CommunityStore,
+        private val store: CommunityRepository,
     ) : ViewModel() {
         private val query = MutableStateFlow("")
         private val boardCohort = MutableStateFlow<Int?>(null)
+        private val searchStatus = MutableStateFlow(CommunitySearchStatus.RecentSearches)
 
         val uiState: StateFlow<CommunitySearchUiState> =
-            combine(store.posts, store.recentSearches, query, boardCohort) { posts, recentSearches, query, cohort ->
+            combine(store.posts, store.recentSearches, query, boardCohort, searchStatus) { posts, recentSearches, query, cohort, status ->
                 CommunitySearchUiState(
                     query = query,
-                    results = searchPosts(posts, query, cohort),
+                    results = if (status == CommunitySearchStatus.Results) searchPosts(posts, query, cohort) else emptyList(),
                     recentSearches = recentSearches,
+                    status = status,
                 )
             }.stateIn(
                 scope = viewModelScope,
@@ -51,21 +58,44 @@ class CommunitySearchViewModel
 
         fun changeQuery(text: String) {
             query.value = text
+            searchStatus.value = if (text.isBlank()) CommunitySearchStatus.RecentSearches else CommunitySearchStatus.Editing
         }
 
         /** 키보드의 검색 키를 누르면 검색어를 최근 검색어에 남긴다. */
         fun submitQuery() {
-            store.addRecentSearch(query.value)
+            executeSearch(query.value)
         }
 
         fun selectRecentSearch(keyword: String) {
             query.value = keyword
-            store.addRecentSearch(keyword)
+            executeSearch(keyword)
+        }
+
+        fun retrySearch() {
+            if (searchStatus.value == CommunitySearchStatus.LoadError) executeSearch(query.value)
+        }
+
+        private fun executeSearch(keyword: String) {
+            val normalized = keyword.trim()
+            if (normalized.isEmpty()) {
+                searchStatus.value = CommunitySearchStatus.RecentSearches
+                return
+            }
+            query.value = normalized
+            store.addRecentSearch(normalized)
+            searchStatus.value = CommunitySearchStatus.Loading
+            viewModelScope.launch {
+                val boardsLoaded = store.loadBoards()
+                val postsLoaded = boardsLoaded && store.refreshPosts(boardCohort.value, normalized)
+                if (query.value == normalized) {
+                    searchStatus.value = searchStatusFor(postsLoaded, searchPosts(store.posts.first(), normalized, boardCohort.value))
+                }
+            }
         }
 
         /** 목록에서 하트를 누르면 좋아요를 켜고, 다시 누르면 끈다. */
         fun toggleLike(postId: Long) {
-            store.toggleLike(postId)
+            viewModelScope.launch { store.toggleLike(postId) }
         }
 
         fun clearRecentSearches() {
@@ -91,3 +121,13 @@ fun searchPosts(
             (post.title.contains(keyword, ignoreCase = true) || post.content.contains(keyword, ignoreCase = true))
     }
 }
+
+internal fun searchStatusFor(
+    succeeded: Boolean,
+    results: List<CommunityPost>,
+): CommunitySearchStatus =
+    when {
+        !succeeded -> CommunitySearchStatus.LoadError
+        results.isEmpty() -> CommunitySearchStatus.Empty
+        else -> CommunitySearchStatus.Results
+    }

@@ -1,9 +1,14 @@
 package com.example.hopes.di
 
+import android.util.Log
 import com.example.hopes.core.network.AuthorizationInterceptor
 import com.example.hopes.data.api.AuthApiService
+import com.example.hopes.data.api.AttachmentApiService
 import com.example.hopes.data.api.ChatApiService
 import com.example.hopes.data.api.SettingsApiService
+import com.example.hopes.data.api.CommunityApiService
+import com.example.hopes.data.api.ChatAssistApiService
+import com.example.hopes.data.api.CampusApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.teamnative.hopes.BuildConfig
 import dagger.Module
@@ -29,16 +34,19 @@ object NetworkModule {
         Json {
             ignoreUnknownKeys = true
             explicitNulls = false
+            encodeDefaults = true
         }
 
     /** 빌드 환경에 따라 HTTP 본문 로그를 제한한다. */
     @Provides
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply {
+        HttpLoggingInterceptor { message ->
+            Log.d("HopesNetwork", message.replace(Regex("\\?[^ ]+"), "?[redacted]"))
+        }.apply {
             level =
                 if (BuildConfig.ENABLE_LOG) {
-                    HttpLoggingInterceptor.Level.BODY
+                    HttpLoggingInterceptor.Level.BASIC
                 } else {
                     HttpLoggingInterceptor.Level.NONE
                 }
@@ -90,6 +98,21 @@ object NetworkModule {
     fun provideChatApi(
         @Named("authenticated") retrofit: Retrofit,
     ): ChatApiService = retrofit.create(ChatApiService::class.java)
+
+    @Provides
+    fun provideAttachmentApi(
+        @Named("authenticated") retrofit: Retrofit,
+    ): AttachmentApiService = retrofit.create(AttachmentApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideCampusApi(@Named("authenticated") retrofit: Retrofit): CampusApiService = retrofit.create(CampusApiService::class.java)
+
+    @Provides
+    fun provideCommunityApi(@Named("authenticated") retrofit: Retrofit): CommunityApiService = retrofit.create(CommunityApiService::class.java)
+
+    @Provides
+    fun provideChatAssistApi(@Named("authenticated") retrofit: Retrofit): ChatAssistApiService = retrofit.create(ChatAssistApiService::class.java)
 
     @Provides
     fun provideSettingsApi(

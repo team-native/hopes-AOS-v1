@@ -30,6 +30,7 @@ fun CommunitySearchRoute(
         onSearch = viewModel::submitQuery,
         onRecentSearchClick = viewModel::selectRecentSearch,
         onClearRecentSearches = viewModel::clearRecentSearches,
+        onRetrySearch = viewModel::retrySearch,
         onPostClick = { postId ->
             // 결과를 눌러 들어간 검색어도 최근 검색어에 남긴다.
             viewModel.submitQuery()

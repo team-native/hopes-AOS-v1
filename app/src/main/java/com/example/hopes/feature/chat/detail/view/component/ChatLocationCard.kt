@@ -192,6 +192,29 @@ fun ChatLocationCard(
             }
         }
 
+        is ChatLocationUiState.ServerResult -> {
+            LocationCardSurface(modifier = modifier) {
+                LocationTitle(text = stringResource(R.string.chat_location_result_title))
+                Text(
+                    text = state.status,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = HopesTextStyles.Caption,
+                )
+                HopesInfoBanner(message = state.message)
+                Text(
+                    text = stringResource(R.string.chat_location_result_accuracy, state.accuracyMeters),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = HopesTextStyles.Caption,
+                )
+                LocationTextButton(
+                    text = stringResource(R.string.chat_location_measure_again),
+                    onClick = onRetryClick,
+                    isPrimary = false,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
+
         ChatLocationUiState.Failed -> {
             HopesRetryMessage(
                 title = stringResource(R.string.chat_location_failed_title),

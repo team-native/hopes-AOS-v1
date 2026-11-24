@@ -13,6 +13,7 @@ import java.time.LocalDateTime
  */
 data class CommunityPostDetailUiState(
     val isLoading: Boolean = true,
+    val isLoadError: Boolean = false,
     val post: CommunityPost? = null,
     val comments: List<CommunityComment> = emptyList(),
     val failedComments: List<CommunityFailedComment> = emptyList(),
@@ -67,4 +68,5 @@ enum class CommunityDetailToast {
     AlreadyReportedPost,
     AlreadyReportedComment,
     CommentEditFailed,
+    ReportFailed,
 }

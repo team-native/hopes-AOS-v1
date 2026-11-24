@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.hopes.domain.model.ChatSummary
 import com.example.hopes.domain.result.AppResult
 import com.example.hopes.domain.usecase.GetChatsUseCase
+import com.example.hopes.domain.usecase.DeleteChatUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,6 +20,7 @@ class HistoryViewModel
     @Inject
     constructor(
         private val getChatsUseCase: GetChatsUseCase,
+        private val deleteChatUseCase: DeleteChatUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(HistoryUiState())
         val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
@@ -61,19 +63,37 @@ class HistoryViewModel
                 }
 
                 HistoryScreenEvent.DeleteChatDismissed -> {
-                    updateState { copy(pendingDeleteChatId = null) }
+                    updateState { copy(pendingDeleteChatId = null, isDeletingChat = false, isDeleteError = false) }
                 }
 
                 HistoryScreenEvent.DeleteChatConfirmed -> {
-                    // 대화 삭제 API 연동 전이라 목록에서만 뺀다. 다시 불러오면 돌아온다. 연동 시 여기서 서버에 삭제를 요청한다.
-                    updateState {
-                        val remainingChats = chats.filterNot { it.id == pendingDeleteChatId }
-                        copy(
-                            chats = remainingChats,
-                            pendingDeleteChatId = null,
-                            contentState = if (remainingChats.isEmpty()) HistoryContentState.Empty else contentState,
-                        )
+                    deleteChat()
+                }
+            }
+        }
+
+        /** 삭제 확인 이후 서버에서 대화를 지우고, 성공 응답을 받은 뒤에만 목록에서 제거한다. */
+        private fun deleteChat() {
+            val chatId = _uiState.value.pendingDeleteChatId ?: return
+            if (_uiState.value.isDeletingChat) return
+
+            viewModelScope.launch {
+                updateState { copy(isDeletingChat = true, isDeleteError = false) }
+                when (deleteChatUseCase(chatId)) {
+                    is AppResult.Success -> {
+                        updateState {
+                            val remainingChats = chats.filterNot { it.id == chatId }
+                            copy(
+                                chats = remainingChats,
+                                pendingDeleteChatId = null,
+                                isDeletingChat = false,
+                                isDeleteError = false,
+                                contentState = if (remainingChats.isEmpty()) HistoryContentState.Empty else contentState,
+                            )
+                        }
                     }
+
+                    else -> updateState { copy(isDeletingChat = false, isDeleteError = true) }
                 }
             }
         }
